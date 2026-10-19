@@ -4,7 +4,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
 const RAICES = ["src/sim", "src/evolution"];
-const PERMITIDOS = new Set(["planck", "simplex-noise"]);
+const PERMITIDOS = new Set(["planck", "simplex-noise", "pure-rand/generator/xoroshiro128plus", "pure-rand/distribution/uniformInt"]);
 
 function ficheros(dir: string): string[] {
   let entradas: string[];

@@ -1,5 +1,5 @@
-import type { Genome } from "@/sim/genome";
-import type { TrackId } from "@/sim/tracks";
+import type { Genome } from "../sim/genome";
+import type { TrackId } from "../sim/tracks";
 import type { Op } from "./ga";
 
 export const MAX_LINEAGE_NODES = 3000;

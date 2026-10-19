@@ -1,8 +1,8 @@
 import { xoroshiro128plus, xoroshiro128plusFromState } from "pure-rand/generator/xoroshiro128plus";
 import { uniformInt } from "pure-rand/distribution/uniformInt";
-import { GENE_RANGES, VERTEX_COUNT, WHEEL_SLOTS, genomeHash, normalizeGenome, randomGenome, type Genome } from "@/sim/genome";
-import type { CarResult } from "@/sim/constants";
-import type { TrackId } from "@/sim/tracks";
+import { GENE_RANGES, VERTEX_COUNT, WHEEL_SLOTS, genomeHash, normalizeGenome, randomGenome, type Genome } from "../sim/genome";
+import type { CarResult } from "../sim/constants";
+import type { TrackId } from "../sim/tracks";
 import { isHumanOp, type LineageNode } from "./lineage";
 
 // Las formas del contrato las valida el guardado (src/storage/schema.ts): no se tocan aquí.
