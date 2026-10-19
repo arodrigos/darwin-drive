@@ -17,6 +17,8 @@ const FINISH_LABEL_MS = 1500;
 const LEADER_SCREEN_X = 0.3;
 const FOLLOW_Y = 0.1;
 const FINISHED_GREY = 0x8a8f94;
+// Radio de acierto de un toque: un dedo no apunta a un coche de 2 m a 20 px/m.
+const PICK_RADIUS_PX = 48;
 
 const farNoise = createNoise2D(() => 0.31);
 
@@ -41,6 +43,10 @@ export interface TrackSceneHandle {
   /** Clava la bandera del n.º 1 en esa x (nuevo récord). */
   setFlag(x: number | null): void;
   carFinished(result: CarResult): void;
+  /** Los coches con estrella ★ encima (los favoritos de la generación en curso). */
+  setFavorites(ids: string[]): void;
+  /** Avisa del coche vivo que ha tocado el jugador (el más cercano al dedo, con margen para un dedo). */
+  onPick(listener: ((carId: string) => void) | null): void;
   destroy(): void;
 }
 
@@ -86,6 +92,17 @@ class TrackScene extends Phaser.Scene {
   private recvGap = 33;
   private finishedAt = new Map<string, { at: number; text: string }>();
   private measurePending = false;
+  private favorites = new Set<string>();
+  private pickListener: ((carId: string) => void) | null = null;
+  private screenCars: { carId: string; x: number; y: number }[] = [];
+
+  setFavorites(ids: string[]): void {
+    this.favorites = new Set(ids);
+  }
+
+  onPick(listener: ((carId: string) => void) | null): void {
+    this.pickListener = listener;
+  }
 
   begin(cfg: SceneConfig): void {
     this.cfg = cfg;
@@ -93,6 +110,8 @@ class TrackScene extends Phaser.Scene {
     this.prev = [];
     this.curr = [];
     this.finishedAt.clear();
+    this.favorites.clear();
+    this.screenCars = [];
     this.skyDirty = true;
     this.camX = 0;
     this.refH = Number.NaN;
@@ -131,6 +150,15 @@ class TrackScene extends Phaser.Scene {
     }
     this.flagLabel = this.add.text(0, 0, "", { ...style, fontStyle: "bold", backgroundColor: "rgba(0,0,0,.55)", padding: { x: 4, y: 2 } }).setOrigin(0, 1).setVisible(false);
     this.scale.on("resize", () => (this.skyDirty = true));
+    this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      if (!this.pickListener) return;
+      let best: { carId: string; d: number } | null = null;
+      for (const c of this.screenCars) {
+        const d = Math.hypot(c.x - pointer.x, c.y - pointer.y);
+        if (d <= PICK_RADIUS_PX && (!best || d < best.d)) best = { carId: c.carId, d };
+      }
+      if (best) this.pickListener(best.carId);
+    });
   }
 
   update(): void {
@@ -233,8 +261,10 @@ class TrackScene extends Phaser.Scene {
     g.clear();
     const now = performance.now();
     let used = 0;
+    this.screenCars = [];
     poses.forEach((p, i) => {
       const car = cfg.cars.find((c) => c.carId === p.carId) ?? cfg.cars[i];
+      if (!p.finished) this.screenCars.push({ carId: p.carId, x: toX(p.x), y: toY(p.y) });
       const done = p.finished;
       const fill = done ? FINISHED_GREY : hueColour(car.hue, 0.55);
       const pts = car.genome.body.map((v) => {
@@ -254,7 +284,8 @@ class TrackScene extends Phaser.Scene {
       }
       const top = Math.min(toY(p.y) - 22, ...p.wheels.map((w) => toY(w.y) - w.radius * PX_PER_METER - 6));
       const fin = this.finishedAt.get(p.carId);
-      let text = done ? "" : (car.label ?? "");
+      const estrella = this.favorites.has(p.carId) ? "★ " : "";
+      let text = done ? "" : `${estrella}${car.label ?? ""}`.trim();
       if (fin) text = now - fin.at < FINISH_LABEL_MS ? fin.text : "";
       const label = this.carLabels[used];
       if (label && text) {
@@ -312,6 +343,8 @@ export function startTrackScene(parent: HTMLElement, track: Track): TrackSceneHa
     setPoses: (t, p, s) => scene.setPoses(t, p, s),
     setFlag: (x) => scene.setFlag(x),
     carFinished: (r) => scene.carFinished(r),
+    setFavorites: (ids) => scene.setFavorites(ids),
+    onPick: (l) => scene.onPick(l),
     destroy: () => game.destroy(true),
   };
 }

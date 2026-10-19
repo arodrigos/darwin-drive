@@ -33,6 +33,7 @@ export interface TallerProps {
   helpSeen: boolean;
   onHelpSeen: () => void;
   onTry: () => void;
+  onEvolve: () => void;
   /** Devuelve el texto del aviso que debe leerse tras guardar. */
   onSave: () => Promise<string>;
   onBack: () => void;
@@ -216,7 +217,15 @@ export function Taller(props: TallerProps) {
           <button type="button" className="pastilla" data-testid="guardar" onClick={guardar}>
             Guardar en el garaje
           </button>
-          <button type="button" className="pastilla" disabled title="Pronto" data-testid="evolucionar">
+          <button
+            type="button"
+            className="pastilla"
+            data-testid="evolucionar"
+            onClick={() => {
+              markInput("evolucionar");
+              props.onEvolve();
+            }}
+          >
             Evolucionar este coche
           </button>
         </div>

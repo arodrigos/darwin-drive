@@ -109,3 +109,32 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hoja-fila p { margin: 0 0 8px; font-size: .9rem; }
 .hoja-fila .acciones { display: flex; flex-wrap: wrap; gap: 6px; }
 .progreso-medicion, .resumen-medicion { font-size: .85rem; font-weight: 700; color: #ffd23f; }
+/* Los avisos de la evolución se apilan en columna: uno largo no tapa al siguiente. */
+.avisos-evolucion { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 30; max-width: 92%; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
+.avisos-evolucion .aviso-arriba { position: static; transform: none; max-width: 100%; }
+.contador-gen { font-size: 1rem; }
+.evolucion { position: absolute; inset: 0; display: flex; flex-direction: column; background: #101a26; }
+.evolucion-pista { position: relative; flex: 1 1 auto; min-height: 0; }
+.evolucion-pista .lienzo { position: absolute; inset: 0; touch-action: none; }
+.evolucion-pista .lienzo canvas { display: block; }
+.evolucion-panel { flex: 0 0 auto; display: flex; flex-direction: column; gap: 6px; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); border-top: 2px solid rgba(255,255,255,.25); max-height: 52%; overflow-y: auto; }
+.evolucion-panel .fila { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ayuda-chica { font-size: .78rem; opacity: .85; }
+.turbo-panel { position: absolute; inset: 0; z-index: 12; display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; padding: 56px 12px 12px; background: #16222f; overflow-y: auto; }
+.turbo-panel progress { width: min(100%, 420px); height: 18px; }
+.barra-texto { margin: 0; font-size: 1.2rem; font-weight: 800; }
+.grafica { width: min(100%, 520px); }
+.grafica svg { width: 100%; height: auto; display: block; background: rgba(255,255,255,.06); border-radius: 8px; }
+.grafica-vacia { margin: 0; padding: 14px 10px; border-radius: 8px; background: rgba(255,255,255,.06); text-align: center; font-size: .9rem; }
+.leyenda { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; font-size: .85rem; }
+.leyenda .muestra { display: inline-block; width: 18px; height: 4px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
+@media (min-width: 900px) and (orientation: landscape) {
+  .evolucion { flex-direction: row; }
+  .evolucion-panel { flex: 0 0 min(400px, 38%); max-height: none; border-top: 0; border-left: 2px solid rgba(255,255,255,.25); }
+}
+.inicio-evolucion { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; padding: 10px; overflow-y: auto; background: #16222f; }
+.inicio-evolucion .campo { display: flex; flex-direction: column; gap: 4px; }
+.inicio-evolucion .campo small { font-size: .8rem; opacity: .85; }
+.inicio-evolucion input[type="range"] { width: 100%; min-height: 44px; }
+.inicio-evolucion .fila { display: flex; flex-wrap: wrap; gap: 8px; }
+.pastilla.grande { min-height: 52px; font-size: 1.1rem; align-self: stretch; }
