@@ -23,6 +23,7 @@ export class CarSim {
     genome: Genome,
     private readonly track: Track,
     private readonly heightAt: (x: number) => number,
+    private readonly maxSteps: number = MAX_STEPS,
   ) {
     const g = normalizeGenome(genome);
     this.world = new World({ gravity: Vec2(0, -GRAVITY), allowSleep: false, continuousPhysics: false });
@@ -99,7 +100,7 @@ export class CarSim {
       this.refX = this.maxX;
       this.refStep = this.stepCount;
     }
-    if (this.stepCount >= MAX_STEPS) this.finish("timeout");
+    if (this.stepCount >= this.maxSteps) this.finish("timeout");
     else if (this.stepCount - this.refStep >= STALL_STEPS) this.finish("stall");
   }
 
