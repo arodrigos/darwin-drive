@@ -34,6 +34,7 @@ export interface RankingsProps {
   /** Devuelve el texto del aviso que debe leerse tras guardar. */
   onSaveToGarage: (entry: RankingEntry) => Promise<string>;
   onTaller: () => void;
+  onEvolucion: () => void;
 }
 
 export function Rankings(props: RankingsProps) {
@@ -101,8 +102,8 @@ export function Rankings(props: RankingsProps) {
             <button type="button" className="pastilla principal" onClick={props.onTaller} data-testid="vacio-taller">
               Taller
             </button>
-            <button type="button" className="pastilla" disabled data-testid="vacio-evolucion">
-              Evolución · Pronto
+            <button type="button" className="pastilla" onClick={props.onEvolucion} data-testid="vacio-evolucion">
+              Evolución
             </button>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import "../sim/detmath";
 import { xoroshiro128plus, xoroshiro128plusFromState } from "pure-rand/generator/xoroshiro128plus";
 import { uniformInt } from "pure-rand/distribution/uniformInt";
 import { GENE_RANGES, VERTEX_COUNT, WHEEL_SLOTS, genomeHash, normalizeGenome, randomGenome, type Genome } from "../sim/genome";
@@ -53,7 +54,7 @@ const STAGNATION_WINDOW = 5;
 const STAGNATION_GAIN = 0.01;
 const MAX_EFFECTIVE_RATE = 0.3;
 const CROSSOVER_PROBABILITY = 0.8;
-const RESET_PROBABILITY = 0.05;
+const RESET_PROBABILITY = 0.1;
 const FAVORITE_CHILDREN = 2;
 const SIGMA: Record<GaParams["mutationSize"], number> = { small: 0.05, medium: 0.1, large: 0.25 };
 

@@ -1,3 +1,4 @@
+import "../detmath";
 import { Circle, Polygon, Vec2, WheelJoint, type Body, type World } from "planck";
 import { VERTEX_COUNT, type Genome } from "../genome";
 

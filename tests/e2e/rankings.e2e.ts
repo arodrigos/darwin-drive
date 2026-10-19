@@ -35,10 +35,9 @@ async function abrir(page: Page, escenario: Record<string, unknown>) {
   await page.waitForFunction(() => Boolean(window.__debug));
 }
 
-// Node y Chromium no comparten las mismas funciones matemáticas al último bit: tras ~1 km de física la cifra puede
-// diferir unos decímetros. Dentro del mismo motor (Worker contra Worker) la igualdad sí es exacta.
+// Con detmath el núcleo da la misma marca en Node y en Chromium: la igualdad es exacta (tl-9, ev-9).
 function expectMismaMarca(navegador: number, nucleo: number) {
-  expect(Math.abs(navegador - nucleo)).toBeLessThanOrEqual(Math.max(1, nucleo * 0.005));
+  expect(navegador).toBe(nucleo);
 }
 
 test("rk-1 el ranking de cada pista se lee de punta a punta y abre el coche en el taller", async ({ page }) => {
@@ -79,12 +78,12 @@ test("rk-1 el ranking de cada pista se lee de punta a punta y abre el coche en e
   expect(t.pistaSeleccionada).toBe("rampa");
   // El estado solo resume las marcas: el genoma esperado sale del propio escenario.
   const guardado = demo.rampa.find((e) => e.carId === r.rankings.rampa[2].carId)!;
-  // Chromium y Node no normalizan al último bit, así que el hash cambia; los genes, no más allá de 1e-9.
+  // El escenario llega bit a bit (rk-1): mismos genes, mismo hash.
   const genes = (g: unknown): number[] => JSON.stringify(g).match(/-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/gi)!.map(Number);
   const enTaller = genes(t.genomaEnTaller);
   const esperado = genes(guardado.genome);
   expect(enTaller).toHaveLength(esperado.length);
-  enTaller.forEach((v, i) => expect(Math.abs(v - esperado[i])).toBeLessThanOrEqual(1e-9 * Math.max(1, Math.abs(v))));
+  expect(enTaller).toEqual(esperado);
 
   const lat = await page.evaluate(() => window.__debug!.latencias());
   const abrirRanking = lat.filter((m) => m.evento === "abrir-ranking");

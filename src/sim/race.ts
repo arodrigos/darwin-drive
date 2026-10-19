@@ -1,3 +1,4 @@
+import "./detmath";
 import { CarSim } from "./physics/car-sim";
 import { genomeHash, type Genome } from "./genome";
 import { getTrack, type TrackId } from "./tracks";

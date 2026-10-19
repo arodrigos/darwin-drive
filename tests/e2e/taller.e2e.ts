@@ -92,10 +92,9 @@ async function meta(page: Page) {
   );
 }
 
-// Node y Chromium no comparten las mismas funciones matemáticas al último bit: tras ~1 km de física la cifra puede
-// diferir unos decímetros. Dentro del mismo motor la igualdad sí es exacta (pc-2 y pc-3 lo comprueban).
+// Con detmath el núcleo da la misma marca en Node y en Chromium: la igualdad es exacta (tl-9, ev-9).
 function expectMismaMarca(navegador: number, nucleo: number) {
-  expect(Math.abs(navegador - nucleo)).toBeLessThanOrEqual(Math.max(1, nucleo * 0.005));
+  expect(navegador).toBe(nucleo);
 }
 
 async function cpu(page: Page, rate: number) {
@@ -280,6 +279,8 @@ test("tl-4 la ayuda está donde la acción no es obvia", async ({ page }) => {
 
   // Sin ruedas.
   await page.getByTestId("ayuda-boton").click();
+  // El toque anterior añadió una rueda: se espera a verla en el contador antes de leer el estado, o la lectura va un toque por detrás.
+  await expect(page.getByTestId("contador-ruedas")).toHaveText("Ruedas: 3/4");
   for (const w of (await estado(page)).genomaEnTaller!.wheels.filter((r) => r.vertex >= 0)) await tocar(page, w.vertex);
   await expect(page.getByTestId("contador-ruedas")).toHaveText("Ruedas: 0/4");
   await expect(page.getByTestId("aviso-sin-ruedas")).toHaveText("Sin ruedas no hay motor: este coche no avanzará.");
