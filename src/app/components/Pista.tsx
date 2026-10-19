@@ -2,12 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
+import { avisoRanking, textoRanking } from "@/app/ranking-text";
 import { runtime } from "@/debug/ganchos";
+import { measureOnNextFrame } from "@/debug/latencias";
 import { registrarPoses, reiniciarRendimiento } from "@/debug/rendimiento";
 import type { TrackSceneHandle } from "@/game/track-scene";
 import type { CarResult, EndReason } from "@/sim/constants";
 import { STOCK_CAR, genomeHash, type Genome } from "@/sim/genome";
 import { getTrack, type TrackId } from "@/sim/tracks";
+import { RANKING_SIZE } from "@/storage/schema";
+import type { RankingOutcome } from "@/storage/store";
 import { createSimRunner } from "@/worker";
 import type { FromWorker, SimRunner } from "@/worker/protocol";
 import { PanelRendimiento } from "./PanelRendimiento";
@@ -17,6 +21,7 @@ const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarl
 export const MENSAJE_ERROR = "La simulación se ha detenido por un error. Toca Reintentar para volver a empezar esta carrera.";
 const MOTIVO: Record<EndReason, string> = { stall: "se atascó", timeout: "se acabó el tiempo", anomaly: "descalificado" };
 const STOCK_HUE = 28;
+const AVISO_RANKING_MS = 2500;
 
 function canDraw(): boolean {
   try {
@@ -40,7 +45,16 @@ function parametrosPrueba(): { worker: boolean; fallo: boolean; rendimiento: boo
 
 type Fase = { tipo: "corriendo" } | { tipo: "fin"; result: CarResult } | { tipo: "error" };
 
-export function Pista(props: { trackId: TrackId; onBack: () => void; rankings: RankingsView; genome?: Genome }) {
+export interface PistaProps {
+  trackId: TrackId;
+  onBack: () => void;
+  rankings: RankingsView;
+  genome?: Genome;
+  /** Con esta función la marca se inscribe en el ranking de la pista; el resultado es el que enseña la tarjeta. */
+  onFinish?: (result: CarResult) => Promise<RankingOutcome | null>;
+}
+
+export function Pista(props: PistaProps) {
   const { trackId, genome = STOCK_CAR } = props;
   const track = getTrack(trackId)!;
   const host = useRef<HTMLDivElement>(null);
@@ -48,13 +62,20 @@ export function Pista(props: { trackId: TrackId; onBack: () => void; rankings: R
   const iniciar = useRef<() => void>(() => {});
   const [failed, setFailed] = useState(() => !canDraw());
   const [fase, setFase] = useState<Fase>({ tipo: "corriendo" });
+  const [inscripcion, setInscripcion] = useState<{ outcome: RankingOutcome; distance: number } | null>(null);
+  const [aviso, setAviso] = useState<string | null>(null);
+  const avisoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const alTerminar = useRef(props.onFinish);
+  useEffect(() => {
+    alTerminar.current = props.onFinish;
+  });
   const [rendimiento] = useState(() => parametrosPrueba().rendimiento);
   // La pista y el genoma se fijan al abrir: cambiarlos a media carrera sería correr una cosa y pintar otra.
-  const fijo = useRef({ trackId, genome, marca: props.rankings[trackId][0]?.distance ?? null });
+  const fijo = useRef({ trackId, genome, propio: Boolean(props.genome), marca: props.rankings[trackId][0]?.distance ?? null });
 
   useEffect(() => {
     if (failed) return;
-    const { trackId: id, genome: g, marca } = fijo.current;
+    const { trackId: id, genome: g, marca, propio } = fijo.current;
     const pista = getTrack(id)!;
     const prueba = parametrosPrueba();
     const runner: SimRunner = createSimRunner({ worker: prueba.worker, failFirstStart: prueba.fallo });
@@ -96,6 +117,21 @@ export function Pista(props: { trackId: TrackId; onBack: () => void; rankings: R
         if (hud.current) hud.current.textContent = formatMeters(result.distance);
         setFase({ tipo: "fin", result });
         liberar();
+        const inscribir = alTerminar.current;
+        if (inscribir) {
+          void inscribir(result).then((outcome) => {
+            if (cancelled || !outcome) return;
+            setInscripcion({ outcome, distance: result.distance });
+            // Un nuevo n.º 1 clava su bandera en la x donde acabó el coche.
+            if (outcome.isRecord) scene?.setFlag(result.distance);
+            const texto = avisoRanking(outcome, pista.name, result.distance);
+            if (texto) {
+              setAviso(texto);
+              if (avisoTimer.current) clearTimeout(avisoTimer.current);
+              avisoTimer.current = setTimeout(() => setAviso(null), AVISO_RANKING_MS);
+            }
+          });
+        }
       } else if (m.type === "error") {
         setFase({ tipo: "error" });
         liberar();
@@ -113,8 +149,10 @@ export function Pista(props: { trackId: TrackId; onBack: () => void; rankings: R
       runtime.cochesVivos = 1;
       runtime.tiempoSim = 0;
       if (hud.current) hud.current.textContent = formatMeters(0);
-      scene.begin({ track: pista, cars: [{ carId, genome: g, hue: STOCK_HUE, label: "Coche de serie" }], flag: marca });
+      scene.begin({ track: pista, cars: [{ carId, genome: g, hue: STOCK_HUE, label: propio ? "Tu coche" : "Coche de serie" }], flag: marca });
       setFase({ tipo: "corriendo" });
+      setInscripcion(null);
+      measureOnNextFrame("probar");
       runner.post({ type: "startRace", raceId, cars: [{ carId, genome: g }], trackId: id, pace: "x1" });
     };
     iniciar.current = lanzar;
@@ -150,6 +188,7 @@ export function Pista(props: { trackId: TrackId; onBack: () => void; rankings: R
 
     return () => {
       cancelled = true;
+      if (avisoTimer.current) clearTimeout(avisoTimer.current);
       document.removeEventListener("visibilitychange", alCambiarVisibilidad);
       runner.post({ type: "stop", raceId });
       unsubscribe();
@@ -195,6 +234,11 @@ export function Pista(props: { trackId: TrackId; onBack: () => void; rankings: R
         0,0 m
       </div>
       {rendimiento && <PanelRendimiento />}
+      {aviso && (
+        <div className="aviso-ranking" role="status" data-testid="aviso-ranking">
+          {aviso}
+        </div>
+      )}
       {fase.tipo === "fin" && (
         <div className="tarjeta-fin" role="dialog" aria-label="Fin de la carrera" data-testid="tarjeta-fin">
           <h2>Fin de la carrera · {track.name}</h2>
@@ -202,6 +246,18 @@ export function Pista(props: { trackId: TrackId; onBack: () => void; rankings: R
             {formatMeters(fase.result.distance)}
           </p>
           <p data-testid="fin-motivo">Motivo: {MOTIVO[fase.result.reason]}</p>
+          {inscripcion && (
+            <>
+              <p className="resultado-ranking" data-testid="tarjeta-ranking">
+                {textoRanking(inscripcion.outcome, track.name, inscripcion.distance)}
+              </p>
+              {inscripcion.outcome.entered && (
+                <p data-testid="tarjeta-puesto">
+                  Puesto {inscripcion.outcome.position} de {RANKING_SIZE} en {track.name}
+                </p>
+              )}
+            </>
+          )}
           <div className="acciones">
             <button type="button" className="pastilla" onClick={repetir} data-testid="repetir">
               Repetir

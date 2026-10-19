@@ -23,9 +23,9 @@ function Paisaje() {
   );
 }
 
-const ACCESOS = ["Taller", "Evolución", "Garaje", "Linaje", "Especies"];
+const ACCESOS = ["Evolución", "Linaje", "Especies"];
 
-export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onPickTrack: (id: TrackId) => void }) {
+export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onPickTrack: (id: TrackId) => void; onTaller: () => void; onGarage: () => void }) {
   return (
     <div className="portada" data-testid="portada">
       <Paisaje />
@@ -36,7 +36,7 @@ export function Portada(props: { rankings: RankingsView; onExplore: () => void; 
           <button key={t.id} type="button" className="tarjeta-pista" data-testid={`tarjeta-${t.id}`} onClick={() => props.onPickTrack(t.id)}>
             <span className="nombre">{t.name}</span>
             <TrackMiniature track={t} />
-            <span className="marca">{topMark(props.rankings, t.id)}</span>
+            <span className="marca">{topMark(props.rankings, t.id, true)}</span>
           </button>
         ))}
       </div>
@@ -46,6 +46,12 @@ export function Portada(props: { rankings: RankingsView; onExplore: () => void; 
         </button>
         <button type="button" className="acceso" data-testid="acceso-serie" onClick={props.onStock}>
           Ver el coche de serie
+        </button>
+        <button type="button" className="acceso" data-testid="acceso-taller" onClick={props.onTaller}>
+          Taller
+        </button>
+        <button type="button" className="acceso" data-testid="acceso-garaje" onClick={props.onGarage}>
+          Garaje
         </button>
         {ACCESOS.map((a) => (
           <button key={a} type="button" className="acceso" disabled>

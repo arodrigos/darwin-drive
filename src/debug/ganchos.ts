@@ -22,6 +22,10 @@ export const runtime = {
   ultimoResultado: null as CarResult | null,
   tiempoSim: null as number | null,
   ejecutor: null as "worker" | "en-linea" | null,
+  // Taller, garaje e inscripción (los publica App).
+  genomaEnTaller: null as Genome | null,
+  garaje: 0,
+  ultimaInscripcion: null as { trackId: TrackId; position: number | null; alreadyAt: number | null; isRecord: boolean } | null,
   /** Avanza la carrera en curso al instante; resuelve con el efecto ya pintado. Solo existe mientras hay una pista abierta. */
   avanzar: null as ((segundos: number) => Promise<void>) | null,
 };
@@ -51,23 +55,23 @@ export function estado() {
     pistaEnCarrera: runtime.pistaEnCarrera,
     distanciaLider: runtime.distanciaLider,
     cochesVivos: runtime.cochesVivos,
-    // Lo que sigue lo rellenan los bloques de taller, rankings y evolución.
+    // La generación la rellena el bloque de evolución.
     generacion: null as number | null,
     rankings: runtime.rankings,
-    ultimaInscripcion: null,
+    ultimaInscripcion: runtime.ultimaInscripcion,
     genomaEnPista: runtime.genomaEnPista,
-    genomaEnTaller: null,
+    genomaEnTaller: runtime.genomaEnTaller,
     ultimoResultado: runtime.ultimoResultado,
     // Añadidos al contrato por pista-carrera: la pausa de pestaña y el ejecutor activo se prueban con ellos.
     tiempoSim: runtime.tiempoSim,
     ejecutor: runtime.ejecutor,
-    garaje: 0,
+    garaje: runtime.garaje,
     persistente: runtime.persistente,
     disponible: runtime.disponible,
   };
 }
 
-const ESCENARIOS_SOPORTADOS = new Set(["vacio", "pista", "rankings"]);
+const ESCENARIOS_SOPORTADOS = new Set(["vacio", "pista", "rankings", "garaje", "genoma"]);
 
 export interface Gancho {
   latencias: typeof latencias;
