@@ -16,6 +16,7 @@
     "verificar:frontera-nucleo": "node scripts/comprobar-frontera-nucleo.mjs",
     "medir:fisica": "node --import tsx scripts/medir-fisica.ts",
     "medir:anomalias": "node --import tsx scripts/medir-anomalias.ts",
+    "medir:evolucion": "node --import tsx scripts/medir-evolucion.ts",
     "medir:pistas": "node --import tsx scripts/medir-pistas.ts",
     "smoke:traspaso": "bash scripts/smoke-traspaso.sh"
   },
@@ -24,6 +25,7 @@
     "next": "16.4.2",
     "phaser": "^4.2.1",
     "planck": "1.5.1",
+    "pure-rand": "^8.4.2",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "simplex-noise": "^4.0.3"
@@ -37,7 +39,6 @@
     "eslint-config-next": "16.4.2",
     "fake-indexeddb": "^6.2.6",
     "fast-check": "^4.10.2",
-    "pure-rand": "^8.4.2",
     "tsx": "^4.23.15",
     "typescript": "^5"
   }
