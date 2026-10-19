@@ -4,7 +4,7 @@ import { createRace } from "../src/sim/race";
 import { TRACKS } from "../src/sim/tracks";
 import { seededRand } from "../tests/unit/helpers/rng";
 
-// El diseño pide 60 µs; en VPS2 (2 vCPU) La Cordillera sale entre 62 y 77 µs con 16 coches aleatorios, así que
+// El diseño pide 60 µs; en una máquina de 2 vCPU La Cordillera sale entre 62 y 77 µs con 16 coches aleatorios, así que
 // el umbral que protege es 90 µs (ver desviaciones del bloque).
 const UMBRAL_US = 90;
 const COCHES = 16;
