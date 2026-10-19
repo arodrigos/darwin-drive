@@ -38,6 +38,8 @@ export interface SceneConfig {
 export interface TrackSceneHandle {
   begin(cfg: SceneConfig): void;
   setPoses(simTime: number, poses: CarPose[], snap: boolean): void;
+  /** Clava la bandera del n.º 1 en esa x (nuevo récord). */
+  setFlag(x: number | null): void;
   carFinished(result: CarResult): void;
   destroy(): void;
 }
@@ -103,6 +105,10 @@ class TrackScene extends Phaser.Scene {
     this.curr = poses;
     this.recvGap = Math.min(100, Math.max(16, now - this.recvAt));
     this.recvAt = now;
+  }
+
+  setFlag(x: number | null): void {
+    if (this.cfg) this.cfg = { ...this.cfg, flag: x };
   }
 
   carFinished(result: CarResult): void {
@@ -304,6 +310,7 @@ export function startTrackScene(parent: HTMLElement, track: Track): TrackSceneHa
   return {
     begin: (cfg) => scene.begin(cfg),
     setPoses: (t, p, s) => scene.setPoses(t, p, s),
+    setFlag: (x) => scene.setFlag(x),
     carFinished: (r) => scene.carFinished(r),
     destroy: () => game.destroy(true),
   };

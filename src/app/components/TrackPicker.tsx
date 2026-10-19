@@ -8,11 +8,12 @@ import { formatMeters } from "@/app/format";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
 
 // El selector solo necesita la marca de cada entrada; RankingEntry (bloque de guardado) lo cumple.
-export type RankingsView = Record<TrackId, { distance: number }[]>;
+export type RankingsView = Record<TrackId, { distance: number; origin?: string }[]>;
 
-export function topMark(rankings: RankingsView, id: TrackId): string {
+export function topMark(rankings: RankingsView, id: TrackId, withOrigin = false): string {
   const first = rankings[id][0];
-  return first ? `n.º 1: ${formatMeters(first.distance)}` : "sin marcas todavía";
+  if (!first) return "sin marcas todavía";
+  return `n.º 1: ${formatMeters(first.distance)}${withOrigin && first.origin ? ` · ${first.origin}` : ""}`;
 }
 
 export function TrackMiniature({ track }: { track: Track }) {
