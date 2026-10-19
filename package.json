@@ -18,6 +18,7 @@
     "medir:anomalias": "node --import tsx scripts/medir-anomalias.ts",
     "medir:evolucion": "node --import tsx scripts/medir-evolucion.ts",
     "medir:pistas": "node --import tsx scripts/medir-pistas.ts",
+    "generar:escenario-evolucion": "node --import tsx scripts/generar-escenario-evolucion.ts",
     "smoke:traspaso": "bash scripts/smoke-traspaso.sh"
   },
   "dependencies": {

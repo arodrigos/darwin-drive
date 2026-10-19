@@ -23,9 +23,9 @@ function Paisaje() {
   );
 }
 
-const ACCESOS = ["Evolución", "Linaje", "Especies"];
+const ACCESOS = ["Linaje", "Especies"];
 
-export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onPickTrack: (id: TrackId) => void; onTaller: () => void; onGarage: () => void }) {
+export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onPickTrack: (id: TrackId) => void; onTaller: () => void; onGarage: () => void; onEvolucion: () => void; continuar: { generation: number; trackName: string } | null; onContinuar: () => void }) {
   return (
     <div className="portada" data-testid="portada">
       <Paisaje />
@@ -53,6 +53,14 @@ export function Portada(props: { rankings: RankingsView; onExplore: () => void; 
         <button type="button" className="acceso" data-testid="acceso-garaje" onClick={props.onGarage}>
           Garaje
         </button>
+        <button type="button" className="acceso" data-testid="acceso-evolucion" onClick={props.onEvolucion}>
+          Evolución
+        </button>
+        {props.continuar && (
+          <button type="button" className="acceso" data-testid="acceso-continuar" onClick={props.onContinuar}>
+            Continuar evolución (gen {props.continuar.generation} · {props.continuar.trackName})
+          </button>
+        )}
         {ACCESOS.map((a) => (
           <button key={a} type="button" className="acceso" disabled>
             {a}

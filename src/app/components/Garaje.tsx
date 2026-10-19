@@ -38,6 +38,7 @@ export function Garaje(props: {
   rankings: RankingsView;
   onTry: (car: SavedCar) => void;
   onOpen: (car: SavedCar) => void;
+  onEvolve: (car: SavedCar) => void;
   onDelete: (car: SavedCar) => void;
   onTaller: () => void;
   onBack: () => void;
@@ -75,6 +76,9 @@ export function Garaje(props: {
                   </button>
                   <button type="button" className="pastilla chica" onClick={() => props.onOpen(car)} data-testid="garaje-abrir">
                     Abrir en el taller
+                  </button>
+                  <button type="button" className="pastilla chica" onClick={() => props.onEvolve(car)} data-testid="garaje-evolucionar">
+                    Evolucionar
                   </button>
                   <button type="button" className="pastilla chica" onClick={() => props.onDelete(car)} data-testid="garaje-borrar">
                     Borrar
