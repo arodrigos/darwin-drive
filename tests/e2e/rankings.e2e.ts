@@ -1,8 +1,10 @@
 import { test, expect, type Page } from "@playwright/test";
 import { STOCK_CAR, type Genome } from "../../src/sim/genome";
+import demoJson from "../../src/debug/escenarios/rankings-demo.json";
 import { simulateCar } from "../../src/sim/race";
 import { TRACKS, type TrackId } from "../../src/sim/tracks";
 
+const demo = demoJson as unknown as Record<TrackId, { carId: string; genome: Genome }[]>;
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "rankings-11";
 
@@ -18,7 +20,7 @@ type Estado = {
   genomaEnTaller: Genome | null;
   genomaEnPista: Genome | null;
   ultimoResultado: { distance: number; trackId: string } | null;
-  rankings: Record<TrackId, { carId: string; genome: Genome; distance: number; origin: string }[]>;
+  rankings: Record<TrackId, { carId: string; distance: number; origin: string }[]>;
 };
 
 const estado = (page: Page) => page.evaluate(() => window.__debug!.estado() as unknown as Estado);
@@ -75,7 +77,9 @@ test("rk-1 el ranking de cada pista se lee de punta a punta y abre el coche en e
   await expect(page.getByTestId("selector-pista")).toContainText("Pista: La Rampa");
   const t = await estado(page);
   expect(t.pistaSeleccionada).toBe("rampa");
-  expect(t.genomaEnTaller).toEqual(r.rankings.rampa[2].genome);
+  // El estado solo resume las marcas: el genoma esperado sale del propio escenario.
+  const guardado = demo.rampa.find((e) => e.carId === r.rankings.rampa[2].carId)!;
+  expect(t.genomaEnTaller).toEqual(guardado.genome);
 
   const lat = await page.evaluate(() => window.__debug!.latencias());
   const abrirRanking = lat.filter((m) => m.evento === "abrir-ranking");
