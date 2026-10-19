@@ -1,5 +1,5 @@
-import type { Genome } from "@/sim/genome";
-import type { TrackId } from "@/sim/tracks";
+import type { Genome } from "../sim/genome";
+import type { TrackId } from "../sim/tracks";
 
 // Solo los tipos del contrato: el guardado los valida antes de que exista el
 // algoritmo genético, que añadirá aquí sus funciones sin cambiar estas formas.
