@@ -1,3 +1,4 @@
+import "./detmath";
 import { createNoise2D } from "simplex-noise";
 import { FLAT_START } from "./terrain";
 
@@ -102,28 +103,28 @@ function pedregalHeight(x: number): number {
 export const TRACKS: readonly Track[] = [
   {
     id: "cordillera",
-    version: 1,
+    version: 2,
     name: "La Cordillera",
     tagline: "Montañas al azar, siempre las mismas, cada vez más altas.",
     heightAt: cordilleraHeight,
   },
   {
     id: "rampa",
-    version: 1,
+    version: 2,
     name: "La Rampa",
     tagline: "Una recta que se empina sin parar.",
     heightAt: rampaHeight,
   },
   {
     id: "dunas",
-    version: 1,
+    version: 2,
     name: "Las Dunas",
     tagline: "Olas largas que crecen: con velocidad, se vuela.",
     heightAt: dunasHeight,
   },
   {
     id: "pedregal",
-    version: 1,
+    version: 2,
     name: "El Pedregal",
     tagline: "Llano sembrado de piedras cada vez mayores.",
     heightAt: pedregalHeight,

@@ -18,9 +18,9 @@ import { hashPista } from "./helpers/hash-pistas";
 // vuelven a medir con ella) y actualizar el hash aquí.
 const HASH_REFERENCIA: Record<string, string> = {
   cordillera: "6a9684c4f191e6157caf68bf0fd1b0eb32fca0218fded2c88d7e86d409c2cad5",
-  rampa: "5bbf70cec7e3966444d132e96d5d4fbf006f5336bd748e5017520ef224505be9",
-  dunas: "de99169f3f19b950aed5e975283085b34a301d15a9180535e30e68ac3a819a90",
-  pedregal: "32b39d61b2da68293403c378fd4acb2aa57df63a5d949b7836ce7e2afd858e11",
+  rampa: "7a4375b1063b602956695f416f6ad12518472fd04763ab19a492533e4d1d3432",
+  dunas: "e31c922ee73a06c479954edffa49389cdbf9f4763d49b8b11ea623049b300fff",
+  pedregal: "d0133ed6d0cf4e1982f4968eccc55c2a49d56a0628d60f52d8fdd4b28feabaf5",
 };
 
 const MAX_DY = Math.tan((MAX_SLOPE_DEG * Math.PI) / 180) * VERTEX_SPACING;

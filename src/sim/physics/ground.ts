@@ -1,3 +1,4 @@
+import "../detmath";
 import { Chain, Vec2, type Body, type World } from "planck";
 import { SEGMENT_LENGTH, VERTEX_SPACING, segmentVertices } from "../terrain";
 import type { Track } from "../tracks";

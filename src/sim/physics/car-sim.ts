@@ -1,3 +1,4 @@
+import "../detmath";
 import { Vec2, World } from "planck";
 import { DT, ANOMALY_HEIGHT, ANOMALY_SPEED, MAX_STEPS, STALL_MIN_PROGRESS, STALL_STEPS, PHYSICS_VERSION } from "../constants";
 import type { CarPose, CarResult, EndReason } from "../constants";

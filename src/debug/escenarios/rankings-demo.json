@@ -67,86 +67,12 @@
     ]
    },
    "genomeHash": "1a2e1836cf545e29",
-   "distance": 1155.5386014946484,
+   "distance": 1155.1794119615824,
    "origin": "diseño",
    "date": "2026-10-01T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 1,
-   "physicsVersion": 1
-  },
-  {
-   "carId": "de8697c9f66eb774",
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.3231618357635061,
-      "length": 0.9197949692010879
-     },
-     {
-      "angle": 1.2488988336041502,
-      "length": 1.3137192120552064
-     },
-     {
-      "angle": 2.021697656677561,
-      "length": 1.3699414501190186
-     },
-     {
-      "angle": 2.670976724387681,
-      "length": 1.1459892551898956
-     },
-     {
-      "angle": 3.6675970743649473,
-      "length": 0.8867648775577546
-     },
-     {
-      "angle": 4.117613058215339,
-      "length": 1.694996254348755
-     },
-     {
-      "angle": 5.292213547082276,
-      "length": 1.162566773056984
-     },
-     {
-      "angle": 5.7783217882216045,
-      "length": 1.119405750632286
-     }
-    ],
-    "bodyDensity": 111.02973363399505,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.600663844871521,
-      "density": 47.70634896755219,
-      "axisAngle": 2.513442291507819
-     },
-     {
-      "vertex": 7,
-      "radius": 0.4939233844280243,
-      "density": 59.77764494419098,
-      "axisAngle": 2.6736646673264897
-     },
-     {
-      "vertex": -1,
-      "radius": 0.6641188154220581,
-      "density": 55.15932161808014,
-      "axisAngle": 2.1553637854959504
-     },
-     {
-      "vertex": -1,
-      "radius": 0.7311103687286378,
-      "density": 71.89603478908539,
-      "axisAngle": 1.118746921711491
-     }
-    ]
-   },
-   "genomeHash": "de8697c9f66eb774",
-   "distance": 1056.3410466843638,
-   "origin": "evolución",
-   "date": "2026-10-11T12:00:00.000Z",
-   "trackId": "cordillera",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "9282a6ace16c132d",
@@ -215,160 +141,12 @@
     ]
    },
    "genomeHash": "9282a6ace16c132d",
-   "distance": 1035.23538151838,
+   "distance": 1034.5940892177837,
    "origin": "evolución",
    "date": "2026-10-02T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 1,
-   "physicsVersion": 1
-  },
-  {
-   "carId": "4360599c354b4feb",
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.45351630204145854,
-      "length": 1.207948301434517
-     },
-     {
-      "angle": 1.2344046550243657,
-      "length": 1.1606799298524857
-     },
-     {
-      "angle": 1.9859488169312642,
-      "length": 1.0348058091402055
-     },
-     {
-      "angle": 2.8357018714338738,
-      "length": 1.1985719763040543
-     },
-     {
-      "angle": 3.5580338146692965,
-      "length": 1.2994487597942352
-     },
-     {
-      "angle": 4.180608603527529,
-      "length": 1.411589738702774
-     },
-     {
-      "angle": 5.246908103284423,
-      "length": 0.7934124437570572
-     },
-     {
-      "angle": 5.721045832419405,
-      "length": 1.590576835155487
-     }
-    ],
-    "bodyDensity": 73.4594114780426,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.7036737296104432,
-      "density": 54.114607501029965,
-      "axisAngle": 1.6567378026699848
-     },
-     {
-      "vertex": 7,
-      "radius": 0.6481816537380218,
-      "density": 53.67797713279724,
-      "axisAngle": 1.9951736996732592
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4340784718990326,
-      "density": 63.90031235218048,
-      "axisAngle": 2.105353772258849
-     },
-     {
-      "vertex": -1,
-      "radius": 0.5262417378425598,
-      "density": 68.69295959472656,
-      "axisAngle": 1.9417247906291442
-     }
-    ]
-   },
-   "genomeHash": "4360599c354b4feb",
-   "distance": 1031.937696253362,
-   "origin": "mixto",
-   "date": "2026-10-03T12:00:00.000Z",
-   "trackId": "cordillera",
-   "trackVersion": 1,
-   "physicsVersion": 1
-  },
-  {
-   "carId": "0a79ecd147d3793e",
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.3654688429047619,
-      "length": 1.2871465716958046
-     },
-     {
-      "angle": 1.251493764016013,
-      "length": 1.0133052334785462
-     },
-     {
-      "angle": 2.0254622801771283,
-      "length": 1.0135276288390158
-     },
-     {
-      "angle": 2.7442483951360175,
-      "length": 1.0188682273626328
-     },
-     {
-      "angle": 3.631996823548668,
-      "length": 0.9992202522158623
-     },
-     {
-      "angle": 4.211062948974153,
-      "length": 1.594537621808052
-     },
-     {
-      "angle": 5.257168480493865,
-      "length": 0.859093440413475
-     },
-     {
-      "angle": 5.8132433819361315,
-      "length": 1.7060192027091978
-     }
-    ],
-    "bodyDensity": 95.21604300737381,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6078459271430969,
-      "density": 63.32047519683838,
-      "axisAngle": 2.5195235516135117
-     },
-     {
-      "vertex": 7,
-      "radius": 0.5215924915075303,
-      "density": 62.827599263191225,
-      "axisAngle": 2.2287460595702147
-     },
-     {
-      "vertex": -1,
-      "radius": 0.49965253281593325,
-      "density": 62.43436220884323,
-      "axisAngle": 1.5956655221847071
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4132663141489029,
-      "density": 66.05127493143081,
-      "axisAngle": 1.7439875064963042
-     }
-    ]
-   },
-   "genomeHash": "0a79ecd147d3793e",
-   "distance": 1030.286384352022,
-   "origin": "diseño",
-   "date": "2026-10-04T12:00:00.000Z",
-   "trackId": "cordillera",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "bcd56f50f58e6de9",
@@ -437,12 +215,234 @@
     ]
    },
    "genomeHash": "bcd56f50f58e6de9",
-   "distance": 1024.4884966783782,
+   "distance": 1032.4663727702766,
    "origin": "diseño",
    "date": "2026-10-07T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
+  },
+  {
+   "carId": "4360599c354b4feb",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.45351630204145854,
+      "length": 1.207948301434517
+     },
+     {
+      "angle": 1.2344046550243657,
+      "length": 1.1606799298524857
+     },
+     {
+      "angle": 1.9859488169312642,
+      "length": 1.0348058091402055
+     },
+     {
+      "angle": 2.8357018714338738,
+      "length": 1.1985719763040543
+     },
+     {
+      "angle": 3.5580338146692965,
+      "length": 1.2994487597942352
+     },
+     {
+      "angle": 4.180608603527529,
+      "length": 1.411589738702774
+     },
+     {
+      "angle": 5.246908103284423,
+      "length": 0.7934124437570572
+     },
+     {
+      "angle": 5.721045832419405,
+      "length": 1.590576835155487
+     }
+    ],
+    "bodyDensity": 73.4594114780426,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.7036737296104432,
+      "density": 54.114607501029965,
+      "axisAngle": 1.6567378026699848
+     },
+     {
+      "vertex": 7,
+      "radius": 0.6481816537380218,
+      "density": 53.67797713279724,
+      "axisAngle": 1.9951736996732592
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4340784718990326,
+      "density": 63.90031235218048,
+      "axisAngle": 2.105353772258849
+     },
+     {
+      "vertex": -1,
+      "radius": 0.5262417378425598,
+      "density": 68.69295959472656,
+      "axisAngle": 1.9417247906291442
+     }
+    ]
+   },
+   "genomeHash": "4360599c354b4feb",
+   "distance": 1032.1615558775575,
+   "origin": "mixto",
+   "date": "2026-10-03T12:00:00.000Z",
+   "trackId": "cordillera",
+   "trackVersion": 2,
+   "physicsVersion": 2
+  },
+  {
+   "carId": "0a79ecd147d3793e",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.3654688429047619,
+      "length": 1.2871465716958046
+     },
+     {
+      "angle": 1.251493764016013,
+      "length": 1.0133052334785462
+     },
+     {
+      "angle": 2.0254622801771283,
+      "length": 1.0135276288390158
+     },
+     {
+      "angle": 2.7442483951360175,
+      "length": 1.0188682273626328
+     },
+     {
+      "angle": 3.631996823548668,
+      "length": 0.9992202522158623
+     },
+     {
+      "angle": 4.211062948974153,
+      "length": 1.594537621808052
+     },
+     {
+      "angle": 5.257168480493865,
+      "length": 0.859093440413475
+     },
+     {
+      "angle": 5.8132433819361315,
+      "length": 1.7060192027091978
+     }
+    ],
+    "bodyDensity": 95.21604300737381,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6078459271430969,
+      "density": 63.32047519683838,
+      "axisAngle": 2.5195235516135117
+     },
+     {
+      "vertex": 7,
+      "radius": 0.5215924915075303,
+      "density": 62.827599263191225,
+      "axisAngle": 2.2287460595702147
+     },
+     {
+      "vertex": -1,
+      "radius": 0.49965253281593325,
+      "density": 62.43436220884323,
+      "axisAngle": 1.5956655221847071
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4132663141489029,
+      "density": 66.05127493143081,
+      "axisAngle": 1.7439875064963042
+     }
+    ]
+   },
+   "genomeHash": "0a79ecd147d3793e",
+   "distance": 1029.994545416654,
+   "origin": "diseño",
+   "date": "2026-10-04T12:00:00.000Z",
+   "trackId": "cordillera",
+   "trackVersion": 2,
+   "physicsVersion": 2
+  },
+  {
+   "carId": "de8697c9f66eb774",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.3231618357635061,
+      "length": 0.9197949692010879
+     },
+     {
+      "angle": 1.2488988336041502,
+      "length": 1.3137192120552064
+     },
+     {
+      "angle": 2.021697656677561,
+      "length": 1.3699414501190186
+     },
+     {
+      "angle": 2.670976724387681,
+      "length": 1.1459892551898956
+     },
+     {
+      "angle": 3.6675970743649473,
+      "length": 0.8867648775577546
+     },
+     {
+      "angle": 4.117613058215339,
+      "length": 1.694996254348755
+     },
+     {
+      "angle": 5.292213547082276,
+      "length": 1.162566773056984
+     },
+     {
+      "angle": 5.7783217882216045,
+      "length": 1.119405750632286
+     }
+    ],
+    "bodyDensity": 111.02973363399505,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.600663844871521,
+      "density": 47.70634896755219,
+      "axisAngle": 2.513442291507819
+     },
+     {
+      "vertex": 7,
+      "radius": 0.4939233844280243,
+      "density": 59.77764494419098,
+      "axisAngle": 2.6736646673264897
+     },
+     {
+      "vertex": -1,
+      "radius": 0.6641188154220581,
+      "density": 55.15932161808014,
+      "axisAngle": 2.1553637854959504
+     },
+     {
+      "vertex": -1,
+      "radius": 0.7311103687286378,
+      "density": 71.89603478908539,
+      "axisAngle": 1.118746921711491
+     }
+    ]
+   },
+   "genomeHash": "de8697c9f66eb774",
+   "distance": 1017.7044043016015,
+   "origin": "evolución",
+   "date": "2026-10-11T12:00:00.000Z",
+   "trackId": "cordillera",
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "2a679e10fcb58c5b",
@@ -511,86 +511,12 @@
     ]
    },
    "genomeHash": "2a679e10fcb58c5b",
-   "distance": 958.0271571153598,
+   "distance": 958.0267165085133,
    "origin": "mixto",
    "date": "2026-10-12T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 1,
-   "physicsVersion": 1
-  },
-  {
-   "carId": "4df89d2743d4b916",
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.41309956560359806,
-      "length": 0.8188206409215928
-     },
-     {
-      "angle": 1.1749916567025562,
-      "length": 1.2053185011148453
-     },
-     {
-      "angle": 1.9550984049399025,
-      "length": 0.9485275461673737
-     },
-     {
-      "angle": 2.7924973876796604,
-      "length": 1.3490379371643066
-     },
-     {
-      "angle": 3.4695051143997504,
-      "length": 0.8338289733529092
-     },
-     {
-      "angle": 4.194619996639575,
-      "length": 1.745225574052334
-     },
-     {
-      "angle": 5.175498154698375,
-      "length": 0.8317688180208207
-     },
-     {
-      "angle": 5.695155488043986,
-      "length": 1.6302308980822562
-     }
-    ],
-    "bodyDensity": 81.3676307797432,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.7804748976945877,
-      "density": 71.99325095415115,
-      "axisAngle": 2.5375555369708804
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7565131075382232,
-      "density": 49.52002494335174,
-      "axisAngle": 2.4593754346318106
-     },
-     {
-      "vertex": -1,
-      "radius": 0.46781072998046874,
-      "density": 47.91527037620544,
-      "axisAngle": 2.9130445863576506
-     },
-     {
-      "vertex": -1,
-      "radius": 0.5226142772436142,
-      "density": 78.49171053171158,
-      "axisAngle": 2.3042455417176653
-     }
-    ]
-   },
-   "genomeHash": "4df89d2743d4b916",
-   "distance": 950.3606094875613,
-   "origin": "evolución",
-   "date": "2026-10-08T12:00:00.000Z",
-   "trackId": "cordillera",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "c102c6581d2118f7",
@@ -659,12 +585,86 @@
     ]
    },
    "genomeHash": "c102c6581d2118f7",
-   "distance": 944.8944066246959,
+   "distance": 950.5749949316094,
    "origin": "diseño",
    "date": "2026-10-10T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
+  },
+  {
+   "carId": "4df89d2743d4b916",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.41309956560359806,
+      "length": 0.8188206409215928
+     },
+     {
+      "angle": 1.1749916567025562,
+      "length": 1.2053185011148453
+     },
+     {
+      "angle": 1.9550984049399025,
+      "length": 0.9485275461673737
+     },
+     {
+      "angle": 2.7924973876796604,
+      "length": 1.3490379371643066
+     },
+     {
+      "angle": 3.4695051143997504,
+      "length": 0.8338289733529092
+     },
+     {
+      "angle": 4.194619996639575,
+      "length": 1.745225574052334
+     },
+     {
+      "angle": 5.175498154698375,
+      "length": 0.8317688180208207
+     },
+     {
+      "angle": 5.695155488043986,
+      "length": 1.6302308980822562
+     }
+    ],
+    "bodyDensity": 81.3676307797432,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.7804748976945877,
+      "density": 71.99325095415115,
+      "axisAngle": 2.5375555369708804
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7565131075382232,
+      "density": 49.52002494335174,
+      "axisAngle": 2.4593754346318106
+     },
+     {
+      "vertex": -1,
+      "radius": 0.46781072998046874,
+      "density": 47.91527037620544,
+      "axisAngle": 2.9130445863576506
+     },
+     {
+      "vertex": -1,
+      "radius": 0.5226142772436142,
+      "density": 78.49171053171158,
+      "axisAngle": 2.3042455417176653
+     }
+    ]
+   },
+   "genomeHash": "4df89d2743d4b916",
+   "distance": 950.3610298806242,
+   "origin": "evolución",
+   "date": "2026-10-08T12:00:00.000Z",
+   "trackId": "cordillera",
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "6c5f308986907b62",
@@ -733,12 +733,12 @@
     ]
    },
    "genomeHash": "6c5f308986907b62",
-   "distance": 749.7916625368217,
+   "distance": 749.7916628281961,
    "origin": "evolución",
    "date": "2026-10-05T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   }
  ],
  "rampa": [
@@ -809,12 +809,12 @@
     ]
    },
    "genomeHash": "4df89d2743d4b916",
-   "distance": 411.4841229042891,
+   "distance": 411.48412290428644,
    "origin": "evolución",
    "date": "2026-10-08T12:00:00.000Z",
    "trackId": "rampa",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "de8697c9f66eb774",
@@ -883,12 +883,12 @@
     ]
    },
    "genomeHash": "de8697c9f66eb774",
-   "distance": 409.6072886951797,
+   "distance": 409.60728869518,
    "origin": "evolución",
    "date": "2026-10-11T12:00:00.000Z",
    "trackId": "rampa",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "c102c6581d2118f7",
@@ -957,12 +957,12 @@
     ]
    },
    "genomeHash": "c102c6581d2118f7",
-   "distance": 387.2126422097334,
+   "distance": 387.212642209737,
    "origin": "diseño",
    "date": "2026-10-10T12:00:00.000Z",
    "trackId": "rampa",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "0a79ecd147d3793e",
@@ -1031,12 +1031,12 @@
     ]
    },
    "genomeHash": "0a79ecd147d3793e",
-   "distance": 386.30720056522756,
+   "distance": 386.3072005652259,
    "origin": "diseño",
    "date": "2026-10-04T12:00:00.000Z",
    "trackId": "rampa",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "6c5f308986907b62",
@@ -1105,12 +1105,12 @@
     ]
    },
    "genomeHash": "6c5f308986907b62",
-   "distance": 385.8612682582387,
+   "distance": 385.8612682582463,
    "origin": "evolución",
    "date": "2026-10-05T12:00:00.000Z",
    "trackId": "rampa",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "4360599c354b4feb",
@@ -1179,12 +1179,12 @@
     ]
    },
    "genomeHash": "4360599c354b4feb",
-   "distance": 378.2490057018256,
+   "distance": 378.2490057018234,
    "origin": "mixto",
    "date": "2026-10-03T12:00:00.000Z",
    "trackId": "rampa",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "9282a6ace16c132d",
@@ -1253,12 +1253,12 @@
     ]
    },
    "genomeHash": "9282a6ace16c132d",
-   "distance": 378.03665179623266,
+   "distance": 378.03665179624375,
    "origin": "evolución",
    "date": "2026-10-02T12:00:00.000Z",
    "trackId": "rampa",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "1a2e1836cf545e29",
@@ -1327,12 +1327,12 @@
     ]
    },
    "genomeHash": "1a2e1836cf545e29",
-   "distance": 375.98665073364265,
+   "distance": 375.98665073363804,
    "origin": "diseño",
    "date": "2026-10-01T12:00:00.000Z",
    "trackId": "rampa",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "2a679e10fcb58c5b",
@@ -1401,12 +1401,12 @@
     ]
    },
    "genomeHash": "2a679e10fcb58c5b",
-   "distance": 373.03624576651225,
+   "distance": 373.03624576651055,
    "origin": "mixto",
    "date": "2026-10-12T12:00:00.000Z",
    "trackId": "rampa",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "bcd56f50f58e6de9",
@@ -1475,89 +1475,15 @@
     ]
    },
    "genomeHash": "bcd56f50f58e6de9",
-   "distance": 369.6060577615823,
+   "distance": 369.60605776158195,
    "origin": "diseño",
    "date": "2026-10-07T12:00:00.000Z",
    "trackId": "rampa",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   }
  ],
  "dunas": [
-  {
-   "carId": "de8697c9f66eb774",
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.3231618357635061,
-      "length": 0.9197949692010879
-     },
-     {
-      "angle": 1.2488988336041502,
-      "length": 1.3137192120552064
-     },
-     {
-      "angle": 2.021697656677561,
-      "length": 1.3699414501190186
-     },
-     {
-      "angle": 2.670976724387681,
-      "length": 1.1459892551898956
-     },
-     {
-      "angle": 3.6675970743649473,
-      "length": 0.8867648775577546
-     },
-     {
-      "angle": 4.117613058215339,
-      "length": 1.694996254348755
-     },
-     {
-      "angle": 5.292213547082276,
-      "length": 1.162566773056984
-     },
-     {
-      "angle": 5.7783217882216045,
-      "length": 1.119405750632286
-     }
-    ],
-    "bodyDensity": 111.02973363399505,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.600663844871521,
-      "density": 47.70634896755219,
-      "axisAngle": 2.513442291507819
-     },
-     {
-      "vertex": 7,
-      "radius": 0.4939233844280243,
-      "density": 59.77764494419098,
-      "axisAngle": 2.6736646673264897
-     },
-     {
-      "vertex": -1,
-      "radius": 0.6641188154220581,
-      "density": 55.15932161808014,
-      "axisAngle": 2.1553637854959504
-     },
-     {
-      "vertex": -1,
-      "radius": 0.7311103687286378,
-      "density": 71.89603478908539,
-      "axisAngle": 1.118746921711491
-     }
-    ]
-   },
-   "genomeHash": "de8697c9f66eb774",
-   "distance": 269.4310273456737,
-   "origin": "evolución",
-   "date": "2026-10-11T12:00:00.000Z",
-   "trackId": "dunas",
-   "trackVersion": 1,
-   "physicsVersion": 1
-  },
   {
    "carId": "0a79ecd147d3793e",
    "genome": {
@@ -1625,12 +1551,86 @@
     ]
    },
    "genomeHash": "0a79ecd147d3793e",
-   "distance": 269.3986076319076,
+   "distance": 270.6249265367771,
    "origin": "diseño",
    "date": "2026-10-04T12:00:00.000Z",
    "trackId": "dunas",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
+  },
+  {
+   "carId": "de8697c9f66eb774",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.3231618357635061,
+      "length": 0.9197949692010879
+     },
+     {
+      "angle": 1.2488988336041502,
+      "length": 1.3137192120552064
+     },
+     {
+      "angle": 2.021697656677561,
+      "length": 1.3699414501190186
+     },
+     {
+      "angle": 2.670976724387681,
+      "length": 1.1459892551898956
+     },
+     {
+      "angle": 3.6675970743649473,
+      "length": 0.8867648775577546
+     },
+     {
+      "angle": 4.117613058215339,
+      "length": 1.694996254348755
+     },
+     {
+      "angle": 5.292213547082276,
+      "length": 1.162566773056984
+     },
+     {
+      "angle": 5.7783217882216045,
+      "length": 1.119405750632286
+     }
+    ],
+    "bodyDensity": 111.02973363399505,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.600663844871521,
+      "density": 47.70634896755219,
+      "axisAngle": 2.513442291507819
+     },
+     {
+      "vertex": 7,
+      "radius": 0.4939233844280243,
+      "density": 59.77764494419098,
+      "axisAngle": 2.6736646673264897
+     },
+     {
+      "vertex": -1,
+      "radius": 0.6641188154220581,
+      "density": 55.15932161808014,
+      "axisAngle": 2.1553637854959504
+     },
+     {
+      "vertex": -1,
+      "radius": 0.7311103687286378,
+      "density": 71.89603478908539,
+      "axisAngle": 1.118746921711491
+     }
+    ]
+   },
+   "genomeHash": "de8697c9f66eb774",
+   "distance": 269.4309989650947,
+   "origin": "evolución",
+   "date": "2026-10-11T12:00:00.000Z",
+   "trackId": "dunas",
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "4360599c354b4feb",
@@ -1699,12 +1699,12 @@
     ]
    },
    "genomeHash": "4360599c354b4feb",
-   "distance": 240.34391138007376,
+   "distance": 240.34392570719322,
    "origin": "mixto",
    "date": "2026-10-03T12:00:00.000Z",
    "trackId": "dunas",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "c102c6581d2118f7",
@@ -1773,12 +1773,12 @@
     ]
    },
    "genomeHash": "c102c6581d2118f7",
-   "distance": 240.32972032189178,
+   "distance": 240.32972039810937,
    "origin": "diseño",
    "date": "2026-10-10T12:00:00.000Z",
    "trackId": "dunas",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "4df89d2743d4b916",
@@ -1847,12 +1847,12 @@
     ]
    },
    "genomeHash": "4df89d2743d4b916",
-   "distance": 239.0947212445486,
+   "distance": 239.09472114082467,
    "origin": "evolución",
    "date": "2026-10-08T12:00:00.000Z",
    "trackId": "dunas",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "bcd56f50f58e6de9",
@@ -1921,12 +1921,12 @@
     ]
    },
    "genomeHash": "bcd56f50f58e6de9",
-   "distance": 229.80754653757518,
+   "distance": 229.8075465370518,
    "origin": "diseño",
    "date": "2026-10-07T12:00:00.000Z",
    "trackId": "dunas",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "2a679e10fcb58c5b",
@@ -1995,12 +1995,12 @@
     ]
    },
    "genomeHash": "2a679e10fcb58c5b",
-   "distance": 207.3703389480469,
+   "distance": 207.37033894650662,
    "origin": "mixto",
    "date": "2026-10-12T12:00:00.000Z",
    "trackId": "dunas",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "6c5f308986907b62",
@@ -2069,12 +2069,12 @@
     ]
    },
    "genomeHash": "6c5f308986907b62",
-   "distance": 203.90570018355652,
+   "distance": 203.90590829597627,
    "origin": "evolución",
    "date": "2026-10-05T12:00:00.000Z",
    "trackId": "dunas",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "1a2e1836cf545e29",
@@ -2143,12 +2143,12 @@
     ]
    },
    "genomeHash": "1a2e1836cf545e29",
-   "distance": 203.3400792909436,
+   "distance": 203.34007964285962,
    "origin": "diseño",
    "date": "2026-10-01T12:00:00.000Z",
    "trackId": "dunas",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "9282a6ace16c132d",
@@ -2217,12 +2217,12 @@
     ]
    },
    "genomeHash": "9282a6ace16c132d",
-   "distance": 195.3223059349104,
+   "distance": 195.322305855921,
    "origin": "evolución",
    "date": "2026-10-02T12:00:00.000Z",
    "trackId": "dunas",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   }
  ],
  "pedregal": [
@@ -2293,86 +2293,12 @@
     ]
    },
    "genomeHash": "0a79ecd147d3793e",
-   "distance": 469.0924684155798,
+   "distance": 453.0389041837465,
    "origin": "diseño",
    "date": "2026-10-04T12:00:00.000Z",
    "trackId": "pedregal",
-   "trackVersion": 1,
-   "physicsVersion": 1
-  },
-  {
-   "carId": "9282a6ace16c132d",
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4756189969390958,
-      "length": 1.024190355837345
-     },
-     {
-      "angle": 1.1990325543586065,
-      "length": 1.0443354481458664
-     },
-     {
-      "angle": 2.0065662586997397,
-      "length": 1.039968499839306
-     },
-     {
-      "angle": 2.7996080124479605,
-      "length": 1.2973439663648607
-     },
-     {
-      "angle": 3.5405695353560493,
-      "length": 1.0274877908825875
-     },
-     {
-      "angle": 4.213037168295345,
-      "length": 1.6224467693567277
-     },
-     {
-      "angle": 5.261056915162989,
-      "length": 0.9146692469716072
-     },
-     {
-      "angle": 5.748227595121822,
-      "length": 1.7228439393639563
-     }
-    ],
-    "bodyDensity": 76.96304446458817,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.7370161238908768,
-      "density": 62.69605332612991,
-      "axisAngle": 1.963265049220518
-     },
-     {
-      "vertex": 7,
-      "radius": 0.5767965769767761,
-      "density": 67.9028611779213,
-      "axisAngle": 1.9965380699731015
-     },
-     {
-      "vertex": -1,
-      "radius": 0.47522881746292117,
-      "density": 68.66936856508255,
-      "axisAngle": 1.8349364709058467
-     },
-     {
-      "vertex": -1,
-      "radius": 0.49133539319038394,
-      "density": 68.20909345149994,
-      "axisAngle": 2.0179930533141333
-     }
-    ]
-   },
-   "genomeHash": "9282a6ace16c132d",
-   "distance": 397.61688417951257,
-   "origin": "evolución",
-   "date": "2026-10-02T12:00:00.000Z",
-   "trackId": "pedregal",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "4360599c354b4feb",
@@ -2441,12 +2367,12 @@
     ]
    },
    "genomeHash": "4360599c354b4feb",
-   "distance": 392.9268312922783,
+   "distance": 405.45495850410373,
    "origin": "mixto",
    "date": "2026-10-03T12:00:00.000Z",
    "trackId": "pedregal",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "de8697c9f66eb774",
@@ -2515,12 +2441,86 @@
     ]
    },
    "genomeHash": "de8697c9f66eb774",
-   "distance": 353.2690210928494,
+   "distance": 351.5988279834364,
    "origin": "evolución",
    "date": "2026-10-11T12:00:00.000Z",
    "trackId": "pedregal",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
+  },
+  {
+   "carId": "9282a6ace16c132d",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4756189969390958,
+      "length": 1.024190355837345
+     },
+     {
+      "angle": 1.1990325543586065,
+      "length": 1.0443354481458664
+     },
+     {
+      "angle": 2.0065662586997397,
+      "length": 1.039968499839306
+     },
+     {
+      "angle": 2.7996080124479605,
+      "length": 1.2973439663648607
+     },
+     {
+      "angle": 3.5405695353560493,
+      "length": 1.0274877908825875
+     },
+     {
+      "angle": 4.213037168295345,
+      "length": 1.6224467693567277
+     },
+     {
+      "angle": 5.261056915162989,
+      "length": 0.9146692469716072
+     },
+     {
+      "angle": 5.748227595121822,
+      "length": 1.7228439393639563
+     }
+    ],
+    "bodyDensity": 76.96304446458817,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.7370161238908768,
+      "density": 62.69605332612991,
+      "axisAngle": 1.963265049220518
+     },
+     {
+      "vertex": 7,
+      "radius": 0.5767965769767761,
+      "density": 67.9028611779213,
+      "axisAngle": 1.9965380699731015
+     },
+     {
+      "vertex": -1,
+      "radius": 0.47522881746292117,
+      "density": 68.66936856508255,
+      "axisAngle": 1.8349364709058467
+     },
+     {
+      "vertex": -1,
+      "radius": 0.49133539319038394,
+      "density": 68.20909345149994,
+      "axisAngle": 2.0179930533141333
+     }
+    ]
+   },
+   "genomeHash": "9282a6ace16c132d",
+   "distance": 339.95157833100586,
+   "origin": "evolución",
+   "date": "2026-10-02T12:00:00.000Z",
+   "trackId": "pedregal",
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "2a679e10fcb58c5b",
@@ -2589,12 +2589,12 @@
     ]
    },
    "genomeHash": "2a679e10fcb58c5b",
-   "distance": 297.3162721915669,
+   "distance": 297.27047495427877,
    "origin": "mixto",
    "date": "2026-10-12T12:00:00.000Z",
    "trackId": "pedregal",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "1a2e1836cf545e29",
@@ -2663,12 +2663,12 @@
     ]
    },
    "genomeHash": "1a2e1836cf545e29",
-   "distance": 289.22253964542284,
+   "distance": 289.22251883959404,
    "origin": "diseño",
    "date": "2026-10-01T12:00:00.000Z",
    "trackId": "pedregal",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "4df89d2743d4b916",
@@ -2737,12 +2737,12 @@
     ]
    },
    "genomeHash": "4df89d2743d4b916",
-   "distance": 275.8531589800551,
+   "distance": 275.8531637364649,
    "origin": "evolución",
    "date": "2026-10-08T12:00:00.000Z",
    "trackId": "pedregal",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "c102c6581d2118f7",
@@ -2811,12 +2811,12 @@
     ]
    },
    "genomeHash": "c102c6581d2118f7",
-   "distance": 269.27985737665045,
+   "distance": 261.6685803333312,
    "origin": "diseño",
    "date": "2026-10-10T12:00:00.000Z",
    "trackId": "pedregal",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "bcd56f50f58e6de9",
@@ -2885,12 +2885,12 @@
     ]
    },
    "genomeHash": "bcd56f50f58e6de9",
-   "distance": 230.07771293352798,
+   "distance": 229.98776599404377,
    "origin": "diseño",
    "date": "2026-10-07T12:00:00.000Z",
    "trackId": "pedregal",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   },
   {
    "carId": "6c5f308986907b62",
@@ -2959,12 +2959,12 @@
     ]
    },
    "genomeHash": "6c5f308986907b62",
-   "distance": 221.267394239104,
+   "distance": 221.2672290358768,
    "origin": "evolución",
    "date": "2026-10-05T12:00:00.000Z",
    "trackId": "pedregal",
-   "trackVersion": 1,
-   "physicsVersion": 1
+   "trackVersion": 2,
+   "physicsVersion": 2
   }
  ]
 }

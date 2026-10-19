@@ -35,7 +35,7 @@ export function evolucionSintetica(spec: EscenarioEvolucion, porDefecto: TrackId
 
 /** Escenario `'demo-gen-8'`: una evolución real hecha con el núcleo (npm run generar:escenario-evolucion). */
 export async function evolucionDemo(): Promise<EvolutionState> {
-  const raw = (await import("./escenarios/evolucion-demo-gen-8.json")).default;
+  const raw: unknown = JSON.parse((await import("./escenarios/evolucion-demo-gen-8.texto")).default);
   const state = validateEvolution(raw);
   if (!state) throw new Error("escenario evolucion-demo-gen-8 inválido");
   return state;

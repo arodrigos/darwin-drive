@@ -297,7 +297,7 @@ export function App() {
         }
         if (e.rankings === "demo" || (typeof e.rankings === "object" && e.rankings !== null)) {
           // El JSON de demostración solo se descarga cuando un escenario lo pide.
-          const datos = e.rankings === "demo" ? (await import("@/debug/escenarios/rankings-demo.json")).default : e.rankings;
+          const datos = e.rankings === "demo" ? JSON.parse((await import("@/debug/escenarios/rankings-demo.texto")).default) : e.rankings;
           const validos = validateRankings({ ...emptyRankings(), ...datos });
           if (!validos) throw new Error("escenario con rankings inválidos");
           await save(KEY_RANKINGS, validos);
@@ -498,6 +498,10 @@ export function App() {
           }}
           onSaveToGarage={(entry: RankingEntry) => guardarGenoma(entry.genome, entry.origin, entry.name, entry.lineageId)}
           onTaller={abrirTaller}
+          onEvolucion={() => {
+            setDesdeCoche(null);
+            setScreen("evolucion-inicio");
+          }}
         />
       )}
       {screen === "taller" && (

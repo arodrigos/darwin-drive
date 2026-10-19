@@ -1,6 +1,6 @@
 import type { TrackId } from "./tracks";
 
-export const PHYSICS_VERSION = 1;
+export const PHYSICS_VERSION = 2;
 export const DT = 1 / 60;
 export const MAX_STEPS = 10800;
 export const STALL_STEPS = 300;

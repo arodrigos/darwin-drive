@@ -1,6 +1,6 @@
 // Genera src/debug/escenarios/evolucion-demo-gen-8.json con el núcleo real: siete generaciones corridas
 // en La Cordillera (semilla fija) dejan la evolución lista para continuar en la generación 8.
-import { writeFileSync } from "node:fs";
+import { escribirEscenario } from "./escribir-escenario";
 import { DEFAULT_PARAMS, nextGeneration, seedPopulation, type EvolutionState } from "../src/evolution/ga";
 import { raceGeneration } from "../tests/unit/helpers/evolucionar";
 
@@ -15,6 +15,5 @@ export function construirDemo(generaciones: number = GENERACIONES_DEMO): Evoluti
 
 if (process.argv[1] && process.argv[1].endsWith("generar-escenario-evolucion.ts")) {
   const destino = new URL("../src/debug/escenarios/evolucion-demo-gen-8.json", import.meta.url);
-  writeFileSync(destino, `${JSON.stringify(construirDemo(), null, 1)}\n`);
-  console.log(`escrito ${destino.pathname}`);
+  escribirEscenario(destino, construirDemo());
 }
