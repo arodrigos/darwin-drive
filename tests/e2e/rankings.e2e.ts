@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { STOCK_CAR, type Genome } from "../../src/sim/genome";
+import { STOCK_CAR, genomeHash, type Genome } from "../../src/sim/genome";
 import demoJson from "../../src/debug/escenarios/rankings-demo.json";
 import { simulateCar } from "../../src/sim/race";
 import { TRACKS, type TrackId } from "../../src/sim/tracks";
@@ -79,6 +79,10 @@ test("rk-1 el ranking de cada pista se lee de punta a punta y abre el coche en e
   expect(t.pistaSeleccionada).toBe("rampa");
   // El estado solo resume las marcas: el genoma esperado sale del propio escenario.
   const guardado = demo.rampa.find((e) => e.carId === r.rankings.rampa[2].carId)!;
+  const donde = (Object.keys(demo) as TrackId[]).flatMap((id) =>
+    demo[id].flatMap((e, i) => (e.carId === genomeHash(t.genomaEnTaller!) ? [`${id}[${i}]`] : [])),
+  );
+  expect(donde, `taller=${genomeHash(t.genomaEnTaller!)} esperado=${guardado.carId}`).toContain("rampa[2]");
   expect(t.genomaEnTaller).toEqual(guardado.genome);
 
   const lat = await page.evaluate(() => window.__debug!.latencias());
