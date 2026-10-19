@@ -71,7 +71,7 @@ export function Explorar(props: { trackId: TrackId; onTrack: (id: TrackId) => vo
   return (
     <div className="explorar" data-testid="explorar">
       <div className="lienzo" ref={host} data-testid="lienzo" />
-      <div className="cabecera">
+      <div className="cabecera cabecera-explorar">
         <button type="button" className="pastilla" onClick={props.onBack} data-testid="volver">
           ← Volver
         </button>
