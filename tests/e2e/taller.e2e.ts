@@ -44,14 +44,8 @@ async function abrirTaller(page: Page) {
 
 /** Posición en pantalla del vértice i: la misma proyección que usa la escena (7 m caben en el lado menor). */
 async function vertice(page: Page, i: number) {
-  // El lienzo de Phaser sigue al contenedor con un frame de retraso: se espera a que coincidan.
-  await expect
-    .poll(async () => {
-      const [c, l] = await Promise.all([page.locator("canvas").boundingBox(), page.getByTestId("lienzo").boundingBox()]);
-      return Boolean(c && l && Math.abs(c.height - l.height) < 1 && Math.abs(c.width - l.width) < 1);
-    })
-    .toBe(true);
-  const caja = (await page.getByTestId("lienzo").boundingBox())!;
+  // La escena se dibuja sobre el canvas, no sobre su contenedor: las coordenadas salen de su caja real.
+  const caja = (await page.locator("canvas").boundingBox())!;
   const g = (await estado(page)).genomaEnTaller!;
   const s = Math.min(caja.width, caja.height) / 7;
   const v = g.body[i];
