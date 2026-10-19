@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { trackProfile } from "@/sim/terrain";
 import { TRACKS, type Track, type TrackId } from "@/sim/tracks";
 import { formatMeters } from "@/app/format";
@@ -52,7 +53,8 @@ export function TrackPicker(props: { value: TrackId; onChange: (id: TrackId) => 
       >
         Pista: {current.name} ▾
       </button>
-      {open && (
+      {open &&
+        createPortal(
         <div className="hoja-fondo" onClick={() => setOpen(false)} data-testid="hoja-pistas">
           <div className="hoja" role="dialog" aria-label="Elegir pista" onClick={(e) => e.stopPropagation()}>
             <h2>Elegir pista</h2>
@@ -77,7 +79,8 @@ export function TrackPicker(props: { value: TrackId; onChange: (id: TrackId) => 
               </button>
             ))}
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

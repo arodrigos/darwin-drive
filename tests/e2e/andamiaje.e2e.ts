@@ -42,8 +42,9 @@ async function filasInferioresSinCielo(page: Page, filas: number): Promise<boole
     for (let i = 0; i < d.length; i += 4) {
       const r = d[i];
       const b = d[i + 2];
-      // Cielo de las cuatro pistas: azulado o claro y desaturado, con b alto.
-      if (b > 140 && b >= r) return false;
+      // Cielo de Cordillera: azul claro (b muy por encima de r). El texto blanco de la regla
+      // tiene b ≈ r y la tierra tiene b bajo, así que ninguno cuenta como cielo.
+      if (b > 140 && b - r >= 20) return false;
     }
     return true;
   }, filas);
@@ -113,6 +114,8 @@ test("at-3 explorar: arrastrar recorre la pista con tramos nuevos y sin huecos d
 });
 
 test("at-3 explorar en tableta: tamaños 820x1180 y 1180x820", async ({ page }) => {
+  // El WebGL por software pinta cada fotograma en ~0,3 s en tableta: cada arrastre es lento sin que haya fallo.
+  test.setTimeout(120_000);
   for (const t of TAMANOS.slice(1)) {
     await page.setViewportSize({ width: t.w, height: t.h });
     await abrir(page);
