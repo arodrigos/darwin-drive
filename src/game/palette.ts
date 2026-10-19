@@ -1,0 +1,22 @@
+import type { TrackId } from "@/sim/tracks";
+
+export interface TrackPalette {
+  skyTop: number;
+  skyBottom: number;
+  far: number;
+  near: number;
+  earth: number;
+  grass: number;
+}
+
+// Cada pista tiene su tono: el jugador sabe en cuál está sin leer el título.
+export const PALETTES: Record<TrackId, TrackPalette> = {
+  cordillera: { skyTop: 0x6fa8dc, skyBottom: 0xdbeafa, far: 0x8aa0bd, near: 0x5f7f6b, earth: 0x8a5a33, grass: 0x4f9a2c },
+  rampa: { skyTop: 0xe8905a, skyBottom: 0xfbe3c2, far: 0xc79c8a, near: 0xa8705a, earth: 0x9a4a2e, grass: 0xc7842c },
+  dunas: { skyTop: 0x4fb3d9, skyBottom: 0xd9f0f7, far: 0xe3c58a, near: 0xd2a45a, earth: 0xd6a757, grass: 0xf3d58a },
+  pedregal: { skyTop: 0x93a6b8, skyBottom: 0xdfe5ea, far: 0x9aa3ab, near: 0x7d8288, earth: 0x6b6862, grass: 0x9a9a8a },
+};
+
+export function cssColor(c: number): string {
+  return `#${c.toString(16).padStart(6, "0")}`;
+}
