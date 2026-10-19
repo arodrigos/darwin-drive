@@ -14,6 +14,22 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/ban-ts-comment": "error",
     },
   },
+  {
+    // nf-8: el núcleo se ejecuta entero en Node.
+    files: ["src/sim/**/*.ts", "src/evolution/**/*.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        { patterns: ["phaser", "phaser/*", "react", "react/*", "react-dom", "react-dom/*", "next", "next/*"] },
+      ],
+      "no-restricted-globals": [
+        "error",
+        { name: "window", message: "El núcleo no toca el navegador." },
+        { name: "document", message: "El núcleo no toca el navegador." },
+        { name: "navigator", message: "El núcleo no toca el navegador." },
+      ],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
