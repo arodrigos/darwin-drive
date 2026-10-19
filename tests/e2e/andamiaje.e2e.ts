@@ -40,7 +40,8 @@ async function filasInferioresSinCielo(page: Page, filas: number): Promise<boole
     ctx.drawImage(c, 0, c.height - n, c.width, n, 0, 0, c.width, n);
     const d = ctx.getImageData(0, 0, c.width, n).data;
     for (let i = 0; i < d.length; i += 4) {
-      const [r, g, b] = [d[i], d[i + 1], d[i + 2]];
+      const r = d[i];
+      const b = d[i + 2];
       // Cielo de las cuatro pistas: azulado o claro y desaturado, con b alto.
       if (b > 140 && b >= r) return false;
     }
