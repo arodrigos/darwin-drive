@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { STOCK_CAR, genomeHash, type Genome } from "../../src/sim/genome";
+import { STOCK_CAR, type Genome } from "../../src/sim/genome";
 import { simulateCar } from "../../src/sim/race";
 import { TRACKS, type TrackId } from "../../src/sim/tracks";
 
@@ -18,7 +18,7 @@ type Estado = {
   genomaEnTaller: Genome | null;
   genomaEnPista: Genome | null;
   ultimoResultado: { distance: number; trackId: string } | null;
-  rankings: Record<TrackId, { carId: string; distance: number; origin: string }[]>;
+  rankings: Record<TrackId, { carId: string; genome: Genome; distance: number; origin: string }[]>;
 };
 
 const estado = (page: Page) => page.evaluate(() => window.__debug!.estado() as unknown as Estado);
@@ -75,7 +75,7 @@ test("rk-1 el ranking de cada pista se lee de punta a punta y abre el coche en e
   await expect(page.getByTestId("selector-pista")).toContainText("Pista: La Rampa");
   const t = await estado(page);
   expect(t.pistaSeleccionada).toBe("rampa");
-  expect(genomeHash(t.genomaEnTaller!)).toBe(r.rankings.rampa[2].carId);
+  expect(t.genomaEnTaller).toEqual(r.rankings.rampa[2].genome);
 
   const lat = await page.evaluate(() => window.__debug!.latencias());
   const abrirRanking = lat.filter((m) => m.evento === "abrir-ranking");
@@ -135,7 +135,8 @@ test("rk-4 y rk-3 medir en todas las pistas, y ver correr repite la marca sin to
   await page.getByTestId("ver-correr").click();
   await expect(page.getByTestId("pista")).toBeVisible();
   await expect.poll(async () => (await estado(page)).genomaEnPista !== null).toBe(true);
-  await adelantar(page, 200);
+  // El mejor de una pista puede tardar más de 200 s simulados en acabar: se adelanta hasta el fin real.
+  for (let i = 0; i < 8 && (await estado(page)).ultimoResultado === null; i++) await adelantar(page, 200);
   const fin = await estado(page);
   expect(fin.ultimoResultado!.trackId).toBe("dunas");
   expect(fin.ultimoResultado!.distance).toBe(r.rankings.dunas[0].distance);
