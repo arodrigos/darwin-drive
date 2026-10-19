@@ -23,9 +23,9 @@ function Paisaje() {
   );
 }
 
-const ACCESOS = ["Taller", "Evolución", "Garaje", "Linaje", "Especies", "Ver el coche de serie"];
+const ACCESOS = ["Taller", "Evolución", "Garaje", "Linaje", "Especies"];
 
-export function Portada(props: { rankings: RankingsView; onExplore: () => void; onPickTrack: (id: TrackId) => void }) {
+export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onPickTrack: (id: TrackId) => void }) {
   return (
     <div className="portada" data-testid="portada">
       <Paisaje />
@@ -43,6 +43,9 @@ export function Portada(props: { rankings: RankingsView; onExplore: () => void; 
       <div className="accesos">
         <button type="button" className="acceso" data-testid="acceso-explorar" onClick={props.onExplore}>
           Explorar pista
+        </button>
+        <button type="button" className="acceso" data-testid="acceso-serie" onClick={props.onStock}>
+          Ver el coche de serie
         </button>
         {ACCESOS.map((a) => (
           <button key={a} type="button" className="acceso" disabled>
