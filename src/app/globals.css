@@ -87,8 +87,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .aviso-ranking { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 30; max-width: 92%; padding: 8px 14px; border-radius: 12px; background: rgba(16,26,38,.95); border: 2px solid #ffd23f; font-weight: 700; text-align: center; pointer-events: none; }
 .tarjeta-fin .resultado-ranking { font-weight: 700; color: #ffd23f; }
 
-.aviso-arriba.segundo { top: 56px; }
-.aviso-arriba.tercero { top: 104px; }
+/* Los avisos de la evolución se apilan en columna: uno largo no tapa al siguiente. */
+.avisos-evolucion { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 30; max-width: 92%; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
+.avisos-evolucion .aviso-arriba { position: static; transform: none; max-width: 100%; }
 .contador-gen { font-size: 1rem; }
 .evolucion { position: absolute; inset: 0; display: flex; flex-direction: column; background: #101a26; }
 .evolucion-pista { position: relative; flex: 1 1 auto; min-height: 0; }

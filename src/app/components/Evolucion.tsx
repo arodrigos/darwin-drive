@@ -437,6 +437,7 @@ export function Evolucion(props: EvolucionProps) {
           </div>
         )}
         {rendimiento && <PanelRendimiento />}
+        <div className="avisos-evolucion">
         {avisoGen && (
           <div className="aviso-arriba" role="status" data-testid="aviso-generacion">
             {avisoGen}
@@ -452,6 +453,7 @@ export function Evolucion(props: EvolucionProps) {
             {avisoFav}
           </div>
         )}
+        </div>
         {stagnant && (
           <p className="aviso-ruedas" role="status" data-testid="aviso-estancada">
             {AVISO_ESTANCADA}
