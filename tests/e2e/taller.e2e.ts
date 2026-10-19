@@ -280,7 +280,8 @@ test("tl-4 la ayuda está donde la acción no es obvia", async ({ page }) => {
 
   // Sin ruedas.
   await page.getByTestId("ayuda-boton").click();
-  for (const v of [3, 5, 7]) await tocar(page, v);
+  for (const w of (await estado(page)).genomaEnTaller!.wheels.filter((r) => r.vertex >= 0)) await tocar(page, w.vertex);
+  await expect(page.getByTestId("contador-ruedas")).toHaveText("Ruedas: 0/4");
   await expect(page.getByTestId("aviso-sin-ruedas")).toHaveText("Sin ruedas no hay motor: este coche no avanzará.");
   await page.screenshot({ path: `${DIR}/${ID}-sin-ruedas-360x640.png` });
   await tocar(page, 5);
