@@ -1,3 +1,5 @@
+import type { CarResult } from "@/sim/constants";
+import type { Genome } from "@/sim/genome";
 import type { TrackId } from "@/sim/tracks";
 import { latencias } from "./latencias";
 
@@ -11,6 +13,17 @@ export const runtime = {
   pistaSeleccionada: "cordillera" as TrackId,
   disponible: true,
   persistente: "unknown" as boolean | "unknown",
+  rankings: { cordillera: [], rampa: [], dunas: [], pedregal: [] } as Record<TrackId, { carId: string; distance: number; origin: string }[]>,
+  // Carrera en pantalla (la rellena Pista).
+  pistaEnCarrera: null as TrackId | null,
+  distanciaLider: null as number | null,
+  cochesVivos: 0,
+  genomaEnPista: null as Genome | null,
+  ultimoResultado: null as CarResult | null,
+  tiempoSim: null as number | null,
+  ejecutor: null as "worker" | "en-linea" | null,
+  /** Avanza la carrera en curso al instante; resuelve con el efecto ya pintado. Solo existe mientras hay una pista abierta. */
+  avanzar: null as ((segundos: number) => Promise<void>) | null,
 };
 
 export interface Escenario {
@@ -35,23 +48,26 @@ export function estado() {
     camaraX: runtime.camaraX,
     tramosGenerados: runtime.tramosGenerados,
     pistaSeleccionada: runtime.pistaSeleccionada,
-    // Lo que sigue lo rellenan los bloques de carrera, rankings y evolución.
-    pistaEnCarrera: null as TrackId | null,
-    distanciaLider: null as number | null,
-    cochesVivos: 0,
+    pistaEnCarrera: runtime.pistaEnCarrera,
+    distanciaLider: runtime.distanciaLider,
+    cochesVivos: runtime.cochesVivos,
+    // Lo que sigue lo rellenan los bloques de taller, rankings y evolución.
     generacion: null as number | null,
-    rankings: { cordillera: [], rampa: [], dunas: [], pedregal: [] } as Record<TrackId, never[]>,
+    rankings: runtime.rankings,
     ultimaInscripcion: null,
-    genomaEnPista: null,
+    genomaEnPista: runtime.genomaEnPista,
     genomaEnTaller: null,
-    ultimoResultado: null,
+    ultimoResultado: runtime.ultimoResultado,
+    // Añadidos al contrato por pista-carrera: la pausa de pestaña y el ejecutor activo se prueban con ellos.
+    tiempoSim: runtime.tiempoSim,
+    ejecutor: runtime.ejecutor,
     garaje: 0,
     persistente: runtime.persistente,
     disponible: runtime.disponible,
   };
 }
 
-const ESCENARIOS_SOPORTADOS = new Set(["vacio", "pista"]);
+const ESCENARIOS_SOPORTADOS = new Set(["vacio", "pista", "rankings"]);
 
 export interface Gancho {
   latencias: typeof latencias;
@@ -81,7 +97,8 @@ export function instalarGanchos(): void {
       if (!manejadores) throw new Error("la app aún no ha arrancado");
       await manejadores.cargarEscenario(e);
     },
-    // Todavía no hay carreras que adelantar; el bloque de la carrera lo conecta.
-    async adelantarSimulacion() {},
+    async adelantarSimulacion(segundos) {
+      await runtime.avanzar?.(segundos);
+    },
   };
 }
