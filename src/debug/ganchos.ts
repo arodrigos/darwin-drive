@@ -30,6 +30,7 @@ export const runtime = {
   generacion: null as number | null,
   poblacion: null as { carId: string; genome: Genome }[] | null,
   distanciasGeneracion: null as Record<string, number> | null,
+  favoritos: null as string[] | null,
   /** Avanza la carrera en curso al instante; resuelve con el efecto ya pintado. Solo existe mientras hay una pista abierta. */
   avanzar: null as ((segundos: number) => Promise<void>) | null,
 };
@@ -63,6 +64,7 @@ export function estado() {
     // Añadidos al contrato por evolucion-ui: la población que corre y las distancias de la generación que acaba de terminar.
     poblacion: runtime.poblacion,
     distanciasGeneracion: runtime.distanciasGeneracion,
+    favoritos: runtime.favoritos,
     rankings: runtime.rankings,
     ultimaInscripcion: runtime.ultimaInscripcion,
     genomaEnPista: runtime.genomaEnPista,

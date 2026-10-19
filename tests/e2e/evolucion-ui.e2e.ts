@@ -18,6 +18,7 @@ type Estado = {
   cochesVivos: number;
   poblacion: { carId: string; genome: Genome }[] | null;
   distanciasGeneracion: Record<string, number> | null;
+  favoritos: string[] | null;
   ultimaInscripcion: { trackId: string; isRecord: boolean } | null;
   rankings: Record<string, { carId: string; distance: number; origin: string }[]>;
 };
@@ -184,11 +185,12 @@ test("ev-4 un favorito se ve marcado, avisa y tiene hijos seguro", async ({ page
   expect(l[l.length - 1].ms).toBeLessThanOrEqual(200);
   await page.screenshot({ path: `${DIR}/${ID}-favorito-360x640.png` });
   await expect(page.getByTestId("aviso-favorito")).toBeHidden({ timeout: 4000 });
+  const favoritos = (await estado(page)).favoritos!;
+  expect(favoritos).toHaveLength(1);
   await page.getByTestId("pausar").click();
   await adelantar(page, 200);
   const guardada = (await evolucionGuardada(page))!;
-  expect(guardada.favorites).toHaveLength(1);
-  const hijos = guardada.population.filter((p) => p.parents.includes(guardada.favorites[0]));
+  const hijos = guardada.population.filter((p) => p.parents.includes(favoritos[0]));
   expect(hijos.length).toBeGreaterThanOrEqual(2);
 });
 

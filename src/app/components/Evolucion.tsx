@@ -220,6 +220,7 @@ export function Evolucion(props: EvolucionProps) {
       setStagnant(st.stagnantFor >= ESTANCAMIENTO_AVISO);
       runtime.generacion = st.generation;
       runtime.poblacion = st.population.map((p) => ({ carId: p.id, genome: p.genome }));
+      runtime.favoritos = [...st.favorites];
       runtime.pistaEnCarrera = st.trackId;
       runtime.cochesVivos = total;
       runtime.distanciaLider = 0;
@@ -341,6 +342,7 @@ export function Evolucion(props: EvolucionProps) {
           const ya = antes.favorites.includes(carId);
           stateRef.current = setFavorite(antes, carId, !ya);
           scene?.setFavorites(stateRef.current.favorites);
+          runtime.favoritos = [...stateRef.current.favorites];
           mostrar(setAvisoFav, ya ? "Favorito quitado" : AVISO_FAVORITO, AVISO_MS);
           pendiente.current = "favorito";
           forzar();
@@ -372,6 +374,7 @@ export function Evolucion(props: EvolucionProps) {
       runtime.ejecutor = null;
       runtime.generacion = null;
       runtime.poblacion = null;
+      runtime.favoritos = null;
       runtime.distanciasGeneracion = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- la carrera se monta una vez; lo demás va por refs
