@@ -1,0 +1,87 @@
+name: Pruebas a demanda
+
+# Lo lanzan las etapas del pipeline (desarrollo, gatekeeper, refutador) para
+# ejecutar aquí, y no en su máquina, specs concretos de una rama: e2e de
+# Playwright o unitarios (node:test). El repo es público y los minutos no
+# cuestan nada. Las entradas se validan antes de usarlas y nunca se
+# interpolan en un `run`.
+on:
+  workflow_dispatch:
+    inputs:
+      tipo:
+        description: "e2e | unit"
+        required: true
+        default: e2e
+      specs:
+        description: "Ficheros o filtros de test, separados por espacios (vacío = todos)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    # arm-6 con la muestra completa simula cientos de miles de vuelos por partida
+    # y no cabe en 40 min; las pasadas «@larga» tienen más margen.
+    timeout-minutes: ${{ contains(inputs.specs, '@larga') && 150 || 40 }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: validar la petición
+        env:
+          TIPO: ${{ inputs.tipo }}
+          SPECS: ${{ inputs.specs }}
+        run: |
+          [[ "$TIPO" =~ ^(e2e|unit)$ ]] || { echo "::error::tipo inválido"; exit 1; }
+          [[ "$SPECS" =~ ^[A-Za-z0-9_./*@,\ -]{0,500}$ ]] || { echo "::error::specs con caracteres no permitidos"; exit 1; }
+          # «@larga» pide la muestra completa de los tests estadísticos (como la
+          # pasada nocturna) sin tener que repartir una suite de más de 40 min.
+          if [[ " $SPECS " == *" @larga "* ]]; then
+            echo "PRUEBA_LARGA=1" >> "$GITHUB_ENV"
+            SPECS="${SPECS//@larga/}"
+          fi
+          echo "PRUEBAS_SPECS=$SPECS" >> "$GITHUB_ENV"
+      - run: npm ci
+      - name: unitarios
+        if: inputs.tipo == 'unit'
+        run: |
+          if [ -n "$PRUEBAS_SPECS" ]; then
+            node --import tsx --test --test-concurrency=1 $PRUEBAS_SPECS
+          else
+            npm run test:unit
+          fi
+      - if: inputs.tipo == 'e2e'
+        id: version-playwright
+        run: echo "v=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - if: inputs.tipo == 'e2e'
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        id: cache-playwright
+        with:
+          path: ~/.cache/ms-playwright
+          key: ms-playwright-${{ runner.os }}-${{ steps.version-playwright.outputs.v }}
+      - if: inputs.tipo == 'e2e' && steps.cache-playwright.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - if: inputs.tipo == 'e2e' && steps.cache-playwright.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      - if: inputs.tipo == 'e2e'
+        run: npm run build
+      - name: e2e
+        if: inputs.tipo == 'e2e'
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: resultado-e2e.json
+        run: npm run test:e2e -- $PRUEBAS_SPECS --reporter=list,json
+      # Los tests fallidos como anotaciones: la etapa los lee por la API.
+      - if: failure() && inputs.tipo == 'e2e'
+        run: |
+          node -e '
+            const fs = require("fs");
+            if (!fs.existsSync("resultado-e2e.json")) { console.log("::error::Playwright no llegó a escribir resultado-e2e.json"); process.exit(0); }
+            const visitar = (s) => { for (const x of s.suites ?? []) visitar(x); for (const sp of s.specs ?? []) { if (sp.ok) continue;
+              const m = sp.tests.flatMap((t) => t.results).map((r) => r.error?.message ?? r.status).join(" | ");
+              console.log("::error::" + (sp.file + " " + sp.title + ": " + m).replace(/\u001b\[[0-9;]*m/g, "").replace(/\s+/g, " ").slice(0, 900)); } };
+            for (const s of JSON.parse(fs.readFileSync("resultado-e2e.json", "utf8")).suites) visitar(s);'

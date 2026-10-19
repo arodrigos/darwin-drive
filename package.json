@@ -1,0 +1,38 @@
+{
+  "name": "darwin-drive",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "npm run test:unit",
+    "test:unit": "node --import tsx --test --test-concurrency=1 tests/unit/*.test.ts",
+    "test:e2e": "playwright test tests/e2e",
+    "verificar:presupuesto-bundle": "node scripts/comprobar-presupuesto-bundle.mjs",
+    "verificar:publico": "node scripts/comprobar-publico.mjs",
+    "verificar:frontera-nucleo": "node scripts/comprobar-frontera-nucleo.mjs",
+    "smoke:traspaso": "bash scripts/smoke-traspaso.sh"
+  },
+  "dependencies": {
+    "idb-keyval": "^6.3.0",
+    "next": "16.4.2",
+    "phaser": "^4.2.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "simplex-noise": "^4.0.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.2",
+    "fast-check": "^4.10.2",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  }
+}
