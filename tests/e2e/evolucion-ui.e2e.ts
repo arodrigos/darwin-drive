@@ -74,9 +74,9 @@ async function latencia(page: Page, evento: string) {
   return page.evaluate((e) => window.__debug!.latencias().filter((l) => l.evento === e), evento);
 }
 
-// Node y Chromium no comparten las mismas funciones matemáticas al último bit: dentro del mismo motor la igualdad es exacta.
+// Con detmath el núcleo da la misma marca en Node y en Chromium: la igualdad es exacta (tl-9, ev-9).
 function expectMismaMarca(navegador: number, nucleo: number) {
-  expect(Math.abs(navegador - nucleo)).toBeLessThanOrEqual(Math.max(1, nucleo * 0.005));
+  expect(navegador).toBe(nucleo);
 }
 
 /** Toca una rejilla de puntos alrededor del centro de la pista con la carrera en pausa, hasta que un coche responda. */

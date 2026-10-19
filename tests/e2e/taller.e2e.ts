@@ -92,10 +92,9 @@ async function meta(page: Page) {
   );
 }
 
-// Node y Chromium no comparten las mismas funciones matemáticas al último bit: tras ~1 km de física la cifra puede
-// diferir unos decímetros. Dentro del mismo motor la igualdad sí es exacta (pc-2 y pc-3 lo comprueban).
+// Con detmath el núcleo da la misma marca en Node y en Chromium: la igualdad es exacta (tl-9, ev-9).
 function expectMismaMarca(navegador: number, nucleo: number) {
-  expect(Math.abs(navegador - nucleo)).toBeLessThanOrEqual(Math.max(1, nucleo * 0.005));
+  expect(navegador).toBe(nucleo);
 }
 
 async function cpu(page: Page, rate: number) {
