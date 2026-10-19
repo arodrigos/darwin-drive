@@ -132,6 +132,9 @@ test("ev-9 el panel de evolución corre en la pista elegida y la gen 2 sigue en 
   await expect.poll(async () => (await estado(page)).poblacion?.length ?? 0).toBe(16);
   const gen1 = (await estado(page)).poblacion!;
   expect((await estado(page)).pistaEnCarrera).toBe("rampa");
+  // «Empezar» marca la latencia 'evolucionar' igual que el acceso desde el Taller (U24).
+  await expect.poll(async () => (await latencia(page, "evolucionar")).length).toBeGreaterThan(0);
+  expect((await latencia(page, "evolucionar"))[0].ms).toBeLessThan(200);
   await adelantar(page, 200);
   const e = await estado(page);
   for (const c of gen1) expectMismaMarca(e.distanciasGeneracion![c.carId], simulateCar(c.genome, "rampa").distance);
@@ -264,3 +267,22 @@ for (const t of TAMANOS) {
     await page.getByTestId("pausar").click();
   });
 }
+
+// El nombre de la pista no puede quedar bajo la pastilla de distancia ni el contador (regresión de at-3).
+test("ev-9 el nombre de la pista no se solapa con el contador a 360x640, 820x1180 y 1180x820", async ({ page }) => {
+  for (const t of [{ w: 360, h: 640 }, { w: 820, h: 1180 }, { w: 1180, h: 820 }]) {
+    await page.setViewportSize({ width: t.w, height: t.h });
+    await abrir(page, { vacio: true }, "&semilla=11");
+    await desdePanel(page, "dunas");
+    await expect(page.getByTestId("contador")).toContainText("Gen 1");
+    await page.screenshot({ path: `${DIR}/${ID}-cabecera-${t.w}x${t.h}.png` });
+    const nombre = (await page.getByTestId("nombre-pista").boundingBox())!;
+    const contador = (await page.getByTestId("contador").boundingBox())!;
+    const solapa =
+      nombre.x < contador.x + contador.width &&
+      contador.x < nombre.x + nombre.width &&
+      nombre.y < contador.y + contador.height &&
+      contador.y < nombre.y + nombre.height;
+    expect(solapa).toBe(false);
+  }
+});

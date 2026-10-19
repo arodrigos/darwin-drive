@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { markInput } from "@/debug/latencias";
 import { DEFAULT_PARAMS, type GaParams } from "@/evolution/ga";
 import type { Genome } from "@/sim/genome";
 import type { TrackId } from "@/sim/tracks";
@@ -54,12 +55,14 @@ export function InicioEvolucion(props: InicioProps) {
   const [siembra, setSiembra] = useState<Siembra>(props.desdeCoche ? "garaje" : "aleatoria");
   const sinGaraje = props.garage.length === 0;
 
-  const empezar = () =>
+  const empezar = () => {
+    markInput("evolucionar");
     props.onStart(
       { populationSize: population, eliteCount: elite, mutationRate: rate / 100, mutationSize: size, seed: nuevaSemilla() },
       siembra,
       siembra === "garaje" ? props.desdeCoche : null,
     );
+  };
 
   return (
     <div className="inicio-evolucion" data-testid="inicio-evolucion">

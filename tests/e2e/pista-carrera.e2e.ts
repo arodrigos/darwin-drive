@@ -243,3 +243,18 @@ test("pc-7 si el ejecutor falla, lo dice y Reintentar vuelve a lanzar la carrera
     expect((await estado(page)).ultimoResultado?.trackId).toBe("cordillera");
   }
 });
+
+test("pc-1 el nombre de la pista no queda tapado por la pastilla de distancia", async ({ page }) => {
+  for (const t of TAMANOS) {
+    await page.setViewportSize({ width: t.w, height: t.h });
+    await abrir(page);
+    await verCocheDeSerie(page);
+    await expect(page.getByTestId("hud-distancia")).not.toHaveText("0,0 m");
+    await page.screenshot({ path: `${DIR}/${ID}-nombre-${t.w}x${t.h}.png` });
+    const nombre = (await page.getByTestId("nombre-pista").boundingBox())!;
+    const hud = (await page.getByTestId("hud-distancia").boundingBox())!;
+    const solapa =
+      nombre.x < hud.x + hud.width && hud.x < nombre.x + nombre.width && nombre.y < hud.y + hud.height && hud.y < nombre.y + nombre.height;
+    expect(solapa).toBe(false);
+  }
+});
