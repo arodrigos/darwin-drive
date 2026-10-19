@@ -87,6 +87,28 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .aviso-ranking { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 30; max-width: 92%; padding: 8px 14px; border-radius: 12px; background: rgba(16,26,38,.95); border: 2px solid #ffd23f; font-weight: 700; text-align: center; pointer-events: none; }
 .tarjeta-fin .resultado-ranking { font-weight: 700; color: #ffd23f; }
 
+.rankings { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px; overflow-y: auto; background: #16222f; }
+.rankings-cabecera { display: flex; align-items: center; gap: 8px; }
+.rankings-cabecera h2 { margin: 0; flex: 1; }
+.pestanas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.pestana { min-height: 44px; padding: 4px 2px; border: 2px solid rgba(255,255,255,.5); border-radius: 10px; background: rgba(20,32,46,.8); font-size: .85rem; font-weight: 700; overflow-wrap: anywhere; }
+.pestana[aria-selected="true"] { border-color: #ffd23f; background: #2a3c50; }
+.lema-ranking { margin: 0; font-size: .9rem; opacity: .9; }
+.ranking-lista { list-style: none; margin: 0; padding: 0 0 190px; display: flex; flex-direction: column; gap: 4px; }
+.fila-ranking { width: 100%; min-height: 48px; display: grid; grid-template-columns: 24px 40px minmax(0, 1fr) auto; grid-template-areas: "puesto silueta nombre distancia" "puesto silueta etiqueta fecha"; align-items: center; column-gap: 8px; padding: 4px 8px; text-align: left; border: 2px solid rgba(255,255,255,.35); border-radius: 10px; background: rgba(20,32,46,.8); font-size: .9rem; }
+.fila-ranking[aria-pressed="true"] { border-color: #ffd23f; }
+.fila-ranking .puesto { grid-area: puesto; font-weight: 800; text-align: center; }
+.fila-ranking .silueta { grid-area: silueta; width: 40px; height: 40px; }
+.fila-ranking .nombre-fila { grid-area: nombre; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fila-ranking .distancia { grid-area: distancia; font-weight: 700; text-align: right; }
+.fila-ranking .etiqueta { grid-area: etiqueta; justify-self: start; padding: 0 8px; border-radius: 8px; background: #2f7d32; font-size: .78rem; font-weight: 700; }
+.fila-ranking .fecha { grid-area: fecha; font-size: .78rem; opacity: .85; text-align: right; }
+.ranking-vacio { display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center; padding: 24px 12px; }
+.hoja-fila { position: absolute; left: 0; right: 0; bottom: 0; z-index: 20; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: #0f1923; border-top: 2px solid #ffd23f; border-radius: 16px 16px 0 0; }
+.hoja-fila h3 { margin: 0 0 4px; font-size: 1.05rem; }
+.hoja-fila p { margin: 0 0 8px; font-size: .9rem; }
+.hoja-fila .acciones { display: flex; flex-wrap: wrap; gap: 6px; }
+.progreso-medicion, .resumen-medicion { font-size: .85rem; font-weight: 700; color: #ffd23f; }
 /* Los avisos de la evolución se apilan en columna: uno largo no tapa al siguiente. */
 .avisos-evolucion { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 30; max-width: 92%; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
 .avisos-evolucion .aviso-arriba { position: static; transform: none; max-width: 100%; }

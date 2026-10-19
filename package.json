@@ -19,7 +19,8 @@
     "medir:evolucion": "node --import tsx scripts/medir-evolucion.ts",
     "medir:pistas": "node --import tsx scripts/medir-pistas.ts",
     "generar:escenario-evolucion": "node --import tsx scripts/generar-escenario-evolucion.ts",
-    "smoke:traspaso": "bash scripts/smoke-traspaso.sh"
+    "smoke:traspaso": "bash scripts/smoke-traspaso.sh",
+    "generar:escenarios": "node --import tsx scripts/generar-escenarios.ts"
   },
   "dependencies": {
     "idb-keyval": "^6.3.0",
