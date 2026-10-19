@@ -1,6 +1,8 @@
 "use client";
 
 import { formatMeters } from "@/app/format";
+import { useEffect } from "react";
+import { measureOnNextFrame } from "@/debug/latencias";
 import type { Genome } from "@/sim/genome";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import type { SavedCar } from "@/storage/schema";
@@ -8,13 +10,14 @@ import { TrackPicker, type RankingsView } from "./TrackPicker";
 
 export const GARAJE_VACIO = "Tu garaje está vacío. Diseña un coche en el Taller o evoluciona uno y guárdalo aquí.";
 
-export function Silueta({ genome }: { genome: Genome }) {
+export function Silueta({ genome, hue }: { genome: Genome; hue?: number }) {
+  const color = hue === undefined ? "#e9a23b" : `hsl(${hue} 70% 55%)`;
   const S = 22;
   const pt = (angle: number, length: number) => [Math.cos(angle) * length * S, -Math.sin(angle) * length * S] as const;
   const pts = genome.body.map((v) => pt(v.angle, v.length));
   return (
     <svg viewBox="-60 -60 120 120" className="silueta" aria-hidden="true" data-testid="silueta">
-      <polygon points={pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ")} fill="#e9a23b" stroke="#1b1b1b" strokeWidth="2" />
+      <polygon points={pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ")} fill={color} stroke="#1b1b1b" strokeWidth="2" />
       {genome.wheels
         .filter((w) => w.vertex >= 0)
         .map((w, i) => {
@@ -37,11 +40,20 @@ export function Garaje(props: {
   onTrack: (id: TrackId) => void;
   rankings: RankingsView;
   onTry: (car: SavedCar) => void;
+  /** Medición en curso (una sola a la vez) y el resumen de la última de cada coche. */
+  midiendo: { carId: string; n: number; total: number } | null;
+  resumenes: Record<string, string>;
+  onMeasure: (car: SavedCar) => void;
   onOpen: (car: SavedCar) => void;
   onDelete: (car: SavedCar) => void;
   onTaller: () => void;
   onBack: () => void;
 }) {
+  const midiendoAhora = props.midiendo !== null;
+  // El progreso ya está en pantalla cuando este efecto corre.
+  useEffect(() => {
+    if (midiendoAhora) measureOnNextFrame("medir-pistas");
+  }, [midiendoAhora]);
   return (
     <div className="garaje" data-testid="garaje">
       <div className="garaje-cabecera">
@@ -69,9 +81,22 @@ export function Garaje(props: {
                   {car.origin}
                 </span>
                 <span data-testid="marcas">{marcas(car)}</span>
+                {props.midiendo?.carId === car.id && (
+                  <span className="progreso-medicion" role="status" data-testid="progreso-medicion">
+                    Midiendo {props.midiendo.n}/{props.midiendo.total}…
+                  </span>
+                )}
+                {props.resumenes[car.id] && props.midiendo?.carId !== car.id && (
+                  <span className="resumen-medicion" role="status" data-testid="resumen-medicion">
+                    {props.resumenes[car.id]}
+                  </span>
+                )}
                 <span className="acciones-coche">
                   <button type="button" className="pastilla chica" onClick={() => props.onTry(car)} data-testid="garaje-probar">
                     Probar en {getTrack(props.trackId)?.name}
+                  </button>
+                  <button type="button" className="pastilla chica" disabled={midiendoAhora} onClick={() => props.onMeasure(car)} data-testid="garaje-medir">
+                    Medir en todas las pistas
                   </button>
                   <button type="button" className="pastilla chica" onClick={() => props.onOpen(car)} data-testid="garaje-abrir">
                     Abrir en el taller

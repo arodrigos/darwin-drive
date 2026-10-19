@@ -25,7 +25,7 @@ function Paisaje() {
 
 const ACCESOS = ["Evolución", "Linaje", "Especies"];
 
-export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onPickTrack: (id: TrackId) => void; onTaller: () => void; onGarage: () => void }) {
+export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onRanking: (id: TrackId) => void; onTaller: () => void; onGarage: () => void }) {
   return (
     <div className="portada" data-testid="portada">
       <Paisaje />
@@ -33,7 +33,7 @@ export function Portada(props: { rankings: RankingsView; onExplore: () => void; 
       <p className="subtitulo">Diseña un coche, elige pista y mira hasta dónde llega.</p>
       <div className="pistas">
         {TRACKS.map((t) => (
-          <button key={t.id} type="button" className="tarjeta-pista" data-testid={`tarjeta-${t.id}`} onClick={() => props.onPickTrack(t.id)}>
+          <button key={t.id} type="button" className="tarjeta-pista" data-testid={`tarjeta-${t.id}`} onClick={() => props.onRanking(t.id)}>
             <span className="nombre">{t.name}</span>
             <TrackMiniature track={t} />
             <span className="marca">{topMark(props.rankings, t.id, true)}</span>
