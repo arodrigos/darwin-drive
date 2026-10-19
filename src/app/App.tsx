@@ -235,7 +235,10 @@ export function App() {
       // Sin almacén se avisa una sola vez, con el texto único del producto.
       setWarning(available ? w : SIN_GUARDADO);
     });
+    // Un escenario cargado mientras esta lectura inicial seguía en vuelo manda: no se pisa con lo anterior.
+    let escenarioCargado = false;
     loadAll().then(({ data }) => {
+      if (escenarioCargado) return;
       const r = (data[KEY_RANKINGS] as Rankings | undefined) ?? emptyRankings();
       const g = (data[KEY_GARAGE] as SavedCar[] | undefined) ?? [];
       rankingsRef.current = r;
@@ -247,6 +250,7 @@ export function App() {
     });
     registrarManejadores({
       async cargarEscenario(e: Escenario) {
+        escenarioCargado = true;
         // Un escenario vacío limpia lo que el juego guarda; el resto se reescribe igual que el juego.
         const base = e.vacio ? DEFAULT_META : undefined;
         const pista = getTrack(e.pista)?.id ?? base?.lastTrack;

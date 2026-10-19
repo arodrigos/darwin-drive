@@ -150,8 +150,8 @@ test("ev-2 turbo: barra de progreso, generaciones nuevas y pausa inmediata", asy
   await page.screenshot({ path: `${DIR}/${ID}-turbo-360x640.png` });
   await page.getByTestId("pausar").click();
   await expect(page.getByTestId("pausar")).toHaveText("Seguir");
+  await expect.poll(async () => (await latencia(page, "pausar")).length).toBeGreaterThan(0);
   const p = await latencia(page, "pausar");
-  expect(p.length).toBeGreaterThan(0);
   expect(p[p.length - 1].ms).toBeLessThanOrEqual(200);
 });
 
@@ -180,8 +180,9 @@ test("ev-4 un favorito se ve marcado, avisa y tiene hijos seguro", async ({ page
   await page.getByTestId("pausar").click();
   await marcarFavorito(page);
   await expect(page.getByTestId("aviso-favorito")).toHaveText("Favorito: tendrá hijos seguro");
+  // La medida se cierra en el primer frame que pinta el efecto: se espera a que exista.
+  await expect.poll(async () => (await latencia(page, "favorito")).length).toBeGreaterThan(0);
   const l = await latencia(page, "favorito");
-  expect(l.length).toBeGreaterThan(0);
   expect(l[l.length - 1].ms).toBeLessThanOrEqual(200);
   await page.screenshot({ path: `${DIR}/${ID}-favorito-360x640.png` });
   await expect(page.getByTestId("aviso-favorito")).toBeHidden({ timeout: 4000 });
