@@ -14,6 +14,9 @@
     "verificar:presupuesto-bundle": "node scripts/comprobar-presupuesto-bundle.mjs",
     "verificar:publico": "node scripts/comprobar-publico.mjs",
     "verificar:frontera-nucleo": "node scripts/comprobar-frontera-nucleo.mjs",
+    "medir:fisica": "node --import tsx scripts/medir-fisica.ts",
+    "medir:anomalias": "node --import tsx scripts/medir-anomalias.ts",
+    "medir:pistas": "node --import tsx scripts/medir-pistas.ts",
     "smoke:traspaso": "bash scripts/smoke-traspaso.sh"
   },
   "dependencies": {
