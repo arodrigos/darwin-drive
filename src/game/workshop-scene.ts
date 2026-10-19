@@ -130,6 +130,11 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks): Works
     scene,
   });
 
+  // Phaser solo reacciona al redimensionado de la ventana; el panel del Taller cambia de alto sin que la ventana se mueva.
+  const observer = new ResizeObserver(() => {
+    if (parent.clientWidth > 0 && parent.clientHeight > 0) game.scale.resize(parent.clientWidth, parent.clientHeight);
+  });
+  observer.observe(parent);
   scene.pendingMeasure = "abrir-pista";
   let drag: { index: number; startX: number; startY: number; moved: boolean } | null = null;
   const local = (e: PointerEvent) => {
@@ -196,6 +201,7 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks): Works
       parent.removeEventListener("pointermove", move);
       parent.removeEventListener("pointerup", up);
       parent.removeEventListener("pointercancel", cancel);
+      observer.disconnect();
       game.destroy(true);
     },
   };
