@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { STOCK_CAR, genomeHash, type Genome } from "../../src/sim/genome";
+import { STOCK_CAR, type Genome } from "../../src/sim/genome";
 import demoJson from "../../src/debug/escenarios/rankings-demo.json";
 import { simulateCar } from "../../src/sim/race";
 import { TRACKS, type TrackId } from "../../src/sim/tracks";
@@ -79,11 +79,12 @@ test("rk-1 el ranking de cada pista se lee de punta a punta y abre el coche en e
   expect(t.pistaSeleccionada).toBe("rampa");
   // El estado solo resume las marcas: el genoma esperado sale del propio escenario.
   const guardado = demo.rampa.find((e) => e.carId === r.rankings.rampa[2].carId)!;
-  const donde = (Object.keys(demo) as TrackId[]).flatMap((id) =>
-    demo[id].flatMap((e, i) => (e.carId === genomeHash(t.genomaEnTaller!) ? [`${id}[${i}]`] : [])),
-  );
-  expect(donde, `taller=${genomeHash(t.genomaEnTaller!)} esperado=${guardado.carId}`).toContain("rampa[2]");
-  expect(t.genomaEnTaller).toEqual(guardado.genome);
+  // Chromium y Node no normalizan al último bit, así que el hash cambia; los genes, no más allá de 1e-9.
+  const genes = (g: unknown): number[] => JSON.stringify(g).match(/-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/gi)!.map(Number);
+  const enTaller = genes(t.genomaEnTaller);
+  const esperado = genes(guardado.genome);
+  expect(enTaller).toHaveLength(esperado.length);
+  enTaller.forEach((v, i) => expect(Math.abs(v - esperado[i])).toBeLessThanOrEqual(1e-9 * Math.max(1, Math.abs(v))));
 
   const lat = await page.evaluate(() => window.__debug!.latencias());
   const abrirRanking = lat.filter((m) => m.evento === "abrir-ranking");
