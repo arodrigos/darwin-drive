@@ -94,7 +94,8 @@ test("pw-1 copia de punta a punta: exportar, vaciar, importar y recuperar todo",
   await cargarEstadoCompleto(page);
   const antes = { estado: await estado(page), claves: await leerClaves(page) };
   expect(antes.estado.garaje).toBe(3);
-  expect(antes.estado.generacion === null).toBe(false);
+  expect((antes.claves["dd:v1:evolution"] as { generation: number }).generation).toBe(4);
+  expect(Object.keys(antes.claves)).toEqual(expect.arrayContaining(["dd:v1:rankings", "dd:v1:garage", "dd:v1:lineage"]));
 
   await page.reload();
   await page.waitForFunction(() => Boolean(window.__debug));
@@ -190,6 +191,6 @@ test("pw-3 tras el primer guardado se pide navigator.storage.persist()", async (
     });
   });
   await abrir(page);
-  await page.evaluate(() => window.__debug!.cargarEscenario({ vacio: true }));
+  await page.evaluate(() => window.__debug!.cargarEscenario({ rankings: "demo" }));
   expect(await page.evaluate(() => (window as unknown as { __persistPedido: number }).__persistPedido)).toBeGreaterThanOrEqual(1);
 });
