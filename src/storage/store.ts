@@ -92,6 +92,7 @@ async function actualizar(key: string, fn: (actual: unknown) => unknown): Promis
   if (s) {
     try {
       await update(key, (v) => fn(v), s);
+      void pedirPersistencia();
       return;
     } catch {
       disponible = false;
@@ -100,8 +101,28 @@ async function actualizar(key: string, fn: (actual: unknown) => unknown): Promis
   memoria.set(key, fn(memoria.get(key)));
 }
 
+/**
+ * Pide al navegador que no desaloje el guardado. Se llama tras escribir y solo
+ * llega a pedirlo una vez por pestaña: Safari decide por su cuenta y volver a
+ * preguntar en cada guardado no cambia su respuesta.
+ */
+let persistenciaPedida = false;
+async function pedirPersistencia(): Promise<void> {
+  if (persistenciaPedida) return;
+  persistenciaPedida = true;
+  try {
+    const storage = typeof navigator === "undefined" ? undefined : navigator.storage;
+    if (!storage || typeof storage.persist !== "function") return;
+    if (typeof storage.persisted === "function" && (await storage.persisted())) return;
+    await storage.persist();
+  } catch {
+    // Denegarlo no impide nada: el Garaje explica el remedio.
+  }
+}
+
 /** Para tests: olvida la conexión y la memoria, como una pestaña recién abierta. */
 export function resetStoreConnection(): void {
+  persistenciaPedida = false;
   almacen = null;
   disponible = true;
   memoria.clear();
@@ -124,6 +145,35 @@ function leerValidado(key: string, raw: unknown, warnings: string[]): unknown {
   return value;
 }
 
+/** Claves registradas con su validador, para la copia en fichero. */
+export function clavesRegistradas(): { key: string; label: string; admiteNulo: boolean }[] {
+  return [...registro].map(([key, r]) => ({ key, label: r.label, admiteNulo: r.fallback === null }));
+}
+
+/**
+ * Valida un valor de copia con el validador de su clave, sin perdonar nada:
+ * al cargar el juego una entrada suelta inválida se descarta con aviso, pero
+ * una copia con una sola entrada mala se rechaza entera (no se cambia nada).
+ */
+export function validarEstricto(key: string, raw: unknown): { ok: true; value: unknown } | { ok: false } {
+  const r = registro.get(key);
+  if (!r) return { ok: false };
+  if (raw === null) return r.fallback === null ? { ok: true, value: null } : { ok: false };
+  let avisos = 0;
+  let value: unknown = null;
+  try {
+    value = r.validate(raw, () => (avisos += 1));
+  } catch {
+    return { ok: false };
+  }
+  return value === null || avisos > 0 ? { ok: false } : { ok: true, value };
+}
+
+/** Sustituye todas las claves registradas por las de la copia (ya validada); las que no vengan se borran. */
+export async function reemplazarTodo(data: Record<string, unknown>): Promise<void> {
+  for (const key of registro.keys()) await save(key, data[key] ?? null);
+}
+
 export interface LoadResult {
   data: Record<string, unknown>;
   warnings: string[];
@@ -132,7 +182,7 @@ export interface LoadResult {
   needsRemeasure: RankingEntry[];
 }
 
-async function persistente(): Promise<boolean | "unknown"> {
+export async function persistente(): Promise<boolean | "unknown"> {
   try {
     const storage = typeof navigator === "undefined" ? undefined : navigator.storage;
     if (!storage || typeof storage.persisted !== "function") return "unknown";
@@ -179,6 +229,7 @@ export async function save<T>(key: string, value: T): Promise<void> {
   if (s) {
     try {
       await set(key, value, s);
+      void pedirPersistencia();
       return;
     } catch {
       disponible = false;

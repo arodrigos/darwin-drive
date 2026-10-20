@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { RegistroPwa } from "@/pwa/RegistroPwa";
 
 export const metadata: Metadata = {
   title: "Darwin Drive",
@@ -11,7 +12,9 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, view
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>{children}
+        <RegistroPwa />
+      </body>
     </html>
   );
 }
