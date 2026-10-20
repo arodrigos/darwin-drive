@@ -19,6 +19,7 @@ type Estado = {
   pantalla: string;
   pistaSeleccionada: string;
   genomaEnTaller: Genome | null;
+  genomaEnPista: Genome | null;
   ultimoResultado: { distance: number; trackId: string } | null;
 };
 
