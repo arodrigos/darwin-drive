@@ -60,7 +60,7 @@ const SIGMA: Record<GaParams["mutationSize"], number> = { small: 0.05, medium: 0
 
 // --- PRNG serializable -------------------------------------------------------
 
-interface Rng {
+export interface Rng {
   float(): number;
   int(n: number): number;
   gauss(): number;
@@ -68,7 +68,7 @@ interface Rng {
 }
 
 /** El estado vive en `state.rng` (JSON): retomar da lo mismo que no haber parado. */
-function makeRng(source: number | number[]): Rng {
+export function makeRng(source: number | number[]): Rng {
   const gen = typeof source === "number" ? xoroshiro128plus(source) : xoroshiro128plusFromState(source);
   const float = () => uniformInt(gen, 0, 0xffffff) / 0x1000000;
   return {
@@ -148,7 +148,7 @@ function mutateGene(g: Genome, index: number, sigma: number, reset: boolean, rng
 const MUTABLE_GENES = GENES.length + WHEEL_VERTEX_GENES;
 
 /** Cada gen muta con probabilidad `rate`; `force` garantiza al menos un gen distinto. */
-function mutate(parent: Genome, rate: number, sizeKey: GaParams["mutationSize"], rng: Rng, force: boolean): Genome {
+export function mutate(parent: Genome, rate: number, sizeKey: GaParams["mutationSize"], rng: Rng, force: boolean): Genome {
   const sigma = SIGMA[sizeKey];
   const base = genomeHash(parent);
   const attempt = (genes: number[]): Genome => {
@@ -170,7 +170,7 @@ function mutate(parent: Genome, rate: number, sizeKey: GaParams["mutationSize"],
 }
 
 /** Cruce de dos puntos sobre unidades con sentido propio: cada vértice, la densidad del cuerpo y cada rueda. */
-function crossover(a: Genome, b: Genome, rng: Rng): Genome {
+export function crossover(a: Genome, b: Genome, rng: Rng): Genome {
   const units = VERTEX_COUNT + 1 + WHEEL_SLOTS;
   const p = rng.int(units + 1);
   const q = rng.int(units + 1);

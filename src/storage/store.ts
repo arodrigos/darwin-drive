@@ -10,12 +10,14 @@ import {
   KEY_GARAGE,
   KEY_LINEAGE,
   KEY_RANKINGS,
+  KEY_SPECIES,
   normalizeRanking,
   RANKING_SIZE,
   validateEvolution,
   validateGarage,
   validateLineage,
   validateRankings,
+  validateSpecies,
   type Origin,
   type RankingEntry,
   type Rankings,
@@ -50,6 +52,7 @@ registerKey(KEY_RANKINGS, validateRankings, emptyRankings(), "ranking");
 registerKey(KEY_GARAGE, validateGarage, [] as SavedCar[], "garaje");
 registerKey(KEY_EVOLUTION, (raw) => validateEvolution(raw), null, "evolución");
 registerKey(KEY_LINEAGE, validateLineage, [], "linaje");
+registerKey(KEY_SPECIES, validateSpecies, {}, "especies");
 registerKey(META_KEY, (raw) => validateMeta(raw), DEFAULT_META, "ajustes");
 
 // --- Acceso: IndexedDB o, si no se puede abrir, memoria hasta cerrar la pestaña.

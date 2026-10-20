@@ -145,6 +145,23 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .taller-lienzo .ayuda-taller ~ .aviso-ruedas { bottom: 104px; }
 .taller-lienzo .aviso-arriba { top: 60px; }
 
+.especies { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px; overflow-y: auto; background: #16222f; }
+.especies h2 { margin: 0; flex: 1; }
+.ayuda-especies, .contador-especies, .leyenda-especies { margin: 0; font-size: .9rem; }
+.contador-especies { font-weight: 700; color: #ffd23f; }
+.leyenda-especies { font-size: .78rem; opacity: .85; }
+.rejilla-especies { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.celda-especie { position: relative; aspect-ratio: 1; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px; border: 2px solid rgba(255,255,255,.35); border-radius: 10px; background: rgba(255,255,255,.06); overflow: hidden; }
+.celda-especie .silueta { width: 100%; height: 0; flex: 1 1 auto; min-height: 0; }
+.celda-especie .metros { font-size: clamp(.62rem, 2.8vw, .85rem); font-weight: 800; }
+.celda-especie .vacia { font-size: 1.6rem; font-weight: 800; opacity: .6; }
+.celda-especie.nueva { border-color: #ffd23f; }
+.celda-especie[data-abierta="1"] { border-color: #fff; box-shadow: 0 0 0 2px #ffd23f; }
+.celda-especie:disabled { opacity: 1; }
+.acciones-especies { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.error-especies { margin: 0; padding: 8px 10px; border-radius: 10px; background: #5b2a2a; border: 2px solid #ff9e9e; }
+.especies .hoja-fila { z-index: 25; }
+@media (min-width: 900px) and (orientation: landscape) { .rejilla-especies { max-width: 560px; } }
 .linaje { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #16222f; overflow: hidden; }
 .linaje-barra { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .linaje-barra select { min-height: 44px; max-width: 100%; border-radius: 10px; border: 2px solid #fff; background: rgba(20,32,46,.8); color: inherit; font-weight: 700; padding: 0 8px; }

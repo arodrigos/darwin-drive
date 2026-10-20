@@ -1,5 +1,7 @@
 import type { EvolutionState, GaParams, GenerationStats, Individual, Op } from "@/evolution/ga";
 import { MAX_LINEAGE_NODES, type LineageNode } from "@/evolution/lineage";
+import { CELL_COUNT, cellIndex, type SpeciesArchive, type SpeciesCell } from "@/evolution/species";
+import { PHYSICS_VERSION } from "@/sim/constants";
 import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 
@@ -41,6 +43,7 @@ export const KEY_RANKINGS = "dd:v1:rankings";
 export const KEY_GARAGE = "dd:v1:garage";
 export const KEY_EVOLUTION = "dd:v1:evolution";
 export const KEY_LINEAGE = "dd:v1:lineage";
+export const KEY_SPECIES = "dd:v1:species";
 
 const ORIGINS: readonly Origin[] = ["diseño", "evolución", "mixto"];
 const OPS: readonly Op[] = ["random", "design", "retouch", "clone", "crossover", "mutation"];
@@ -240,4 +243,55 @@ export function validateLineage(raw: unknown, warn: Warn = () => {}): LineageNod
   }
   if (bad > 0) warn(`Se descartaron ${bad} nodos no válidos del linaje.`);
   return out.slice(-MAX_LINEAGE_NODES);
+}
+
+export type SpeciesArchives = Partial<Record<TrackId, SpeciesArchive>>;
+
+function speciesCell(raw: unknown, index: number): SpeciesCell | null {
+  if (!isObj(raw)) return null;
+  const genome = genomeOf(raw.genome);
+  if (!genome || !isStr(raw.carId) || !isNum(raw.distance) || raw.distance < 0 || !isInt(raw.batch)) return null;
+  // Una celda solo vale si el coche es de esa especie: lo contrario rompería la invariante del archivo.
+  if (cellIndex(genome) !== index) return null;
+  return { carId: raw.carId, genome, distance: raw.distance, batch: raw.batch };
+}
+
+function speciesArchive(raw: unknown, trackId: TrackId): SpeciesArchive | null {
+  if (!isObj(raw) || raw.v !== 1 || getTrack(raw.trackId)?.id !== trackId) return null;
+  if (!isInt(raw.batch) || raw.batch < 0 || !Array.isArray(raw.rng) || raw.rng.length === 0 || !raw.rng.every(isNum)) return null;
+  if (!isInt(raw.trackVersion) || !isInt(raw.physicsVersion) || !Array.isArray(raw.cells) || raw.cells.length !== CELL_COUNT) return null;
+  const cells: (SpeciesCell | null)[] = [];
+  for (let i = 0; i < CELL_COUNT; i++) {
+    if (raw.cells[i] === null) {
+      cells.push(null);
+      continue;
+    }
+    const cell = speciesCell(raw.cells[i], i);
+    if (!cell) return null;
+    cells.push(cell);
+  }
+  return { v: 1, trackId, trackVersion: raw.trackVersion, physicsVersion: raw.physicsVersion, batch: raw.batch, rng: raw.rng, cells };
+}
+
+/**
+ * Un archivo por pista; uno inválido o de una pista desconocida se descarta solo, con aviso. Los de otra versión de
+ * pista o de física también: sus marcas ya no son comparables y se vuelven a descubrir explorando.
+ */
+export function validateSpecies(raw: unknown, warn: Warn = () => {}): SpeciesArchives | null {
+  if (!isObj(raw)) return null;
+  const out: SpeciesArchives = {};
+  for (const key of Object.keys(raw)) {
+    const track = getTrack(key);
+    if (!track) {
+      warn(`Se descartó el archivo de especies de una pista que no existe («${key.slice(0, 30)}»).`);
+      continue;
+    }
+    const archive = speciesArchive(raw[key], track.id);
+    if (!archive) {
+      warn(`El archivo de especies de ${track.name} no era válido y se ha descartado.`);
+    } else if (archive.trackVersion !== track.version || archive.physicsVersion !== PHYSICS_VERSION) {
+      warn(`El archivo de especies de ${track.name} era de una versión anterior del juego y se ha descartado.`);
+    } else out[track.id] = archive;
+  }
+  return out;
 }
