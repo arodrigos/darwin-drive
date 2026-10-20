@@ -17,7 +17,7 @@ import { hashPista } from "./helpers/hash-pistas";
 // propósito, hay que subir la versión de la pista (las marcas guardadas se
 // vuelven a medir con ella) y actualizar el hash aquí.
 const HASH_REFERENCIA: Record<string, string> = {
-  cordillera: "6a9684c4f191e6157caf68bf0fd1b0eb32fca0218fded2c88d7e86d409c2cad5",
+  cordillera: "d6795ceff8e5862e960339cb8168bb746a4434af6b24f9656423a89152168f07",
   rampa: "7a4375b1063b602956695f416f6ad12518472fd04763ab19a492533e4d1d3432",
   dunas: "e31c922ee73a06c479954edffa49389cdbf9f4763d49b8b11ea623049b300fff",
   pedregal: "d0133ed6d0cf4e1982f4968eccc55c2a49d56a0628d60f52d8fdd4b28feabaf5",

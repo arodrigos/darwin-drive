@@ -67,7 +67,23 @@ async function arrastrar(page: Page, i: number, hacia: (p: { x: number; y: numbe
   await page.mouse.up();
 }
 
+/** Espera a que el lienzo deje de cambiar de tamaño: al tocar una rueda aparece o se va el panel de radio y la escena se recoloca tras el ResizeObserver. */
+async function lienzoQuieto(page: Page) {
+  let previa = "";
+  await expect
+    .poll(async () => {
+      const b = await page.locator("canvas").boundingBox();
+      await page.evaluate(() => new Promise((ok) => requestAnimationFrame(() => requestAnimationFrame(ok))));
+      const actual = JSON.stringify(b);
+      const quieto = actual === previa;
+      previa = actual;
+      return quieto;
+    })
+    .toBe(true);
+}
+
 async function tocar(page: Page, i: number) {
+  await lienzoQuieto(page);
   const p = await vertice(page, i);
   await page.mouse.click(p.x, p.y);
 }
@@ -281,8 +297,12 @@ test("tl-4 la ayuda está donde la acción no es obvia", async ({ page }) => {
   await page.getByTestId("ayuda-boton").click();
   // El toque anterior añadió una rueda: se espera a verla en el contador antes de leer el estado, o la lectura va un toque por detrás.
   await expect(page.getByTestId("contador-ruedas")).toHaveText("Ruedas: 3/4");
-  for (const w of (await estado(page)).genomaEnTaller!.wheels.filter((r) => r.vertex >= 0)) await tocar(page, w.vertex);
-  await expect(page.getByTestId("contador-ruedas")).toHaveText("Ruedas: 0/4");
+  // Cada toque se confirma en el contador antes del siguiente: dos clics seguidos en la CI lenta se solapan con el repintado y uno se pierde.
+  const conRueda = (await estado(page)).genomaEnTaller!.wheels.filter((r) => r.vertex >= 0);
+  for (const [k, w] of conRueda.entries()) {
+    await tocar(page, w.vertex);
+    await expect(page.getByTestId("contador-ruedas")).toHaveText(`Ruedas: ${conRueda.length - k - 1}/4`);
+  }
   await expect(page.getByTestId("aviso-sin-ruedas")).toHaveText("Sin ruedas no hay motor: este coche no avanzará.");
   await page.screenshot({ path: `${DIR}/${ID}-sin-ruedas-360x640.png` });
   await tocar(page, 5);
