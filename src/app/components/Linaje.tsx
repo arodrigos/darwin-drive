@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
 import type { EvolutionState } from "@/evolution/ga";
 import type { LineageNode } from "@/evolution/lineage";
-import { layoutLineage, NODE_HEIGHT, NODE_WIDTH, type LineageLayout } from "@/evolution/lineage-layout";
+import { layoutLineage, NODE_HEIGHT, NODE_WIDTH, type LineageLayout } from "@/app/lineage-layout";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
 import { getTrack, TRACKS } from "@/sim/tracks";
 import type { Rankings, SavedCar } from "@/storage/schema";

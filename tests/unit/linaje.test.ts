@@ -4,7 +4,7 @@ import fc from "fast-check";
 import demoJson from "../../src/debug/escenarios/linaje-demo-5.json";
 import { etiquetaMano, nombreCorto, opcionesLinaje } from "../../src/app/components/Linaje";
 import type { LineageNode } from "../../src/evolution/lineage";
-import { ancestorsOf, layoutLineage } from "../../src/evolution/lineage-layout";
+import { ancestorsOf, layoutLineage } from "../../src/app/lineage-layout";
 import { STOCK_CAR } from "../../src/sim/genome";
 import { simulateCar } from "../../src/sim/race";
 import { emptyRankings, validateLineage, type Rankings } from "../../src/storage/schema";

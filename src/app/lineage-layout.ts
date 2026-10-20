@@ -1,5 +1,5 @@
 import dagre from "@dagrejs/dagre";
-import type { LineageNode } from "./lineage";
+import type { LineageNode } from "@/evolution/lineage";
 
 export const NODE_WIDTH = 96;
 export const NODE_HEIGHT = 76;
