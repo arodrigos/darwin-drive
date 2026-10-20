@@ -54,8 +54,11 @@ function cordilleraHeight(x: number): number {
   const progress = Math.min(1, d / 1990);
   const amplitude = lerp(0.5, 14, progress);
   // La rugosidad (peso de las octavas cortas) también crece con la distancia.
-  const w1 = lerp(0.25, 0.55, progress);
-  const w2 = lerp(0.08, 0.3, progress);
+  // Pasada la saturación las octavas cortas se suavizan: con el ruido a pleno peso salía un foso de 63° seguido de
+  // una pared de 44° hacia los 2330 m que paraba a todos los buenos coches en el mismo sitio (ga-8).
+  const suavizado = smoothstep((d - 1990) / 400);
+  const w1 = lerp(0.25, 0.55, progress) - 0.2 * suavizado;
+  const w2 = lerp(0.08, 0.3, progress) - 0.16 * suavizado;
   const n =
     cordilleraNoise(d / 110, 0) + w1 * cordilleraNoise(d / 45, 7.5) + w2 * cordilleraNoise(d / 18, 19.25);
   return smoothstep(d / 30) * amplitude * n;
@@ -103,7 +106,7 @@ function pedregalHeight(x: number): number {
 export const TRACKS: readonly Track[] = [
   {
     id: "cordillera",
-    version: 2,
+    version: 3,
     name: "La Cordillera",
     tagline: "Montañas al azar, siempre las mismas, cada vez más altas.",
     heightAt: cordilleraHeight,

@@ -71,7 +71,7 @@
    "origin": "diseño",
    "date": "2026-10-01T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 2,
+   "trackVersion": 3,
    "physicsVersion": 2
   },
   {
@@ -145,7 +145,7 @@
    "origin": "evolución",
    "date": "2026-10-02T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 2,
+   "trackVersion": 3,
    "physicsVersion": 2
   },
   {
@@ -219,7 +219,7 @@
    "origin": "diseño",
    "date": "2026-10-07T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 2,
+   "trackVersion": 3,
    "physicsVersion": 2
   },
   {
@@ -293,7 +293,7 @@
    "origin": "mixto",
    "date": "2026-10-03T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 2,
+   "trackVersion": 3,
    "physicsVersion": 2
   },
   {
@@ -367,7 +367,7 @@
    "origin": "diseño",
    "date": "2026-10-04T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 2,
+   "trackVersion": 3,
    "physicsVersion": 2
   },
   {
@@ -441,7 +441,7 @@
    "origin": "evolución",
    "date": "2026-10-11T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 2,
+   "trackVersion": 3,
    "physicsVersion": 2
   },
   {
@@ -515,7 +515,7 @@
    "origin": "mixto",
    "date": "2026-10-12T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 2,
+   "trackVersion": 3,
    "physicsVersion": 2
   },
   {
@@ -589,7 +589,7 @@
    "origin": "diseño",
    "date": "2026-10-10T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 2,
+   "trackVersion": 3,
    "physicsVersion": 2
   },
   {
@@ -663,7 +663,7 @@
    "origin": "evolución",
    "date": "2026-10-08T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 2,
+   "trackVersion": 3,
    "physicsVersion": 2
   },
   {
@@ -737,7 +737,7 @@
    "origin": "evolución",
    "date": "2026-10-05T12:00:00.000Z",
    "trackId": "cordillera",
-   "trackVersion": 2,
+   "trackVersion": 3,
    "physicsVersion": 2
   }
  ],
