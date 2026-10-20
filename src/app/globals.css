@@ -144,3 +144,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .taller-lienzo .ayuda-taller { top: auto; bottom: 8px; }
 .taller-lienzo .ayuda-taller ~ .aviso-ruedas { bottom: 104px; }
 .taller-lienzo .aviso-arriba { top: 60px; }
+
+.linaje { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #16222f; overflow: hidden; }
+.linaje-barra { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.linaje-barra select { min-height: 44px; max-width: 100%; border-radius: 10px; border: 2px solid #fff; background: rgba(20,32,46,.8); color: inherit; font-weight: 700; padding: 0 8px; }
+.linaje-zoom { display: flex; gap: 6px; }
+.linaje-lienzo { position: relative; flex: 1; min-height: 0; overflow: hidden; touch-action: none; border-radius: 12px; background: #101b27; cursor: grab; }
+.linaje-svg { position: absolute; transform-origin: 0 0; max-width: none; }
+.nodo-linaje { cursor: pointer; outline: none; }
+.nodo-linaje:focus-visible rect { stroke: #ffd23f; stroke-width: 3; }

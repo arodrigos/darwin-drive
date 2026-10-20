@@ -7,7 +7,7 @@ import { evolucionDemo, evolucionSintetica, type EscenarioEvolucion } from "@/de
 import { DEFAULT_PARAMS, seedPopulation, type EvolutionState, type GaParams } from "@/evolution/ga";
 import { mergeLineage, originOf, pruneLineage, type LineageNode } from "@/evolution/lineage";
 import { createSimRunner } from "@/worker";
-import type { CarResult } from "@/sim/constants";
+import { PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
 import { DEFAULT_TRACK_ID, getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import { DEFAULT_META, loadMeta, saveMeta, type Meta } from "@/storage/meta";
@@ -19,6 +19,7 @@ import {
   KEY_RANKINGS,
   validateEvolution,
   validateGarage,
+  validateLineage,
   validateRankings,
   type RankingEntry,
   type Rankings,
@@ -38,6 +39,7 @@ import { Evolucion, type Campeon } from "./components/Evolucion";
 import { Explorar } from "./components/Explorar";
 import { Garaje } from "./components/Garaje";
 import { InicioEvolucion, nuevaSemilla, type Siembra } from "./components/InicioEvolucion";
+import { Linaje } from "./components/Linaje";
 import { Pista } from "./components/Pista";
 import { Portada } from "./components/Portada";
 import { Rankings as PantallaRankings } from "./components/Rankings";
@@ -45,7 +47,7 @@ import { Taller } from "./components/Taller";
 import { medirEnTodasLasPistas, type MedicionEnCurso } from "./medir-pistas";
 import { resumenMedicion } from "./ranking-text";
 
-type Pantalla = "portada" | "explorar" | "pista" | "taller" | "garaje" | "rankings" | "evolucion-inicio" | "evolucion";
+type Pantalla = "portada" | "explorar" | "pista" | "taller" | "garaje" | "rankings" | "evolucion-inicio" | "evolucion" | "linaje";
 
 export const SIN_GUARDADO =
   "Este navegador no deja guardar. Puedes jugar, pero los rankings y el garaje se perderán al cerrar.";
@@ -83,6 +85,12 @@ export function App() {
   const [evolKey, setEvolKey] = useState(0);
   const [desdeCoche, setDesdeCoche] = useState<SavedCar | null>(null);
   const lineageRef = useRef<LineageNode[]>([]);
+  // Foto del linaje para la pantalla Linaje: se toma al abrirla, no en cada generación.
+  const [linajeNodos, setLinajeNodos] = useState<LineageNode[]>([]);
+  const [linajeSel, setLinajeSel] = useState<string | null>(null);
+  const [linajeNodo, setLinajeNodo] = useState<string | null>(null);
+  // Coche con linaje que se abrió en el taller: si se evoluciona retocado, el retoque cuelga del original.
+  const origenTaller = useRef<{ lineageId: string; hash: string } | null>(null);
   const evolucionRef = useRef<EvolutionState | null>(null);
   const rankingsRef = useRef(rankings);
   const garageRef = useRef(garage);
@@ -162,10 +170,14 @@ export function App() {
   );
 
   const evolucionarDesdeTaller = useCallback(() => {
-    void lanzarEvolucion({ ...DEFAULT_PARAMS, seed: nuevaSemilla() }, trackId, {
-      kind: "genomes",
-      items: [{ genome: genomeRef.current, op: "design" }],
-    });
+    const origen = origenTaller.current;
+    origenTaller.current = null;
+    // Solo cuelga de un nodo que sigue en el linaje; si se podó, el retoque empieza un árbol nuevo.
+    const padre = origen && lineageRef.current.some((n) => n.id === origen.lineageId) ? origen : null;
+    const item = padre
+      ? { genome: genomeRef.current, sourceId: padre.lineageId, op: genomeHash(genomeRef.current) === padre.hash ? ("clone" as const) : ("retouch" as const) }
+      : { genome: genomeRef.current, op: "design" as const };
+    void lanzarEvolucion({ ...DEFAULT_PARAMS, seed: nuevaSemilla() }, trackId, { kind: "genomes", items: [item] });
   }, [lanzarEvolucion, trackId]);
 
   const empezarEvolucion = useCallback(
@@ -235,6 +247,21 @@ export function App() {
     setWorkshopGenome(n);
   }, []);
 
+  const abrirEnTaller = useCallback(
+    (genome: Genome, lineageId?: string) => {
+      editar(genome);
+      origenTaller.current = lineageId ? { lineageId, hash: genomeHash(normalizeGenome(genome)) } : null;
+      setScreen("taller");
+    },
+    [editar],
+  );
+
+  const abrirLinaje = useCallback(() => {
+    setLinajeNodos(lineageRef.current);
+    setLinajeNodo(null);
+    setScreen("linaje");
+  }, []);
+
   useEffect(() => {
     instalarGanchos();
     loadMeta().then(({ meta: loaded, warning: w, available }) => {
@@ -280,6 +307,8 @@ export function App() {
           await save(KEY_EVOLUTION, null);
           await save(KEY_LINEAGE, null);
           lineageRef.current = [];
+          setLinajeNodos([]);
+          origenTaller.current = null;
           aplicarEvolucion(null);
           editar(STOCK_CAR);
         }
@@ -321,11 +350,40 @@ export function App() {
           await save(KEY_GARAGE, validos);
           aplicarGaraje(validos);
         }
+        if (e.linaje !== undefined) {
+          const demo =
+            e.linaje === "demo-5-generaciones"
+              ? (JSON.parse((await import("@/debug/escenarios/linaje-demo-5.texto")).default) as { nodos: unknown; campeon: string })
+              : null;
+          const nodos = validateLineage(demo ? demo.nodos : e.linaje);
+          if (!nodos || nodos.length === 0) throw new Error("escenario con linaje inválido");
+          await save(KEY_LINEAGE, nodos);
+          lineageRef.current = nodos;
+          setLinajeNodos(nodos);
+          setLinajeSel(null);
+          setLinajeNodo(null);
+          // El campeón entra en el ranking de su pista como lo haría una evolución: de ahí cuelga «n.º 1 de …».
+          // En el demo es el que señala el escenario (entre clones de igual distancia, el último); si no, el de más metros.
+          const medidos = nodos.filter((n) => n.distance !== null && n.trackId !== null);
+          const campeon =
+            nodos.find((n) => n.id === demo?.campeon) ??
+            medidos.reduce<LineageNode | null>((a, n) => (a === null || n.distance! > a.distance! ? n : a), null);
+          const track = campeon?.trackId ? getTrack(campeon.trackId) : null;
+          if (campeon && track) {
+            await updateRanking({
+              result: { carId: campeon.id, distance: campeon.distance!, reason: "stall", steps: 0, physicsVersion: PHYSICS_VERSION, trackId: track.id, trackVersion: track.version },
+              genome: campeon.genome,
+              origin: originOf(campeon.id, nodos),
+              lineageId: campeon.id,
+            });
+            await recargar();
+          }
+        }
         if (e.genoma !== undefined) editar(normalizeGenome(e.genoma));
         setScreen("portada");
       },
     });
-  }, [aplicarRankings, aplicarGaraje, aplicarEvolucion, editar]);
+  }, [aplicarRankings, aplicarGaraje, aplicarEvolucion, editar, recargar]);
 
   useEffect(() => {
     runtime.pantalla = screen === "explorar" ? "pista" : screen === "evolucion-inicio" ? "evolucion" : screen;
@@ -334,6 +392,7 @@ export function App() {
   const abrirTaller = useCallback(() => {
     markInput("abrir-pista");
     runtime.genomaEnTaller = genomeRef.current;
+    origenTaller.current = null;
     setScreen("taller");
   }, []);
 
@@ -454,6 +513,7 @@ export function App() {
           onRanking={abrirRanking}
           onTaller={abrirTaller}
           onGarage={() => setScreen("garaje")}
+          onLinaje={abrirLinaje}
           onEvolucion={() => {
             setDesdeCoche(null);
             setScreen("evolucion-inicio");
@@ -493,8 +553,7 @@ export function App() {
           }}
           onOpenInWorkshop={(entry: RankingEntry) => {
             chooseTrack(entry.trackId);
-            editar(entry.genome);
-            setScreen("taller");
+            abrirEnTaller(entry.genome, entry.lineageId);
           }}
           onSaveToGarage={(entry: RankingEntry) => guardarGenoma(entry.genome, entry.origin, entry.name, entry.lineageId)}
           onTaller={abrirTaller}
@@ -534,10 +593,7 @@ export function App() {
           midiendo={midiendo}
           resumenes={resumenes}
           onMeasure={medirCoche}
-          onOpen={(car) => {
-            editar(car.genome);
-            setScreen("taller");
-          }}
+          onOpen={(car) => abrirEnTaller(car.genome, car.lineageId)}
           onDelete={async (car) => {
             await removeFromGarage(car.id);
             await recargar();
@@ -570,6 +626,34 @@ export function App() {
           onGeneracion={onGeneracion}
           onGuardarCampeon={onGuardarCampeon}
           onBack={() => setScreen("portada")}
+        />
+      )}
+      {screen === "linaje" && (
+        <Linaje
+          nodes={linajeNodos}
+          rankings={rankings}
+          garage={garage}
+          evolucion={evolucion}
+          seleccion={linajeSel}
+          onSeleccion={setLinajeSel}
+          nodoId={linajeNodo}
+          onNodo={setLinajeNodo}
+          onBack={() => setScreen("portada")}
+          // La carrera se repite en la pista donde se midió el nodo, no en la que haya elegida.
+          onWatch={(n) => {
+            if (!n.trackId) return;
+            chooseTrack(n.trackId);
+            probar(n.genome, originOf(n.id, lineageRef.current), "linaje");
+          }}
+          onOpenInWorkshop={(n) => {
+            if (n.trackId) chooseTrack(n.trackId);
+            abrirEnTaller(n.genome, n.id);
+          }}
+          onSaveToGarage={(n) => guardarGenoma(n.genome, originOf(n.id, lineageRef.current), undefined, n.id)}
+          onEvolucion={() => {
+            setDesdeCoche(null);
+            setScreen("evolucion-inicio");
+          }}
         />
       )}
       {warning && (

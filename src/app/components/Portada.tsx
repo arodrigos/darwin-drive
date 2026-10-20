@@ -23,9 +23,9 @@ function Paisaje() {
   );
 }
 
-const ACCESOS = ["Linaje", "Especies"];
+const ACCESOS = ["Especies"];
 
-export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onRanking: (id: TrackId) => void; onTaller: () => void; onGarage: () => void; onEvolucion: () => void; continuar: { generation: number; trackName: string } | null; onContinuar: () => void }) {
+export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onRanking: (id: TrackId) => void; onTaller: () => void; onGarage: () => void; onLinaje: () => void; onEvolucion: () => void; continuar: { generation: number; trackName: string } | null; onContinuar: () => void }) {
   return (
     <div className="portada" data-testid="portada">
       <Paisaje />
@@ -55,6 +55,9 @@ export function Portada(props: { rankings: RankingsView; onExplore: () => void; 
         </button>
         <button type="button" className="acceso" data-testid="acceso-evolucion" onClick={props.onEvolucion}>
           Evolución
+        </button>
+        <button type="button" className="acceso" data-testid="acceso-linaje" onClick={props.onLinaje}>
+          Linaje
         </button>
         {props.continuar && (
           <button type="button" className="acceso" data-testid="acceso-continuar" onClick={props.onContinuar}>
