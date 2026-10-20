@@ -169,16 +169,24 @@ export function validarEstricto(key: string, raw: unknown): { ok: true; value: u
   return value === null || avisos > 0 ? { ok: false } : { ok: true, value };
 }
 
-/**
- * Sustituye todas las claves registradas por las de la copia (ya validada); las que no vengan se borran.
- * Un valor igual al de fábrica tampoco se escribe: la copia lo trae porque loadAll rellena los huecos, y
- * dejar la clave ausente es lo que tenía el dispositivo de origen.
- */
+/** Sustituye todas las claves registradas por las de la copia (ya validada); las que no vengan se borran. */
 export async function reemplazarTodo(data: Record<string, unknown>): Promise<void> {
-  for (const [key, r] of registro) {
-    const valor = data[key] ?? null;
-    await save(key, JSON.stringify(valor) === JSON.stringify(r.fallback) ? null : valor);
+  for (const key of registro.keys()) await save(key, data[key] ?? null);
+}
+
+/**
+ * Lo guardado tal cual está, validado y solo de las claves que existen: la copia no inventa claves que el
+ * dispositivo no tenía (loadAll las rellena con su valor de fábrica y reimportarlas cambiaría el almacén).
+ */
+export async function leerGuardado(): Promise<Record<string, unknown>> {
+  const out: Record<string, unknown> = {};
+  for (const key of registro.keys()) {
+    const raw = await leer(key);
+    if (raw === undefined) continue;
+    const valor = leerValidado(key, raw, []);
+    out[key] = valor;
   }
+  return out;
 }
 
 export interface LoadResult {

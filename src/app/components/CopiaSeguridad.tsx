@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { COPIA_INVALIDA, COPIA_MAX_BYTES, crearCopia, nombreFicheroCopia, validarCopia } from "@/storage/copia";
-import { loadAll, persistente, reemplazarTodo } from "@/storage/store";
+import { leerGuardado, persistente, reemplazarTodo } from "@/storage/store";
 import { runtime } from "@/debug/ganchos";
 
 export const TEXTO_PERSISTENTE = "Guardado persistente en este dispositivo";
@@ -51,7 +51,7 @@ export function CopiaSeguridad(props: { almacenDisponible: boolean; onImportada:
   }, []);
 
   async function exportar() {
-    const { data } = await loadAll();
+    const data = await leerGuardado();
     const ahora = new Date();
     const nombre = nombreFicheroCopia(ahora);
     descargar(nombre, JSON.stringify(crearCopia(data, ahora)));

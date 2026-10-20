@@ -22,7 +22,7 @@ export type ResultadoCopia = { ok: true; data: Record<string, unknown>; resumen:
 export function crearCopia(data: Record<string, unknown>, ahora: Date): Copia {
   // Solo las claves registradas: lo que el juego no entiende no viaja en la copia.
   const limpia: Record<string, unknown> = {};
-  for (const { key } of clavesRegistradas()) limpia[key] = data[key] ?? null;
+  for (const { key } of clavesRegistradas()) if (key in data) limpia[key] = data[key];
   return { format: COPIA_FORMAT, v: COPIA_VERSION, exportedAt: ahora.toISOString(), data: limpia };
 }
 

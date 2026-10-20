@@ -17,7 +17,7 @@ import {
   validarCopia,
 } from "../../src/storage/copia";
 import { emptyRankings, KEY_EVOLUTION, KEY_GARAGE, KEY_LINEAGE, KEY_RANKINGS, KEY_SPECIES, type RankingEntry, type SavedCar } from "../../src/storage/schema";
-import { loadAll, reemplazarTodo, resetStoreConnection, save } from "../../src/storage/store";
+import { leerGuardado, loadAll, reemplazarTodo, resetStoreConnection, save } from "../../src/storage/store";
 import { seededGenomes } from "./helpers/rng";
 
 const GENOMAS = seededGenomes(31, 40);
@@ -81,7 +81,8 @@ test("pw-1: exportar, vaciar e importar devuelve el mismo estado", async () => {
   rankings.pedregal = [entrada(6, "pedregal", 8)];
   await guardarEstado(rankings, [coche(1), coche(2), coche(3)], 4);
   const antes = (await loadAll()).data;
-  const texto = JSON.stringify(crearCopia(antes, AHORA));
+  const guardado = await leerGuardado();
+  const texto = JSON.stringify(crearCopia(guardado, AHORA));
 
   await reemplazarTodo({});
   assert.notDeepEqual((await loadAll()).data, antes);
@@ -92,18 +93,19 @@ test("pw-1: exportar, vaciar e importar devuelve el mismo estado", async () => {
   await reemplazarTodo(r.data);
   resetStoreConnection();
   assert.deepEqual((await loadAll()).data, antes);
+  assert.deepEqual(await leerGuardado(), guardado);
 });
 
 test("pw-1: el fichero se llama darwin-drive-copia-AAAA-MM-DD.json y declara su formato", () => {
   assert.equal(nombreFicheroCopia(new Date(2026, 0, 5)), "darwin-drive-copia-2026-01-05.json");
-  const copia = crearCopia({}, AHORA);
+  const copia = crearCopia({ [KEY_GARAGE]: [], "dd:v9:ajena": 1 }, AHORA);
   assert.equal(copia.format, COPIA_FORMAT);
-  assert.deepEqual(Object.keys(copia.data).sort(), [KEY_EVOLUTION, KEY_GARAGE, KEY_LINEAGE, KEY_RANKINGS, KEY_SPECIES, META_KEY].sort());
+  assert.deepEqual(Object.keys(copia.data), [KEY_GARAGE]);
 });
 
 test("pw-2: un fichero que no es una copia válida se rechaza con el mensaje del diseño", async () => {
   await guardarEstado(emptyRankings(), [coche(1)], null);
-  const base = JSON.parse(JSON.stringify(crearCopia((await loadAll()).data, AHORA))) as { data: Record<string, unknown> } & Record<string, unknown>;
+  const base = JSON.parse(JSON.stringify(crearCopia(await leerGuardado(), AHORA))) as { data: Record<string, unknown> } & Record<string, unknown>;
   const rankingsMalos = (mutar: (r: Record<string, unknown>) => void) => {
     const c = JSON.parse(JSON.stringify(base));
     mutar(c.data[KEY_RANKINGS]);
@@ -173,14 +175,14 @@ test("invariante: exportar e importar es la identidad para cualquier estado vál
         rankings[t.id] = ids.map((n, i) => entrada(n, t.id, distancias[i]));
       }
       await guardarEstado(rankings, e.coches.map(coche), e.gen);
-      const antes = (await loadAll()).data;
+      const antes = await leerGuardado();
       const texto = JSON.stringify(crearCopia(antes, AHORA));
       await reemplazarTodo({});
       const r = validarCopia(texto);
       assert.ok(r.ok);
       await reemplazarTodo(r.data);
       resetStoreConnection();
-      assert.deepEqual((await loadAll()).data, antes);
+      assert.deepEqual(await leerGuardado(), antes);
     }),
     { numRuns: 40 },
   );
@@ -192,7 +194,7 @@ test("invariante: un fichero estropeado de cualquier forma no cambia el guardado
   rankings.rampa = [entrada(3, "rampa", 30)];
   await guardarEstado(rankings, [coche(1)], 4);
   const antes = (await loadAll()).data;
-  const valido = JSON.stringify(crearCopia(antes, AHORA));
+  const valido = JSON.stringify(crearCopia(await leerGuardado(), AHORA));
   await fc.assert(
     fc.asyncProperty(fc.integer({ min: 0, max: valido.length - 1 }), fc.string({ minLength: 1, maxLength: 4 }), async (pos, basura) => {
       const roto = valido.slice(0, pos) + basura + valido.slice(pos + 1);
