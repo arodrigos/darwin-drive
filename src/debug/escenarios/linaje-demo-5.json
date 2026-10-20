@@ -1,0 +1,9930 @@
+{
+ "trackId": "cordillera",
+ "campeon": "7-8c7eb732",
+ "nodos": [
+  {
+   "id": "0-fffaff64",
+   "parents": [],
+   "op": "design",
+   "generation": 0,
+   "distance": 1155.1794119615824,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 90.14430284500122,
+   "humanTouched": true,
+   "prunedParents": false
+  },
+  {
+   "id": "1-a842ee77",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1254.67485780234,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 99.08995789079802,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-73063361",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1254.2541467067806,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.3523438138194055,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.548305728252137
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 93.14096355035616,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-85303cf4",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1031.6198805694717,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.0105778197145576
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 102.97728877711927,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-418483b1",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1031.170052455753,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 48.05121020720858,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 0,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 83.9385865678459,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-5d751b40",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1155.7948239098848,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 51.28854036331177,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.0041254854710626
+     }
+    ]
+   },
+   "hue": 97.54310644078532,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-0640b7d8",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1037.6524953486016,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 87.11888193290172,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 72.82859690631096,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-7390f17a",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1164.6089304923903,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.217362541590131,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 100.01768589019775,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 92.13461131231088,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-b967041d",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1032.8610830815328,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4342935799745066,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.3648464350825153,
+      "density": 42.15853873379376,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 96.07092612800443,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-f85f279a",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1155.9815616335634,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.8114673676790063
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 95.84891622302331,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-8c204d97",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1031.5052534552285,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.047502826740798,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 53.209019222929435,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 93.87252845176528,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-b58a93e7",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 951.7669150023171,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.55,
+      "density": 54.26684808575111,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.3575165577320494
+     }
+    ]
+   },
+   "hue": 88.188155369588,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-220e44dc",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1156.7426087577926,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.7460132915823228,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.4672868092869187
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 79.89668552118229,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-d032891b",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1155.1794119615824,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4599271817387425,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 107.03528075363675,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-d0c6ce3a",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1162.086823956911,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2490402721164044,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.204668596549895
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 98.54310588169767,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "1-fc0b5fd2",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 1,
+   "distance": 1032.2664707176316,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2184522661026325,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 93.82763209901577,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-766af8c7",
+   "parents": [
+    "1-a842ee77"
+   ],
+   "op": "clone",
+   "generation": 2,
+   "distance": 1254.67485780234,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 99.08995789079802,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-90fc7e54",
+   "parents": [
+    "1-73063361"
+   ],
+   "op": "clone",
+   "generation": 2,
+   "distance": 1254.2541467067806,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.3523438138194055,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.548305728252137
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 93.14096355035616,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-90e6264d",
+   "parents": [
+    "1-7390f17a",
+    "1-a842ee77"
+   ],
+   "op": "crossover",
+   "generation": 2,
+   "distance": 1254.7100810690226,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.8360914486865338
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 117.91883232893099,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-f0a4b815",
+   "parents": [
+    "1-220e44dc",
+    "1-7390f17a"
+   ],
+   "op": "crossover",
+   "generation": 2,
+   "distance": 926.1678792616593,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.7460132915823228,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.4672868092869187
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 100.01768589019775,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.047457493450599
+     },
+     {
+      "vertex": 0,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 87.32945163638254,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-fe2c922e",
+   "parents": [
+    "1-220e44dc",
+    "1-a842ee77"
+   ],
+   "op": "crossover",
+   "generation": 2,
+   "distance": 1060.0664927193013,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.56582781598322,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 113.70534128309401,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-2a378951",
+   "parents": [
+    "1-7390f17a",
+    "1-73063361"
+   ],
+   "op": "crossover",
+   "generation": 2,
+   "distance": 1053.4445641718532,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 1.092017303584779
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.3523438138194055,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.124239309762178,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 100.01768589019775,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 81.3725245752853,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-8b7b0b8f",
+   "parents": [
+    "1-220e44dc",
+    "1-d0c6ce3a"
+   ],
+   "op": "crossover",
+   "generation": 2,
+   "distance": 1162.2689243118584,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4762925431380115,
+      "length": 1
+     },
+     {
+      "angle": 1.2490402721164044,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.204668596549895
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.35164433500140124,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 73.01563013197489,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-1f812b78",
+   "parents": [
+    "1-7390f17a",
+    "1-73063361"
+   ],
+   "op": "crossover",
+   "generation": 2,
+   "distance": 954.873335685931,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.3523438138194055,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 100.01768589019775,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 101.54436187219142,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-086eca3f",
+   "parents": [
+    "1-a842ee77"
+   ],
+   "op": "mutation",
+   "generation": 2,
+   "distance": 1254.7110572828472,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.8931360942143911
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 92.77191871071602,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-81c5907b",
+   "parents": [
+    "1-5d751b40",
+    "1-73063361"
+   ],
+   "op": "crossover",
+   "generation": 2,
+   "distance": 16.79380589312389,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.249979820643417
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.548305728252137
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 0,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 84.54057191994019,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.0041254854710626
+     }
+    ]
+   },
+   "hue": 88.70397986035931,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-c4afff34",
+   "parents": [
+    "1-a842ee77"
+   ],
+   "op": "mutation",
+   "generation": 2,
+   "distance": 1387.7635166293167,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 96.24356042228942,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-703265d0",
+   "parents": [
+    "1-a842ee77",
+    "1-220e44dc"
+   ],
+   "op": "crossover",
+   "generation": 2,
+   "distance": 1387.358276561995,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1.2512655256914973
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 110.76080311216475,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-4db89a10",
+   "parents": [
+    "1-d0c6ce3a",
+    "1-a842ee77"
+   ],
+   "op": "crossover",
+   "generation": 2,
+   "distance": 1051.5103838494297,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2490402721164044,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.204668596549895
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 2.07112426615166
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 85.6075102862377,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-6fb4138a",
+   "parents": [
+    "1-73063361"
+   ],
+   "op": "mutation",
+   "generation": 2,
+   "distance": 1062.4553096219206,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2459228861209053,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.3523438138194055,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.548305728252137
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 112.03566902458738,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-7b86a8dc",
+   "parents": [
+    "0-fffaff64"
+   ],
+   "op": "mutation",
+   "generation": 2,
+   "distance": 1155.1794119615824,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.43767835385262205,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 89.38785263847626,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "2-228f2754",
+   "parents": [
+    "1-d0c6ce3a",
+    "1-220e44dc"
+   ],
+   "op": "crossover",
+   "generation": 2,
+   "distance": 1055.1771503981165,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2490402721164044,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.204668596549895
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 72.12396331606243,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-8db4aa9d",
+   "parents": [
+    "2-c4afff34"
+   ],
+   "op": "clone",
+   "generation": 3,
+   "distance": 1387.7635166293167,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 96.24356042228942,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-7be4df5a",
+   "parents": [
+    "2-703265d0"
+   ],
+   "op": "clone",
+   "generation": 3,
+   "distance": 1387.358276561995,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1.2512655256914973
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 110.76080311216475,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-4cb26199",
+   "parents": [
+    "2-c4afff34",
+    "2-703265d0"
+   ],
+   "op": "crossover",
+   "generation": 3,
+   "distance": 0.7869808168357889,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1.2512655256914973
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 2.167171376943588
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.2594503208034205
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 78.19848425333544,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-2d3b2060",
+   "parents": [
+    "2-c4afff34",
+    "2-086eca3f"
+   ],
+   "op": "crossover",
+   "generation": 3,
+   "distance": 1387.9705647812823,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.857014016608894
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.250558743045591
+     },
+     {
+      "vertex": -1,
+      "radius": 0.29668635405170424,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 95.1492883506487,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-603af81e",
+   "parents": [
+    "2-c4afff34"
+   ],
+   "op": "mutation",
+   "generation": 3,
+   "distance": 1254.861493094942,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.2271675611256025,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 114.10014489016004,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-08d4fa2d",
+   "parents": [
+    "2-c4afff34",
+    "2-90e6264d"
+   ],
+   "op": "crossover",
+   "generation": 3,
+   "distance": 1388.0540718090385,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 71.77562364441648,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 105.24617857349205,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-0c6a8f07",
+   "parents": [
+    "2-c4afff34"
+   ],
+   "op": "mutation",
+   "generation": 3,
+   "distance": 1577.829812913317,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 87.34423046791824,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-65acd533",
+   "parents": [
+    "2-c4afff34",
+    "2-90e6264d"
+   ],
+   "op": "crossover",
+   "generation": 3,
+   "distance": 1387.8394144015665,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.0797697522026
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 130.85711774789678,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-cf8e5b38",
+   "parents": [
+    "2-90e6264d",
+    "2-086eca3f"
+   ],
+   "op": "crossover",
+   "generation": 3,
+   "distance": 1151.4530823299635,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.8360914486865338
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.6825612667029176
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.9984419134688333,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 63.907936034858224,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 111.448185265956,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-2c28edb6",
+   "parents": [
+    "2-086eca3f",
+    "2-90e6264d"
+   ],
+   "op": "crossover",
+   "generation": 3,
+   "distance": 1254.7110572828472,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.8931360942143911
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 62.378465402788336,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 88.14967487774783,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-4db40bc2",
+   "parents": [
+    "2-90e6264d",
+    "2-c4afff34"
+   ],
+   "op": "crossover",
+   "generation": 3,
+   "distance": 1254.8184714995,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.706936744574768,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 93.99687367048523,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-9a830dc0",
+   "parents": [
+    "2-90fc7e54",
+    "2-703265d0"
+   ],
+   "op": "crossover",
+   "generation": 3,
+   "distance": 1388.312591021472,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 100.63015883188984,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-418e81a9",
+   "parents": [
+    "2-c4afff34",
+    "2-703265d0"
+   ],
+   "op": "crossover",
+   "generation": 3,
+   "distance": 1388.143459323664,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.769807092079008,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 99.70520999427572,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-a0f8b51b",
+   "parents": [
+    "2-c4afff34",
+    "2-086eca3f"
+   ],
+   "op": "crossover",
+   "generation": 3,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 84.56668116174683,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-b0c66954",
+   "parents": [
+    "2-703265d0"
+   ],
+   "op": "mutation",
+   "generation": 3,
+   "distance": 1253.8309077348797,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1.2512655256914973
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.795875176254908,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 57.06076895591094,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60.72346983775498,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 105.910452627859,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "3-cae80ad2",
+   "parents": [
+    "2-90fc7e54"
+   ],
+   "op": "mutation",
+   "generation": 3,
+   "distance": 3.805295907597899,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.3523438138194055,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235987755982989,
+      "length": 0.9
+     },
+     {
+      "angle": 5.73,
+      "length": 1.548305728252137
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 1,
+      "radius": 0.55,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 97.636222039026,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-654d8b91",
+   "parents": [
+    "3-a0f8b51b"
+   ],
+   "op": "clone",
+   "generation": 4,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 84.56668116174683,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-38eb5074",
+   "parents": [
+    "3-0c6a8f07"
+   ],
+   "op": "clone",
+   "generation": 4,
+   "distance": 1577.829812913317,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 87.34423046791824,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-bdf40061",
+   "parents": [
+    "3-9a830dc0",
+    "3-418e81a9"
+   ],
+   "op": "crossover",
+   "generation": 4,
+   "distance": 1388.0254371520393,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 117.15839692786494,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-4d098c6f",
+   "parents": [
+    "3-08d4fa2d",
+    "3-418e81a9"
+   ],
+   "op": "crossover",
+   "generation": 4,
+   "distance": 1155.4355249325645,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.3726641703916534,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.61944647046584,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.769807092079008,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.3993512870462004
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 2.072101074090874
+     },
+     {
+      "vertex": -1,
+      "radius": 0.40036298198933595,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.05075228127729936
+     }
+    ]
+   },
+   "hue": 106.87241682680877,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-03e5ca03",
+   "parents": [
+    "3-a0f8b51b",
+    "3-9a830dc0"
+   ],
+   "op": "crossover",
+   "generation": 4,
+   "distance": 1254.2241612086139,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.7236399272633476,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.42706301790238493,
+      "density": 60,
+      "axisAngle": 0.7250480306235838
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 97.99476071173291,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-cb769dd3",
+   "parents": [
+    "3-9a830dc0"
+   ],
+   "op": "mutation",
+   "generation": 4,
+   "distance": 1254.0654359573025,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 81.38004168917598,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4577291119962445,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 124.00348494468818,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-0ac65c82",
+   "parents": [
+    "3-a0f8b51b",
+    "3-08d4fa2d"
+   ],
+   "op": "crossover",
+   "generation": 4,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 94.5587429310383,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-05657b0a",
+   "parents": [
+    "3-418e81a9"
+   ],
+   "op": "mutation",
+   "generation": 4,
+   "distance": 1634.3557834971973,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 1.5535903573036192
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.769807092079008,
+      "length": 2.110628870427746
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 92.09452631509214,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-dc8fcea3",
+   "parents": [
+    "3-a0f8b51b"
+   ],
+   "op": "mutation",
+   "generation": 4,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 62.50926971435547,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 104.41748906889825,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-dd0d1751",
+   "parents": [
+    "3-9a830dc0",
+    "3-65acd533"
+   ],
+   "op": "crossover",
+   "generation": 4,
+   "distance": 1388.312591021472,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 115.74363828989328,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-91bf65f7",
+   "parents": [
+    "3-0c6a8f07",
+    "3-9a830dc0"
+   ],
+   "op": "crossover",
+   "generation": 4,
+   "distance": 1386.7956151858182,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 4,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 115.74082215273216,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-79e28859",
+   "parents": [
+    "3-08d4fa2d",
+    "3-0c6a8f07"
+   ],
+   "op": "crossover",
+   "generation": 4,
+   "distance": 1511.5006647137982,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.224746158278967,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 50.32104384152189,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 91.57146404695641,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-7b165b1d",
+   "parents": [
+    "3-9a830dc0"
+   ],
+   "op": "mutation",
+   "generation": 4,
+   "distance": 1576.0607822252944,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.105841260679706,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 79.78842356785174,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-dea38274",
+   "parents": [
+    "3-0c6a8f07",
+    "3-418e81a9"
+   ],
+   "op": "crossover",
+   "generation": 4,
+   "distance": 1256.7069150330115,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.63734281298713,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.095842829814976
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 32.34295725822449,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6865280206009321,
+      "density": 75.61661073857758,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 89.84939484521499,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-dd4fabae",
+   "parents": [
+    "3-0c6a8f07",
+    "3-a0f8b51b"
+   ],
+   "op": "crossover",
+   "generation": 4,
+   "distance": 1254.7161994956143,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2537057473472817,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 84.0178239650935,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "4-b96c4ab4",
+   "parents": [
+    "3-2d3b2060",
+    "3-418e81a9"
+   ],
+   "op": "crossover",
+   "generation": 4,
+   "distance": 1387.9705647812823,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.857014016608894
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.250558743045591
+     },
+     {
+      "vertex": -1,
+      "radius": 0.29668635405170424,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 97.42724917246221,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-db0485af",
+   "parents": [
+    "4-654d8b91"
+   ],
+   "op": "clone",
+   "generation": 5,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 84.56668116174683,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-0a7e55e7",
+   "parents": [
+    "4-0ac65c82"
+   ],
+   "op": "clone",
+   "generation": 5,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 94.5587429310383,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-88cff40a",
+   "parents": [
+    "4-05657b0a",
+    "4-dc8fcea3"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1150.725099506782,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 1.5535903573036192
+     },
+     {
+      "angle": 2.1032061294089437,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 89.94729722403389,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-c6f8241d",
+   "parents": [
+    "4-38eb5074",
+    "4-dc8fcea3"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1512.0351883111803,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2118152538819567,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 0.8930816118265483
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 78.90100502283974,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-45476b08",
+   "parents": [
+    "4-79e28859",
+    "4-654d8b91"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1510.104355046653,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.009935906198679,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 50.32104384152189,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 88.1914095595684,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-19d03bf3",
+   "parents": [
+    "4-0ac65c82",
+    "4-654d8b91"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1164.4893739887875,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.3123685007751142
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.3654643608772794
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 105.13615745835574,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-82047387",
+   "parents": [
+    "4-0ac65c82",
+    "4-38eb5074"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1254.8443553197035,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.2780868237485095,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 81.60823212702849,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-f02a3075",
+   "parents": [
+    "4-79e28859",
+    "4-dc8fcea3"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1577.331501813626,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9268809552901801
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.224746158278967,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.9833476191881005
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 2.689632054639608
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.2222567184330586
+     }
+    ]
+   },
+   "hue": 107.4320931838405,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-249759fc",
+   "parents": [
+    "4-7b165b1d",
+    "4-dc8fcea3"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1254.6158584771042,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.4116984101682883
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 49.93188185651642,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 62.50926971435547,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 89.72357924124594,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-7f12be61",
+   "parents": [
+    "4-654d8b91",
+    "4-0ac65c82"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1387.8776812887186,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.9976445468750157,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.10942415812349,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 46.409006118774414,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 95.97592688073337,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-9a1790ee",
+   "parents": [
+    "4-654d8b91",
+    "4-0ac65c82"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1388.2603462244808,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 1.1662386514467893
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.2550264053348026
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.535626624150983
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 74.45227946974966,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 78.23121755067781,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 86.17679657847094,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-5ec2c86c",
+   "parents": [
+    "4-7b165b1d"
+   ],
+   "op": "mutation",
+   "generation": 5,
+   "distance": 1253.7374175233085,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.105841260679706,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 61.172324803962994,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 58.41161900880748,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 64.70653180657757,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-acf6024d",
+   "parents": [
+    "4-7b165b1d",
+    "4-654d8b91"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1147.5975206147602,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 2.224660354852676
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.943930646336243,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.105841260679706,
+      "length": 1.53
+     },
+     {
+      "angle": 5.238834191771133,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.66,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     }
+    ]
+   },
+   "hue": 107.46202630650089,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-148a1fa4",
+   "parents": [
+    "4-79e28859"
+   ],
+   "op": "mutation",
+   "generation": 5,
+   "distance": 1577.7609907362694,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5798584304486276,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.224746158278967,
+      "length": 1.0573746433922213
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 50.32104384152189,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 47.29102782531492,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 82.38040836174457,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-ab80f783",
+   "parents": [
+    "4-38eb5074",
+    "4-654d8b91"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1577.829812913317,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 85.95545581483253,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-7d1ba92e",
+   "parents": [
+    "4-0ac65c82",
+    "4-dc8fcea3"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1255.1950284735715,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 2.4783435173912345
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 102.35341078737201,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-8f8ed050",
+   "parents": [
+    "5-db0485af"
+   ],
+   "op": "clone",
+   "generation": 6,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 84.56668116174683,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-870ca99e",
+   "parents": [
+    "5-0a7e55e7"
+   ],
+   "op": "clone",
+   "generation": 6,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 94.5587429310383,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-abd1a151",
+   "parents": [
+    "5-9a1790ee"
+   ],
+   "op": "mutation",
+   "generation": 6,
+   "distance": 1622.971727080232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 1.1662386514467893
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.2550264053348026
+     },
+     {
+      "angle": 4.137485805089473,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.535626624150983
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 74.45227946974966,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 53.51222963377217,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 78.23121755067781,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 101.02624005739892,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-68bfc50d",
+   "parents": [
+    "5-ab80f783"
+   ],
+   "op": "mutation",
+   "generation": 6,
+   "distance": 1578.1981529473985,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.6230992565589425
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 72.06248001970025,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 113.57603335055899,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-0bf1a468",
+   "parents": [
+    "5-0a7e55e7",
+    "5-148a1fa4"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1255.0113727731189,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2958800849767913,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5798584304486276,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.224746158278967,
+      "length": 1.0573746433922213
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 63.29468083733774,
+      "axisAngle": 1.207175665846398
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 59.20427458108636,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 88.31850969615067,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-7b3d6e7b",
+   "parents": [
+    "5-db0485af",
+    "5-0a7e55e7"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1390.5853016318063,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.864198652176034,
+      "length": 1.1
+     },
+     {
+      "angle": 3.7273690813600897,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 74.5749163006331,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-89542447",
+   "parents": [
+    "5-148a1fa4",
+    "5-ab80f783"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1753.9403940355733,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 47.29102782531492,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 80.93935425466532,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-6b4f4d96",
+   "parents": [
+    "5-148a1fa4",
+    "5-0a7e55e7"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1578.6805737505035,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5798584304486276,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.224746158278967,
+      "length": 1.0573746433922213
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 69.20526422055741,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-d707b875",
+   "parents": [
+    "5-db0485af",
+    "5-ab80f783"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 85.26106848828971,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-e20b6fe8",
+   "parents": [
+    "5-db0485af",
+    "5-0a7e55e7"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1579.1038892849292,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1987467785646257
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 70.85413631305818,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-60cdad84",
+   "parents": [
+    "5-45476b08",
+    "5-0a7e55e7"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1385.269048805057,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.009935906198679,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 4,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 97.67985787201712,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-abae5811",
+   "parents": [
+    "5-148a1fa4",
+    "5-f02a3075"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1388.9682277922752,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5798584304486276,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.224746158278967,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 50.32104384152189,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 47.73932574413563,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 47.29102782531492,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 89.42983865685056,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-fa906da6",
+   "parents": [
+    "5-9a1790ee",
+    "5-ab80f783"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1639.5562209953034,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 1.962771340307109,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.2550264053348026
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.535626624150983
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 74.45227946974966,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 78.23121755067781,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 104.7619832326044,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-72a2a8c2",
+   "parents": [
+    "5-0a7e55e7",
+    "5-f02a3075"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1388.662330867451,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.6070475395844093
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 4,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 111.2424772310336,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-43fc7231",
+   "parents": [
+    "5-148a1fa4"
+   ],
+   "op": "mutation",
+   "generation": 6,
+   "distance": 1167.9302084224626,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5798584304486276,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.224746158278967,
+      "length": 1.0573746433922213
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 7,
+      "radius": 0.6501118063926696,
+      "density": 50.32104384152189,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 47.29102782531492,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 82.14740331285577,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-48fd5d3a",
+   "parents": [
+    "5-45476b08",
+    "5-db0485af"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1164.1456745516268,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.009935906198679,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 41.65499470011481,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.8726630926132202,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 89.11261224360908,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-8c7eb732",
+   "parents": [
+    "6-8f8ed050"
+   ],
+   "op": "clone",
+   "generation": 7,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 84.56668116174683,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-608f169f",
+   "parents": [
+    "6-870ca99e"
+   ],
+   "op": "clone",
+   "generation": 7,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 94.5587429310383,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-54d9cc3d",
+   "parents": [
+    "6-870ca99e",
+    "6-8f8ed050"
+   ],
+   "op": "crossover",
+   "generation": 7,
+   "distance": 1159.9458936305616,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.8284366250038147,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 77.44743526534978,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-faeee32b",
+   "parents": [
+    "6-870ca99e",
+    "6-d707b875"
+   ],
+   "op": "crossover",
+   "generation": 7,
+   "distance": 1.4953145925778348,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 3,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 85.80823812767085,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-496f9e0e",
+   "parents": [
+    "6-89542447",
+    "6-8f8ed050"
+   ],
+   "op": "crossover",
+   "generation": 7,
+   "distance": 1380.5770521410082,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.2931849479675293,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 47.29102782531492,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 71.78815687008853,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-90e12cbf",
+   "parents": [
+    "6-abd1a151",
+    "6-8f8ed050"
+   ],
+   "op": "crossover",
+   "generation": 7,
+   "distance": 1635.6420071078476,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.2550264053348026
+     },
+     {
+      "angle": 4.137485805089473,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.535626624150983
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 74.45227946974966,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 53.51222963377217,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.5862947116363233,
+      "density": 78.23121755067781,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 105.84692133726725,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-979e15da",
+   "parents": [
+    "6-d707b875"
+   ],
+   "op": "mutation",
+   "generation": 7,
+   "distance": 1753.969084784578,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4875348378188551,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.8136984109233545
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 66.59416810230204,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-f36d06e5",
+   "parents": [
+    "6-d707b875"
+   ],
+   "op": "mutation",
+   "generation": 7,
+   "distance": 1388.0058459646118,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.234771651987693,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 88.32443281905341,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-33675c34",
+   "parents": [
+    "6-d707b875",
+    "6-870ca99e"
+   ],
+   "op": "crossover",
+   "generation": 7,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 89.90990570966403,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-e8382264",
+   "parents": [
+    "6-89542447",
+    "6-870ca99e"
+   ],
+   "op": "crossover",
+   "generation": 7,
+   "distance": 1511.415381620577,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.8555129008817994,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 47.29102782531492,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 81.71383392568157,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-45c36931",
+   "parents": [
+    "6-fa906da6",
+    "6-8f8ed050"
+   ],
+   "op": "crossover",
+   "generation": 7,
+   "distance": 1578.482543684122,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 0.9028111588702464,
+      "length": 0.9
+     },
+     {
+      "angle": 1.962771340307109,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.2550264053348026
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.832454041676643,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 74.45227946974966,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 78.23121755067781,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 77.34240879185745,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-19d6e910",
+   "parents": [
+    "6-870ca99e"
+   ],
+   "op": "mutation",
+   "generation": 7,
+   "distance": 1635.4284378774191,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.109618371287084,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.898542033027673
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 99.87808187650876,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-eb5f4840",
+   "parents": [
+    "6-89542447",
+    "6-870ca99e"
+   ],
+   "op": "crossover",
+   "generation": 7,
+   "distance": 1054.643582715984,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.9096184733450711
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.693899970839482
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.7712845822643144,
+      "density": 70.54886061448134,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 47.29102782531492,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 69.84279103254505,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-e0900c41",
+   "parents": [
+    "6-870ca99e"
+   ],
+   "op": "mutation",
+   "generation": 7,
+   "distance": 1254.5905373518956,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 0.8249878248656752
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 63.791481875939326,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 64.28004623388331,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 99.13291079908777,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-e34efc86",
+   "parents": [
+    "6-870ca99e"
+   ],
+   "op": "mutation",
+   "generation": 7,
+   "distance": 1387.6050326536629,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 1.0033303480625386
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": 1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 83.81879326597368,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-ef322a44",
+   "parents": [
+    "6-89542447",
+    "6-8f8ed050"
+   ],
+   "op": "crossover",
+   "generation": 7,
+   "distance": 1167.658549191303,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 2,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.6430079631603425
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 47.29102782531492,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 95.96762318004659,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-48c7b689",
+   "parents": [
+    "7-8c7eb732"
+   ],
+   "op": "clone",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 84.56668116174683,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-d00aa8d4",
+   "parents": [
+    "7-608f169f"
+   ],
+   "op": "clone",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 94.5587429310383,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-5dd9f10f",
+   "parents": [
+    "7-8c7eb732",
+    "7-608f169f"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 3,
+      "radius": 0.4406799529307238,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.5232865923434443,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 79.63073546016278,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-705aea14",
+   "parents": [
+    "7-8c7eb732"
+   ],
+   "op": "mutation",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6402382604418259,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 64.07477974408818,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-335a1932",
+   "parents": [
+    "7-608f169f",
+    "7-8c7eb732"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 66.3900562576324,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 92.80061205455138,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-b1217850",
+   "parents": [
+    "7-608f169f",
+    "7-19d6e910"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.109618371287084,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 3,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.37227417756263015,
+      "density": 58.18687712579258,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 97.06556052880336,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-d5e9eddc",
+   "parents": [
+    "7-90e12cbf",
+    "7-608f169f"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.2550264053348026
+     },
+     {
+      "angle": 4.137485805089473,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 77.19531943490179,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 53.51222963377217,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.5862947116363233,
+      "density": 78.23121755067781,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 101.08682163342115,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-8b190b93",
+   "parents": [
+    "7-33675c34",
+    "7-90e12cbf"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.664155652675536,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 91.02163775099899,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-568de043",
+   "parents": [
+    "7-8c7eb732",
+    "7-33675c34"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.5310381519465214,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 98.60527678316924,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-b327ea20",
+   "parents": [
+    "7-608f169f"
+   ],
+   "op": "mutation",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6253880339436011,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 103.39743919909779,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-ca9ad517",
+   "parents": [
+    "7-608f169f",
+    "7-33675c34"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 0,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 79.80047246939114,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-a8e9bc2f",
+   "parents": [
+    "7-33675c34"
+   ],
+   "op": "mutation",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.7925282434195733,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 80.6751661721363,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-33d1b514",
+   "parents": [
+    "7-608f169f"
+   ],
+   "op": "mutation",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4108270889887553,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1898114540101539
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.241271970432398,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.767126178938895,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 107.65155655996296,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-7c73298f",
+   "parents": [
+    "7-33675c34"
+   ],
+   "op": "mutation",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 59.598714541429075,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 89.10266189413727,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-2a3eaf6a",
+   "parents": [
+    "7-608f169f",
+    "7-19d6e910"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.152005422096754,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.771825416931638,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.898542033027673
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 93.73362528312339,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-14d93a6b",
+   "parents": [
+    "7-33675c34"
+   ],
+   "op": "mutation",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1.122662190581603
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 98.87980976081792,
+   "humanTouched": false,
+   "prunedParents": false
+  }
+ ]
+}
