@@ -21,9 +21,11 @@
     "generar:escenario-evolucion": "node --import tsx scripts/generar-escenario-evolucion.ts",
     "generar:escenario-especies": "node --import tsx scripts/generar-escenario-especies.ts",
     "smoke:traspaso": "bash scripts/smoke-traspaso.sh",
-    "generar:escenarios": "node --import tsx scripts/generar-escenarios.ts"
+    "generar:escenarios": "node --import tsx scripts/generar-escenarios.ts",
+    "generar:escenario-linaje": "node --import tsx scripts/generar-escenario-linaje.ts"
   },
   "dependencies": {
+    "@dagrejs/dagre": "^3.1.1",
     "idb-keyval": "^6.3.0",
     "next": "16.4.2",
     "phaser": "^4.2.1",

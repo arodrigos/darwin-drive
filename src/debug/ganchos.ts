@@ -79,7 +79,7 @@ export function estado() {
   };
 }
 
-const ESCENARIOS_SOPORTADOS = new Set(["vacio", "pista", "rankings", "garaje", "genoma", "evolucion", "especies"]);
+const ESCENARIOS_SOPORTADOS = new Set(["vacio", "pista", "rankings", "garaje", "genoma", "evolucion", "linaje", "especies"]);
 
 export interface Gancho {
   latencias: typeof latencias;
