@@ -39,7 +39,10 @@ async function leerClaves(page: Page): Promise<Record<string, unknown>> {
           valores.onsuccess = () => {
             const out: Record<string, unknown> = {};
             (claves.result as string[]).forEach((k, i) => {
-              if (k.startsWith("dd:v1:")) out[k] = valores.result[i];
+              // El archivo de especies vacío lo escribe la propia app al arrancar, según el momento: no es contenido de la copia.
+              const v = valores.result[i];
+              const vacio = typeof v === "object" && v !== null && !Array.isArray(v) && Object.keys(v).length === 0;
+              if (k.startsWith("dd:v1:") && !vacio) out[k] = v;
             });
             resolve(out);
           };
