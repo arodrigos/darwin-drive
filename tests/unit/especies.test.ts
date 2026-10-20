@@ -16,7 +16,7 @@ import {
   type SpeciesArchive,
 } from "../../src/evolution/species";
 import { PHYSICS_VERSION, type CarResult } from "../../src/sim/constants";
-import { STOCK_CAR, normalizeGenome, type Genome } from "../../src/sim/genome";
+import { STOCK_CAR, normalizeGenome } from "../../src/sim/genome";
 import { createRace } from "../../src/sim/race";
 import { TRACKS, getTrack, type TrackId } from "../../src/sim/tracks";
 import { validateSpecies } from "../../src/storage/schema";
@@ -174,7 +174,7 @@ test("el guardado de especies: ida y vuelta, y se descarta lo inválido por arch
   const avisos: string[] = [];
   const leido = validateSpecies(JSON.parse(JSON.stringify({ rampa: bueno })), (m) => avisos.push(m));
   assert.deepEqual(leido, { rampa: bueno });
-  assert.deepEqual(avisos, []);
+  assert.equal(avisos.length, 0);
 
   const celdaMal = bueno.cells.map((c) => c);
   const primera = celdaMal.findIndex((c) => c !== null);

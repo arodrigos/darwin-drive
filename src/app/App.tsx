@@ -5,6 +5,7 @@ import { instalarGanchos, registrarManejadores, runtime, type Escenario } from "
 import { markInput } from "@/debug/latencias";
 import { evolucionDemo, evolucionSintetica, type EscenarioEvolucion } from "@/debug/escenario-evolucion";
 import { DEFAULT_PARAMS, seedPopulation, type EvolutionState, type GaParams } from "@/evolution/ga";
+import type { SpeciesArchive, SpeciesCell } from "@/evolution/species";
 import { mergeLineage, originOf, pruneLineage, type LineageNode } from "@/evolution/lineage";
 import { createSimRunner } from "@/worker";
 import type { CarResult } from "@/sim/constants";
@@ -17,12 +18,15 @@ import {
   KEY_GARAGE,
   KEY_LINEAGE,
   KEY_RANKINGS,
+  KEY_SPECIES,
   validateEvolution,
   validateGarage,
   validateRankings,
+  validateSpecies,
   type RankingEntry,
   type Rankings,
   type SavedCar,
+  type SpeciesArchives,
 } from "@/storage/schema";
 import {
   GARAGE_FULL_MESSAGE,
@@ -35,6 +39,7 @@ import {
   type RankingOutcome,
 } from "@/storage/store";
 import { Evolucion, type Campeon } from "./components/Evolucion";
+import { Especies } from "./components/Especies";
 import { Explorar } from "./components/Explorar";
 import { Garaje } from "./components/Garaje";
 import { InicioEvolucion, nuevaSemilla, type Siembra } from "./components/InicioEvolucion";
@@ -45,7 +50,7 @@ import { Taller } from "./components/Taller";
 import { medirEnTodasLasPistas, type MedicionEnCurso } from "./medir-pistas";
 import { resumenMedicion } from "./ranking-text";
 
-type Pantalla = "portada" | "explorar" | "pista" | "taller" | "garaje" | "rankings" | "evolucion-inicio" | "evolucion";
+type Pantalla = "portada" | "explorar" | "pista" | "taller" | "garaje" | "rankings" | "evolucion-inicio" | "evolucion" | "especies";
 
 export const SIN_GUARDADO =
   "Este navegador no deja guardar. Puedes jugar, pero los rankings y el garaje se perderán al cerrar.";
@@ -63,6 +68,8 @@ function esGenoma(v: unknown): v is Genome {
 
 export function App() {
   const [screen, setScreen] = useState<Pantalla>("portada");
+  const [especies, setEspecies] = useState<SpeciesArchives>({});
+  const especiesRef = useRef<SpeciesArchives>({});
   // De dónde se abrió la pista: «Volver» regresa allí.
   const [origenPista, setOrigenPista] = useState<Pantalla>("portada");
   const [trackId, setTrackId] = useState<TrackId>(DEFAULT_TRACK_ID);
@@ -126,6 +133,21 @@ export function App() {
     aplicarRankings(r);
     aplicarGaraje(g);
   }, [aplicarRankings, aplicarGaraje]);
+
+  const aplicarEspecies = useCallback((s: SpeciesArchives) => {
+    especiesRef.current = s;
+    setEspecies(s);
+  }, []);
+
+  // Cada lote deja guardado el archivo de su pista; los de las otras pistas no se tocan.
+  const guardarEspecies = useCallback(
+    async (archive: SpeciesArchive) => {
+      const todo: SpeciesArchives = { ...especiesRef.current, [archive.trackId]: archive };
+      await save(KEY_SPECIES, todo);
+      aplicarEspecies(todo);
+    },
+    [aplicarEspecies],
+  );
 
   const aplicarEvolucion = useCallback((state: EvolutionState | null) => {
     evolucionRef.current = state;
@@ -256,6 +278,7 @@ export function App() {
       aplicarRankings(r);
       aplicarGaraje(g);
       lineageRef.current = (data[KEY_LINEAGE] as LineageNode[] | undefined) ?? [];
+      aplicarEspecies((data[KEY_SPECIES] as SpeciesArchives | undefined) ?? {});
       aplicarEvolucion((data[KEY_EVOLUTION] as EvolutionState | undefined) ?? null);
     });
     registrarManejadores({
@@ -279,6 +302,8 @@ export function App() {
           runtime.ultimaInscripcion = null;
           await save(KEY_EVOLUTION, null);
           await save(KEY_LINEAGE, null);
+          await save(KEY_SPECIES, null);
+          aplicarEspecies({});
           lineageRef.current = [];
           aplicarEvolucion(null);
           editar(STOCK_CAR);
@@ -294,6 +319,16 @@ export function App() {
           if (!estado || !validateEvolution(estado)) throw new Error("escenario con evolución inválida");
           await save(KEY_EVOLUTION, estado);
           aplicarEvolucion(estado);
+        }
+        if (e.especies !== undefined) {
+          const datos =
+            e.especies === "demo"
+              ? JSON.parse((await import("@/debug/escenarios/especies-demo.texto")).default)
+              : e.especies;
+          const validos = validateSpecies(datos);
+          if (!validos) throw new Error("escenario con especies inválidas");
+          await save(KEY_SPECIES, validos);
+          aplicarEspecies(validos);
         }
         if (e.rankings === "demo" || (typeof e.rankings === "object" && e.rankings !== null)) {
           // El JSON de demostración solo se descarga cuando un escenario lo pide.
@@ -325,7 +360,7 @@ export function App() {
         setScreen("portada");
       },
     });
-  }, [aplicarRankings, aplicarGaraje, aplicarEvolucion, editar]);
+  }, [aplicarRankings, aplicarGaraje, aplicarEvolucion, aplicarEspecies, editar]);
 
   useEffect(() => {
     runtime.pantalla = screen === "explorar" ? "pista" : screen === "evolucion-inicio" ? "evolucion" : screen;
@@ -461,6 +496,7 @@ export function App() {
           continuar={
             evolucion ? { generation: evolucion.generation, trackName: getTrack(evolucion.trackId)?.name ?? evolucion.trackId } : null
           }
+          onEspecies={() => setScreen("especies")}
           onContinuar={() => {
             setEvolKey((k) => k + 1);
             setScreen("evolucion");
@@ -569,6 +605,35 @@ export function App() {
           rankings={rankings}
           onGeneracion={onGeneracion}
           onGuardarCampeon={onGuardarCampeon}
+          onBack={() => setScreen("portada")}
+        />
+      )}
+      {screen === "especies" && (
+        <Especies
+          key={trackId}
+          trackId={trackId}
+          onTrack={chooseTrack}
+          rankings={rankings}
+          archive={especies[trackId]}
+          onArchive={guardarEspecies}
+          onWatch={(c, t) => {
+            chooseTrack(t);
+            probar(c.genome, "evolución", "especies");
+          }}
+          onOpenInWorkshop={(c) => {
+            editar(c.genome);
+            setScreen("taller");
+          }}
+          onSaveToGarage={(c, i, t) =>
+            guardarGenoma(c.genome, "evolución", `Especie ${i + 1} · ${getTrack(t)?.name ?? t}`)
+          }
+          onEvolve={(c: SpeciesCell, t) => {
+            chooseTrack(t);
+            void lanzarEvolucion({ ...DEFAULT_PARAMS, seed: nuevaSemilla() }, t, {
+              kind: "genomes",
+              items: [{ genome: c.genome, op: "design" }],
+            });
+          }}
           onBack={() => setScreen("portada")}
         />
       )}
