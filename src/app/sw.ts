@@ -16,6 +16,8 @@ const serwist = new Serwist({
   runtimeCaching: [],
   precacheOptions: {
     cleanupOutdatedCaches: true,
+    // Una sola página: «/», «/?pruebas=1» o «/?rendimiento=1» son el mismo HTML.
+    ignoreURLParametersMatching: [/.*/],
     plugins: [
       {
         cacheWillUpdate: async ({ response }) => (respuestaPrecacheable(response, self.location.origin) ? response : null),
