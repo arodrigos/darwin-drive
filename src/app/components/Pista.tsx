@@ -106,7 +106,9 @@ export function Pista(props: PistaProps) {
         runtime.cochesVivos = m.poses.filter((p) => !p.finished).length;
         registrarPoses(m.simTime, runtime.cochesVivos);
         if (hud.current) hud.current.textContent = formatMeters(maxX);
-        esperas = esperas.filter((e) => (m.simTime >= e.hasta ? (e.resolver(), false) : true));
+        // Con todos los coches terminados el motor emite raceDone justo después: si la espera se resolviera
+        // aquí, adelantarSimulacion podría devolver antes de que exista ultimoResultado (CI lento).
+        if (runtime.cochesVivos > 0) esperas = esperas.filter((e) => (m.simTime >= e.hasta ? (e.resolver(), false) : true));
       } else if (m.type === "carFinished") {
         scene.carFinished(m.result);
       } else if (m.type === "raceDone") {
