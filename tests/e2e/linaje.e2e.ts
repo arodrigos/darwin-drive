@@ -50,9 +50,17 @@ async function capturas(page: Page, nombre: string) {
   }
 }
 
-/** El nodo de la generación 3 con dos padres del linaje demo (el de la prueba del criterio). */
+/** El nodo de la generación 3 con dos padres entre los antepasados del campeón demo (el de la prueba del criterio). */
 function nodoGen3(): Nodo {
-  const n = demo.find((x) => x.generation === 3 && x.parents.length === 2 && x.distance !== null);
+  const dibujados = new Set<string>();
+  const pila = [demoJson.campeon];
+  while (pila.length > 0) {
+    const id = pila.pop()!;
+    if (dibujados.has(id)) continue;
+    dibujados.add(id);
+    pila.push(...porId.get(id)!.parents);
+  }
+  const n = demo.find((x) => dibujados.has(x.id) && x.generation === 3 && x.parents.length === 2 && x.distance !== null);
   if (!n) throw new Error("el linaje demo no tiene un cruce en la generación 3");
   return n;
 }
@@ -196,7 +204,7 @@ test("ln-4 un linaje de 300 nodos se dispone rápido, se desplaza y mantiene eti
   await page.getByTestId("zoom-mas").click();
   expect((await svg.boundingBox())!.width).toBeGreaterThan(despues.width);
 
-  await tocar(page, "g35-0");
+  await tocar(page, "g35-9");
   await expect(page.getByTestId("hoja-nodo")).toBeVisible();
   const lat = await page.evaluate(() => window.__debug!.latencias().filter((l) => l.evento === "abrir-nodo"));
   expect(lat.length).toBeGreaterThan(0);

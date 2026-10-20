@@ -351,20 +351,23 @@ export function App() {
           aplicarGaraje(validos);
         }
         if (e.linaje !== undefined) {
-          const crudo: unknown =
+          const demo =
             e.linaje === "demo-5-generaciones"
-              ? JSON.parse((await import("@/debug/escenarios/linaje-demo-5.texto")).default).nodos
-              : e.linaje;
-          const nodos = validateLineage(crudo);
+              ? (JSON.parse((await import("@/debug/escenarios/linaje-demo-5.texto")).default) as { nodos: unknown; campeon: string })
+              : null;
+          const nodos = validateLineage(demo ? demo.nodos : e.linaje);
           if (!nodos || nodos.length === 0) throw new Error("escenario con linaje inválido");
           await save(KEY_LINEAGE, nodos);
           lineageRef.current = nodos;
           setLinajeNodos(nodos);
           setLinajeSel(null);
           setLinajeNodo(null);
-          // El mejor coche medido entra en el ranking de su pista como lo haría una evolución: de ahí cuelga «n.º 1 de …».
+          // El campeón entra en el ranking de su pista como lo haría una evolución: de ahí cuelga «n.º 1 de …».
+          // En el demo es el que señala el escenario (entre clones de igual distancia, el último); si no, el de más metros.
           const medidos = nodos.filter((n) => n.distance !== null && n.trackId !== null);
-          const campeon = medidos.reduce<LineageNode | null>((a, n) => (a === null || n.distance! > a.distance! ? n : a), null);
+          const campeon =
+            nodos.find((n) => n.id === demo?.campeon) ??
+            medidos.reduce<LineageNode | null>((a, n) => (a === null || n.distance! > a.distance! ? n : a), null);
           const track = campeon?.trackId ? getTrack(campeon.trackId) : null;
           if (campeon && track) {
             await updateRanking({

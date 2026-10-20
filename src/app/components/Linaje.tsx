@@ -53,10 +53,10 @@ export function etiquetaMano(node: LineageNode): string | null {
 }
 
 function Coche({ node }: { node: LineageNode }) {
-  const S = 9;
+  const S = 8;
   const pts = node.genome.body.map((v) => [Math.cos(v.angle) * v.length * S, -Math.sin(v.angle) * v.length * S] as const);
   return (
-    <g transform={`translate(${NODE_WIDTH / 2} 20)`} aria-hidden="true">
+    <g transform={`translate(${NODE_WIDTH / 2} 21)`} aria-hidden="true">
       <polygon points={pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ")} fill={`hsl(${node.hue} 70% 55%)`} stroke="#1b1b1b" strokeWidth="1.5" />
       {node.genome.wheels
         .filter((w) => w.vertex >= 0)
@@ -275,14 +275,14 @@ export function Linaje(props: LinajeProps) {
                     >
                       <rect width={NODE_WIDTH} height={NODE_HEIGHT} rx="8" fill="#1d2d3d" stroke={n.id === props.nodoId ? "#ffd23f" : "#4b6178"} strokeWidth={n.id === props.nodoId ? 3 : 1.5} />
                       <Coche node={n} />
-                      <text x={NODE_WIDTH / 2} y="46" textAnchor="middle" fontSize="12" fontWeight="700" fill="#fff" data-testid="nodo-distancia">
+                      <text x={NODE_WIDTH / 2} y="52" textAnchor="middle" fontSize="12" fontWeight="700" fill="#fff" data-testid="nodo-distancia">
                         {n.distance !== null ? formatMeters(n.distance) : "—"}
                       </text>
-                      <text x={NODE_WIDTH / 2} y="60" textAnchor="middle" fontSize="12" fill="#cfdceb" data-testid="nodo-pista">
+                      <text x={NODE_WIDTH / 2} y="64" textAnchor="middle" fontSize="12" fill="#cfdceb" data-testid="nodo-pista">
                         {nombreCorto(n.trackId)} g{n.generation}
                       </text>
                       {mano && (
-                        <text x={NODE_WIDTH / 2} y="74" textAnchor="middle" fontSize="12" fontWeight="700" fill="#ffd23f" data-testid="nodo-mano">
+                        <text x={NODE_WIDTH / 2} y="75" textAnchor="middle" fontSize="12" fontWeight="700" fill="#ffd23f" data-testid="nodo-mano">
                           {mano}
                         </text>
                       )}

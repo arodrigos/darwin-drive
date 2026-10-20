@@ -2,9 +2,9 @@ import dagre from "@dagrejs/dagre";
 import type { LineageNode } from "./lineage";
 
 export const NODE_WIDTH = 96;
-export const NODE_HEIGHT = 78;
+export const NODE_HEIGHT = 76;
 const NODE_SEP = 12;
-const RANK_SEP = 30;
+const RANK_SEP = 20;
 const MARGIN = 12;
 /** Por encima de esto dagre tarda cientos de ms en un grafo denso: se usa la disposición rápida propia. */
 export const DAGRE_MAX_NODES = 30;
