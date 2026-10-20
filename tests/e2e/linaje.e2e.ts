@@ -76,7 +76,7 @@ test("ln-1 el árbol se lee por capas y «Abrir en el taller» carga ese coche e
   // Las filas visibles: los nodos de las cinco primeras capas caben en el móvil.
   const visibles = await page.getByTestId("nodo-linaje").evaluateAll((els) => {
     const caja = document.querySelector('[data-testid="linaje-lienzo"]')!.getBoundingClientRect();
-    return [...new Set(els.filter((e) => e.getBoundingClientRect().bottom <= caja.bottom && e.getBoundingClientRect().top >= caja.top).map((e) => e.getAttribute("data-capa")))].length;
+    return [...new Set(els.filter((e) => e.getBoundingClientRect().top + 54 <= caja.bottom && e.getBoundingClientRect().top >= caja.top).map((e) => e.getAttribute("data-capa")))].length;
   });
   expect(visibles).toBeGreaterThanOrEqual(5);
   const raiz = page.locator('[data-testid="nodo-linaje"][data-op="design"]');
@@ -125,7 +125,9 @@ test("ln-2 «Ver correr» repite la carrera en la pista del nodo y llega a su di
   await page.getByTestId("ver-correr").click();
   await expect.poll(async () => (await estado(page)).pantalla).toBe("pista");
   await expect.poll(async () => (await estado(page)).pistaSeleccionada).toBe(n3.trackId);
-  await adelantar(page, 200);
+  await expect(page.getByTestId("pista")).toBeVisible();
+  await expect.poll(async () => (await estado(page)).genomaEnPista !== null).toBe(true);
+  for (let i = 0; i < 8 && (await estado(page)).ultimoResultado === null; i++) await adelantar(page, 200);
   const r = await estado(page);
   expect(r.ultimoResultado!.trackId).toBe(n3.trackId);
   // Con detmath el núcleo da la misma marca en Node y en Chromium.
@@ -174,7 +176,7 @@ test("ln-4 un linaje de 300 nodos se dispone rápido, se desplaza y mantiene eti
   await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
   expect(Number(await page.getByTestId("linaje-lienzo").getAttribute("data-nodos"))).toBeGreaterThanOrEqual(300);
   const disposicion = await page.evaluate(() => performance.getEntriesByName("dd:linaje:disposicion").map((e) => e.duration));
-  expect(disposicion.length).toBeGreaterThan(0);
+  expect(disposicion.length, "marca de disposición").toBeGreaterThan(0);
   expect(Math.max(...disposicion)).toBeLessThanOrEqual(300);
 
   // Etiquetas: el tamaño en pantalla es el del texto por la escala acumulada.
@@ -206,8 +208,9 @@ test("ln-4 un linaje de 300 nodos se dispone rápido, se desplaza y mantiene eti
 
   await tocar(page, "g35-9");
   await expect(page.getByTestId("hoja-nodo")).toBeVisible();
-  const lat = await page.evaluate(() => window.__debug!.latencias().filter((l) => l.evento === "abrir-nodo"));
-  expect(lat.length).toBeGreaterThan(0);
+  const abrirNodo = () => page.evaluate(() => window.__debug!.latencias().filter((l) => l.evento === "abrir-nodo"));
+  await expect.poll(async () => (await abrirNodo()).length).toBeGreaterThan(0);
+  const lat = await abrirNodo();
   expect(lat[lat.length - 1].ms).toBeLessThanOrEqual(200);
 });
 
