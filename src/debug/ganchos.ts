@@ -86,6 +86,8 @@ export interface Gancho {
   estado: typeof estado;
   cargarEscenario(e: Escenario): Promise<void>;
   adelantarSimulacion(segundos: number): Promise<void>;
+  /** pw-4 y pw-5: el service worker real, sin esperar a un despliegue. */
+  pwa: { readonly controlado: boolean; forzarVersionNueva(): Promise<void> };
 }
 
 declare global {
@@ -111,6 +113,14 @@ export function instalarGanchos(): void {
     },
     async adelantarSimulacion(segundos) {
       await runtime.avanzar?.(segundos);
+    },
+    pwa: {
+      get controlado() {
+        return "serviceWorker" in navigator && navigator.serviceWorker.controller !== null;
+      },
+      async forzarVersionNueva() {
+        await (await import("@/pwa/ganchos")).forzarVersionNueva();
+      },
     },
   };
 }

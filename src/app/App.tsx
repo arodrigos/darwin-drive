@@ -11,7 +11,7 @@ import { createSimRunner } from "@/worker";
 import { PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
 import { DEFAULT_TRACK_ID, getTrack, TRACKS, type TrackId } from "@/sim/tracks";
-import { DEFAULT_META, loadMeta, saveMeta, type Meta } from "@/storage/meta";
+import { DEFAULT_META, loadMeta, META_KEY, saveMeta, type Meta } from "@/storage/meta";
 import {
   emptyRankings,
   KEY_EVOLUTION,
@@ -161,6 +161,30 @@ export function App() {
     evolucionRef.current = state;
     setEvolucion(state);
   }, []);
+
+  const releerTodo = useCallback(async () => {
+    const { data, available } = await loadAll();
+    runtime.disponible = available;
+    const r = (data[KEY_RANKINGS] as Rankings | undefined) ?? emptyRankings();
+    const g = (data[KEY_GARAGE] as SavedCar[] | undefined) ?? [];
+    rankingsRef.current = r;
+    garageRef.current = g;
+    aplicarRankings(r);
+    aplicarGaraje(g);
+    const nodos = (data[KEY_LINEAGE] as LineageNode[] | undefined) ?? [];
+    lineageRef.current = nodos;
+    setLinajeNodos(nodos);
+    setLinajeSel(null);
+    setLinajeNodo(null);
+    origenTaller.current = null;
+    aplicarEspecies((data[KEY_SPECIES] as SpeciesArchives | undefined) ?? {});
+    aplicarEvolucion((data[KEY_EVOLUTION] as EvolutionState | undefined) ?? null);
+    const m = (data[META_KEY] as Meta | undefined) ?? DEFAULT_META;
+    setMeta(m);
+    setTrackId(m.lastTrack);
+    runtime.pistaSeleccionada = m.lastTrack;
+    runtime.ultimaInscripcion = null;
+  }, [aplicarRankings, aplicarGaraje, aplicarEspecies, aplicarEvolucion]);
 
   // El linaje se poda protegiendo lo que alguien puede volver a abrir: la población viva, los favoritos,
   // los mejores de cada generación y los coches de los rankings y del garaje.
@@ -640,6 +664,8 @@ export function App() {
             setScreen("evolucion-inicio");
           }}
           onBack={() => setScreen("portada")}
+          almacenDisponible={runtime.disponible}
+          onImportada={releerTodo}
         />
       )}
       {screen === "evolucion-inicio" && (

@@ -6,6 +6,7 @@ import { measureOnNextFrame } from "@/debug/latencias";
 import type { Genome } from "@/sim/genome";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import type { SavedCar } from "@/storage/schema";
+import { CopiaSeguridad } from "./CopiaSeguridad";
 import { TrackPicker, type RankingsView } from "./TrackPicker";
 
 export const GARAJE_VACIO = "Tu garaje está vacío. Diseña un coche en el Taller o evoluciona uno y guárdalo aquí.";
@@ -49,6 +50,9 @@ export function Garaje(props: {
   onDelete: (car: SavedCar) => void;
   onTaller: () => void;
   onBack: () => void;
+  almacenDisponible: boolean;
+  /** Tras reemplazar el guardado con una copia: la app vuelve a leerlo todo. */
+  onImportada: () => Promise<void>;
 }) {
   const midiendoAhora = props.midiendo !== null;
   // El progreso ya está en pantalla cuando este efecto corre.
@@ -114,6 +118,7 @@ export function Garaje(props: {
           ))}
         </ul>
       )}
+      <CopiaSeguridad almacenDisponible={props.almacenDisponible} onImportada={props.onImportada} />
     </div>
   );
 }
