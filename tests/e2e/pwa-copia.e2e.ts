@@ -13,8 +13,13 @@ const INVALIDA = "Este fichero no es una copia de Darwin Drive o es de una versi
 const NO_PERSISTENTE =
   "Safari puede borrar el guardado si pasas 7 días sin jugar. Añade el juego a la pantalla de inicio o exporta una copia.";
 
-type Estado = { rankings: Record<string, { distance: number }[]>; garaje: number; generacion: number | null };
-const estado = (page: Page) => page.evaluate(() => window.__debug!.estado() as unknown as Estado);
+type Estado = { rankings: Record<string, { distance: number }[]>; garaje: number };
+// Solo lo que la copia guarda: la pantalla abierta o el estado del navegador no forman parte de ella.
+const estado = (page: Page) =>
+  page.evaluate(() => {
+    const e = window.__debug!.estado() as unknown as Estado;
+    return { rankings: e.rankings, garaje: e.garaje };
+  });
 
 async function abrir(page: Page) {
   await page.goto("/?pruebas=1");
