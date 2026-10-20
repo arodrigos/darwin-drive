@@ -67,7 +67,23 @@ async function arrastrar(page: Page, i: number, hacia: (p: { x: number; y: numbe
   await page.mouse.up();
 }
 
+/** Espera a que el lienzo deje de cambiar de tamaño: al tocar una rueda aparece o se va el panel de radio y la escena se recoloca tras el ResizeObserver. */
+async function lienzoQuieto(page: Page) {
+  let previa = "";
+  await expect
+    .poll(async () => {
+      const b = await page.locator("canvas").boundingBox();
+      await page.evaluate(() => new Promise((ok) => requestAnimationFrame(() => requestAnimationFrame(ok))));
+      const actual = JSON.stringify(b);
+      const quieto = actual === previa;
+      previa = actual;
+      return quieto;
+    })
+    .toBe(true);
+}
+
 async function tocar(page: Page, i: number) {
+  await lienzoQuieto(page);
   const p = await vertice(page, i);
   await page.mouse.click(p.x, p.y);
 }
