@@ -6,10 +6,10 @@ async function paso<T>(nombre: string, f: () => Promise<T>, ms = 25_000): Promis
   const a = t0();
   try {
     const r = await Promise.race([f(), new Promise<never>((_, no) => setTimeout(() => no(new Error("TOPE")), ms))]);
-    linea.push(`${nombre}:${t0() - a}`);
+    linea.push(`${nombre.slice(0,5)}:${t0() - a}`);
     return r;
   } catch (e) {
-    linea.push(`${nombre}:FALLA ${String(e).slice(0, 60).replace(/\s+/g, " ")}@${t0() - a}`);
+    linea.push(`${nombre}:FALLA ${String(e).slice(0, 25).replace(/\s+/g, " ")}@${t0() - a}`);
     return undefined;
   }
 }
@@ -23,11 +23,7 @@ test("diag dif-3", async ({ page }) => {
   await paso("escenario", () => page.evaluate(() => window.__debug!.cargarEscenario({ vacio: true, rankings: "demo-version-anterior" } as never)));
   await paso("goto2", () => page.goto("/?pruebas=1"));
   await paso("dbg2", () => page.waitForFunction(() => Boolean(window.__debug)));
-  for (let i = 0; i < 6; i++) {
-    const e = await paso(`estado${i}`, () => estado(page), 5000);
-    linea.push(JSON.stringify((e as { migracion?: unknown })?.migracion ?? null).slice(0, 80));
-    await page.waitForTimeout(3000);
-  }
+  await page.waitForTimeout(6000);
   await paso("tarjeta", () => page.getByTestId("tarjeta-cordillera").click({ timeout: 15000 }), 20000);
   await paso("selector", () => page.getByTestId("selector-pista").click({ timeout: 15000 }), 20000);
   for (const [w, h] of [[360, 640], [820, 1180], [1180, 820]]) {
