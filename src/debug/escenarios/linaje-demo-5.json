@@ -75,8 +75,7 @@
    },
    "hue": 90.14430284500122,
    "humanTouched": true,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-a842ee77",
@@ -153,8 +152,7 @@
    },
    "hue": 99.08995789079802,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-73063361",
@@ -231,8 +229,7 @@
    },
    "hue": 93.14096355035616,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-85303cf4",
@@ -309,8 +306,7 @@
    },
    "hue": 102.97728877711927,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-418483b1",
@@ -387,8 +383,7 @@
    },
    "hue": 83.9385865678459,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-5d751b40",
@@ -465,8 +460,7 @@
    },
    "hue": 97.54310644078532,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-0640b7d8",
@@ -543,8 +537,7 @@
    },
    "hue": 72.82859690631096,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-7390f17a",
@@ -621,8 +614,7 @@
    },
    "hue": 92.13461131231088,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-b967041d",
@@ -699,8 +691,7 @@
    },
    "hue": 96.07092612800443,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-f85f279a",
@@ -777,8 +768,7 @@
    },
    "hue": 95.84891622302331,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-8c204d97",
@@ -855,8 +845,7 @@
    },
    "hue": 93.87252845176528,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-b58a93e7",
@@ -933,8 +922,7 @@
    },
    "hue": 88.188155369588,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-220e44dc",
@@ -1011,8 +999,7 @@
    },
    "hue": 79.89668552118229,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-d032891b",
@@ -1089,8 +1076,7 @@
    },
    "hue": 107.03528075363675,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-d0c6ce3a",
@@ -1167,8 +1153,7 @@
    },
    "hue": 98.54310588169767,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "1-fc0b5fd2",
@@ -1245,8 +1230,7 @@
    },
    "hue": 93.82763209901577,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-766af8c7",
@@ -1323,8 +1307,7 @@
    },
    "hue": 99.08995789079802,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-90fc7e54",
@@ -1401,8 +1384,7 @@
    },
    "hue": 93.14096355035616,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-90e6264d",
@@ -1480,8 +1462,7 @@
    },
    "hue": 117.91883232893099,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-f0a4b815",
@@ -1559,8 +1540,7 @@
    },
    "hue": 87.32945163638254,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-fe2c922e",
@@ -1638,8 +1618,7 @@
    },
    "hue": 113.70534128309401,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-2a378951",
@@ -1717,8 +1696,7 @@
    },
    "hue": 81.3725245752853,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-8b7b0b8f",
@@ -1796,8 +1774,7 @@
    },
    "hue": 73.01563013197489,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-1f812b78",
@@ -1875,8 +1852,7 @@
    },
    "hue": 101.54436187219142,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-086eca3f",
@@ -1953,8 +1929,7 @@
    },
    "hue": 92.77191871071602,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-81c5907b",
@@ -2032,8 +2007,7 @@
    },
    "hue": 88.70397986035931,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-c4afff34",
@@ -2110,8 +2084,7 @@
    },
    "hue": 96.24356042228942,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-703265d0",
@@ -2189,8 +2162,7 @@
    },
    "hue": 110.76080311216475,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-4db89a10",
@@ -2268,8 +2240,7 @@
    },
    "hue": 85.6075102862377,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-6fb4138a",
@@ -2346,8 +2317,7 @@
    },
    "hue": 112.03566902458738,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-7b86a8dc",
@@ -2424,8 +2394,7 @@
    },
    "hue": 89.38785263847626,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "2-228f2754",
@@ -2503,8 +2472,7 @@
    },
    "hue": 72.12396331606243,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-8db4aa9d",
@@ -2581,8 +2549,7 @@
    },
    "hue": 96.24356042228942,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-7be4df5a",
@@ -2659,8 +2626,7 @@
    },
    "hue": 110.76080311216475,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-4cb26199",
@@ -2738,8 +2704,7 @@
    },
    "hue": 78.19848425333544,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-2d3b2060",
@@ -2817,8 +2782,7 @@
    },
    "hue": 98.3083079406897,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-603af81e",
@@ -2895,8 +2859,7 @@
    },
    "hue": 114.10014489016004,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-08d4fa2d",
@@ -2974,8 +2937,7 @@
    },
    "hue": 92.67272176438456,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-0c6a8f07",
@@ -3052,8 +3014,7 @@
    },
    "hue": 87.34423046791824,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-65acd533",
@@ -3131,8 +3092,7 @@
    },
    "hue": 118.2836609387893,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-cf8e5b38",
@@ -3210,8 +3170,7 @@
    },
    "hue": 102.03374804688951,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-2c28edb6",
@@ -3289,8 +3248,7 @@
    },
    "hue": 78.73523765868134,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-4db40bc2",
@@ -3368,8 +3326,7 @@
    },
    "hue": 81.42341686137775,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-9a830dc0",
@@ -3447,8 +3404,7 @@
    },
    "hue": 100.63015883188984,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-418e81a9",
@@ -3526,8 +3482,7 @@
    },
    "hue": 99.70520999427572,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-a0f8b51b",
@@ -3605,8 +3560,7 @@
    },
    "hue": 87.72570075178783,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-b0c66954",
@@ -3683,8 +3637,7 @@
    },
    "hue": 105.910452627859,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "3-cae80ad2",
@@ -3761,8 +3714,7 @@
    },
    "hue": 97.636222039026,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-654d8b91",
@@ -3839,8 +3791,7 @@
    },
    "hue": 87.72570075178783,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-38eb5074",
@@ -3917,8 +3868,7 @@
    },
    "hue": 87.34423046791824,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-bdf40061",
@@ -3996,8 +3946,7 @@
    },
    "hue": 117.15839692786494,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-4d098c6f",
@@ -4075,8 +4024,7 @@
    },
    "hue": 100.58568842225503,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-03e5ca03",
@@ -4154,8 +4102,7 @@
    },
    "hue": 99.57427050675341,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-cb769dd3",
@@ -4232,8 +4179,7 @@
    },
    "hue": 124.00348494468818,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-0ac65c82",
@@ -4311,8 +4257,7 @@
    },
    "hue": 89.85152432150505,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-05657b0a",
@@ -4389,8 +4334,7 @@
    },
    "hue": 92.09452631509214,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-dc8fcea3",
@@ -4467,8 +4411,7 @@
    },
    "hue": 107.57650865893925,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-dd0d1751",
@@ -4546,8 +4489,7 @@
    },
    "hue": 98.43685962708963,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-91bf65f7",
@@ -4625,8 +4567,7 @@
    },
    "hue": 115.74082215273216,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-79e28859",
@@ -4704,8 +4645,7 @@
    },
    "hue": 85.28473564240267,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-7b165b1d",
@@ -4782,8 +4722,7 @@
    },
    "hue": 79.78842356785174,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-dea38274",
@@ -4861,8 +4800,7 @@
    },
    "hue": 89.84939484521499,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-dd4fabae",
@@ -4940,8 +4878,7 @@
    },
    "hue": 85.597333760114,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "4-b96c4ab4",
@@ -5019,8 +4956,7 @@
    },
    "hue": 99.00675896748271,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-db0485af",
@@ -5097,8 +5033,7 @@
    },
    "hue": 89.85152432150505,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-0a7e55e7",
@@ -5175,8 +5110,7 @@
    },
    "hue": 87.72570075178783,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-88cff40a",
@@ -5254,8 +5188,7 @@
    },
    "hue": 91.52680701905439,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-c6f8241d",
@@ -5333,8 +5266,7 @@
    },
    "hue": 80.48051481786024,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-45476b08",
@@ -5412,8 +5344,7 @@
    },
    "hue": 87.69046693717064,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-19d03bf3",
@@ -5491,8 +5422,7 @@
    },
    "hue": 104.36205794860962,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-82047387",
@@ -5570,8 +5500,7 @@
    },
    "hue": 78.19171103740325,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-f02a3075",
@@ -5649,8 +5578,7 @@
    },
    "hue": 105.86823877658412,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-249759fc",
@@ -5728,8 +5656,7 @@
    },
    "hue": 91.30308903626644,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-7f12be61",
@@ -5807,8 +5734,7 @@
    },
    "hue": 95.2018273709873,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-9a1790ee",
@@ -5886,8 +5812,7 @@
    },
    "hue": 85.40269706872482,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-5ec2c86c",
@@ -5964,8 +5889,7 @@
    },
    "hue": 64.70653180657757,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-acf6024d",
@@ -6043,8 +5967,7 @@
    },
    "hue": 110.10444788638,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-148a1fa4",
@@ -6121,8 +6044,7 @@
    },
    "hue": 76.09367995719083,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-c6e16147",
@@ -6200,8 +6122,7 @@
    },
    "hue": 101.28360851402454,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "5-a92e8f8e",
@@ -6279,8 +6200,7 @@
    },
    "hue": 88.06745423805842,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-d050870c",
@@ -6357,8 +6277,7 @@
    },
    "hue": 87.72570075178783,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-a99e9dbf",
@@ -6435,8 +6354,7 @@
    },
    "hue": 89.85152432150505,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-a151d535",
@@ -6513,8 +6431,7 @@
    },
    "hue": 94.42081578408022,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-21b18eee",
@@ -6592,8 +6509,7 @@
    },
    "hue": 90.64743404575165,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-0bf1a468",
@@ -6671,8 +6587,7 @@
    },
    "hue": 97.70881559880382,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-7b3d6e7b",
@@ -6750,8 +6665,7 @@
    },
    "hue": 73.80081679088698,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-89542447",
@@ -6829,8 +6743,7 @@
    },
    "hue": 85.46006640198442,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-6b4f4d96",
@@ -6908,8 +6821,7 @@
    },
    "hue": 63.70829071351392,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-d707b875",
@@ -6987,8 +6899,7 @@
    },
    "hue": 94.50465463290618,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-e20b6fe8",
@@ -7066,8 +6977,7 @@
    },
    "hue": 70.08003680331205,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-60cdad84",
@@ -7145,8 +7055,7 @@
    },
    "hue": 95.07577725605165,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-abae5811",
@@ -7224,8 +7133,7 @@
    },
    "hue": 85.5045472509455,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-fa906da6",
@@ -7303,8 +7211,7 @@
    },
    "hue": 112.03900982732728,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-72a2a8c2",
@@ -7382,8 +7289,7 @@
    },
    "hue": 108.1069407226388,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-43fc7231",
@@ -7460,8 +7366,7 @@
    },
    "hue": 75.86067490830203,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "6-48fd5d3a",
@@ -7539,8 +7444,7 @@
    },
    "hue": 90.44165072743067,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-8c7eb732",
@@ -7617,8 +7521,7 @@
    },
    "hue": 89.85152432150505,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-608f169f",
@@ -7695,8 +7598,7 @@
    },
    "hue": 87.72570075178783,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-54d9cc3d",
@@ -7774,8 +7676,7 @@
    },
    "hue": 76.67333575560366,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-faeee32b",
@@ -7853,8 +7754,7 @@
    },
    "hue": 87.01351011035382,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-496f9e0e",
@@ -7932,8 +7832,7 @@
    },
    "hue": 76.69093452362722,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-90e12cbf",
@@ -8011,8 +7910,7 @@
    },
    "hue": 93.01624129010293,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-979e15da",
@@ -8089,8 +7987,7 @@
    },
    "hue": 75.83775424691851,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-f36d06e5",
@@ -8167,8 +8064,7 @@
    },
    "hue": 90.78906508255153,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-33675c34",
@@ -8246,8 +8142,7 @@
    },
    "hue": 91.115177692347,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-e8382264",
@@ -8325,8 +8220,7 @@
    },
    "hue": 80.55766890971591,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-45c36931",
@@ -8404,8 +8298,7 @@
    },
    "hue": 83.623343669098,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-19d6e910",
@@ -8482,8 +8375,7 @@
    },
    "hue": 93.04503969725829,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-eb5f4840",
@@ -8561,8 +8453,7 @@
    },
    "hue": 68.6866260165794,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-e0900c41",
@@ -8639,8 +8530,7 @@
    },
    "hue": 92.2998686198373,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-0403cdf2",
@@ -8718,8 +8608,7 @@
    },
    "hue": 94.1797611312137,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "7-534b4678",
@@ -8797,8 +8686,7 @@
    },
    "hue": 82.61112086540606,
    "humanTouched": false,
-   "prunedParents": false,
-   "trackVersion": 3
+   "prunedParents": false
   },
   {
    "id": "8-2045f961",

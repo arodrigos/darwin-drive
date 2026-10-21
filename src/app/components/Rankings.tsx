@@ -188,7 +188,7 @@ export function Rankings(props: RankingsProps) {
                         textoEstado(e)
                       )}
                     </span>
-                    <span className="celda-marca" data-testid="fila-fecha">
+                    <span className="celda-marca fecha" data-testid="fila-fecha">
                       {fechaCorta(e.date)}
                     </span>
                   </span>
