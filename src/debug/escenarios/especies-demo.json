@@ -293,8 +293,8 @@
       }
      ]
     },
-    "distance": 634.2784517347294,
-    "bestStep": 4433,
+    "distance": 634.3793184785533,
+    "bestStep": 4448,
     "piezasPerdidas": 0,
     "batch": 4
    },
@@ -364,8 +364,8 @@
       }
      ]
     },
-    "distance": 2678.550504014011,
-    "bestStep": 13083,
+    "distance": 2330.7020199564136,
+    "bestStep": 11179,
     "piezasPerdidas": 0,
     "batch": 6
    },
@@ -435,8 +435,8 @@
       }
      ]
     },
-    "distance": 847.6237489536221,
-    "bestStep": 5044,
+    "distance": 1167.9261061520524,
+    "bestStep": 7279,
     "piezasPerdidas": 0,
     "batch": 5
    },
@@ -578,7 +578,7 @@
       }
      ]
     },
-    "distance": 721.0261704915257,
+    "distance": 721.0278602543615,
     "bestStep": 2794,
     "piezasPerdidas": 0,
     "batch": 5
@@ -649,7 +649,7 @@
       }
      ]
     },
-    "distance": 636.401443936061,
+    "distance": 636.401443385615,
     "bestStep": 4354,
     "piezasPerdidas": 0,
     "batch": 4
@@ -816,7 +816,7 @@
       }
      ]
     },
-    "distance": 85.0432156515073,
+    "distance": 85.04321565150785,
     "bestStep": 899,
     "piezasPerdidas": 0,
     "batch": 3
@@ -960,7 +960,7 @@
       }
      ]
     },
-    "distance": 186.8650497878854,
+    "distance": 186.8650497878861,
     "bestStep": 1179,
     "piezasPerdidas": 0,
     "batch": 3

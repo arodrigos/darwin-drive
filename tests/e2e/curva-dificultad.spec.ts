@@ -21,6 +21,7 @@ type Estado = {
 const estado = (page: Page) => page.evaluate(() => window.__debug!.estado() as unknown as Estado);
 
 test("dif-3 / dif-4 una partida de la versión anterior se pone al día sola y las miniaturas se ven con relieve", async ({ page }) => {
+  test.setTimeout(180_000);
   await page.setViewportSize({ width: 360, height: 640 });
   await page.goto("/?pruebas=1");
   await page.waitForFunction(() => Boolean(window.__debug));

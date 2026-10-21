@@ -1,6 +1,7 @@
 // Curva de dificultad común a las cuatro clásicas: cóncava (sube rápido y se
 // aplana), con un respiro cada 250 m para que el coche se recupere. Es función
 // pura de la distancia desde la salida llana.
+import "./detmath";
 
 /** ≈ 50 % del techo a 120 m y 80 % a 450 m. */
 const ESCALA = 140;
@@ -13,7 +14,8 @@ const PROFUNDIDAD_RESPIRO = 0.4;
 /** Fracción del techo en [0, 1] a `d` metros de la salida llana. */
 export function curvaDificultad(d: number): number {
   if (!(d > 0)) return 0;
-  const base = 1 - Math.pow(1 + d / ESCALA, -EXPONENTE);
+  // exp/log de detmath y no Math.pow: pow no es idéntico entre Node y el navegador y la marca saldría distinta.
+  const base = 1 - Math.exp(-EXPONENTE * Math.log(1 + d / ESCALA));
   const k = Math.floor(d / PERIODO_RESPIRO);
   const m = d - k * PERIODO_RESPIRO;
   // El primer tramo no lleva respiro: la dificultad temprana es lo que se pide.

@@ -67,8 +67,8 @@
     ]
    },
    "genomeHash": "bcd56f50f58e6de9",
-   "distance": 538.8948973409412,
-   "bestStep": 3423,
+   "distance": 538.7963876851699,
+   "bestStep": 3426,
    "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-07T12:00:00.000Z",
@@ -143,7 +143,7 @@
     ]
    },
    "genomeHash": "4df89d2743d4b916",
-   "distance": 336.847460742645,
+   "distance": 336.8474607426119,
    "bestStep": 1522,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -219,7 +219,7 @@
     ]
    },
    "genomeHash": "2a679e10fcb58c5b",
-   "distance": 335.97874060423914,
+   "distance": 335.9787406112528,
    "bestStep": 1620,
    "piezasPerdidas": 0,
    "origin": "mixto",
@@ -295,7 +295,7 @@
     ]
    },
    "genomeHash": "9282a6ace16c132d",
-   "distance": 329.25022716187,
+   "distance": 329.25022714093996,
    "bestStep": 1624,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -371,7 +371,7 @@
     ]
    },
    "genomeHash": "c102c6581d2118f7",
-   "distance": 326.7107436258915,
+   "distance": 326.7107436817936,
    "bestStep": 1741,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -447,7 +447,7 @@
     ]
    },
    "genomeHash": "1a2e1836cf545e29",
-   "distance": 325.5576794091839,
+   "distance": 325.5576794086232,
    "bestStep": 1654,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -523,7 +523,7 @@
     ]
    },
    "genomeHash": "4360599c354b4feb",
-   "distance": 322.981873871348,
+   "distance": 322.9818738862368,
    "bestStep": 1553,
    "piezasPerdidas": 0,
    "origin": "mixto",
@@ -599,7 +599,7 @@
     ]
    },
    "genomeHash": "de8697c9f66eb774",
-   "distance": 322.2049190646178,
+   "distance": 322.204919082258,
    "bestStep": 1718,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -675,7 +675,7 @@
     ]
    },
    "genomeHash": "6c5f308986907b62",
-   "distance": 321.56771231233523,
+   "distance": 321.5677123521683,
    "bestStep": 1739,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -751,7 +751,7 @@
     ]
    },
    "genomeHash": "0a79ecd147d3793e",
-   "distance": 320.35080737158233,
+   "distance": 320.35080735552935,
    "bestStep": 1699,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -829,7 +829,7 @@
     ]
    },
    "genomeHash": "4df89d2743d4b916",
-   "distance": 232.06379421810237,
+   "distance": 232.06379421810163,
    "bestStep": 1291,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -905,7 +905,7 @@
     ]
    },
    "genomeHash": "de8697c9f66eb774",
-   "distance": 228.36939702283797,
+   "distance": 228.36939702283735,
    "bestStep": 1660,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -981,7 +981,7 @@
     ]
    },
    "genomeHash": "6c5f308986907b62",
-   "distance": 205.49996544310784,
+   "distance": 205.49996544310696,
    "bestStep": 1297,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -1057,7 +1057,7 @@
     ]
    },
    "genomeHash": "c102c6581d2118f7",
-   "distance": 204.65452653645076,
+   "distance": 204.65452653645363,
    "bestStep": 1566,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -1133,7 +1133,7 @@
     ]
    },
    "genomeHash": "0a79ecd147d3793e",
-   "distance": 204.18465999852992,
+   "distance": 204.18465999852816,
    "bestStep": 1426,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -1209,7 +1209,7 @@
     ]
    },
    "genomeHash": "4360599c354b4feb",
-   "distance": 199.32112537831455,
+   "distance": 199.32112537831492,
    "bestStep": 1217,
    "piezasPerdidas": 0,
    "origin": "mixto",
@@ -1285,7 +1285,7 @@
     ]
    },
    "genomeHash": "9282a6ace16c132d",
-   "distance": 197.6792101472355,
+   "distance": 197.6792101472366,
    "bestStep": 1305,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -1361,7 +1361,7 @@
     ]
    },
    "genomeHash": "1a2e1836cf545e29",
-   "distance": 195.3131201169816,
+   "distance": 195.31312011698097,
    "bestStep": 1322,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -1437,7 +1437,7 @@
     ]
    },
    "genomeHash": "2a679e10fcb58c5b",
-   "distance": 194.274143137706,
+   "distance": 194.2741431377052,
    "bestStep": 1247,
    "piezasPerdidas": 0,
    "origin": "mixto",
@@ -1513,7 +1513,7 @@
     ]
    },
    "genomeHash": "bcd56f50f58e6de9",
-   "distance": 187.68155313407877,
+   "distance": 187.68155313407922,
    "bestStep": 1468,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -1591,7 +1591,7 @@
     ]
    },
    "genomeHash": "2a679e10fcb58c5b",
-   "distance": 125.38405774122798,
+   "distance": 125.3840577371411,
    "bestStep": 1212,
    "piezasPerdidas": 0,
    "origin": "mixto",
@@ -1667,7 +1667,7 @@
     ]
    },
    "genomeHash": "bcd56f50f58e6de9",
-   "distance": 88.33397688442189,
+   "distance": 88.33397688465244,
    "bestStep": 1079,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -1743,7 +1743,7 @@
     ]
    },
    "genomeHash": "c102c6581d2118f7",
-   "distance": 88.24810653308303,
+   "distance": 88.24810653307193,
    "bestStep": 649,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -1819,7 +1819,7 @@
     ]
    },
    "genomeHash": "4df89d2743d4b916",
-   "distance": 87.50596989270437,
+   "distance": 87.50596989270468,
    "bestStep": 891,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -1895,7 +1895,7 @@
     ]
    },
    "genomeHash": "6c5f308986907b62",
-   "distance": 86.34599087308342,
+   "distance": 86.34599087308366,
    "bestStep": 587,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -1971,7 +1971,7 @@
     ]
    },
    "genomeHash": "0a79ecd147d3793e",
-   "distance": 84.73613124436058,
+   "distance": 84.73613124435978,
    "bestStep": 650,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -2047,7 +2047,7 @@
     ]
    },
    "genomeHash": "de8697c9f66eb774",
-   "distance": 84.61952469074619,
+   "distance": 84.619524690791,
    "bestStep": 681,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -2123,7 +2123,7 @@
     ]
    },
    "genomeHash": "9282a6ace16c132d",
-   "distance": 84.01496025320729,
+   "distance": 84.0149602531714,
    "bestStep": 700,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -2199,7 +2199,7 @@
     ]
    },
    "genomeHash": "4360599c354b4feb",
-   "distance": 83.82423383919499,
+   "distance": 83.82423383905798,
    "bestStep": 692,
    "piezasPerdidas": 0,
    "origin": "mixto",
@@ -2275,7 +2275,7 @@
     ]
    },
    "genomeHash": "1a2e1836cf545e29",
-   "distance": 76.77364129483439,
+   "distance": 76.7736412948073,
    "bestStep": 573,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -2353,8 +2353,8 @@
     ]
    },
    "genomeHash": "0a79ecd147d3793e",
-   "distance": 216.51756741044812,
-   "bestStep": 2218,
+   "distance": 232.92761055597376,
+   "bestStep": 2293,
    "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-04T12:00:00.000Z",
@@ -2429,7 +2429,7 @@
     ]
    },
    "genomeHash": "4df89d2743d4b916",
-   "distance": 172.7002162331427,
+   "distance": 172.7002140246218,
    "bestStep": 1560,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -2505,8 +2505,8 @@
     ]
    },
    "genomeHash": "de8697c9f66eb774",
-   "distance": 146.0018560399588,
-   "bestStep": 1732,
+   "distance": 153.92764133839842,
+   "bestStep": 1974,
    "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-11T12:00:00.000Z",
@@ -2581,7 +2581,7 @@
     ]
    },
    "genomeHash": "6c5f308986907b62",
-   "distance": 125.5921387518412,
+   "distance": 125.5921385166812,
    "bestStep": 977,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -2657,7 +2657,7 @@
     ]
    },
    "genomeHash": "4360599c354b4feb",
-   "distance": 121.6782737268644,
+   "distance": 121.67827377773429,
    "bestStep": 1076,
    "piezasPerdidas": 0,
    "origin": "mixto",
@@ -2733,7 +2733,7 @@
     ]
    },
    "genomeHash": "9282a6ace16c132d",
-   "distance": 121.24753267365388,
+   "distance": 121.24753259801119,
    "bestStep": 832,
    "piezasPerdidas": 0,
    "origin": "evolución",
@@ -2809,7 +2809,7 @@
     ]
    },
    "genomeHash": "2a679e10fcb58c5b",
-   "distance": 105.53605955216786,
+   "distance": 105.5360595545542,
    "bestStep": 732,
    "piezasPerdidas": 0,
    "origin": "mixto",
@@ -2885,7 +2885,7 @@
     ]
    },
    "genomeHash": "1a2e1836cf545e29",
-   "distance": 104.72013526517695,
+   "distance": 104.72013526425826,
    "bestStep": 746,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -2961,7 +2961,7 @@
     ]
    },
    "genomeHash": "c102c6581d2118f7",
-   "distance": 89.48426357303818,
+   "distance": 89.48426355156899,
    "bestStep": 820,
    "piezasPerdidas": 0,
    "origin": "diseño",
@@ -3037,7 +3037,7 @@
     ]
    },
    "genomeHash": "bcd56f50f58e6de9",
-   "distance": 61.38895185629582,
+   "distance": 61.38895185616616,
    "bestStep": 695,
    "piezasPerdidas": 0,
    "origin": "diseño",
