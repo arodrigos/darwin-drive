@@ -116,7 +116,9 @@ for (const { w, h } of [TAMANOS[0], TAMANOS[2]]) {
     await page.setViewportSize({ width: w, height: h });
     // El coche de serie para en ~30 s simulados y a ×8 la carrera acabaría antes de medir: se prueba un coche
     // de la evolución de demostración, que llega a meta (≈300 s simulados).
-    await abrir(page, { vacio: true, genoma: veloz.genome });
+    await abrir(page);
+    // El genoma del escenario vive en memoria y no sobrevive a la recarga de abrir(): se carga con la página ya abierta.
+    await page.evaluate((g) => window.__debug!.cargarEscenario({ genoma: g }), veloz.genome);
     await page.getByTestId("acceso-taller").click();
     await page.getByTestId("probar").click();
     await expect(page.getByTestId("pista")).toBeVisible();
