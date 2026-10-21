@@ -17,6 +17,7 @@ const MAX_LABELS = 14;
 const FINISH_LABEL_MS = 1500;
 const LEADER_SCREEN_X = 0.3;
 const FOLLOW_Y = 0.1;
+const FOLLOW_Y_PARADO = 0.5;
 // Con la carrera parada por una causa, el suelo sube en pantalla: la tarjeta de fin ocupa la mitad de abajo y el marcador tiene que quedar en la de arriba.
 const ANCLA_CARRERA = 0.6;
 const ANCLA_PARADA = 0.4;
@@ -200,9 +201,12 @@ class TrackScene extends Phaser.Scene {
     const alive = poses.filter((p) => !p.finished);
     const leader = (alive.length ? alive : poses).reduce((a, b) => (b.x > a.x ? b : a));
     this.camX = leader.x - widthM * LEADER_SCREEN_X;
-    this.refH = Number.isNaN(this.refH) ? leader.y : this.refH + (leader.y - this.refH) * FOLLOW_Y;
-    const objetivo = this.parada && leader.finished ? ANCLA_PARADA : ANCLA_CARRERA;
-    this.ancla = Math.abs(objetivo - this.ancla) < 0.002 ? objetivo : this.ancla + (objetivo - this.ancla) * 0.1;
+    const parado = Boolean(this.parada && leader.finished);
+    // Con el coche parado el suavizado es por fotograma y en un equipo lento tarda segundos en dejar el marcador a la vista: se acorta.
+    const sigue = parado ? FOLLOW_Y_PARADO : FOLLOW_Y;
+    this.refH = Number.isNaN(this.refH) ? leader.y : Math.abs(leader.y - this.refH) < 0.01 && parado ? leader.y : this.refH + (leader.y - this.refH) * sigue;
+    const objetivo = parado ? ANCLA_PARADA : ANCLA_CARRERA;
+    this.ancla = Math.abs(objetivo - this.ancla) < 0.002 ? objetivo : this.ancla + (objetivo - this.ancla) * (parado ? 0.5 : 0.1);
     const toX = (x: number) => (x - this.camX) * PX_PER_METER;
     const toY = (h: number) => H * this.ancla - (h - this.refH) * PX_PER_METER;
 

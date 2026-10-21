@@ -39,12 +39,14 @@ async function probarYTerminar(page: Page, ritmo: "ritmo-final" | "ritmo-x1") {
   }
   await expect(page.getByTestId("fin-causa")).toBeVisible({ timeout: 30000 });
   // La cámara sube el suelo con un suavizado: se espera a que la caja del marcador se quede quieta.
-  let previa = "";
+  let previa: number[] | null = null;
   await expect
     .poll(async () => {
       const m = (await estado(page)).marcador;
-      const ahora = JSON.stringify(m?.caja ?? null);
-      const quieto = m !== null && ahora === previa;
+      const c = m?.caja;
+      const ahora = c ? [c.x, c.y, c.w, c.h] : null;
+      // Medio píxel: el suavizado de la cámara converge sin llegar nunca a igualar.
+      const quieto = ahora !== null && previa !== null && ahora.every((v, i) => Math.abs(v - previa![i]) < 0.5);
       previa = ahora;
       return quieto;
     }, { timeout: 10000, intervals: [250] })
