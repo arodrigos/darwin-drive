@@ -302,6 +302,11 @@ export function Linaje(props: LinajeProps) {
             <span data-testid="hoja-pista">{nodo.trackId ? (getTrack(nodo.trackId)?.name ?? nodo.trackId) : "sin pista"}</span>
             {etiquetaMano(nodo) && <> · {etiquetaMano(nodo)}</>}
           </p>
+          {nodo.trackId && nodo.distance !== null && nodo.trackVersion !== getTrack(nodo.trackId)?.version && (
+            <p className="nota-migracion" data-testid="hoja-version-anterior">
+              Medido en una versión anterior de la pista: la distancia es la de entonces y no se vuelve a medir.
+            </p>
+          )}
           <p data-testid="hoja-padres">
             {nodo.parents.length === 0
               ? nodo.prunedParents
