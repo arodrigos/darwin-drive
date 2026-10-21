@@ -23,6 +23,7 @@ const ANCLA_PARADA = 0.4;
 const PLACA = "#111111";
 const TEXTO_PLACA = "#ffffff";
 const ETIQUETA_PX = 16;
+const MARGEN_MARCADOR_M = 3;
 const ICONOS: Record<CausaParada, string> = { motor: "", agarre: "", vuelco: "↻", "sin-apoyo": "⤓", panza: "▁", obstaculo: "▮", rotura: "✕" };
 const FINISHED_GREY = 0x8a8f94;
 // Radio de acierto de un toque: un dedo no apunta a un coche de 2 m a 20 px/m.
@@ -357,7 +358,9 @@ class TrackScene extends Phaser.Scene {
       runtime.marcador = null;
       return;
     }
-    const base = { x: toX(p.x), y: toY(cfg.track.heightAt(p.x)) };
+    // Si el coche resbaló cuesta abajo tras su punto más lejano, el marcador se acerca a él: más allá cae fuera de la pantalla.
+    const xMarca = Math.min(p.x, pose.x + MARGEN_MARCADOR_M);
+    const base = { x: toX(xMarca), y: toY(cfg.track.heightAt(xMarca)) };
     const conPendiente = (p.causa === "motor" || p.causa === "agarre") && p.pendiente !== null;
     let caja = { x: base.x, y: base.y, w: 0, h: 0 };
     let altoCuna = 0;
