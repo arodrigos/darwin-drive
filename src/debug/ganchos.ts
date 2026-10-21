@@ -41,6 +41,9 @@ export const runtime = {
   aplicarLimite: null as ((max: number | null) => void) | null,
   /** Avanza la carrera en curso al instante; resuelve con el efecto ya pintado. Solo existe mientras hay una pista abierta. */
   avanzar: null as ((segundos: number) => Promise<void>) | null,
+  /** Migración de marcas: la publica el hook; `frenada` retiene la cola entre un elemento y el siguiente. */
+  migracion: null as { enCurso: boolean; hechos: number; total: number; enVuelo: string | null; intentos: Record<string, number> } | null,
+  migracionFrenada: false,
 };
 
 export interface Escenario {
@@ -87,10 +90,17 @@ export function estado() {
     garaje: runtime.garaje,
     persistente: runtime.persistente,
     disponible: runtime.disponible,
+    migracion: {
+      enCurso: runtime.migracion?.enCurso ?? false,
+      hechos: runtime.migracion?.hechos ?? 0,
+      total: runtime.migracion?.total ?? 0,
+      enVuelo: runtime.migracion?.enVuelo ?? null,
+      intentos: runtime.migracion?.intentos ?? {},
+    },
   };
 }
 
-const ESCENARIOS_SOPORTADOS = new Set(["vacio", "pista", "rankings", "garaje", "genoma", "evolucion", "linaje", "especies"]);
+const ESCENARIOS_SOPORTADOS = new Set(["vacio", "pista", "rankings", "garaje", "genoma", "evolucion", "linaje", "especies", "migracion"]);
 
 export interface Gancho {
   latencias: typeof latencias;
@@ -99,6 +109,8 @@ export interface Gancho {
   adelantarSimulacion(segundos: number): Promise<void>;
   /** Acota la velocidad simulada a N veces el tiempo real para imitar un dispositivo lento (null lo quita). No cambia ningún CarResult. */
   limitarRitmo(max: number | null): void;
+  /** true retiene la cola de migración antes de la siguiente medida; false la suelta. */
+  frenarMigracion(frenar: boolean): void;
   /** pw-4 y pw-5: el service worker real, sin esperar a un despliegue. */
   pwa: { readonly controlado: boolean; forzarVersionNueva(): Promise<void> };
 }
@@ -113,6 +125,8 @@ declare global {
 export function instalarGanchos(): void {
   if (typeof window === "undefined") return;
   if (new URLSearchParams(window.location.search).get("pruebas") !== "1") return;
+  // Para ver la banda a medias sin carreras: la cola arranca retenida hasta frenarMigracion(false).
+  runtime.migracionFrenada = new URLSearchParams(window.location.search).get("migracion") === "frenada";
   window.__debug = {
     latencias,
     estado,
@@ -130,6 +144,9 @@ export function instalarGanchos(): void {
     limitarRitmo(max) {
       runtime.limiteRitmo = max;
       runtime.aplicarLimite?.(max);
+    },
+    frenarMigracion(frenar) {
+      runtime.migracionFrenada = frenar;
     },
     pwa: {
       get controlado() {

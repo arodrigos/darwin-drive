@@ -169,10 +169,27 @@ export function validarEstricto(key: string, raw: unknown): { ok: true; value: u
   return value === null || avisos > 0 ? { ok: false } : { ok: true, value };
 }
 
+/**
+ * Cuenta las sustituciones masivas de lo guardado (importar una copia, cargar un escenario). Una medida de la
+ * migración que empezó en una época anterior no se escribe: lo que midió ya no es lo que hay guardado.
+ */
+let epocaDatos = 0;
+export const epocaActual = (): number => epocaDatos;
+
 /** Sustituye todas las claves registradas por las de la copia (ya validada); las que no vengan se borran. */
 export async function reemplazarTodo(data: Record<string, unknown>): Promise<void> {
+  epocaDatos += 1;
   for (const key of registro.keys()) await save(key, data[key] ?? null);
 }
+
+/** Para la migración y los escenarios: marca que lo guardado cambió por debajo de cualquier medida en vuelo. */
+export function nuevaEpoca(): void {
+  epocaDatos += 1;
+}
+
+/** Lectura y escritura atómica de una clave tal cual (sin validar): para la migración, que valida por elemento. */
+export const leerClave = leer;
+export const actualizarClave = actualizar;
 
 /**
  * Lo guardado tal cual está, validado y solo de las claves que existen: la copia no inventa claves que el
@@ -404,11 +421,23 @@ export async function removeFromGarage(id: string): Promise<void> {
 }
 
 /** Apunta la mejor marca de un coche del garaje en una pista. */
-export async function recordMark(carId: string, trackId: TrackId, distance: number): Promise<void> {
+export async function recordMark(
+  carId: string,
+  trackId: TrackId,
+  distance: number,
+  versiones?: { trackVersion: number; physicsVersion: number },
+): Promise<void> {
   await actualizar(KEY_GARAGE, (raw) => {
     const garage = garajeDe(raw);
     for (const c of garage) {
-      if (c.id === carId && !((c.marks[trackId] ?? -1) >= distance)) c.marks[trackId] = distance;
+      if (c.id !== carId) continue;
+      const previa = c.markVersions?.[trackId];
+      const vigente = previa?.trackVersion === getTrack(trackId)?.version && previa?.physicsVersion === PHYSICS_VERSION;
+      // Una marca de otra versión no se compara con la nueva: la nueva manda aunque sea menor.
+      if (c.marks[trackId] === undefined || (versiones && !vigente) || distance > (c.marks[trackId] ?? -1)) {
+        c.marks[trackId] = distance;
+        if (versiones) c.markVersions = { ...c.markVersions, [trackId]: { ...versiones } };
+      }
     }
     return garage;
   });

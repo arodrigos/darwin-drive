@@ -48,6 +48,9 @@ import { Linaje } from "./components/Linaje";
 import { Pista } from "./components/Pista";
 import { Portada } from "./components/Portada";
 import { Rankings as PantallaRankings } from "./components/Rankings";
+import { AvisoMigracion, BandaMigracion, EsperaPestanas } from "./components/BandaMigracion";
+import { useMigracion } from "./useMigracion";
+import { recargarAntiguas, saludar } from "@/pwa/pestanas";
 import { Taller } from "./components/Taller";
 import { medirEnTodasLasPistas, type MedicionEnCurso } from "./medir-pistas";
 import { resumenMedicion } from "./ranking-text";
@@ -151,6 +154,17 @@ export function App() {
     aplicarGaraje(g);
   }, [aplicarRankings, aplicarGaraje]);
 
+  const migracion = useMigracion(recargar);
+  const iniciarMigracion = migracion.iniciar;
+  const [tarjetaFin, setTarjetaFin] = useState(false);
+
+  // Cada pestaña avisa de que existe, para que una migración no empiece con otra de versión antigua abierta.
+  useEffect(() => {
+    const quitar = saludar();
+    void iniciarMigracion();
+    return quitar;
+  }, [iniciarMigracion]);
+
   const aplicarEspecies = useCallback((s: SpeciesArchives) => {
     especiesRef.current = s;
     setEspecies(s);
@@ -193,7 +207,9 @@ export function App() {
     setTrackId(m.lastTrack);
     runtime.pistaSeleccionada = m.lastTrack;
     runtime.ultimaInscripcion = null;
-  }, [aplicarRankings, aplicarGaraje, aplicarEspecies, aplicarEvolucion]);
+    // Una copia importada puede traer marcas de otra versión: se migran igual que al cargar.
+    void iniciarMigracion();
+  }, [aplicarRankings, aplicarGaraje, aplicarEspecies, aplicarEvolucion, iniciarMigracion]);
 
   // El linaje se poda protegiendo lo que alguien puede volver a abrir: la población viva, los favoritos,
   // los mejores de cada generación y los coches de los rankings y del garaje.
@@ -260,7 +276,7 @@ export function App() {
         origin,
         lineageId: campeon.individual.id,
       });
-      await recordMark(campeon.result.carId, campeon.result.trackId, campeon.result.distance);
+      await recordMark(campeon.result.carId, campeon.result.trackId, campeon.result.distance, { trackVersion: campeon.result.trackVersion, physicsVersion: campeon.result.physicsVersion });
       runtime.ultimaInscripcion = {
         trackId: campeon.result.trackId,
         position: outcome.position,
@@ -386,22 +402,30 @@ export function App() {
           const datos =
             e.especies === "demo"
               ? JSON.parse((await import("@/debug/escenarios/especies-demo.texto")).default)
-              : e.especies;
+              : e.especies === "demo-version-anterior"
+                ? await (await import("@/debug/escenarios/version-anterior")).especiesVersionAnterior()
+                : e.especies;
           const validos = validateSpecies(datos);
           if (!validos) throw new Error("escenario con especies inválidas");
           await save(KEY_SPECIES, validos);
           aplicarEspecies(validos);
         }
-        if (e.rankings === "demo" || (typeof e.rankings === "object" && e.rankings !== null)) {
+        if (e.rankings === "demo" || e.rankings === "demo-version-anterior" || (typeof e.rankings === "object" && e.rankings !== null)) {
           // El JSON de demostración solo se descarga cuando un escenario lo pide.
-          const datos = e.rankings === "demo" ? JSON.parse((await import("@/debug/escenarios/rankings-demo.texto")).default) : e.rankings;
+          const datos =
+            e.rankings === "demo"
+              ? JSON.parse((await import("@/debug/escenarios/rankings-demo.texto")).default)
+              : e.rankings === "demo-version-anterior"
+                ? await (await import("@/debug/escenarios/version-anterior")).rankingsVersionAnterior()
+                : e.rankings;
           const validos = validateRankings({ ...emptyRankings(), ...datos });
           if (!validos) throw new Error("escenario con rankings inválidos");
           await save(KEY_RANKINGS, validos);
           aplicarRankings(validos);
         }
-        if (Array.isArray(e.garaje)) {
-          const coches = e.garaje.map((item, i) =>
+        if (e.garaje === "demo-version-anterior" || Array.isArray(e.garaje)) {
+          const origen = e.garaje === "demo-version-anterior" ? await (await import("@/debug/escenarios/version-anterior")).garajeVersionAnterior() : (e.garaje as unknown[]);
+          const coches = origen.map((item, i) =>
             esGenoma(item)
               ? {
                   id: genomeHash(normalizeGenome(item)),
@@ -418,6 +442,7 @@ export function App() {
           await save(KEY_GARAGE, validos);
           aplicarGaraje(validos);
         }
+        runtime.migracionFrenada = e.migracion === "frenada";
         if (e.linaje !== undefined) {
           const demo =
             e.linaje === "demo-5-generaciones"
@@ -475,7 +500,7 @@ export function App() {
     async (result: CarResult): Promise<RankingOutcome | null> => {
       if (!trial) return null;
       const outcome = await updateRanking({ result, genome: trial.genome, origin: trial.origin });
-      await recordMark(result.carId, result.trackId, result.distance);
+      await recordMark(result.carId, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion });
       runtime.ultimaInscripcion = {
         trackId: result.trackId,
         position: outcome.position,
@@ -538,7 +563,7 @@ export function App() {
         onProgress: (n, total) => setMidiendo({ carId: car.id, n, total }),
         registrar: async (result) => {
           const outcome = await updateRanking({ result, genome: car.genome, origin: car.origin, lineageId: car.lineageId, name: car.name });
-          if (result.reason !== "anomaly") await recordMark(car.id, result.trackId, result.distance);
+          if (result.reason !== "anomaly") await recordMark(car.id, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion });
           return outcome;
         },
       });
@@ -610,12 +635,15 @@ export function App() {
           rankings={rankings}
           ritmoInicial={meta.ritmo}
           onRitmo={recordarRitmo}
+          migrando={migracion.estado.enCurso}
+          onTarjeta={setTarjetaFin}
         />
       )}
       {screen === "rankings" && (
         <PantallaRankings
           rankings={rankings}
           initialTrack={pistaRanking}
+          migracion={{ enCurso: migracion.estado.enCurso, conservados: migracion.estado.conservados }}
           onBack={() => setScreen("portada")}
           onWatch={(entry: RankingEntry) => {
             setPistaRanking(entry.trackId);
@@ -757,6 +785,18 @@ export function App() {
             setScreen("evolucion-inicio");
           }}
         />
+      )}
+      {migracion.estado.enCurso && <BandaMigracion hechos={migracion.estado.hechos} total={migracion.estado.total} />}
+      {migracion.esperando && !migracion.estado.enCurso && (
+        <EsperaPestanas
+          onRecargar={() => {
+            recargarAntiguas();
+            void iniciarMigracion();
+          }}
+        />
+      )}
+      {migracion.terminadas !== null && !migracion.estado.enCurso && (screen !== "pista" || tarjetaFin) && (
+        <AvisoMigracion coches={migracion.terminadas} onCerrar={migracion.cerrarAviso} />
       )}
       {warning && (
         <div className="aviso" role="status" data-testid="aviso" onClick={() => setWarning(null)}>

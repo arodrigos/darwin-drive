@@ -383,7 +383,7 @@ export function nextGeneration(
     children.push(breed(a, rng.float() < CROSSOVER_PROBABILITY ? tournament(a) : null));
   }
 
-  const evaluatedNodes = pop.map((ind, i) => ({ ...nodeOf(ind), distance: evaluated[i].distance, trackId: evaluated[i].trackId }));
+  const evaluatedNodes = pop.map((ind, i) => ({ ...nodeOf(ind), distance: evaluated[i].distance, trackId: evaluated[i].trackId, trackVersion: evaluated[i].trackVersion }));
   return {
     state: {
       v: 1,

@@ -11,6 +11,8 @@ export interface LineageNode {
   generation: number;
   distance: number | null;
   trackId: TrackId | null;
+  /** Versión de la pista en que se midió `distance`; los nodos sin ella son anteriores al versionado. */
+  trackVersion?: number;
   genome: Genome;
   hue: number;
   humanTouched: boolean;
@@ -37,7 +39,7 @@ export function mergeLineage(existing: LineageNode[], added: LineageNode[]): Lin
       byId.set(n.id, out.length);
       out.push(n);
     } else if (n.distance !== null) {
-      out[i] = { ...out[i], distance: n.distance, trackId: n.trackId };
+      out[i] = { ...out[i], distance: n.distance, trackId: n.trackId, ...(n.trackVersion !== undefined ? { trackVersion: n.trackVersion } : {}) };
     }
   }
   return out;

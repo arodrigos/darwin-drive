@@ -60,6 +60,10 @@ export interface PistaProps {
   /** El último de ×1/×2/×4/×8 con el que se corrió; «Hasta el final» no se recuerda. */
   ritmoInicial?: RitmoRecordado;
   onRitmo?: (ritmo: RitmoRecordado) => void;
+  /** Hay una migración de marcas en curso: la tarjeta avisa de que el récord se confirma al acabar. */
+  migrando?: boolean;
+  /** La tarjeta de fin se ve o deja de verse; el aviso final de migración espera a que no haya tarjeta. */
+  onTarjeta?: (visible: boolean) => void;
 }
 
 export function Pista(props: PistaProps) {
@@ -72,6 +76,13 @@ export function Pista(props: PistaProps) {
   const [fase, setFase] = useState<Fase>({ tipo: "corriendo" });
   const [inscripcion, setInscripcion] = useState<{ outcome: RankingOutcome; distance: number } | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
+  const onTarjeta = props.onTarjeta;
+  const hayTarjeta = fase.tipo === "fin";
+  useEffect(() => {
+    if (!hayTarjeta) return;
+    onTarjeta?.(true);
+    return () => onTarjeta?.(false);
+  }, [hayTarjeta, onTarjeta]);
   const avisoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const alTerminar = useRef(props.onFinish);
   useEffect(() => {
@@ -357,6 +368,11 @@ export function Pista(props: PistaProps) {
                 </p>
               )}
             </>
+          )}
+          {props.migrando && (
+            <p className="nota-migracion" data-testid="fin-record-pendiente">
+              Récord pendiente: se confirma al terminar de actualizar las marcas.
+            </p>
           )}
           <div className="acciones">
             <button type="button" className="pastilla" onClick={() => {

@@ -27,3 +27,19 @@ const serwist = new Serwist({
 });
 
 serwist.addEventListeners();
+
+// La migración de marcas pregunta cuántas pestañas hay abiertas para no empezar con una versión antigua escribiendo.
+interface MensajeClientes {
+  data?: { type?: string };
+  ports: { postMessage(m: unknown): void }[];
+  waitUntil(p: Promise<unknown>): void;
+}
+const global = self as unknown as {
+  clients: { matchAll(o: { type: string }): Promise<unknown[]> };
+  addEventListener(t: "message", cb: (e: MensajeClientes) => void): void;
+};
+global.addEventListener("message", (e) => {
+  if (e.data?.type !== "dd:clientes" || !e.ports[0]) return;
+  const puerto = e.ports[0];
+  e.waitUntil(global.clients.matchAll({ type: "window" }).then((c) => puerto.postMessage({ clientes: c.length })));
+});
