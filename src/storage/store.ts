@@ -3,6 +3,8 @@ import { abrirBase } from "./base";
 import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
 import { PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
+import { nombrePropuesto } from "@/app/nombres";
+import { limpiarNombre, normalizarNombre } from "./nombres";
 import { DEFAULT_META, META_KEY, validateMeta } from "./meta";
 import {
   emptyRankings,
@@ -332,7 +334,8 @@ export async function updateRanking(candidate: {
       physicsVersion: result.physicsVersion,
     };
     if (candidate.lineageId !== undefined) entry.lineageId = candidate.lineageId;
-    if (candidate.name !== undefined) entry.name = candidate.name.slice(0, 40);
+    const nombre = candidate.name === undefined ? "" : limpiarNombre(candidate.name);
+    if (nombre) entry.name = nombre;
     const position = list.filter((e) => e.distance >= entry.distance).length + 1;
     rankings[track.id] = [...list.slice(0, position - 1), entry, ...list.slice(position - 1)].slice(0, RANKING_SIZE);
     outcome = { entered: true, position, alreadyAt: null, isRecord: position === 1, cutoff: null };
@@ -440,5 +443,31 @@ export async function recordMark(
       }
     }
     return garage;
+  });
+}
+
+/**
+ * Cambia el nombre del coche en el garaje y en todas sus filas de ranking. No toca genoma, marcas ni fechas:
+ * la fecha de una fila es la de su clasificación, no la de su último retoque. Devuelve el nombre ya normalizado.
+ * Cada almacén se actualiza en su propia transacción: si falla el segundo, el coche conserva el nombre nuevo
+ * y las filas el viejo, y repetir la llamada lo deja igual en los dos.
+ */
+export async function renombrarCoche(carId: string, nombre: string): Promise<string> {
+  const final = normalizarNombre(nombre, nombrePropuesto(carId));
+  await actualizar(KEY_GARAGE, (raw) => {
+    const garage = garajeDe(raw);
+    for (const c of garage) if (c.id === carId) c.name = final;
+    return garage;
+  });
+  await renombrarEnRankings(carId, final);
+  return final;
+}
+
+/** Solo las filas de ranking: quien ya escribió el nombre en el garaje por otro camino no repite esa transacción. */
+export async function renombrarEnRankings(carId: string, nombreNormalizado: string): Promise<void> {
+  await actualizar(KEY_RANKINGS, (raw) => {
+    const rankings = rankingsDe(raw);
+    for (const t of TRACKS) for (const e of rankings[t.id]) if (e.genomeHash === carId) e.name = nombreNormalizado;
+    return rankings;
   });
 }

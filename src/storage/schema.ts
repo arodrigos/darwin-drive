@@ -3,11 +3,12 @@ import { MAX_LINEAGE_NODES, type LineageNode } from "@/evolution/lineage";
 import { CELL_COUNT, cellIndex, type SpeciesArchive, type SpeciesCell } from "@/evolution/species";
 import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
+import { nombrePropuesto } from "@/app/nombres";
+import { limpiarNombre, normalizarNombre } from "./nombres";
 
 export const RANKING_SIZE = 10;
 export const GARAGE_SIZE = 60;
 const MAX_HISTORY = 500;
-const MAX_NAME = 40;
 
 export type Origin = "diseño" | "evolución" | "mixto";
 
@@ -92,7 +93,10 @@ function rankingEntry(raw: unknown, trackId: TrackId): RankingEntry | null {
     physicsVersion: raw.physicsVersion,
   };
   if (isStr(raw.lineageId)) entry.lineageId = raw.lineageId;
-  if (isStr(raw.name)) entry.name = raw.name.slice(0, MAX_NAME);
+  if (isStr(raw.name)) {
+    const nombre = limpiarNombre(raw.name);
+    if (nombre) entry.name = nombre;
+  }
   return entry;
 }
 
@@ -153,7 +157,7 @@ function savedCar(raw: unknown): SavedCar | null {
     if (!isNum(m) || m < 0) return null;
     marks[t.id] = m;
   }
-  const car: SavedCar = { id: raw.id, name: raw.name.slice(0, MAX_NAME), genome, marks, origin: raw.origin, savedAt: raw.savedAt };
+  const car: SavedCar = { id: raw.id, name: normalizarNombre(raw.name, nombrePropuesto(raw.id)), genome, marks, origin: raw.origin, savedAt: raw.savedAt };
   const versiones = markVersions(raw.markVersions, marks);
   if (versiones) car.markVersions = versiones;
   if (isStr(raw.lineageId)) car.lineageId = raw.lineageId;

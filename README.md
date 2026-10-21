@@ -22,6 +22,8 @@ Hay cuatro pistas fijas, cada una una función pura de la distancia (`src/sim/tr
 
 Todo se guarda en IndexedDB del propio dispositivo, con claves `dd:v1:*` validadas al leer (rankings, garaje, evolución, linaje, especies y ajustes). Tras el primer guardado se pide `navigator.storage.persist()`, y el Garaje dice en «Estado del guardado» si es duradero o si Safari puede borrarlo.
 
+**Nombres.** «Guardar campeón» (Evolución) abre una hoja con un nombre propuesto; «Renombrar» en el Garaje la reutiliza. El nombre cambia en el coche y en sus filas de ranking sin tocar su fecha. Se le quitan los caracteres de control y de formato (Unicode Cc y Cf), se juntan espacios y se corta a 40 caracteres, también al cargar lo guardado y al importar una copia; siempre se pinta como texto.
+
 **Copia de seguridad.** En el Garaje, «Exportar copia» descarga `darwin-drive-copia-AAAA-MM-DD.json` y «Importar copia» lo vuelve a cargar: se valida entero (máximo 5 MB), se resume lo que trae y se pide confirmación antes de reemplazar. Un fichero inválido no cambia nada.
 
 **Sin conexión.** Un service worker (Serwist) guarda el juego tras la primera visita. Una versión nueva solo se activa cuando se toca «Recargar» en el aviso «Hay una versión nueva · Recargar», nunca a mitad de una evolución. `/?sw=0` desinstala el worker y vacía su caché.

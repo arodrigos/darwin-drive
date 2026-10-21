@@ -47,6 +47,9 @@ export function Garaje(props: {
   onMeasure: (car: SavedCar) => void;
   onOpen: (car: SavedCar) => void;
   onEvolve: (car: SavedCar) => void;
+  /** «Evolucionado en La Cordillera · gen 7»: de dónde salió el coche. */
+  ficha: (car: SavedCar) => string;
+  onRenombrar: (car: SavedCar) => void;
   onDelete: (car: SavedCar) => void;
   onTaller: () => void;
   onBack: () => void;
@@ -85,6 +88,9 @@ export function Garaje(props: {
                 <span className="etiqueta" data-testid="origen">
                   {car.origin}
                 </span>
+                <span className="ficha-origen" data-testid="ficha-origen">
+                  {props.ficha(car)}
+                </span>
                 <span data-testid="marcas">{marcas(car)}</span>
                 {props.midiendo?.carId === car.id && (
                   <span className="progreso-medicion" role="status" data-testid="progreso-medicion">
@@ -108,6 +114,9 @@ export function Garaje(props: {
                   </button>
                   <button type="button" className="pastilla chica" onClick={() => props.onEvolve(car)} data-testid="garaje-evolucionar">
                     Evolucionar
+                  </button>
+                  <button type="button" className="pastilla chica" onClick={() => props.onRenombrar(car)} data-testid="garaje-renombrar">
+                    Renombrar
                   </button>
                   <button type="button" className="pastilla chica" onClick={() => props.onDelete(car)} data-testid="garaje-borrar">
                     Borrar

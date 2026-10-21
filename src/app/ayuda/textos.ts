@@ -92,7 +92,7 @@ export const SECCIONES_GUIA: readonly SeccionGuia[] = [
     id: "garaje-nombres",
     titulo: "El Garaje",
     parrafos: [
-      "El Garaje guarda tus coches en este dispositivo. Desde cada uno puedes probarlo, abrirlo en el Taller, evolucionarlo o borrarlo.",
+      "El Garaje guarda tus coches en este dispositivo. Desde cada uno puedes probarlo, abrirlo en el Taller, evolucionarlo, renombrarlo o borrarlo. Al guardar un campeón de la Evolución te pide un nombre; si lo dejas vacío, se queda el propuesto.",
       "«Medir en todas las pistas» corre el coche en cada pista y rellena sus marcas. La copia de seguridad exporta e importa todo el juego como un fichero.",
     ],
   },
@@ -180,6 +180,7 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
       { nombre: "Abrir en el Taller", texto: "Edita una copia del coche." },
       { nombre: "Evolucionar", texto: "Empieza una evolución con él." },
       { nombre: "Medir en todas las pistas", texto: "Corre el coche en cada pista y rellena sus marcas." },
+      { nombre: "Renombrar", texto: "Cambia el nombre del coche, también en los rankings." },
       { nombre: "Borrar", texto: "Quita el coche del Garaje." },
       { nombre: "Copia de seguridad", texto: "Exporta o importa todo el juego como fichero." },
     ],

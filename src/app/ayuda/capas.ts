@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export type Capa = { tipo: "ayuda" } | { tipo: "guia"; seccion: string | null };
+export type Capa = { tipo: "ayuda" } | { tipo: "guia"; seccion: string | null } | { tipo: "nombre" };
 
 /**
  * Pila de capas (panel de ayuda, guía) con el «atrás» del sistema.

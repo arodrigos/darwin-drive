@@ -39,8 +39,8 @@ export interface EvolucionProps {
   rankings: RankingsView;
   /** Guarda el estado y el linaje; inscribe al campeón en el ranking de la pista y devuelve el resultado. */
   onGeneracion: (state: EvolutionState, lineageAdded: LineageNode[], campeon: Campeon | null) => Promise<RankingOutcome | null>;
-  /** Lleva al campeón al garaje; devuelve el texto del aviso. */
-  onGuardarCampeon: (campeon: Campeon) => Promise<string>;
+  /** Pide el nombre y lleva al campeón al garaje; devuelve el texto del aviso, o null si se canceló. */
+  onGuardarCampeon: (campeon: Campeon) => Promise<string | null>;
   onBack: () => void;
 }
 
@@ -421,10 +421,15 @@ export function Evolucion(props: EvolucionProps) {
     setPausada(pausa.current);
     medir("pausar");
   };
+  // El aviso ya está en pantalla cuando este efecto corre; sin marca previa no hace nada.
+  useEffect(() => {
+    if (toast) measureOnNextFrame("guardar-nombre");
+  }, [toast]);
   const guardarCampeon = async () => {
     if (!campeon) return;
+    markInput("hoja-nombre");
     const texto = await latest.current.onGuardarCampeon(campeon);
-    mostrar(setToast, texto, AVISO_MS);
+    if (texto) mostrar(setToast, texto, AVISO_MS);
   };
 
   if (failed) {

@@ -33,6 +33,9 @@ import {
   GARAGE_FULL_MESSAGE,
   loadAll,
   recordMark,
+  renombrarCoche,
+  renombrarEnRankings,
+  GARAGE_SIZE,
   removeFromGarage,
   save,
   saveToGarage,
@@ -40,6 +43,9 @@ import {
   type RankingOutcome,
 } from "@/storage/store";
 import { Evolucion, type Campeon } from "./components/Evolucion";
+import { HojaNombre } from "./components/HojaNombre";
+import { fichaOrigen, nombrePropuesto } from "./nombres";
+import { normalizarNombre } from "@/storage/nombres";
 import { Especies } from "./components/Especies";
 import { Explorar } from "./components/Explorar";
 import { Garaje } from "./components/Garaje";
@@ -291,25 +297,30 @@ export function App() {
     [guardarEvolucion, recargar],
   );
 
-  const onGuardarCampeon = useCallback(
-    async (campeon: Campeon): Promise<string> => {
+  // Devuelve el aviso al instante y las escrituras aparte: «Guardado» tiene que verse en 200 ms aunque la evolución
+  // esté ocupando el hilo. El único fallo posible (garaje lleno) se conoce antes de escribir; si IndexedDB no deja
+  // escribir, el almacén cae a memoria y el aviso lo dice.
+  const guardarCampeonConNombre = useCallback(
+    (campeon: Campeon, nombre: string): { aviso: string; hecho: Promise<void> } => {
       const { individual, result } = campeon;
-      const existente = garageRef.current.find((c) => c.id === result.carId);
+      const id = genomeHash(individual.genome);
+      const existente = garageRef.current.find((c) => c.id === id);
+      if (!existente && garageRef.current.length >= GARAGE_SIZE) return { aviso: GARAGE_FULL_MESSAGE, hecho: Promise.resolve() };
       const marks: SavedCar["marks"] = { ...(existente?.marks ?? {}) };
       marks[result.trackId] = Math.max(marks[result.trackId] ?? 0, result.distance);
       const car: SavedCar = {
-        id: genomeHash(individual.genome),
-        name: existente?.name ?? `Campeón gen ${campeon.generation}`,
+        id,
+        name: nombre,
         genome: individual.genome,
         marks,
         origin: originOf(individual.id, lineageRef.current),
         savedAt: new Date().toISOString(),
         lineageId: individual.id,
       };
-      const r = await saveToGarage(car);
-      if (!r.ok) return GARAGE_FULL_MESSAGE;
-      await recargar();
-      return runtime.disponible ? GUARDADO_OK : "Guardado, pero solo hasta que cierres la pestaña.";
+      // Su fila de ranking (la inscribió la generación) lleva el mismo nombre que el coche.
+      const hecho = Promise.all([saveToGarage(car), renombrarEnRankings(id, nombre)]).then(() => recargar());
+      const aviso = `Guardado en el garaje como «${nombre}»`;
+      return { aviso: runtime.disponible ? aviso : `${aviso}, pero solo hasta que cierres la pestaña.`, hecho };
     },
     [recargar],
   );
@@ -598,6 +609,96 @@ export function App() {
   const habiaCapas = useRef(false);
   const guiaArriba = capas[capas.length - 1]?.tipo === "guia";
   const guiaCapa = capas.find((c) => c.tipo === "guia");
+  const hayCapasAyuda = capas.some((c) => c.tipo !== "nombre");
+
+  // La hoja de nombre es una capa más (el «atrás» del sistema la cierra), pero sus datos viven aquí.
+  interface DatosHoja {
+    modo: "guardar" | "renombrar";
+    carId: string;
+    valorInicial: string;
+    propuesto: string;
+    ficha: string;
+    campeon?: Campeon;
+  }
+  const [hoja, setHoja] = useState<DatosHoja | null>(null);
+  const resolverHoja = useRef<((texto: string | null) => void) | null>(null);
+  const hojaAbierta = capas.some((c) => c.tipo === "nombre");
+  useEffect(() => {
+    runtime.hojaNombre = hoja && hojaAbierta ? { modo: hoja.modo, propuesto: hoja.propuesto } : null;
+    if (hoja && !hojaAbierta) {
+      // Se cerró sin guardar (Esc, fuera, «Cancelar» o «atrás»).
+      resolverHoja.current?.(null);
+      resolverHoja.current = null;
+    }
+  }, [hoja, hojaAbierta]);
+
+  const fichaDe = useCallback(
+    (origin: SavedCar["origin"], lineageId: string | undefined, pista?: TrackId) =>
+      fichaOrigen(origin, lineageId ? (lineageRef.current.find((n) => n.id === lineageId) ?? null) : null, pista),
+    [],
+  );
+
+  const pedirNombreCampeon = useCallback(
+    (campeon: Campeon): Promise<string | null> =>
+      new Promise((resolve) => {
+        if (resolverHoja.current) {
+          resolve(null);
+          return;
+        }
+        const { individual, result } = campeon;
+        const id = genomeHash(individual.genome);
+        const propuesto = garageRef.current.find((c) => c.id === id)?.name ?? nombrePropuesto(id);
+        resolverHoja.current = resolve;
+        setHoja({
+          modo: "guardar",
+          carId: id,
+          valorInicial: propuesto,
+          propuesto,
+          ficha: fichaDe(originOf(individual.id, lineageRef.current), individual.id, result.trackId),
+          campeon,
+        });
+        abrirCapa({ tipo: "nombre" });
+      }),
+    [abrirCapa, fichaDe],
+  );
+
+  const pedirRenombrar = useCallback(
+    (car: SavedCar) => {
+      if (resolverHoja.current) return;
+      markInput("hoja-nombre");
+      resolverHoja.current = () => {};
+      setHoja({
+        modo: "renombrar",
+        carId: car.id,
+        valorInicial: car.name,
+        propuesto: nombrePropuesto(car.id),
+        ficha: fichaDe(car.origin, car.lineageId),
+      });
+      abrirCapa({ tipo: "nombre" });
+    },
+    [abrirCapa, fichaDe],
+  );
+
+  const guardarNombre = useCallback(
+    async (valor: string) => {
+      if (!hoja) return;
+      const nombre = normalizarNombre(valor, hoja.propuesto);
+      if (hoja.modo === "guardar" && hoja.campeon) {
+        const { aviso, hecho } = guardarCampeonConNombre(hoja.campeon, nombre);
+        resolverHoja.current?.(aviso);
+        resolverHoja.current = null;
+        cerrarArriba();
+        await hecho;
+        return;
+      } else {
+        await renombrarCoche(hoja.carId, nombre);
+        await recargar();
+      }
+      resolverHoja.current = null;
+      cerrarArriba();
+    },
+    [hoja, guardarCampeonConNombre, recargar, cerrarArriba],
+  );
   useEffect(() => {
     runtime.ayudaAbierta = capas.some((c) => c.tipo === "ayuda") ? screen : null;
     runtime.guia = {
@@ -606,9 +707,9 @@ export function App() {
       origen: guiaCapa !== undefined ? screen : null,
     };
     // Al cerrar la última capa el foco vuelve al «?», que es de donde se abrió.
-    if (habiaCapas.current && !hayCapas) document.querySelector<HTMLElement>('[data-testid="ayuda-boton"]')?.focus();
-    habiaCapas.current = hayCapas;
-  }, [capas, guiaCapa, hayCapas, screen]);
+    if (habiaCapas.current && !hayCapasAyuda) document.querySelector<HTMLElement>('[data-testid="ayuda-boton"]')?.focus();
+    habiaCapas.current = hayCapasAyuda;
+  }, [capas, guiaCapa, hayCapasAyuda, screen]);
 
   return (
     <>
@@ -723,6 +824,8 @@ export function App() {
             setDesdeCoche(car);
             setScreen("evolucion-inicio");
           }}
+          ficha={(car) => fichaDe(car.origin, car.lineageId)}
+          onRenombrar={pedirRenombrar}
           onBack={() => setScreen("portada")}
           almacenDisponible={runtime.disponible}
           onImportada={releerTodo}
@@ -746,7 +849,7 @@ export function App() {
           initial={evolucion}
           rankings={rankings}
           onGeneracion={onGeneracion}
-          onGuardarCampeon={onGuardarCampeon}
+          onGuardarCampeon={pedirNombreCampeon}
           onBack={() => setScreen("portada")}
         />
       )}
@@ -826,7 +929,18 @@ export function App() {
         }}
       />
       {capas.map((c, i) =>
-        c.tipo === "ayuda" ? (
+        c.tipo === "nombre" ? (
+          hoja && (
+            <HojaNombre
+              key={`nombre-${i}`}
+              modo={hoja.modo}
+              valorInicial={hoja.valorInicial}
+              ficha={hoja.ficha}
+              onGuardar={guardarNombre}
+              onCerrar={cerrarArriba}
+            />
+          )
+        ) : c.tipo === "ayuda" ? (
           <PanelAyuda
             key={`ayuda-${i}`}
             pantalla={screen}
