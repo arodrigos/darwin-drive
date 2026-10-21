@@ -65,6 +65,9 @@ test("dif-3 / dif-4 una partida de la versión anterior se pone al día sola y l
   if (await aviso.isVisible()) await page.getByTestId("aviso-migracion-cerrar").click();
   await page.getByTestId("tarjeta-cordillera").click();
   await expect(page.getByTestId("rankings")).toBeVisible();
+  // Rankings ya no lleva el selector de pista (tiene pestañas): las miniaturas se miran en Explorar.
+  await page.getByRole("button", { name: "← Volver" }).click();
+  await page.getByTestId("acceso-explorar").click();
   await page.getByTestId("selector-pista").click();
   await expect(page.getByTestId("hoja-pistas")).toBeVisible();
   for (const id of ["cordillera", "rampa", "dunas", "pedregal"]) await expect(page.getByTestId(`miniatura-${id}`)).toBeVisible();
