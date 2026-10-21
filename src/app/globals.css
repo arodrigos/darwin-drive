@@ -97,15 +97,31 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .pestana[aria-selected="true"] { border-color: #ffd23f; background: #2a3c50; }
 .lema-ranking { margin: 0; font-size: .9rem; opacity: .9; }
 .ranking-lista { list-style: none; margin: 0; padding: 0 0 190px; display: flex; flex-direction: column; gap: 4px; }
-.fila-ranking { width: 100%; min-height: 48px; display: grid; grid-template-columns: 24px 40px minmax(0, 1fr) auto; grid-template-areas: "puesto silueta nombre distancia" "puesto silueta etiqueta fecha"; align-items: center; column-gap: 8px; padding: 4px 8px; text-align: left; border: 2px solid rgba(255,255,255,.35); border-radius: 10px; background: rgba(20,32,46,.8); font-size: .9rem; }
+.ranking-titulos { display: grid; grid-template-columns: 1fr 1.4fr 1fr; padding: 0 10px; font-size: .875rem; opacity: .8; text-align: center; }
+.ranking-titulos .titulo-distancia { display: none; }
+.ranking-lista li { display: flex; flex-direction: column; gap: 2px; }
+.fila-ranking { width: 100%; min-height: 48px; display: grid; grid-template-columns: 28px 44px minmax(0, 1fr) auto; grid-template-areas: "puesto silueta nombre distancia" "datos datos datos datos"; align-items: center; column-gap: 8px; padding: 4px 8px; text-align: left; border: 2px solid rgba(255,255,255,.35); border-radius: 10px; background: rgba(20,32,46,.8); font-size: .9rem; }
 .fila-ranking[aria-pressed="true"] { border-color: #ffd23f; }
 .fila-ranking .puesto { grid-area: puesto; font-weight: 800; text-align: center; }
 .fila-ranking .silueta { grid-area: silueta; width: 40px; height: 40px; }
 .fila-ranking .nombre-fila { grid-area: nombre; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fila-ranking .distancia { grid-area: distancia; font-weight: 700; text-align: right; }
-.fila-ranking .etiqueta { grid-area: etiqueta; justify-self: start; padding: 0 8px; border-radius: 8px; background: #2f7d32; font-size: .78rem; font-weight: 700; }
-.fila-ranking .fecha { grid-area: fecha; font-size: .78rem; opacity: .85; text-align: right; }
-.ranking-vacio { display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center; padding: 24px 12px; }
+.fila-ranking .datos-marca { grid-area: datos; display: grid; grid-template-columns: 1fr 1.4fr 1fr; text-align: center; }
+.fila-ranking .celda-marca { font-size: .875rem; min-width: 0; overflow-wrap: anywhere; }
+.insignia { align-self: flex-start; min-width: 44px; min-height: 44px; margin-left: 80px; padding: 0 12px; border-radius: 8px; background: #2f7d32; font-size: .875rem; font-weight: 700; }
+.insignia-explica { margin: 0 0 4px 8px; font-size: .875rem; }
+@media (min-width: 600px) {
+  .ranking-titulos { grid-template-columns: 28px 44px minmax(0, 1fr) 92px 76px 150px 100px; column-gap: 8px; padding: 0 10px; }
+  .ranking-titulos .titulo-distancia { display: block; grid-column: 4; text-align: right; }
+  .ranking-titulos .titulo-marca:nth-of-type(2) { grid-column: 5; }
+  .ranking-titulos .titulo-marca:nth-of-type(3) { grid-column: 6; }
+  .ranking-titulos .titulo-marca:nth-of-type(4) { grid-column: 7; }
+  .fila-ranking { grid-template-columns: 28px 44px minmax(0, 1fr) 92px 76px 150px 100px; grid-template-areas: "puesto silueta nombre distancia datos datos datos"; }
+  .fila-ranking .datos-marca { display: contents; }
+  .fila-ranking .celda-marca:nth-child(1) { grid-column: 5; }
+  .fila-ranking .celda-marca:nth-child(2) { grid-column: 6; }
+  .fila-ranking .celda-marca:nth-child(3) { grid-column: 7; }
+}
 .hoja-fila { position: absolute; left: 0; right: 0; bottom: 0; z-index: 20; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: #0f1923; border-top: 2px solid #ffd23f; border-radius: 16px 16px 0 0; }
 .hoja-fila h3 { margin: 0 0 4px; font-size: 1.05rem; }
 .hoja-fila p { margin: 0 0 8px; font-size: .9rem; }
@@ -201,7 +217,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .aviso-migracion.espera span { flex: 1 1 100%; }
 .aviso-migracion span { flex: 1; }
 .aviso-migracion button { min-width: 44px; min-height: 44px; }
-.rotulo-migracion { font-size: .75rem; color: #ffd23f; }
+.rotulo-migracion { font-size: .875rem; color: #ffd23f; }
 .nota-migracion { margin: 4px 0; font-size: .85rem; color: #ffd23f; }
 /* Ayuda: un «?» fijo y dos capas (panel y guía) por encima de todo menos del aviso de versión. */
 .ayuda-boton { position: fixed; top: calc(8px + env(safe-area-inset-top)); right: 8px; z-index: 15; min-width: 44px; min-height: 44px; padding: 0; font-size: 1.2rem; }

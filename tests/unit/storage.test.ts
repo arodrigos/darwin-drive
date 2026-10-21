@@ -14,6 +14,7 @@ import {
   KEY_RANKINGS,
   RANKING_SIZE,
   emptyRankings,
+  normalizeRanking,
   type RankingEntry,
   type SavedCar,
 } from "../../src/storage/schema";
@@ -42,7 +43,7 @@ beforeEach(nuevaBase);
 const trackVersion = (t: TrackId) => getTrack(t)!.version;
 
 function result(carId: string, trackId: TrackId, distance: number, over: Partial<CarResult> = {}): CarResult {
-  return { carId, distance, reason: "stall", steps: 100, physicsVersion: PHYSICS_VERSION, trackId, trackVersion: trackVersion(trackId), ...over };
+  return { carId, distance, reason: "stall", steps: 100, bestStep: Math.ceil(distance * 1.2) + 1, piezasPerdidas: 0, physicsVersion: PHYSICS_VERSION, trackId, trackVersion: trackVersion(trackId), ...over };
 }
 
 function entry(n: number, trackId: TrackId, distance: number, over: Partial<RankingEntry> = {}): RankingEntry {
@@ -56,6 +57,7 @@ function entry(n: number, trackId: TrackId, distance: number, over: Partial<Rank
     date: "2026-10-01T10:00:00.000Z",
     trackId,
     trackVersion: trackVersion(trackId),
+    bestStep: Math.ceil(distance * 1.2) + 1,
     physicsVersion: PHYSICS_VERSION,
     ...over,
   };
@@ -172,7 +174,7 @@ test("gd-2: loadAll no lanza con cualquier contenido en cualquier clave (propert
 
 test("gd-3-reglas: updateRanking aplica las reglas del ranking", async () => {
   const rampa: RankingEntry[] = [100, 95, 90, 85, 80].map((d, i) => entry(i, "rampa", d));
-  rampa.push(entry(20, "rampa", 80)); // G: ya está, empatado con el 5.º, en el 6.º puesto
+  rampa.push(entry(20, "rampa", 80, { bestStep: 5000 })); // G: ya está, empatado con el 5.º, en el 6.º puesto
   rampa.push(...[70, 65, 60, 55].map((d, i) => entry(30 + i, "rampa", d)));
   assert.equal(rampa.length, RANKING_SIZE);
   const rk = emptyRankings();
@@ -378,8 +380,7 @@ test("invariante: save + loadAll devuelve un valor igual para rankings y garaje 
       const rk = emptyRankings();
       for (const e of es) rk[e.t].push(entry(e.g, e.t, e.d / 10));
       for (const t of TRACKS) {
-        const seen = new Set<string>();
-        rk[t.id] = rk[t.id].filter((e) => !seen.has(e.genomeHash) && !!seen.add(e.genomeHash)).sort((a, b) => b.distance - a.distance).slice(0, RANKING_SIZE);
+        rk[t.id] = normalizeRanking(rk[t.id]);
       }
       const garage = [...new Set(cs)].map((n) => car(n, { rampa: n / 2 }));
       await save(KEY_RANKINGS, rk);

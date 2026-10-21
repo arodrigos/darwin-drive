@@ -18,6 +18,8 @@ Cada pantalla tiene un «?» arriba a la derecha que abre un panel con una líne
 
 Hay cuatro pistas fijas, cada una una función pura de la distancia (`src/sim/tracks.ts`): **La Cordillera** (montañas al azar pero siempre las mismas), **La Rampa** (una recta que se empina sin parar), **Las Dunas** (olas largas que crecen) y **El Pedregal** (piedras cada vez mayores). Se trocean en tramos de 25 m (`src/sim/terrain.ts`). Cada pista tendrá su propio ranking de 10 coches.
 
+**Meta y clasificación.** La carrera acaba al llegar a 5000 m («¡Meta!») o a los 15 minutos de simulación (54 000 pasos). El ranking de cada pista ordena con un único criterio (`compararMarcas`, en `src/sim/clasificacion.ts`): quien no está descalificado, más décimas de distancia, llegar entero, menos tiempo hasta la marca, antes en la tabla y, por último, el hash del genoma. Cuando la distancia que se ve es la misma, una insignia en la fila dice qué clave decidió. Cada marca guarda `bestStep` (el paso de su mejor distancia) y `piezasPerdidas`; una marca sin ellos, o que la física no permite, se vuelve a medir con la migración de marcas.
+
 ## Guardado en el dispositivo
 
 Todo se guarda en IndexedDB del propio dispositivo, con claves `dd:v1:*` validadas al leer (rankings, garaje, evolución, linaje, especies y ajustes). Tras el primer guardado se pide `navigator.storage.persist()`, y el Garaje dice en «Estado del guardado» si es duradero o si Safari puede borrarlo.

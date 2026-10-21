@@ -82,9 +82,10 @@ export const SECCIONES_GUIA: readonly SeccionGuia[] = [
   },
   {
     id: "rankings-clasificacion",
-    titulo: "Rankings",
+    titulo: "Rankings y clasificación",
     parrafos: [
-      "Cada pista tiene su ranking con las mejores marcas de tus coches. Manda la distancia: gana quien llega más lejos.",
+      "Cada pista tiene su ranking con las mejores marcas de tus coches. Manda la distancia: gana quien llega más lejos. La carrera acaba al llegar a la meta (5000 m) o a los 15 minutos.",
+      "Si dos coches llegan igual de lejos en la pantalla, gana el que llegó entero, después el más rápido en alcanzar su marca y, por último, el que la logró antes. Una insignia en la fila dice cuál de esos criterios decidió.",
       "Toca una fila para verla correr, abrirla en el Taller o guardarla en el Garaje.",
     ],
   },

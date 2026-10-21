@@ -3,7 +3,7 @@
   "v": 1,
   "trackId": "cordillera",
   "trackVersion": 3,
-  "physicsVersion": 2,
+  "physicsVersion": 3,
   "batch": 6,
   "rng": [
    -343825381,
@@ -80,6 +80,8 @@
      ]
     },
     "distance": 1.1639638628088487,
+    "bestStep": 63,
+    "piezasPerdidas": 0,
     "batch": 5
    },
    {
@@ -149,6 +151,8 @@
      ]
     },
     "distance": 1.3942822118697644,
+    "bestStep": 67,
+    "piezasPerdidas": 0,
     "batch": 6
    },
    null,
@@ -219,6 +223,8 @@
      ]
     },
     "distance": 1576.7536633711582,
+    "bestStep": 6443,
+    "piezasPerdidas": 0,
     "batch": 6
    },
    {
@@ -288,6 +294,8 @@
      ]
     },
     "distance": 1389.4637851209957,
+    "bestStep": 6197,
+    "piezasPerdidas": 0,
     "batch": 5
    },
    {
@@ -357,6 +365,8 @@
      ]
     },
     "distance": 1390.4918833644424,
+    "bestStep": 6207,
+    "piezasPerdidas": 0,
     "batch": 1
    },
    {
@@ -426,6 +436,8 @@
      ]
     },
     "distance": 1168.1721511996482,
+    "bestStep": 5272,
+    "piezasPerdidas": 0,
     "batch": 4
    },
    null,
@@ -496,6 +508,8 @@
      ]
     },
     "distance": 1168.9726534438687,
+    "bestStep": 5833,
+    "piezasPerdidas": 0,
     "batch": 6
    },
    {
@@ -565,6 +579,8 @@
      ]
     },
     "distance": 1196.5424346124896,
+    "bestStep": 3893,
+    "piezasPerdidas": 0,
     "batch": 4
    },
    {
@@ -634,6 +650,8 @@
      ]
     },
     "distance": 1167.102445128962,
+    "bestStep": 6507,
+    "piezasPerdidas": 0,
     "batch": 6
    },
    null,
@@ -705,6 +723,8 @@
      ]
     },
     "distance": 1023.6807157162283,
+    "bestStep": 3274,
+    "piezasPerdidas": 0,
     "batch": 5
    },
    null
@@ -714,7 +734,7 @@
   "v": 1,
   "trackId": "rampa",
   "trackVersion": 2,
-  "physicsVersion": 2,
+  "physicsVersion": 3,
   "batch": 3,
   "rng": [
    -471054167,
@@ -726,75 +746,7 @@
    null,
    null,
    null,
-   {
-    "carId": "ae3874f0c37be64f",
-    "genome": {
-     "v": 1,
-     "body": [
-      {
-       "angle": 0.6560644602563797,
-       "length": 0.3822342336177826
-      },
-      {
-       "angle": 1.3869114642513645,
-       "length": 1.0214085757732392
-      },
-      {
-       "angle": 1.7876117192652141,
-       "length": 1.323218649625778
-      },
-      {
-       "angle": 2.83899771268273,
-       "length": 1.81309739947319
-      },
-      {
-       "angle": 3.8186099041080968,
-       "length": 0.4557126462459564
-      },
-      {
-       "angle": 4.358290893800812,
-       "length": 2.3932594120502473
-      },
-      {
-       "angle": 4.8482025387192555,
-       "length": 1.3916057884693145
-      },
-      {
-       "angle": 5.888970085425802,
-       "length": 2.1991693019866942
-      }
-     ],
-     "bodyDensity": 163.11370372772217,
-     "wheels": [
-      {
-       "vertex": 1,
-       "radius": 1.1163575172424316,
-       "density": 68.0049192905426,
-       "axisAngle": 0.697394254847132
-      },
-      {
-       "vertex": -1,
-       "radius": 1.1483490586280822,
-       "density": 87.22575426101685,
-       "axisAngle": 5.794867840031305
-      },
-      {
-       "vertex": -1,
-       "radius": 0.436440214055109,
-       "density": 114.9428141117096,
-       "axisAngle": 5.968956565672848
-      },
-      {
-       "vertex": -1,
-       "radius": 0.21919991973973876,
-       "density": 87.71962642669678,
-       "axisAngle": 0.11607358482785937
-      }
-     ]
-    },
-    "distance": 1.2746332713478619,
-    "batch": 3
-   },
+   null,
    null,
    null,
    {
@@ -864,6 +816,8 @@
      ]
     },
     "distance": 2.421803939037728,
+    "bestStep": 236,
+    "piezasPerdidas": 0,
     "batch": 1
    },
    {
@@ -933,6 +887,8 @@
      ]
     },
     "distance": 248.93717416702182,
+    "bestStep": 1556,
+    "piezasPerdidas": 0,
     "batch": 3
    },
    null,
@@ -1004,6 +960,8 @@
      ]
     },
     "distance": 32.72676800691899,
+    "bestStep": 1242,
+    "piezasPerdidas": 0,
     "batch": 3
    },
    {
@@ -1073,6 +1031,8 @@
      ]
     },
     "distance": 351.26162573038505,
+    "bestStep": 1788,
+    "piezasPerdidas": 0,
     "batch": 3
    },
    null,

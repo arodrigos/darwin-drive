@@ -78,6 +78,7 @@ function fila(n: number, trackId: TrackId, date: string, name?: string): Ranking
     genome,
     genomeHash: genomeHash(genome),
     distance: 100 + n,
+    bestStep: 1000,
     origin: "evolución",
     date,
     trackId,

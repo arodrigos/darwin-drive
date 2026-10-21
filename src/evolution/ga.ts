@@ -3,6 +3,7 @@ import { xoroshiro128plus, xoroshiro128plusFromState } from "pure-rand/generator
 import { uniformInt } from "pure-rand/distribution/uniformInt";
 import { GENE_RANGES, VERTEX_COUNT, WHEEL_SLOTS, genomeHash, normalizeGenome, randomGenome, type Genome } from "../sim/genome";
 import type { CarResult } from "../sim/constants";
+import { compararMarcas, marcaDeResultado } from "../sim/clasificacion";
 import type { TrackId } from "../sim/tracks";
 import { isHumanOp, type LineageNode } from "./lineage";
 
@@ -312,8 +313,10 @@ export function nextGeneration(
   const { params } = state;
   const rng = makeRng(state.rng);
 
-  // Orden estable: a igual distancia gana el que va antes en la población.
-  const order = pop.map((_, i) => i).sort((a, b) => fitness[b] - fitness[a] || a - b);
+  // El mismo orden que el ranking (compararMarcas); a igualdad total, el que va antes en la población.
+  const marcas = evaluated.map((r, i) => marcaDeResultado(r, { genomeHash: pop[i].id }));
+  const order = pop.map((_, i) => i).sort((a, b) => compararMarcas(marcas[a], marcas[b]) || a - b);
+  const rank = new Map(order.map((idx, puesto) => [idx, puesto]));
   const qualified = order.filter((i) => fitness[i] >= 0);
   const clampedDistance = (i: number) => Math.max(0, fitness[i]);
   const top = Math.max(1, Math.ceil(pop.length / 4));
@@ -345,7 +348,7 @@ export function nextGeneration(
     let winner = pool[rng.int(pool.length)];
     for (let tries = 0; tries < 4; tries++) {
       const rival = pool[rng.int(pool.length)];
-      if (fitness[rival] > fitness[winner]) winner = rival;
+      if (rank.get(rival)! < rank.get(winner)!) winner = rival;
       if (exclude === undefined || winner !== exclude) break;
     }
     return winner;

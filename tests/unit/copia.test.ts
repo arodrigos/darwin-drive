@@ -34,6 +34,7 @@ function entrada(n: number, trackId: TrackId, distance: number): RankingEntry {
     genome,
     genomeHash: genomeHash(genome),
     distance,
+    bestStep: Math.ceil(distance * 1.2) + 1,
     origin: "evolución",
     date: "2026-10-01T10:00:00.000Z",
     trackId,

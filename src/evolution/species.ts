@@ -1,6 +1,7 @@
 import "../sim/detmath";
 import { crossover, makeRng, mutate, type Rng } from "./ga";
 import { PHYSICS_VERSION, type CarResult } from "../sim/constants";
+import { compararMarcas, type Marca } from "../sim/clasificacion";
 import { VERTEX_COUNT, genomeHash, randomGenome, type Genome } from "../sim/genome";
 import { getTrack, type TrackId } from "../sim/tracks";
 
@@ -19,6 +20,8 @@ export interface SpeciesCell {
   carId: string;
   genome: Genome;
   distance: number;
+  bestStep?: number;
+  piezasPerdidas?: number;
   /** Lote en que entró en la celda. */
   batch: number;
   /** Versiones con que se midió la celda; solo las rellena la migración mientras el archivo aún lleva las antiguas. */
@@ -108,6 +111,14 @@ export function planBatch(archive: SpeciesArchive, size: number = BATCH_SIZE): {
   return { archive: { ...archive, rng: rng.state() }, cars };
 }
 
+/** La marca de una celda, para ordenar con el mismo criterio que el ranking (el id del coche hace de genomeHash). */
+export const marcaDeCelda = (c: { carId: string; distance: number; bestStep?: number; piezasPerdidas?: number }): Marca => ({
+  distance: c.distance,
+  bestStep: c.bestStep,
+  piezasPerdidas: c.piezasPerdidas,
+  genomeHash: c.carId,
+});
+
 /**
  * Coloca cada coche del lote en su celda si mejora la marca que había. Un resultado de otra pista, de otra
  * versión de física o de pista, o un coche que no estaba en el lote es un error de quien llama: lanza.
@@ -127,7 +138,9 @@ export function integrateBatch(archive: SpeciesArchive, cars: BatchCar[], result
     const index = cellIndex(genome);
     if (index === null) continue;
     const current = cells[index];
-    if (current === null || r.distance > current.distance) cells[index] = { carId: r.carId, genome, distance: r.distance, batch };
+    if (current === null || compararMarcas(marcaDeCelda({ carId: r.carId, distance: r.distance, bestStep: r.bestStep, piezasPerdidas: r.piezasPerdidas }), marcaDeCelda(current)) < 0) {
+      cells[index] = { carId: r.carId, genome, distance: r.distance, bestStep: r.bestStep, piezasPerdidas: r.piezasPerdidas, batch };
+    }
   }
   return { ...archive, batch, cells };
 }

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
+import { formatTiempo } from "@/sim/clasificacion";
 import { avisoRanking, textoRanking } from "@/app/ranking-text";
 import { runtime } from "@/debug/ganchos";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
@@ -22,7 +23,7 @@ import type { RankingsView } from "./TrackPicker";
 
 const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarlo o a abrirlo en Safari o Chrome.";
 export const MENSAJE_ERROR = "La simulación se ha detenido por un error. Toca Reintentar para volver a empezar esta carrera.";
-const MOTIVO: Record<EndReason, string> = { stall: "se atascó", timeout: "se acabó el tiempo", anomaly: "descalificado" };
+const MOTIVO: Record<EndReason, string> = { meta: "¡Meta!", stall: "se atascó", timeout: "se acabó el tiempo", anomaly: "descalificado" };
 const STOCK_HUE = 28;
 const AVISO_RANKING_MS = 2500;
 // La barra de «Hasta el final» se llena hasta los 5 km de la meta.
@@ -373,10 +374,10 @@ export function Pista(props: PistaProps) {
       {fase.tipo === "fin" && (
         <div className="tarjeta-fin" role="dialog" aria-label="Fin de la carrera" data-testid="tarjeta-fin">
           <h2>Fin de la carrera · {track.name}</h2>
-          <p className="cifra" data-testid="fin-distancia">
-            {formatMeters(fase.result.distance)}
+          <p className="cifra" data-testid="fin-marca">
+            <span data-testid="fin-distancia">{formatMeters(fase.result.distance)}</span> en <span data-testid="fin-tiempo">{formatTiempo(fase.result.bestStep)}</span>
           </p>
-          <p data-testid="fin-motivo">Motivo: {MOTIVO[fase.result.reason]}</p>
+          <p data-testid="fin-motivo">{fase.result.reason === "meta" ? MOTIVO.meta : `Motivo: ${MOTIVO[fase.result.reason]}`}</p>
           {inscripcion && (
             <>
               <p className="resultado-ranking" data-testid="tarjeta-ranking">

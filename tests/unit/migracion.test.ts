@@ -36,6 +36,7 @@ function entrada(n: number, trackId: TrackId, distance: number, over: Partial<Ra
     genome,
     genomeHash: genomeHash(genome),
     distance,
+    bestStep: Math.ceil(distance * 1.2) + 1,
     origin: "evolución",
     date: `2026-10-0${(n % 8) + 1}T10:00:00.000Z`,
     trackId,
@@ -52,7 +53,7 @@ function resultadoFalso(genome: Parameters<Medir>[0], trackId: TrackId, over: Pa
   const h = genomeHash(genome);
   let suma = 0;
   for (const ch of h) suma += ch.charCodeAt(0);
-  return { carId: h, distance: (suma % 900) / 10 + 1, reason: "stall", steps: 100, physicsVersion: PHYSICS_VERSION, trackId, trackVersion: trackVersion(trackId), ...over };
+  return { carId: h, distance: (suma % 900) / 10 + 1, reason: "stall", steps: 100, bestStep: 2000, piezasPerdidas: 0, physicsVersion: PHYSICS_VERSION, trackId, trackVersion: trackVersion(trackId), ...over };
 }
 
 /** Navegador falso: el reloj y la visibilidad los mueve el test. */

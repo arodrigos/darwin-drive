@@ -1,8 +1,10 @@
 import type { EvolutionState, GaParams, GenerationStats, Individual, Op } from "@/evolution/ga";
 import { MAX_LINEAGE_NODES, type LineageNode } from "@/evolution/lineage";
 import { CELL_COUNT, cellIndex, type SpeciesArchive, type SpeciesCell } from "@/evolution/species";
+import { MAX_STEPS, META_DISTANCE } from "@/sim/constants";
 import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
+import { marcaCreible, compararMarcas, MAX_PIEZAS } from "@/sim/clasificacion";
 import { nombrePropuesto } from "@/app/nombres";
 import { limpiarNombre, normalizarNombre } from "./nombres";
 
@@ -17,6 +19,9 @@ export interface RankingEntry {
   genome: Genome;
   genomeHash: string;
   distance: number;
+  /** Ausentes (o inválidos en una copia): la entrada está pendiente y la migración la vuelve a medir. */
+  bestStep?: number;
+  piezasPerdidas?: number;
   origin: Origin;
   date: string;
   trackId: TrackId;
@@ -32,6 +37,11 @@ export interface VersionMarca {
   physicsVersion: number;
 }
 
+export interface DetalleMarca {
+  bestStep: number;
+  piezasPerdidas: number;
+}
+
 export interface SavedCar {
   id: string;
   name: string;
@@ -39,6 +49,8 @@ export interface SavedCar {
   marks: Partial<Record<TrackId, number>>;
   /** En paralelo a `marks` (que sigue numérico para que la versión anterior lo lea): la versión de cada marca. */
   markVersions?: Partial<Record<TrackId, VersionMarca>>;
+  /** Desempate de cada marca (`bestStep`, `piezasPerdidas`); sin él, la marca pierde los empates con las medidas. */
+  markDetails?: Partial<Record<TrackId, DetalleMarca>>;
   origin: Origin;
   savedAt: string;
   lineageId?: string;
@@ -79,19 +91,22 @@ function rankingEntry(raw: unknown, trackId: TrackId): RankingEntry | null {
   const genome = genomeOf(raw.genome);
   const track = getTrack(raw.trackId);
   if (!genome || !track || track.id !== trackId) return null;
-  if (!isStr(raw.carId) || !isNum(raw.distance) || raw.distance < 0 || !isOrigin(raw.origin) || !isDate(raw.date)) return null;
+  if (!isStr(raw.carId) || !isNum(raw.distance) || raw.distance < 0 || !isOrigin(raw.origin)) return null;
   if (!isInt(raw.trackVersion) || !isInt(raw.physicsVersion)) return null;
   const entry: RankingEntry = {
     carId: raw.carId,
     genome,
     genomeHash: genomeHash(genome),
-    distance: raw.distance,
+    distance: Math.min(raw.distance, META_DISTANCE),
     origin: raw.origin,
-    date: raw.date,
+    // Una fecha ilegible no descarta la marca: toma la de ahora (la de la importación) y el orden sigue siendo total.
+    date: isDate(raw.date) ? raw.date : new Date().toISOString(),
     trackId,
     trackVersion: raw.trackVersion,
     physicsVersion: raw.physicsVersion,
   };
+  if (isInt(raw.bestStep) && raw.bestStep >= 0 && raw.bestStep <= MAX_STEPS) entry.bestStep = raw.bestStep;
+  if (isInt(raw.piezasPerdidas) && raw.piezasPerdidas >= 0 && raw.piezasPerdidas <= MAX_PIEZAS) entry.piezasPerdidas = raw.piezasPerdidas;
   if (isStr(raw.lineageId)) entry.lineageId = raw.lineageId;
   if (isStr(raw.name)) {
     const nombre = limpiarNombre(raw.name);
@@ -100,11 +115,14 @@ function rankingEntry(raw: unknown, trackId: TrackId): RankingEntry | null {
   return entry;
 }
 
-/** Orden estable por distancia no creciente: a igual distancia, va delante la que ya estaba. */
+/** Una entrada cuyos valores no son creíbles (o faltan) está pendiente de volver a medirse. */
+export const entradaPendiente = (e: RankingEntry): boolean => !marcaCreible(e);
+
+/** Orden total de compararMarcas (sin empates posibles), sin repetir genoma y con las mejores RANKING_SIZE. */
 export function normalizeRanking(entries: RankingEntry[]): RankingEntry[] {
   const seen = new Set<string>();
   const unique = entries.filter((e) => !seen.has(e.genomeHash) && !!seen.add(e.genomeHash));
-  return unique.sort((a, b) => b.distance - a.distance).slice(0, RANKING_SIZE);
+  return unique.sort(compararMarcas).slice(0, RANKING_SIZE);
 }
 
 export function validateRankings(raw: unknown, warn: Warn = () => {}): Rankings | null {
@@ -146,6 +164,20 @@ function markVersions(raw: unknown, marks: Partial<Record<TrackId, number>>): Sa
   return Object.keys(out).length > 0 ? out : null;
 }
 
+/** Validación por valor: un detalle fuera de rango se descarta solo y la marca vuelve a empatar por detrás. */
+function markDetails(raw: unknown, marks: Partial<Record<TrackId, number>>): SavedCar["markDetails"] | null {
+  if (!isObj(raw)) return null;
+  const out: NonNullable<SavedCar["markDetails"]> = {};
+  for (const t of TRACKS) {
+    const d = raw[t.id];
+    if (marks[t.id] === undefined || !isObj(d)) continue;
+    if (isInt(d.bestStep) && d.bestStep >= 0 && d.bestStep <= MAX_STEPS && isInt(d.piezasPerdidas) && d.piezasPerdidas >= 0 && d.piezasPerdidas <= MAX_PIEZAS) {
+      out[t.id] = { bestStep: d.bestStep, piezasPerdidas: d.piezasPerdidas };
+    }
+  }
+  return Object.keys(out).length > 0 ? out : null;
+}
+
 function savedCar(raw: unknown): SavedCar | null {
   if (!isObj(raw)) return null;
   const genome = genomeOf(raw.genome);
@@ -155,11 +187,13 @@ function savedCar(raw: unknown): SavedCar | null {
     const m = raw.marks[t.id];
     if (m === undefined) continue;
     if (!isNum(m) || m < 0) return null;
-    marks[t.id] = m;
+    marks[t.id] = Math.min(m, META_DISTANCE);
   }
   const car: SavedCar = { id: raw.id, name: normalizarNombre(raw.name, nombrePropuesto(raw.id)), genome, marks, origin: raw.origin, savedAt: raw.savedAt };
   const versiones = markVersions(raw.markVersions, marks);
   if (versiones) car.markVersions = versiones;
+  const detalles = markDetails(raw.markDetails, marks);
+  if (detalles) car.markDetails = detalles;
   if (isStr(raw.lineageId)) car.lineageId = raw.lineageId;
   return car;
 }
@@ -280,7 +314,9 @@ function speciesCell(raw: unknown, index: number): SpeciesCell | null {
   if (!genome || !isStr(raw.carId) || !isNum(raw.distance) || raw.distance < 0 || !isInt(raw.batch)) return null;
   // Una celda solo vale si el coche es de esa especie: lo contrario rompería la invariante del archivo.
   if (cellIndex(genome) !== index) return null;
-  const cell: SpeciesCell = { carId: raw.carId, genome, distance: raw.distance, batch: raw.batch };
+  const cell: SpeciesCell = { carId: raw.carId, genome, distance: Math.min(raw.distance, META_DISTANCE), batch: raw.batch };
+  if (isInt(raw.bestStep) && raw.bestStep >= 0 && raw.bestStep <= MAX_STEPS) cell.bestStep = raw.bestStep;
+  if (isInt(raw.piezasPerdidas) && raw.piezasPerdidas >= 0 && raw.piezasPerdidas <= MAX_PIEZAS) cell.piezasPerdidas = raw.piezasPerdidas;
   if (isInt(raw.trackVersion) && isInt(raw.physicsVersion)) {
     cell.trackVersion = raw.trackVersion;
     cell.physicsVersion = raw.physicsVersion;

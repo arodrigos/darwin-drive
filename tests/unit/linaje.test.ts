@@ -142,7 +142,7 @@ test("ln-1: nombres cortos de pista y marca de la mano humana", () => {
 
 test("mig-6: validateLineage conserva trackVersion entero y lo deja sin definir si falta o no es entero", () => {
   const base = demoJson.nodos[0];
-  const [con, sin, malo] = validateLineage([{ ...base, trackVersion: 1 }, { ...base, id: "sin" }, { ...base, id: "malo", trackVersion: "1" }]) ?? [];
+  const [con, sin, malo] = validateLineage([{ ...base, trackVersion: 1 }, { ...base, id: "sin", trackVersion: undefined }, { ...base, id: "malo", trackVersion: "1" }]) ?? [];
   assert.equal(con.trackVersion, 1);
   assert.equal(sin.trackVersion, undefined);
   assert.equal(malo.trackVersion, undefined);

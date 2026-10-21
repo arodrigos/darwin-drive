@@ -1,6 +1,6 @@
 import "../detmath";
 import { Vec2, World } from "planck";
-import { DT, ANOMALY_HEIGHT, ANOMALY_SPEED, MAX_STEPS, STALL_MIN_PROGRESS, STALL_STEPS, PHYSICS_VERSION } from "../constants";
+import { DT, ANOMALY_HEIGHT, ANOMALY_SPEED, MAX_STEPS, META_DISTANCE, STALL_MIN_PROGRESS, STALL_STEPS, PHYSICS_VERSION } from "../constants";
 import type { CarPose, CarResult, EndReason } from "../constants";
 import { normalizeGenome, type Genome } from "../genome";
 import type { Track } from "../tracks";
@@ -13,6 +13,8 @@ export class CarSim {
   private ground: Ground | null;
   private car: CarParts | null;
   private maxX = 0;
+  private bestStep = 0;
+  private bestDecimas = 0;
   private stepCount = 0;
   private refX = 0;
   private refStep = 0;
@@ -96,7 +98,19 @@ export class CarSim {
       return;
     }
     const x = this.car!.chassis.getPosition().x;
-    if (x > this.maxX) this.maxX = x;
+    if (x > this.maxX) {
+      this.maxX = Math.min(x, META_DISTANCE);
+      // Se mide en décimas porque es lo que ve el jugador: dos coches a la misma décima empatan en distancia.
+      const d = Math.round(this.maxX * 10);
+      if (d > this.bestDecimas) {
+        this.bestDecimas = d;
+        this.bestStep = this.stepCount;
+      }
+    }
+    if (this.maxX >= META_DISTANCE) {
+      this.finish("meta");
+      return;
+    }
     if (this.maxX >= this.refX + STALL_MIN_PROGRESS) {
       this.refX = this.maxX;
       this.refStep = this.stepCount;
@@ -134,6 +148,8 @@ export class CarSim {
       distance: this.maxX,
       reason: this.end,
       steps: this.stepCount,
+      bestStep: this.bestStep,
+      piezasPerdidas: 0,
       physicsVersion: PHYSICS_VERSION,
       trackId: this.track.id,
       trackVersion: this.track.version,

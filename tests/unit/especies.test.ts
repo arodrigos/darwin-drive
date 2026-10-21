@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import fc from "fast-check";
+import { decimas } from "../../src/sim/clasificacion";
 import {
   BATCH_SIZE,
   CELL_COUNT,
@@ -28,6 +29,8 @@ function fake(archive: SpeciesArchive, cars: BatchCar[], distances: number[]): C
     distance: distances[i % distances.length],
     reason: "stall",
     steps: 100,
+    bestStep: Math.ceil(distances[i % distances.length] * 1.2) + 1,
+    piezasPerdidas: 0,
     physicsVersion: archive.physicsVersion,
     trackId: archive.trackId,
     trackVersion: archive.trackVersion,
@@ -91,7 +94,7 @@ test("invariante 1: cada celda tiene como mucho un coche y es de esa especie (pr
   );
 });
 
-test("invariante 2: la distancia de una celda nunca decrece de un lote a otro (property)", () => {
+test("invariante 2: la marca de una celda nunca empeora (en décimas) de un lote a otro (property)", () => {
   fc.assert(
     fc.property(trackArb, fc.integer({ min: 1, max: 1e6 }), fc.array(distancesArb, { minLength: 2, maxLength: 8 }), (track, seed, batches) => {
       const history = playBatches(emptyArchive(track, seed), batches);
@@ -99,7 +102,7 @@ test("invariante 2: la distancia de una celda nunca decrece de un lote a otro (p
         history[b - 1].cells.forEach((before, i) => {
           if (!before) return;
           const after = history[b].cells[i];
-          assert.ok(after !== null && after.distance >= before.distance);
+          assert.ok(after !== null && decimas(after.distance) >= decimas(before.distance));
         });
       }
     }),
@@ -154,7 +157,7 @@ test("es-1: 20 lotes de 8 en La Cordillera ocupan al menos 8 de las 16 celdas y 
     const plan = planBatch(archive);
     const next = integrateBatch(plan.archive, plan.cars, raceBatch(plan.archive, plan.cars));
     archive.cells.forEach((before, i) => {
-      if (before) assert.ok(next.cells[i]!.distance >= before.distance);
+      if (before) assert.ok(decimas(next.cells[i]!.distance) >= decimas(before.distance));
     });
     archive = next;
   }

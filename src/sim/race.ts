@@ -2,7 +2,7 @@ import "./detmath";
 import { CarSim } from "./physics/car-sim";
 import { genomeHash, type Genome } from "./genome";
 import { getTrack, type TrackId } from "./tracks";
-import type { CarPose, CarResult } from "./constants";
+import { PHYSICS_VERSION, type CarPose, type CarResult } from "./constants";
 
 export * from "./constants";
 
@@ -78,3 +78,30 @@ export function simulateCar(genome: Genome, trackId: TrackId): CarResult {
   race.dispose();
   return result;
 }
+
+const MAX_CACHE = 400;
+
+/** Resultados ya simulados: la misma entrada (genoma, pista, versiones) da siempre lo mismo, así que no se repite. */
+export class CacheResultados {
+  private readonly mapa = new Map<string, CarResult>();
+  simulaciones = 0;
+
+  private clave(genome: Genome, trackId: TrackId): string {
+    const t = getTrack(trackId);
+    return `${genomeHash(genome)}/${trackId}/${t?.version ?? 0}/${PHYSICS_VERSION}`;
+  }
+
+  simular(genome: Genome, trackId: TrackId): CarResult {
+    const k = this.clave(genome, trackId);
+    let r = this.mapa.get(k);
+    if (!r) {
+      r = simulateCar(genome, trackId);
+      this.simulaciones++;
+      if (this.mapa.size >= MAX_CACHE) this.mapa.delete(this.mapa.keys().next().value as string);
+      this.mapa.set(k, r);
+    }
+    return { ...r };
+  }
+}
+
+export const cacheGlobal = new CacheResultados();

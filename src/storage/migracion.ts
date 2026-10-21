@@ -7,6 +7,7 @@ import {
   KEY_GARAGE,
   KEY_RANKINGS,
   KEY_SPECIES,
+  entradaPendiente,
   normalizeRanking,
   validateGarage,
   validateRankings,
@@ -68,7 +69,7 @@ export function trabajoPendiente(datos: DatosMigrables, conservados: ReadonlySet
   for (const track of TRACKS) {
     for (const e of datos.rankings[track.id] ?? []) {
       const v = { trackVersion: e.trackVersion, physicsVersion: e.physicsVersion };
-      if (!esVigente(v, track.id)) {
+      if (!esVigente(v, track.id) || entradaPendiente(e)) {
         meter({ clave: claveTrabajo("ranking", track.id, e.carId), tipo: "ranking", trackId: track.id, carId: e.carId, genome: e.genome, genomeHash: e.genomeHash, viejo: v });
       }
     }
@@ -113,7 +114,7 @@ async function aplicarRanking(t: TrabajoMigracion, m: Medida): Promise<boolean> 
     aplicado = true;
     // Una anomalía descalifica: ya no puede estar en el ranking. La fecha, el nombre y el origen se conservan.
     const resto = lista.filter((_, j) => j !== i);
-    rankings[t.trackId] = normalizeRanking(m.reason === "anomaly" ? resto : [...resto, { ...e, distance: m.distance, ...versionNueva(m) }]);
+    rankings[t.trackId] = normalizeRanking(m.reason === "anomaly" ? resto : [...resto, { ...e, distance: m.distance, bestStep: m.bestStep, piezasPerdidas: m.piezasPerdidas, ...versionNueva(m) }]);
     return rankings;
   });
   return aplicado;
@@ -130,8 +131,10 @@ async function aplicarGaraje(t: TrabajoMigracion, m: Medida): Promise<boolean> {
     if (m.reason === "anomaly") {
       delete c.marks[t.trackId];
       if (c.markVersions) delete c.markVersions[t.trackId];
+      if (c.markDetails) delete c.markDetails[t.trackId];
     } else {
       c.marks[t.trackId] = m.distance;
+      c.markDetails = { ...c.markDetails, [t.trackId]: { bestStep: m.bestStep, piezasPerdidas: m.piezasPerdidas } };
       c.markVersions = { ...c.markVersions, [t.trackId]: versionNueva(m) };
     }
     return garage;
@@ -150,11 +153,11 @@ async function aplicarEspecie(t: TrabajoMigracion, m: Medida): Promise<boolean> 
     aplicado = true;
     const nueva = versionNueva(m);
     // La celda no cambia de sitio: su genoma es el mismo, así que cellIndex sigue siendo su índice.
-    archivo.cells[t.indice as number] = m.reason === "anomaly" ? null : { ...celda, distance: m.distance, ...nueva };
+    archivo.cells[t.indice as number] = m.reason === "anomaly" ? null : { ...celda, distance: m.distance, bestStep: m.bestStep, piezasPerdidas: m.piezasPerdidas, ...nueva };
     if (archivo.cells.every((c) => c === null || (c.trackVersion === nueva.trackVersion && c.physicsVersion === nueva.physicsVersion))) {
       archivo.trackVersion = nueva.trackVersion;
       archivo.physicsVersion = nueva.physicsVersion;
-      archivo.cells = archivo.cells.map((c) => (c ? { carId: c.carId, genome: c.genome, distance: c.distance, batch: c.batch } : null));
+      archivo.cells = archivo.cells.map((c) => (c ? { carId: c.carId, genome: c.genome, distance: c.distance, bestStep: c.bestStep, piezasPerdidas: c.piezasPerdidas, batch: c.batch } : null));
     }
     return especies;
   });

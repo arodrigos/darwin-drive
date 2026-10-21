@@ -68,11 +68,13 @@
    },
    "genomeHash": "1a2e1836cf545e29",
    "distance": 1155.1794119615824,
+   "bestStep": 5508,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-01T12:00:00.000Z",
    "trackId": "cordillera",
    "trackVersion": 3,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "9282a6ace16c132d",
@@ -142,11 +144,13 @@
    },
    "genomeHash": "9282a6ace16c132d",
    "distance": 1034.5940892177837,
+   "bestStep": 4302,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-02T12:00:00.000Z",
    "trackId": "cordillera",
    "trackVersion": 3,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "bcd56f50f58e6de9",
@@ -216,11 +220,13 @@
    },
    "genomeHash": "bcd56f50f58e6de9",
    "distance": 1032.4663727702766,
+   "bestStep": 5653,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-07T12:00:00.000Z",
    "trackId": "cordillera",
    "trackVersion": 3,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "4360599c354b4feb",
@@ -290,11 +296,13 @@
    },
    "genomeHash": "4360599c354b4feb",
    "distance": 1032.1615558775575,
+   "bestStep": 4133,
+   "piezasPerdidas": 0,
    "origin": "mixto",
    "date": "2026-10-03T12:00:00.000Z",
    "trackId": "cordillera",
    "trackVersion": 3,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "0a79ecd147d3793e",
@@ -364,11 +372,13 @@
    },
    "genomeHash": "0a79ecd147d3793e",
    "distance": 1029.994545416654,
+   "bestStep": 5071,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-04T12:00:00.000Z",
    "trackId": "cordillera",
    "trackVersion": 3,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "de8697c9f66eb774",
@@ -438,11 +448,13 @@
    },
    "genomeHash": "de8697c9f66eb774",
    "distance": 1017.7044043016015,
+   "bestStep": 5056,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-11T12:00:00.000Z",
    "trackId": "cordillera",
    "trackVersion": 3,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "2a679e10fcb58c5b",
@@ -512,11 +524,13 @@
    },
    "genomeHash": "2a679e10fcb58c5b",
    "distance": 958.0267165085133,
+   "bestStep": 4087,
+   "piezasPerdidas": 0,
    "origin": "mixto",
    "date": "2026-10-12T12:00:00.000Z",
    "trackId": "cordillera",
    "trackVersion": 3,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "c102c6581d2118f7",
@@ -586,11 +600,13 @@
    },
    "genomeHash": "c102c6581d2118f7",
    "distance": 950.5749949316094,
+   "bestStep": 4681,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-10T12:00:00.000Z",
    "trackId": "cordillera",
    "trackVersion": 3,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "4df89d2743d4b916",
@@ -660,11 +676,13 @@
    },
    "genomeHash": "4df89d2743d4b916",
    "distance": 950.3610298806242,
+   "bestStep": 3636,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-08T12:00:00.000Z",
    "trackId": "cordillera",
    "trackVersion": 3,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "6c5f308986907b62",
@@ -734,11 +752,13 @@
    },
    "genomeHash": "6c5f308986907b62",
    "distance": 749.7916628281961,
+   "bestStep": 3041,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-05T12:00:00.000Z",
    "trackId": "cordillera",
    "trackVersion": 3,
-   "physicsVersion": 2
+   "physicsVersion": 3
   }
  ],
  "rampa": [
@@ -810,11 +830,13 @@
    },
    "genomeHash": "4df89d2743d4b916",
    "distance": 411.48412290428644,
+   "bestStep": 1867,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-08T12:00:00.000Z",
    "trackId": "rampa",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "de8697c9f66eb774",
@@ -884,11 +906,13 @@
    },
    "genomeHash": "de8697c9f66eb774",
    "distance": 409.60728869518,
+   "bestStep": 2541,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-11T12:00:00.000Z",
    "trackId": "rampa",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "c102c6581d2118f7",
@@ -958,11 +982,13 @@
    },
    "genomeHash": "c102c6581d2118f7",
    "distance": 387.212642209737,
+   "bestStep": 2522,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-10T12:00:00.000Z",
    "trackId": "rampa",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "0a79ecd147d3793e",
@@ -1032,11 +1058,13 @@
    },
    "genomeHash": "0a79ecd147d3793e",
    "distance": 386.3072005652259,
+   "bestStep": 2293,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-04T12:00:00.000Z",
    "trackId": "rampa",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "6c5f308986907b62",
@@ -1106,11 +1134,13 @@
    },
    "genomeHash": "6c5f308986907b62",
    "distance": 385.8612682582463,
+   "bestStep": 2035,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-05T12:00:00.000Z",
    "trackId": "rampa",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "4360599c354b4feb",
@@ -1180,11 +1210,13 @@
    },
    "genomeHash": "4360599c354b4feb",
    "distance": 378.2490057018234,
+   "bestStep": 1912,
+   "piezasPerdidas": 0,
    "origin": "mixto",
    "date": "2026-10-03T12:00:00.000Z",
    "trackId": "rampa",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "9282a6ace16c132d",
@@ -1254,11 +1286,13 @@
    },
    "genomeHash": "9282a6ace16c132d",
    "distance": 378.03665179624375,
+   "bestStep": 2084,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-02T12:00:00.000Z",
    "trackId": "rampa",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "1a2e1836cf545e29",
@@ -1328,11 +1362,13 @@
    },
    "genomeHash": "1a2e1836cf545e29",
    "distance": 375.98665073363804,
+   "bestStep": 2155,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-01T12:00:00.000Z",
    "trackId": "rampa",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "2a679e10fcb58c5b",
@@ -1402,11 +1438,13 @@
    },
    "genomeHash": "2a679e10fcb58c5b",
    "distance": 373.03624576651055,
+   "bestStep": 1980,
+   "piezasPerdidas": 0,
    "origin": "mixto",
    "date": "2026-10-12T12:00:00.000Z",
    "trackId": "rampa",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "bcd56f50f58e6de9",
@@ -1476,11 +1514,13 @@
    },
    "genomeHash": "bcd56f50f58e6de9",
    "distance": 369.60605776158195,
+   "bestStep": 2470,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-07T12:00:00.000Z",
    "trackId": "rampa",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   }
  ],
  "dunas": [
@@ -1552,11 +1592,13 @@
    },
    "genomeHash": "0a79ecd147d3793e",
    "distance": 270.6249265367771,
+   "bestStep": 2270,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-04T12:00:00.000Z",
    "trackId": "dunas",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "de8697c9f66eb774",
@@ -1626,11 +1668,13 @@
    },
    "genomeHash": "de8697c9f66eb774",
    "distance": 269.4309989650947,
+   "bestStep": 2179,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-11T12:00:00.000Z",
    "trackId": "dunas",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "4360599c354b4feb",
@@ -1700,11 +1744,13 @@
    },
    "genomeHash": "4360599c354b4feb",
    "distance": 240.34392570719322,
+   "bestStep": 1298,
+   "piezasPerdidas": 0,
    "origin": "mixto",
    "date": "2026-10-03T12:00:00.000Z",
    "trackId": "dunas",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "c102c6581d2118f7",
@@ -1774,11 +1820,13 @@
    },
    "genomeHash": "c102c6581d2118f7",
    "distance": 240.32972039810937,
+   "bestStep": 1494,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-10T12:00:00.000Z",
    "trackId": "dunas",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "4df89d2743d4b916",
@@ -1848,11 +1896,13 @@
    },
    "genomeHash": "4df89d2743d4b916",
    "distance": 239.09472114082467,
+   "bestStep": 1387,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-08T12:00:00.000Z",
    "trackId": "dunas",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "bcd56f50f58e6de9",
@@ -1922,11 +1972,13 @@
    },
    "genomeHash": "bcd56f50f58e6de9",
    "distance": 229.8075465370518,
+   "bestStep": 1667,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-07T12:00:00.000Z",
    "trackId": "dunas",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "2a679e10fcb58c5b",
@@ -1996,11 +2048,13 @@
    },
    "genomeHash": "2a679e10fcb58c5b",
    "distance": 207.37033894650662,
+   "bestStep": 1183,
+   "piezasPerdidas": 0,
    "origin": "mixto",
    "date": "2026-10-12T12:00:00.000Z",
    "trackId": "dunas",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "6c5f308986907b62",
@@ -2070,11 +2124,13 @@
    },
    "genomeHash": "6c5f308986907b62",
    "distance": 203.90590829597627,
+   "bestStep": 1386,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-05T12:00:00.000Z",
    "trackId": "dunas",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "1a2e1836cf545e29",
@@ -2144,11 +2200,13 @@
    },
    "genomeHash": "1a2e1836cf545e29",
    "distance": 203.34007964285962,
+   "bestStep": 1130,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-01T12:00:00.000Z",
    "trackId": "dunas",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "9282a6ace16c132d",
@@ -2218,11 +2276,13 @@
    },
    "genomeHash": "9282a6ace16c132d",
    "distance": 195.322305855921,
+   "bestStep": 1089,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-02T12:00:00.000Z",
    "trackId": "dunas",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   }
  ],
  "pedregal": [
@@ -2294,11 +2354,13 @@
    },
    "genomeHash": "0a79ecd147d3793e",
    "distance": 453.0389041837465,
+   "bestStep": 3188,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-04T12:00:00.000Z",
    "trackId": "pedregal",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "4360599c354b4feb",
@@ -2368,11 +2430,13 @@
    },
    "genomeHash": "4360599c354b4feb",
    "distance": 405.45495850410373,
+   "bestStep": 2288,
+   "piezasPerdidas": 0,
    "origin": "mixto",
    "date": "2026-10-03T12:00:00.000Z",
    "trackId": "pedregal",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "de8697c9f66eb774",
@@ -2442,11 +2506,13 @@
    },
    "genomeHash": "de8697c9f66eb774",
    "distance": 351.5988279834364,
+   "bestStep": 2702,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-11T12:00:00.000Z",
    "trackId": "pedregal",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "9282a6ace16c132d",
@@ -2516,11 +2582,13 @@
    },
    "genomeHash": "9282a6ace16c132d",
    "distance": 339.95157833100586,
+   "bestStep": 2049,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-02T12:00:00.000Z",
    "trackId": "pedregal",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "2a679e10fcb58c5b",
@@ -2590,11 +2658,13 @@
    },
    "genomeHash": "2a679e10fcb58c5b",
    "distance": 297.27047495427877,
+   "bestStep": 1820,
+   "piezasPerdidas": 0,
    "origin": "mixto",
    "date": "2026-10-12T12:00:00.000Z",
    "trackId": "pedregal",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "1a2e1836cf545e29",
@@ -2664,11 +2734,13 @@
    },
    "genomeHash": "1a2e1836cf545e29",
    "distance": 289.22251883959404,
+   "bestStep": 1782,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-01T12:00:00.000Z",
    "trackId": "pedregal",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "4df89d2743d4b916",
@@ -2738,11 +2810,13 @@
    },
    "genomeHash": "4df89d2743d4b916",
    "distance": 275.8531637364649,
+   "bestStep": 1738,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-08T12:00:00.000Z",
    "trackId": "pedregal",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "c102c6581d2118f7",
@@ -2812,11 +2886,13 @@
    },
    "genomeHash": "c102c6581d2118f7",
    "distance": 261.6685803333312,
+   "bestStep": 1803,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-10T12:00:00.000Z",
    "trackId": "pedregal",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "bcd56f50f58e6de9",
@@ -2886,11 +2962,13 @@
    },
    "genomeHash": "bcd56f50f58e6de9",
    "distance": 229.98776599404377,
+   "bestStep": 2207,
+   "piezasPerdidas": 0,
    "origin": "diseño",
    "date": "2026-10-07T12:00:00.000Z",
    "trackId": "pedregal",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   },
   {
    "carId": "6c5f308986907b62",
@@ -2960,11 +3038,13 @@
    },
    "genomeHash": "6c5f308986907b62",
    "distance": 221.2672290358768,
+   "bestStep": 1456,
+   "piezasPerdidas": 0,
    "origin": "evolución",
    "date": "2026-10-05T12:00:00.000Z",
    "trackId": "pedregal",
    "trackVersion": 2,
-   "physicsVersion": 2
+   "physicsVersion": 3
   }
  ]
 }
