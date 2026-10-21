@@ -50,6 +50,9 @@ test("dif-3 / dif-4 una partida de la versión anterior se pone al día sola y l
     .toEqual({ cordillera: 3, rampa: 3 });
   await expect.poll(async () => (await estado(page)).migracion.enCurso, { timeout: 30_000 }).toBe(false);
 
+  // El aviso de fin de migración tapa el selector hasta que se cierra.
+  const aviso = page.getByTestId("aviso-migracion");
+  if (await aviso.isVisible()) await page.getByTestId("aviso-migracion-cerrar").click();
   await page.getByTestId("tarjeta-cordillera").click();
   await expect(page.getByTestId("rankings")).toBeVisible();
   await page.getByTestId("selector-pista").click();
