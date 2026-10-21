@@ -117,15 +117,6 @@ export function Taller(props: TallerProps) {
           <button type="button" className="pastilla" onClick={props.onBack} data-testid="volver">
             ← Volver
           </button>
-          <button
-            type="button"
-            className="pastilla"
-            aria-label="Ayuda"
-            data-testid="ayuda-boton"
-            onClick={() => setShowHelp((v) => !v)}
-          >
-            ?
-          </button>
         </div>
         {showHelp && (
           <p className="ayuda-taller" data-testid="ayuda-taller" role="note">

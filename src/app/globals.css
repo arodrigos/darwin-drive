@@ -192,3 +192,25 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .banda-final { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; border-radius: 10px; background: rgba(0,0,0,.65); font-weight: 700; font-size: .9rem; }
 .banda-final progress { width: 100%; height: 8px; }
 .lienzo.atenuado canvas { opacity: .45; }
+
+/* Ayuda: un «?» fijo y dos capas (panel y guía) por encima de todo menos del aviso de versión. */
+.ayuda-boton { position: fixed; top: calc(8px + env(safe-area-inset-top)); right: 8px; z-index: 15; min-width: 44px; min-height: 44px; padding: 0; font-size: 1.2rem; }
+.cabecera, .garaje-cabecera, .rankings-cabecera, .linaje-barra { padding-right: 56px; }
+.portada { padding-top: 60px; }
+.capa-fondo { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; padding: 64px 10px 10px; }
+.capa-fondo[hidden] { display: none; }
+.ayuda-panel { width: min(100%, 520px); max-height: 100%; display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 14px; border: 2px solid #fff; background: #16222f; font-size: 1rem; }
+.ayuda-cabecera { display: flex; align-items: center; gap: 8px; }
+.ayuda-cabecera h2 { margin: 0; flex: 1; font-size: 1.2rem; }
+.ayuda-cabecera .pastilla { min-width: 44px; padding: 0; }
+.ayuda-cuerpo { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.ayuda-resumen { margin: 0 0 8px; font-size: 1rem; }
+.ayuda-controles { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 1rem; }
+.guia { position: fixed; inset: 0; z-index: 55; display: flex; flex-direction: column; background: #101a26; font-size: 1rem; }
+.guia-cabecera { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px; padding-top: calc(8px + env(safe-area-inset-top)); border-bottom: 2px solid rgba(255,255,255,.25); background: #101a26; }
+.guia-cabecera h2 { margin: 0; font-size: 1.2rem; }
+.guia-cuerpo { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 10px 12px calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; }
+.guia-indice { display: flex; flex-wrap: wrap; gap: 6px; }
+.guia h3 { margin: 12px 0 4px; font-size: 1.1rem; }
+.guia p, .guia-fichas { margin: 0 0 6px; font-size: 1rem; }
+.guia-fichas { padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
