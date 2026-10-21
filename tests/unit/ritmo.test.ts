@@ -100,7 +100,7 @@ test("rit-11 (propiedad): con cualquier coste por paso, un tick no pasa de 8 ms 
           const pasos = Math.round((ahora - antes) / DT);
           // Cada iteración lee el reloj una vez: a `coste` ms por lectura caben budget/coste + 1 pasos.
           assert.ok(pasos <= Math.floor(BUDGET_MS / coste) + 1, `${pasos} pasos con coste ${coste}`);
-          const tope = (16 / 1000) * (1 / DT) * MULTIPLIER[pace];
+          const tope = (16 / 1000) * (1 / DT) * MULTIPLIER[pace === "turbo" ? "x8" : pace];
           assert.ok(privado.owedSteps <= tope + 1e-9, `deuda ${privado.owedSteps} > ${tope}`);
           antes = ahora;
         }
