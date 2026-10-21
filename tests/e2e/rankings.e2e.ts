@@ -130,7 +130,8 @@ test("rk-4 y rk-3 medir en todas las pistas, y ver correr repite la marca sin to
     expect(texto).toContain(`${t.name} ${coma(d)}`);
     vistas.add(d);
   }
-  expect(vistas.size).toBe(TRACKS.length);
+  // El coche de serie llega a la meta (5000 m) en el hielo y en los trampolines, así que esas dos marcas coinciden.
+  expect(vistas.size).toBe(new Set(TRACKS.map((t) => simulateCar(STOCK_CAR, t.id).distance)).size);
   const lat = await page.evaluate(() => window.__debug!.latencias());
   const medirPistas = lat.filter((m) => m.evento === "medir-pistas");
   expect(medirPistas.length).toBeGreaterThan(0);
