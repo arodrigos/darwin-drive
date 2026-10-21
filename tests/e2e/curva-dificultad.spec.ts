@@ -37,17 +37,26 @@ test("dif-3 / dif-4 una partida de la versión anterior se pone al día sola y l
       demo[id].slice(0, 3).map((e) => [e.carId, simulateCar(e.genome, id).distance]),
     ]),
   );
-  await expect
-    .poll(
-      async () => {
-        const r = (await estado(page)).rankings;
-        return Object.fromEntries(
-          (["cordillera", "rampa"] as const).map((id) => [id, r[id].filter((e) => esperadas[id].some(([c, d]) => c === e.carId && d === e.distance)).length]),
-        );
-      },
-      { timeout: 120_000, message: "la migración no dejó las marcas medidas con las pistas nuevas" },
-    )
-    .toEqual({ cordillera: 3, rampa: 3 });
+  // Se espera con un bucle propio y no con expect.poll: si se agota, el error dice qué marcas había, que es lo único
+  // que distingue una migración lenta de una que mide otra cosa. La comparación admite 0,5 m por si el navegador y
+  // Node redondean distinto la curva.
+  const faltan = async () => {
+    const r = (await estado(page)).rankings;
+    const mal: string[] = [];
+    for (const id of ["cordillera", "rampa"] as const)
+      for (const [c, d] of esperadas[id]) {
+        const e = r[id].find((x) => x.carId === c);
+        if (!e || Math.abs(e.distance - (d as number)) > 0.5) mal.push(`${id}/${String(c).slice(0, 6)}:${e ? e.distance.toFixed(1) : "-"}≠${(d as number).toFixed(1)}`);
+      }
+    return mal;
+  };
+  const limite = Date.now() + 120_000;
+  let mal = await faltan();
+  while (mal.length > 0 && Date.now() < limite) {
+    await page.waitForTimeout(1000);
+    mal = await faltan();
+  }
+  if (mal.length > 0) throw new Error(`la migración no dejó las marcas medidas con las pistas nuevas: ${mal.slice(0, 4).join(" ")} (${mal.length} de 6) ${JSON.stringify((await estado(page)).migracion)}`);
   await expect.poll(async () => (await estado(page)).migracion.enCurso, { timeout: 30_000 }).toBe(false);
 
   // El aviso de fin de migración tapa el selector hasta que se cierra.

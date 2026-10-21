@@ -122,6 +122,11 @@ for (const { w, h } of [TAMANOS[0], TAMANOS[2]]) {
     await expect(page.getByTestId("pista")).toBeVisible();
     await expect.poll(async () => (await estado(page)).tiempoSim ?? 0).toBeGreaterThan(0.2);
     await page.getByTestId("ritmo-x8").click();
+    // Si la carrera acabó antes de medir, la fila ya no está: el error lo dice en vez de agotar los 90 s del test.
+    if (!(await page.getByTestId("ritmo-x4").isVisible())) {
+      const e = await estado(page);
+      throw new Error(`la fila de ritmo ya no se ve: tiempoSim=${e.tiempoSim} fin=${JSON.stringify(e.ultimoResultado)}`);
+    }
     const antes = await cajas(page, BOTONES);
     await page.evaluate(() => window.__debug!.limitarRitmo(5));
     await expect(page.getByTestId("ritmo-real")).toHaveText("real ×5", { timeout: 8000 });
