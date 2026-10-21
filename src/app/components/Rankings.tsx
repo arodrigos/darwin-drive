@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
+import { PHYSICS_VERSION } from "@/sim/constants";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import { RANKING_SIZE, type RankingEntry, type Rankings as RankingsData } from "@/storage/schema";
 import { Silueta } from "./Garaje";
@@ -35,7 +36,12 @@ export interface RankingsProps {
   onSaveToGarage: (entry: RankingEntry) => Promise<string>;
   onTaller: () => void;
   onEvolucion: () => void;
+  /** Migración de marcas: lo pendiente de esta pista se rotula según siga en curso o se haya dado por perdido. */
+  migracion?: { enCurso: boolean; conservados: string[] };
 }
+
+/** Marca sin la versión de pista y de física actuales: la migración la tiene que volver a medir. */
+const noVigente = (e: RankingEntry, track: { version: number }): boolean => e.trackVersion !== track.version || e.physicsVersion !== PHYSICS_VERSION;
 
 export function Rankings(props: RankingsProps) {
   const { rankings } = props;
@@ -108,6 +114,12 @@ export function Rankings(props: RankingsProps) {
           </div>
         </div>
       ) : (
+        <>
+          {props.migracion?.enCurso && lista.some((e) => noVigente(e, track)) && (
+            <p className="nota-migracion" data-testid="nota-migracion">
+              Algunas marcas se están volviendo a medir con la versión nueva; el orden puede cambiar al acabar.
+            </p>
+          )}
         <ol className="ranking-lista" data-testid="ranking-lista">
           {lista.slice(0, RANKING_SIZE).map((e, i) => (
             <li key={e.genomeHash}>
@@ -131,10 +143,20 @@ export function Rankings(props: RankingsProps) {
                   {e.origin}
                 </span>
                 <span className="fecha">{fechaCorta(e.date)}</span>
+                {noVigente(e, track) && (
+                  <span className="rotulo-migracion" data-testid="fila-migracion">
+                    {props.migracion?.conservados.includes(`ranking/${trackId}/${e.carId}`)
+                      ? "no se pudo volver a medir"
+                      : props.migracion?.enCurso
+                        ? "actualizando…"
+                        : "marca de una versión anterior"}
+                  </span>
+                )}
               </button>
             </li>
           ))}
         </ol>
+        </>
       )}
       {fila && (
         <div className="hoja-fila" role="dialog" aria-label="Detalle de la fila" data-testid="hoja-fila">

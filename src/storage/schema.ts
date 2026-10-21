@@ -1,7 +1,6 @@
 import type { EvolutionState, GaParams, GenerationStats, Individual, Op } from "@/evolution/ga";
 import { MAX_LINEAGE_NODES, type LineageNode } from "@/evolution/lineage";
 import { CELL_COUNT, cellIndex, type SpeciesArchive, type SpeciesCell } from "@/evolution/species";
-import { PHYSICS_VERSION } from "@/sim/constants";
 import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 
@@ -26,11 +25,19 @@ export interface RankingEntry {
   name?: string;
 }
 
+/** Con qué versiones se midió una marca del garaje; sin ella, la marca es anterior al versionado y se vuelve a medir. */
+export interface VersionMarca {
+  trackVersion: number;
+  physicsVersion: number;
+}
+
 export interface SavedCar {
   id: string;
   name: string;
   genome: Genome;
   marks: Partial<Record<TrackId, number>>;
+  /** En paralelo a `marks` (que sigue numérico para que la versión anterior lo lea): la versión de cada marca. */
+  markVersions?: Partial<Record<TrackId, VersionMarca>>;
   origin: Origin;
   savedAt: string;
   lineageId?: string;
@@ -123,6 +130,18 @@ export function validateRankings(raw: unknown, warn: Warn = () => {}): Rankings 
   return out;
 }
 
+/** Validación por valor: una versión rota se descarta sola y esa marca queda pendiente de volver a medir. */
+function markVersions(raw: unknown, marks: Partial<Record<TrackId, number>>): SavedCar["markVersions"] | null {
+  if (!isObj(raw)) return null;
+  const out: NonNullable<SavedCar["markVersions"]> = {};
+  for (const t of TRACKS) {
+    const v = raw[t.id];
+    if (marks[t.id] === undefined || !isObj(v)) continue;
+    if (isInt(v.trackVersion) && isInt(v.physicsVersion)) out[t.id] = { trackVersion: v.trackVersion, physicsVersion: v.physicsVersion };
+  }
+  return Object.keys(out).length > 0 ? out : null;
+}
+
 function savedCar(raw: unknown): SavedCar | null {
   if (!isObj(raw)) return null;
   const genome = genomeOf(raw.genome);
@@ -135,6 +154,8 @@ function savedCar(raw: unknown): SavedCar | null {
     marks[t.id] = m;
   }
   const car: SavedCar = { id: raw.id, name: raw.name.slice(0, MAX_NAME), genome, marks, origin: raw.origin, savedAt: raw.savedAt };
+  const versiones = markVersions(raw.markVersions, marks);
+  if (versiones) car.markVersions = versiones;
   if (isStr(raw.lineageId)) car.lineageId = raw.lineageId;
   return car;
 }
@@ -215,7 +236,7 @@ function lineageNode(raw: unknown): LineageNode | null {
   if (raw.distance !== null && (!isNum(raw.distance) || raw.distance < 0)) return null;
   if (!genome || !isStr(raw.id) || !isStrArray(raw.parents) || !isOp(raw.op) || !isInt(raw.generation) || !isNum(raw.hue)) return null;
   if (typeof raw.humanTouched !== "boolean" || typeof raw.prunedParents !== "boolean") return null;
-  return {
+  const node: LineageNode = {
     id: raw.id,
     parents: raw.parents,
     op: raw.op,
@@ -227,6 +248,8 @@ function lineageNode(raw: unknown): LineageNode | null {
     humanTouched: raw.humanTouched,
     prunedParents: raw.prunedParents,
   };
+  if (isInt(raw.trackVersion)) node.trackVersion = raw.trackVersion;
+  return node;
 }
 
 export function validateLineage(raw: unknown, warn: Warn = () => {}): LineageNode[] | null {
@@ -253,7 +276,12 @@ function speciesCell(raw: unknown, index: number): SpeciesCell | null {
   if (!genome || !isStr(raw.carId) || !isNum(raw.distance) || raw.distance < 0 || !isInt(raw.batch)) return null;
   // Una celda solo vale si el coche es de esa especie: lo contrario rompería la invariante del archivo.
   if (cellIndex(genome) !== index) return null;
-  return { carId: raw.carId, genome, distance: raw.distance, batch: raw.batch };
+  const cell: SpeciesCell = { carId: raw.carId, genome, distance: raw.distance, batch: raw.batch };
+  if (isInt(raw.trackVersion) && isInt(raw.physicsVersion)) {
+    cell.trackVersion = raw.trackVersion;
+    cell.physicsVersion = raw.physicsVersion;
+  }
+  return cell;
 }
 
 function speciesArchive(raw: unknown, trackId: TrackId): SpeciesArchive | null {
@@ -274,8 +302,8 @@ function speciesArchive(raw: unknown, trackId: TrackId): SpeciesArchive | null {
 }
 
 /**
- * Un archivo por pista; uno inválido o de una pista desconocida se descarta solo, con aviso. Los de otra versión de
- * pista o de física también: sus marcas ya no son comparables y se vuelven a descubrir explorando.
+ * Un archivo por pista; uno inválido o de una pista desconocida se descarta solo, con aviso. Uno de otra versión de
+ * pista o de física se conserva tal cual: la migración vuelve a medir sus celdas (migracion.ts) en vez de perderlas.
  */
 export function validateSpecies(raw: unknown, warn: Warn = () => {}): SpeciesArchives | null {
   if (!isObj(raw)) return null;
@@ -289,8 +317,6 @@ export function validateSpecies(raw: unknown, warn: Warn = () => {}): SpeciesArc
     const archive = speciesArchive(raw[key], track.id);
     if (!archive) {
       warn(`El archivo de especies de ${track.name} no era válido y se ha descartado.`);
-    } else if (archive.trackVersion !== track.version || archive.physicsVersion !== PHYSICS_VERSION) {
-      warn(`El archivo de especies de ${track.name} era de una versión anterior del juego y se ha descartado.`);
     } else out[track.id] = archive;
   }
   return out;

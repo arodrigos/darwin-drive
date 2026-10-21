@@ -26,6 +26,8 @@ Todo se guarda en IndexedDB del propio dispositivo, con claves `dd:v1:*` validad
 
 **Sin conexión.** Un service worker (Serwist) guarda el juego tras la primera visita. Una versión nueva solo se activa cuando se toca «Recargar» en el aviso «Hay una versión nueva · Recargar», nunca a mitad de una evolución. `/?sw=0` desinstala el worker y vacía su caché.
 
+**Marcas por versión.** Cada marca guarda con qué versión de pista y de física se midió. Si cambia alguna, al abrir el juego (o al importar una copia antigua) se vuelven a medir, de una en una y en turbo, las del ranking, las del garaje y las celdas de los archivos de especies; el linaje queda como historia. Una banda «Actualizando marcas…» lo cuenta y, al acabar, un aviso arriba se queda hasta cerrarlo. Cada medida se escribe solo si el elemento sigue como estaba; tras 3 fallos (o 60 s de pantalla visible) la marca se conserva con «no se pudo volver a medir». Si hay otra pestaña abierta con una versión anterior, la migración espera y ofrece «Recargar las otras pestañas». Con `?pruebas=1&migracion=frenada` la cola arranca retenida (`__debug.frenarMigracion(false)` la suelta) y `cargarEscenario({ rankings, garaje, especies: "demo-version-anterior" })` deja datos de una versión anterior.
+
 ## Pruebas
 
 Con `?pruebas=1` se expone `window.__debug` y todo el guardado va a una base aparte (`darwin-drive-pruebas`), de modo que el garaje del jugador no se toca. Sin el parámetro, `__debug` no existe.

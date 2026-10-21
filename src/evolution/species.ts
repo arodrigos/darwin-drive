@@ -21,6 +21,9 @@ export interface SpeciesCell {
   distance: number;
   /** Lote en que entró en la celda. */
   batch: number;
+  /** Versiones con que se midió la celda; solo las rellena la migración mientras el archivo aún lleva las antiguas. */
+  trackVersion?: number;
+  physicsVersion?: number;
 }
 
 /** Un archivo MAP-Elites de una sola pista: la mejor marca de cada especie, y solo medida en esa pista. */
