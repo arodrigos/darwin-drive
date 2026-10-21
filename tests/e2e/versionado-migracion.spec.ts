@@ -78,3 +78,35 @@ test("mig-1-b sin marcas de versión anterior no hay banda ni aviso", async ({ p
   await expect(page.getByTestId("aviso-migracion")).toHaveCount(0);
   expect((await estado(page)).migracion.enCurso).toBe(false);
 });
+
+test("mig-6 el nodo del linaje medido en una versión anterior lo dice", async ({ page }) => {
+  await page.goto("/?pruebas=1");
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await page.evaluate(() => window.__debug!.cargarEscenario({ vacio: true, linaje: "demo-5-generaciones" }));
+  await page.reload();
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await page.getByTestId("acceso-linaje").click();
+  await expect(page.getByTestId("linaje")).toBeVisible();
+  await page.locator('[data-testid="nodo-linaje"]').nth(1).dispatchEvent("click");
+  await expect(page.getByTestId("hoja-version-anterior")).toBeVisible();
+  for (const t of TAMANOS) {
+    await page.setViewportSize({ width: t.w, height: t.h });
+    await page.screenshot({ path: `${DIR}/${ID}-linaje-${t.w}x${t.h}.png` });
+  }
+});
+
+test("mig-9 con otra pestaña antigua abierta la migración espera y ofrece recargarla", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.goto("/?pruebas=1");
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await page.evaluate((e) => window.__debug!.cargarEscenario({ vacio: true, ...e }), ESCENARIO);
+  await page.goto("/?pruebas=1&pestanas=antiguas");
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await expect(page.getByTestId("espera-pestanas")).toBeVisible();
+  await expect(page.getByTestId("recargar-pestanas")).toBeVisible();
+  expect((await estado(page)).migracion.hechos).toBe(0);
+  for (const t of TAMANOS) {
+    await page.setViewportSize({ width: t.w, height: t.h });
+    await page.screenshot({ path: `${DIR}/${ID}-espera-pestanas-${t.w}x${t.h}.png` });
+  }
+});

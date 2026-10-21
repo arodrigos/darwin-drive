@@ -44,6 +44,8 @@ export const runtime = {
   /** Migración de marcas: la publica el hook; `frenada` retiene la cola entre un elemento y el siguiente. */
   migracion: null as { enCurso: boolean; hechos: number; total: number; enVuelo: string | null; intentos: Record<string, number> } | null,
   migracionFrenada: false,
+  /** Solo pruebas (?pestanas=antiguas): finge que hay una pestaña de versión anterior abierta. */
+  pestanasAntiguasFingidas: false,
 };
 
 export interface Escenario {
@@ -127,6 +129,7 @@ export function instalarGanchos(): void {
   if (new URLSearchParams(window.location.search).get("pruebas") !== "1") return;
   // Para ver la banda a medias sin carreras: la cola arranca retenida hasta frenarMigracion(false).
   runtime.migracionFrenada = new URLSearchParams(window.location.search).get("migracion") === "frenada";
+  runtime.pestanasAntiguasFingidas = new URLSearchParams(window.location.search).get("pestanas") === "antiguas";
   window.__debug = {
     latencias,
     estado,

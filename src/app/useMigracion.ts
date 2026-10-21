@@ -75,7 +75,7 @@ export function useMigracion(alAvanzar: () => Promise<void>) {
         medir: medirConRunner(runner),
         senal: control.signal,
         intentos: intentos.current,
-        pestanasAntiguas,
+        pestanasAntiguas: () => (runtime.pestanasAntiguasFingidas ? Promise.resolve(1) : pestanasAntiguas()),
         alProgreso: (e) => {
           if (control.signal.aborted) return;
           runtime.migracion = e;
