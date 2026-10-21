@@ -56,6 +56,15 @@ export const SECCIONES_GUIA: readonly SeccionGuia[] = [
     ],
   },
   {
+    id: "peso-opacidad",
+    titulo: "Peso y opacidad",
+    parrafos: [
+      "La opacidad del coche cuenta cuánto pesa la carrocería: más peso = más opaco. Hay cuatro escalones, de translúcido a sólido, y se ven igual en el Taller, el Garaje, el Linaje y la pista.",
+      "En carrera, cada parte del coche se vuelve más opaca cuanto más peso soporta su rueda: al subir una cuesta, la parte de atrás se ve más sólida que la de delante. El contorno siempre se ve entero.",
+      "Es solo una pista visual: la opacidad no cambia cómo corre el coche.",
+    ],
+  },
+  {
     id: "probar-ritmos",
     titulo: "Probar un coche y la velocidad",
     parrafos: [
@@ -184,7 +193,8 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
     controles: [
       { nombre: "Puntos blancos", texto: "Arrástralos para dar forma a la carrocería." },
       { nombre: "Rueda", texto: "Toca un punto para ponerle o quitarle una rueda." },
-      { nombre: "Deslizadores", texto: "Radio, par motor, suspensión y peso de la carrocería." },
+      { nombre: "Deslizadores", texto: "Radio, par motor, suspensión y peso de la carrocería: más peso = más opaco." },
+      { nombre: "Opacidad", texto: "Cuanto más pesa la carrocería, más opaca se ve; en carrera, más opaca donde más carga la rueda. Mira «Peso y opacidad» en la guía." },
       { nombre: "Pista", texto: "Elige dónde se prueba el coche." },
       { nombre: "Probar", texto: "Lleva el coche a la pista elegida." },
       { nombre: "Guardar y Evolucionar", texto: "Déjalo en el Garaje o úsalo como semilla de una evolución." },

@@ -62,3 +62,11 @@ test("diag-6: la guía explica por qué se para un coche con el límite de 35°,
   }
   assert.ok(JSON.stringify(AYUDA.pista).includes("¿Por qué?"));
 });
+
+test("opa-4: la guía y el «?» del Taller explican qué significa más o menos opaco", () => {
+  const seccion = SECCIONES_GUIA.find((s) => s.id === "peso-opacidad");
+  assert.ok(seccion, "falta la sección «Peso y opacidad»");
+  assert.equal(seccion.titulo, "Peso y opacidad");
+  assert.ok(JSON.stringify(seccion).includes("más peso = más opaco"));
+  assert.ok(JSON.stringify(AYUDA.taller).includes("más peso = más opaco"));
+});

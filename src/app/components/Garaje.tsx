@@ -4,6 +4,7 @@ import { textoCausa } from "../ayuda/causas";
 import { formatMeters } from "@/app/format";
 import { useEffect } from "react";
 import { measureOnNextFrame } from "@/debug/latencias";
+import { opacidadBase } from "@/game/opacidad";
 import type { Genome } from "@/sim/genome";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import type { SavedCar } from "@/storage/schema";
@@ -19,7 +20,7 @@ export function Silueta({ genome, hue }: { genome: Genome; hue?: number }) {
   const pts = genome.body.map((v) => pt(v.angle, v.length));
   return (
     <svg viewBox="-60 -60 120 120" className="silueta" aria-hidden="true" data-testid="silueta">
-      <polygon points={pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ")} fill={color} stroke="#1b1b1b" strokeWidth="2" />
+      <polygon points={pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ")} fill={color} fillOpacity={opacidadBase(genome.bodyDensity)} stroke="#1b1b1b" strokeWidth="2" />
       {genome.wheels
         .filter((w) => w.vertex >= 0)
         .map((w, i) => {

@@ -1,5 +1,6 @@
 "use client";
 
+import { opacidadBase } from "@/game/opacidad";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
 import type { EvolutionState } from "@/evolution/ga";
@@ -57,7 +58,7 @@ function Coche({ node }: { node: LineageNode }) {
   const pts = node.genome.body.map((v) => [Math.cos(v.angle) * v.length * S, -Math.sin(v.angle) * v.length * S] as const);
   return (
     <g transform={`translate(${NODE_WIDTH / 2} 21)`} aria-hidden="true">
-      <polygon points={pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ")} fill={`hsl(${node.hue} 70% 55%)`} stroke="#1b1b1b" strokeWidth="1.5" />
+      <polygon points={pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ")} fill={`hsl(${node.hue} 70% 55%)`} fillOpacity={opacidadBase(node.genome.bodyDensity)} stroke="#1b1b1b" strokeWidth="1.5" />
       {node.genome.wheels
         .filter((w) => w.vertex >= 0)
         .map((w, i) => (

@@ -9,7 +9,7 @@ import type { SpeciesArchive, SpeciesCell } from "@/evolution/species";
 import { mergeLineage, originOf, pruneLineage, type LineageNode } from "@/evolution/lineage";
 import { createSimRunner } from "@/worker";
 import { MAX_STEPS, PHYSICS_VERSION, type CarResult } from "@/sim/constants";
-import { genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
+import { GENE_RANGES, genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
 import { DEFAULT_TRACK_ID, getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import { DEFAULT_META, loadMeta, META_KEY, saveMeta, type Meta, type RitmoRecordado } from "@/storage/meta";
 import {
@@ -498,7 +498,15 @@ export function App() {
           }
         }
         // «demo-motor-rampa»: el coche de serie, que en La Rampa se para contra su límite de motor.
-        if (e.genoma !== undefined) editar(e.genoma === "demo-motor-rampa" ? STOCK_CAR : normalizeGenome(e.genoma));
+        // «demo-ligero» y «demo-pesado»: el de serie en los dos extremos del peso, para ver la opacidad.
+        if (e.genoma !== undefined) {
+          const demo: Record<string, Genome> = {
+            "demo-motor-rampa": STOCK_CAR,
+            "demo-ligero": { ...STOCK_CAR, bodyDensity: GENE_RANGES.bodyDensity[0] },
+            "demo-pesado": { ...STOCK_CAR, bodyDensity: GENE_RANGES.bodyDensity[1] },
+          };
+          editar(typeof e.genoma === "string" && demo[e.genoma] ? demo[e.genoma] : normalizeGenome(e.genoma));
+        }
         setScreen("portada");
       },
     });

@@ -65,6 +65,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .taller-lienzo .lienzo canvas { display: block; }
 .taller-panel { flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); background: #101a26; border-top: 2px solid rgba(255,255,255,.25); overflow-y: auto; max-height: 55dvh; }
 .taller-panel .fila { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.taller-panel .nota-peso { font-size: .75rem; opacity: .85; line-height: 1.25; }
 .taller-panel .control { display: flex; flex-direction: column; gap: 2px; font-size: .9rem; }
 .taller-panel input[type="range"] { width: 100%; min-height: 44px; }
 .ayuda-taller, .aviso-ruedas { pointer-events: none; position: absolute; left: 8px; right: 8px; z-index: 11; margin: 0; padding: 8px 10px; border-radius: 10px; background: rgba(0,0,0,.72); font-size: .9rem; }
