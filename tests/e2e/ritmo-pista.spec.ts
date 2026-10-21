@@ -186,6 +186,24 @@ test("rit-4 el último ritmo se recuerda con «Repetir» y tras recargar, y «Ha
   await page.getByTestId("repetir").click();
   await expect(page.getByTestId("ritmo-x8")).toHaveAttribute("aria-pressed", "true");
   await page.getByTestId("ritmo-x2").click();
+  // El guardado es asíncrono: se espera a que esté en la base antes de recargar.
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          new Promise<string | null>((resolve) => {
+            const req = indexedDB.open("darwin-drive-pruebas");
+            req.onsuccess = () => {
+              const g = req.result.transaction("datos", "readonly").objectStore("datos").get("dd:v1:meta");
+              g.onsuccess = () => {
+                req.result.close();
+                resolve((g.result as { ritmo?: string } | undefined)?.ritmo ?? null);
+              };
+            };
+          }),
+      ),
+    )
+    .toBe("x2");
   await page.reload();
   await page.waitForFunction(() => Boolean(window.__debug));
   await verCocheDeSerie(page);
