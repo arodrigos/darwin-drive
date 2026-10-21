@@ -298,7 +298,8 @@ export function App() {
       if (!r.ok) return GARAGE_FULL_MESSAGE;
       // Su fila de ranking (la inscribió la generación) lleva el mismo nombre que el coche.
       await renombrarCoche(car.id, nombre);
-      await recargar();
+      // El aviso no espera a releerlo todo: la latencia que cuenta es la del toque a «Guardado».
+      void recargar();
       const aviso = `Guardado en el garaje como «${nombre}»`;
       return runtime.disponible ? aviso : `${aviso}, pero solo hasta que cierres la pestaña.`;
     },

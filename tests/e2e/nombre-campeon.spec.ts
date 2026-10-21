@@ -7,6 +7,9 @@ const TAMANOS = [
   { w: 820, h: 1180 },
   { w: 1180, h: 820 },
 ];
+// Con la evolución pintando por software, cada recorrido tarda más que los 30 s por defecto.
+test.setTimeout(120_000);
+
 const SUCIO = "<img src=x onerror=alert(1)>";
 
 type Estado = {
