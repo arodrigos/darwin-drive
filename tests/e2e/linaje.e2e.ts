@@ -242,7 +242,7 @@ test("ln-5 un coche evolucionado, retocado a mano y evolucionado de nuevo cuelga
   await page.getByTestId("evolucionar").click();
   await expect(page.getByTestId("evolucion")).toBeVisible();
   await expect.poll(async () => (await estado(page)).pantalla).toBe("evolucion");
-  await adelantar(page, 200);
+  await adelantar(page, 900);
   await page.getByTestId("volver").click();
   await abrirLinaje(page);
   await page.getByTestId("linaje-selector").selectOption({ label: "campeón actual" });

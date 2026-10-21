@@ -1,12 +1,85 @@
 // nf-9: cada pista premia coches distintos (Spearman entre pistas y mejor coche no único).
+// dif-2 (--umbral): las cuatro clásicas se complican sin muro frente a su versión anterior.
 import { randomGenome, genomeHash } from "../src/sim/genome";
-import { simulateCar } from "../src/sim/race";
-import { TRACKS } from "../src/sim/tracks";
+import { createRace, simulateCar } from "../src/sim/race";
+import { TRACKS, type TrackId } from "../src/sim/tracks";
 import { seededRand } from "../tests/unit/helpers/rng";
+import { PISTAS_V_ANTERIOR, ES_CLASICA } from "../tests/fixtures/pistas-v-anterior";
 
 const N = Number(process.env.MEDIR_N ?? 200);
 const rand = seededRand(909);
 const genomas = Array.from({ length: N }, () => randomGenome(rand));
+const MIN_LLEGAN = 10;
+const MAX_TASA_TRAMO = Number(process.env.MEDIR_TASA_MAX ?? 0.8);
+
+if (process.argv.includes("--umbral")) {
+  umbral();
+  process.exit(process.exitCode ?? 0);
+}
+
+function correr(g: (typeof genomas)[number], id: TrackId, heightFn?: (x: number) => number): { distance: number; reason: string } {
+  const race = createRace([{ carId: genomeHash(g), genome: g }], id, heightFn ? { heightFn } : undefined);
+  while (!race.done()) race.step(60);
+  const r = race.results()[0];
+  race.dispose();
+  return { distance: r.distance, reason: r.reason };
+}
+
+function mediana(v: number[]): number {
+  const o = [...v].sort((a, b) => a - b);
+  const m = o.length >> 1;
+  return o.length % 2 ? o[m] : (o[m - 1] + o[m]) / 2;
+}
+
+// Viable: el coche recorre al menos 20 m en la pista anterior. Los que no avanzan ahí
+// no dicen nada de cuánto se complica la pista.
+function umbral(): void {
+  const MURO = process.env.MEDIR_MURO === "1"; // prueba negativa: un muro de 3 m a 60 m, donde llegan todos los viables
+  let fallos = 0;
+  const filas: Record<string, unknown>[] = [];
+  for (const t of TRACKS) {
+    if (!ES_CLASICA(t.id) || (process.env.MEDIR_PISTA && process.env.MEDIR_PISTA !== t.id)) continue;
+    const vieja = PISTAS_V_ANTERIOR[t.id];
+    const nueva = MURO ? (x: number) => t.heightAt(x) + (x >= 60 ? 3 : 0) : undefined;
+    const viables = genomas.filter((g) => correr(g, t.id, vieja).distance >= 20);
+    const antes = viables.map((g) => correr(g, t.id, vieja).distance);
+    const ahora = viables.map((g) => correr(g, t.id, nueva));
+    const medAntes = mediana(antes);
+    const medAhora = mediana(ahora.map((r) => r.distance));
+    const paradas = ahora.filter((r) => r.reason === "stall");
+    const porTramo = new Map<number, number>();
+    for (const r of paradas) porTramo.set(Math.floor(r.distance / 25), (porTramo.get(Math.floor(r.distance / 25)) ?? 0) + 1);
+    const tramoMax = paradas.length ? Math.max(...porTramo.values()) / paradas.length : 0;
+    // Tasa de paradas del tramo: de los coches que llegan a él, cuántos se paran dentro.
+    // Un muro tiene tasa ~100 %; una subida gradual deja a cada tramo con una parte.
+    let muro = 0;
+    for (let tramo = 0; tramo < 200; tramo++) {
+      const llegan = ahora.filter((r) => r.distance >= tramo * 25).length;
+      if (llegan < MIN_LLEGAN) break;
+      const paran = paradas.filter((r) => Math.floor(r.distance / 25) === tramo).length;
+      muro = Math.max(muro, paran / llegan);
+    }
+    const ok = medAhora <= 0.7 * medAntes && muro <= MAX_TASA_TRAMO;
+    if (!ok) fallos++;
+    filas.push({
+      pista: t.id,
+      viables: viables.length,
+      medianaAnterior: Number(medAntes.toFixed(1)),
+      medianaNueva: Number(medAhora.toFixed(1)),
+      razon: Number((medAhora / medAntes).toFixed(3)),
+      tasaMaxTramo: Number((muro * 100).toFixed(1)) + " %",
+      tramoMaxParadas: Number((tramoMax * 100).toFixed(1)) + " %",
+      ok,
+    });
+  }
+  console.log(`medir-pistas --umbral: ${N} genomas, física actual${MURO ? ", con muro forzado" : ""}`);
+  console.table(filas);
+  if (fallos > 0) {
+    console.error("medir-pistas --umbral: FALLA (mediana > 0,7 × la anterior o un tramo de 25 m donde se para más del 80 % de los que llegan)");
+    process.exitCode = 1;
+  } else console.log("medir-pistas --umbral: OK");
+}
+
 const dist: number[][] = TRACKS.map((t) => genomas.map((g) => simulateCar(g, t.id).distance));
 
 function rangos(v: number[]): number[] {

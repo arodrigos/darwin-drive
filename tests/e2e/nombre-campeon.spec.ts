@@ -36,7 +36,7 @@ async function enEvolucion(page: Page) {
   await abrir(page, { vacio: true, evolucion: "demo-gen-8" });
   await page.getByTestId("acceso-continuar").click();
   await expect.poll(async () => (await estado(page)).generacion ?? 0).toBeGreaterThan(0);
-  await page.evaluate(() => window.__debug!.adelantarSimulacion(200));
+  await page.evaluate(() => window.__debug!.adelantarSimulacion(400));
   await expect(page.getByTestId("guardar-campeon")).toBeEnabled();
 }
 
@@ -63,7 +63,7 @@ test("nom-1 guardar campeón pide nombre, avisa y lo enseñan Garaje y Rankings 
   await page.screenshot({ path: `${DIR}/${ID}-aviso-360x640.png` });
   expect((await estado(page)).hojaNombre).toBeNull();
   // La evolución siguió viva debajo.
-  await page.evaluate(() => window.__debug!.adelantarSimulacion(200));
+  await page.evaluate(() => window.__debug!.adelantarSimulacion(400));
   expect((await estado(page)).generacion!).toBeGreaterThanOrEqual(g0);
 
   await page.reload();
@@ -85,7 +85,7 @@ test("nom-1 campo vacío guarda el propuesto y «Cancelar» no guarda", async ({
   await page.getByTestId("nombre-cancelar").click();
   await expect(page.getByTestId("hoja-nombre")).toBeHidden();
   expect((await estado(page)).garaje).toBe(0);
-  await page.evaluate(() => window.__debug!.adelantarSimulacion(200));
+  await page.evaluate(() => window.__debug!.adelantarSimulacion(400));
   await page.getByTestId("guardar-campeon").click();
   const propuesto = await page.getByTestId("nombre-input").inputValue();
   await page.getByTestId("nombre-input").fill("   ");

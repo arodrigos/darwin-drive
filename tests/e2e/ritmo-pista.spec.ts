@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { STOCK_CAR } from "../../src/sim/genome";
 import { simulateCar } from "../../src/sim/race";
+import evolucionDemo from "../../src/debug/escenarios/evolucion-demo-gen-8.json";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "ritmo-pista-1";
@@ -104,12 +105,30 @@ test("rit-1 tocar ×4 y ×8 acelera sin reiniciar y ×2 queda en medio", async (
   expect(v2).toBeLessThan(v8);
 });
 
+// Se busca una vez y fuera del test: simular un coche hasta meta cuesta segundos, y el reloj de 30 s es del test.
+// El sexto es el que más tarda en llegar a meta (≈330 s simulados): a ×8 la carrera dura lo que dura el test.
+const veloz = evolucionDemo.population[5];
+if (simulateCar(veloz.genome as never, "cordillera").reason !== "meta") throw new Error("el coche de rit-11 ya no llega a meta");
+
 for (const { w, h } of [TAMANOS[0], TAMANOS[2]]) {
   test(`rit-11 con el tope de 5 el rótulo «real ×5» entra sin mover ningún botón a ${w}x${h}`, async ({ page }) => {
+    test.setTimeout(90_000);
     await page.setViewportSize({ width: w, height: h });
+    // El coche de serie para en ~30 s simulados y a ×8 la carrera acabaría antes de medir: se prueba un coche
+    // de la evolución de demostración, que llega a meta (≈300 s simulados).
     await abrir(page);
-    await verCocheDeSerie(page);
+    // El genoma del escenario vive en memoria y no sobrevive a la recarga de abrir(): se carga con la página ya abierta.
+    await page.evaluate((g) => window.__debug!.cargarEscenario({ genoma: g }), veloz.genome);
+    await page.getByTestId("acceso-taller").click();
+    await page.getByTestId("probar").click();
+    await expect(page.getByTestId("pista")).toBeVisible();
+    await expect.poll(async () => (await estado(page)).tiempoSim ?? 0).toBeGreaterThan(0.2);
     await page.getByTestId("ritmo-x8").click();
+    // Si la carrera acabó antes de medir, la fila ya no está: el error lo dice en vez de agotar los 90 s del test.
+    if (!(await page.getByTestId("ritmo-x4").isVisible())) {
+      const e = await estado(page);
+      throw new Error(`la fila de ritmo ya no se ve: tiempoSim=${e.tiempoSim} fin=${JSON.stringify(e.ultimoResultado)}`);
+    }
     const antes = await cajas(page, BOTONES);
     await page.evaluate(() => window.__debug!.limitarRitmo(5));
     await expect(page.getByTestId("ritmo-real")).toHaveText("real ×5", { timeout: 8000 });
