@@ -1,7 +1,8 @@
 import "../detmath";
-import { Vec2, World } from "planck";
+import { Vec2, World, type Body } from "planck";
 import { DT, ANOMALY_HEIGHT, ANOMALY_SPEED, MAX_STEPS, META_DISTANCE, STALL_MIN_PROGRESS, STALL_STEPS, PHYSICS_VERSION } from "../constants";
 import type { CarPose, CarResult, EndReason } from "../constants";
+import { ALFA_CARGA, BufferParada, clasificarParada, type Diagnostico } from "../diagnostico";
 import { normalizeGenome, type Genome } from "../genome";
 import type { Track } from "../tracks";
 import { buildCar, GRAVITY, type CarParts } from "./car";
@@ -20,6 +21,9 @@ export class CarSim {
   private refStep = 0;
   private end: EndReason | null = null;
   private lastPose: CarPose;
+  private readonly buffer: BufferParada | null;
+  private cargas: number[] = [];
+  private diagnostico: Diagnostico | null = null;
 
   constructor(
     readonly carId: string,
@@ -27,12 +31,16 @@ export class CarSim {
     private readonly track: Track,
     private readonly heightAt: (x: number) => number,
     private readonly maxSteps: number = MAX_STEPS,
+    opts: { sinDiagnostico?: boolean; friccionSuelo?: number } = {},
   ) {
     const g = normalizeGenome(genome);
     this.world = new World({ gravity: Vec2(0, -GRAVITY), allowSleep: false, continuousPhysics: false });
-    this.ground = createGround(this.world, heightAt);
+    this.ground = createGround(this.world, heightAt, opts.friccionSuelo);
     this.ground.ensure(-10, 10);
     this.car = buildCar(this.world, g, 0, heightAt(0));
+    // El muestreo solo lee el mundo: con o sin él el resultado es idéntico (se comprueba en los tests).
+    this.buffer = opts.sinDiagnostico ? null : new BufferParada();
+    this.cargas = this.car.wheels.map(() => 0);
     this.lastPose = this.readPose(false);
   }
 
@@ -70,6 +78,7 @@ export class CarSim {
         angle: w.body.getAngle(),
         radius: w.radius,
       })),
+      ...(this.buffer ? { cargas: [...this.cargas] } : {}),
       finished,
       ...(this.end ? { reason: this.end } : {}),
     };
@@ -84,6 +93,45 @@ export class CarSim {
     return Math.abs(p.y - this.heightAt(p.x)) > ANOMALY_HEIGHT;
   }
 
+  /** Pendiente del suelo en x, en grados; la cuerda de 1 m ignora las piedras pequeñas. */
+  private pendienteBajoElCoche(x: number): number {
+    return (Math.atan(this.heightAt(x + 0.5) - this.heightAt(x - 0.5)) * 180) / Math.PI;
+  }
+
+  /** Solo lectura del mundo: contactos, velocidades y fuerza de reacción de las ruedas. */
+  private muestrear(): void {
+    const car = this.car!;
+    const toca = (b: Body) => {
+      for (let ce = b.getContactList(); ce; ce = ce.next) if (ce.contact.isTouching()) return true;
+      return false;
+    };
+    const v = car.chassis.getLinearVelocity();
+    const velocidad = Math.hypot(v.x, v.y);
+    const pesoPorRueda = (car.mass * GRAVITY) / Math.max(1, car.wheels.length);
+    let enContacto = 0;
+    let patinaje = 0;
+    let carga = 0;
+    car.wheels.forEach((w, i) => {
+      const f = w.joint.getReactionForce(1 / DT);
+      this.cargas[i] += ALFA_CARGA * (Math.min(1, Math.hypot(f.x, f.y) / pesoPorRueda) - this.cargas[i]);
+      carga += this.cargas[i];
+      if (!toca(w.body)) return;
+      enContacto++;
+      const llanta = Math.abs(w.body.getAngularVelocity()) * w.radius;
+      // Una rueda casi parada no patina: el motor no puede con ella, que es otra causa.
+      if (llanta >= 1) patinaje += Math.min(1, Math.max(0, (llanta - velocidad) / llanta));
+    });
+    this.buffer!.anotar({
+      // En el punto más lejano: si el coche resbala cuesta abajo hasta el pie, la media del tramo mentiría sobre la cuesta que no pudo subir.
+      pendiente: this.pendienteBajoElCoche(this.maxX),
+      patinaje: enContacto > 0 ? patinaje / enContacto : 0,
+      ruedasEnContacto: enContacto,
+      carroceriaEnContacto: toca(car.chassis),
+      angulo: Math.atan2(Math.sin(car.chassis.getAngle()), Math.cos(car.chassis.getAngle())),
+      carga: car.wheels.length > 0 ? carga / car.wheels.length : 0,
+    });
+  }
+
   /** Un paso fijo de DT. Tras terminar no hace nada. */
   step(): void {
     if (this.end) return;
@@ -91,6 +139,7 @@ export class CarSim {
     this.ground!.ensure(lo, hi);
     this.world!.step(DT, 8, 3);
     this.stepCount++;
+    if (this.buffer) this.muestrear();
 
     // La distancia se congela en el último paso sano: el paso anómalo no la toca.
     if (this.isAnomaly()) {
@@ -121,6 +170,7 @@ export class CarSim {
 
   private finish(reason: EndReason): void {
     this.end = reason;
+    if (reason === "stall" && this.buffer) this.diagnostico = clasificarParada(this.buffer.muestras());
     this.lastPose = this.readPose(true);
     this.release();
   }
@@ -150,6 +200,8 @@ export class CarSim {
       steps: this.stepCount,
       bestStep: this.bestStep,
       piezasPerdidas: 0,
+      causaParada: this.diagnostico?.causa ?? null,
+      pendienteParada: this.diagnostico?.pendiente ?? null,
       physicsVersion: PHYSICS_VERSION,
       trackId: this.track.id,
       trackVersion: this.track.version,

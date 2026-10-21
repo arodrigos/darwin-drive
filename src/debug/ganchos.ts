@@ -21,6 +21,11 @@ export const runtime = {
   genomaEnPista: null as Genome | null,
   ultimoResultado: null as CarResult | null,
   tiempoSim: null as number | null,
+  /** Cargas suavizadas por rueda del coche en pista, en [0, 1]; la rellena Pista con cada reparto de poses. */
+  cargas: null as number[] | null,
+  /** Cajas en px CSS del viewport: el coche en pista y el marcador de parada (null si no hay). */
+  cajaCoche: null as { x: number; y: number; w: number; h: number } | null,
+  marcador: null as { caja: { x: number; y: number; w: number; h: number }; tamEtiquetaPx: number; colorPlaca: string; colorTexto: string; altoCochePx: number; altoCunaPx: number } | null,
   ejecutor: null as "worker" | "en-linea" | null,
   // Taller, garaje e inscripción (los publica App).
   genomaEnTaller: null as Genome | null,
@@ -90,6 +95,9 @@ export function estado() {
     ultimoResultado: runtime.ultimoResultado,
     // Añadidos al contrato por pista-carrera: la pausa de pestaña y el ejecutor activo se prueban con ellos.
     tiempoSim: runtime.tiempoSim,
+    cargas: runtime.cargas,
+    cajaCoche: runtime.cajaCoche,
+    marcador: runtime.marcador,
     ritmo: runtime.ritmo,
     ritmoReal: runtime.ritmoReal,
     pausada: runtime.pausada,

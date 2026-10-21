@@ -1,5 +1,6 @@
 "use client";
 
+import { textoCausa } from "../ayuda/causas";
 import { formatMeters } from "@/app/format";
 import { useEffect } from "react";
 import { measureOnNextFrame } from "@/debug/latencias";
@@ -27,6 +28,14 @@ export function Silueta({ genome, hue }: { genome: Genome; hue?: number }) {
         })}
     </svg>
   );
+}
+
+/** Por qué se paró la mejor marca de cada pista, si se sabe (las marcas anteriores a la causa no la traen). */
+function paradas(car: SavedCar): { id: string; nombre: string; texto: string }[] {
+  return TRACKS.flatMap((t) => {
+    const d = car.markDetails?.[t.id];
+    return d?.causaParada ? [{ id: t.id, nombre: t.name, texto: textoCausa(d.causaParada, d.pendienteParada) }] : [];
+  });
 }
 
 function marcas(car: SavedCar): string {
@@ -92,6 +101,11 @@ export function Garaje(props: {
                   {props.ficha(car)}
                 </span>
                 <span data-testid="marcas">{marcas(car)}</span>
+                {paradas(car).map((p) => (
+                  <span key={p.id} className="causa-parada" data-testid={`garaje-causa-${p.id}`}>
+                    {p.nombre}: Se paró: {p.texto}
+                  </span>
+                ))}
                 {props.midiendo?.carId === car.id && (
                   <span className="progreso-medicion" role="status" data-testid="progreso-medicion">
                     Midiendo {props.midiendo.n}/{props.midiendo.total}…

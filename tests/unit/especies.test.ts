@@ -31,6 +31,8 @@ function fake(archive: SpeciesArchive, cars: BatchCar[], distances: number[]): C
     steps: 100,
     bestStep: Math.ceil(distances[i % distances.length] * 1.2) + 1,
     piezasPerdidas: 0,
+    causaParada: null,
+    pendienteParada: null,
     physicsVersion: archive.physicsVersion,
     trackId: archive.trackId,
     trackVersion: archive.trackVersion,

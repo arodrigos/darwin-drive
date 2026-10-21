@@ -12,6 +12,7 @@ import type { CarResult, EndReason } from "@/sim/constants";
 import { STOCK_CAR, genomeHash, type Genome } from "@/sim/genome";
 import { getTrack, type TrackId } from "@/sim/tracks";
 import type { RitmoRecordado } from "@/storage/meta";
+import { textoCausa } from "@/app/ayuda/causas";
 import { RANKING_SIZE } from "@/storage/schema";
 import type { RankingOutcome } from "@/storage/store";
 import { createSimRunner } from "@/worker";
@@ -67,6 +68,8 @@ export interface PistaProps {
   onTarjeta?: (visible: boolean) => void;
   /** Una capa (ayuda, guía) está encima: la carrera espera. */
   pausaCapa?: boolean;
+  /** Abre la guía en «Por qué se para un coche»; la tarjeta sigue debajo y se recupera al cerrar. */
+  onPorQue?: () => void;
 }
 
 export function Pista(props: PistaProps) {
@@ -160,6 +163,7 @@ export function Pista(props: PistaProps) {
         ultimaSim = m.simTime;
         runtime.tiempoSim = m.simTime;
         runtime.distanciaLider = maxX;
+        runtime.cargas = m.poses[0]?.cargas ?? null;
         runtime.cochesVivos = m.poses.filter((p) => !p.finished).length;
         registrarPoses(m.simTime, runtime.cochesVivos);
         if (hud.current) hud.current.textContent = formatMeters(maxX);
@@ -314,6 +318,9 @@ export function Pista(props: PistaProps) {
       runtime.distanciaLider = null;
       runtime.cochesVivos = 0;
       runtime.tiempoSim = null;
+      runtime.cargas = null;
+      runtime.cajaCoche = null;
+      runtime.marcador = null;
       runtime.ejecutor = null;
     };
   }, [failed]);
@@ -378,6 +385,16 @@ export function Pista(props: PistaProps) {
             <span data-testid="fin-distancia">{formatMeters(fase.result.distance)}</span> en <span data-testid="fin-tiempo">{formatTiempo(fase.result.bestStep)}</span>
           </p>
           <p data-testid="fin-motivo">{fase.result.reason === "meta" ? MOTIVO.meta : `Motivo: ${MOTIVO[fase.result.reason]}`}</p>
+          {fase.result.reason === "stall" && (
+            <>
+              <p data-testid="fin-causa">{textoCausa(fase.result.causaParada, fase.result.pendienteParada)}</p>
+              {props.onPorQue && (
+                <button type="button" className="pastilla" onClick={props.onPorQue} data-testid="fin-porque">
+                  ¿Por qué?
+                </button>
+              )}
+            </>
+          )}
           {inscripcion && (
             <>
               <p className="resultado-ranking" data-testid="tarjeta-ranking">

@@ -1,7 +1,7 @@
 import type { EvolutionState, GaParams, GenerationStats, Individual, Op } from "@/evolution/ga";
 import { MAX_LINEAGE_NODES, type LineageNode } from "@/evolution/lineage";
 import { CELL_COUNT, cellIndex, type SpeciesArchive, type SpeciesCell } from "@/evolution/species";
-import { MAX_STEPS, META_DISTANCE } from "@/sim/constants";
+import { CAUSAS_PARADA, MAX_STEPS, META_DISTANCE, type CausaParada } from "@/sim/constants";
 import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import { marcaCreible, compararMarcas, MAX_PIEZAS } from "@/sim/clasificacion";
@@ -22,6 +22,9 @@ export interface RankingEntry {
   /** Ausentes (o inválidos en una copia): la entrada está pendiente y la migración la vuelve a medir. */
   bestStep?: number;
   piezasPerdidas?: number;
+  /** Por qué se paró la carrera de esta marca (null: no se atascó); ausente en las de la versión anterior. */
+  causaParada?: CausaParada | null;
+  pendienteParada?: number | null;
   origin: Origin;
   date: string;
   trackId: TrackId;
@@ -40,6 +43,8 @@ export interface VersionMarca {
 export interface DetalleMarca {
   bestStep: number;
   piezasPerdidas: number;
+  causaParada?: CausaParada | null;
+  pendienteParada?: number | null;
 }
 
 export interface SavedCar {
@@ -81,6 +86,16 @@ const isOrigin = (v: unknown): v is Origin => ORIGINS.includes(v as Origin);
 const isOp = (v: unknown): v is Op => OPS.includes(v as Op);
 const isDate = (v: unknown): v is string => isStr(v) && !Number.isNaN(Date.parse(v));
 
+const isCausa = (v: unknown): v is CausaParada => CAUSAS_PARADA.includes(v as CausaParada);
+
+/** Validación por valor: un campo de causa fuera de rango se descarta solo; la marca sigue siendo válida. */
+function camposCausa(raw: Record<string, unknown>): Pick<DetalleMarca, "causaParada" | "pendienteParada"> {
+  const out: Pick<DetalleMarca, "causaParada" | "pendienteParada"> = {};
+  if (raw.causaParada === null || isCausa(raw.causaParada)) out.causaParada = raw.causaParada;
+  if (raw.pendienteParada === null || (isNum(raw.pendienteParada) && raw.pendienteParada >= -90 && raw.pendienteParada <= 90)) out.pendienteParada = raw.pendienteParada as number | null;
+  return out;
+}
+
 /** Un genoma guardado tiene que ser un objeto: lo demás lo corrige normalizeGenome. */
 function genomeOf(raw: unknown): Genome | null {
   return isObj(raw) ? normalizeGenome(raw) : null;
@@ -107,6 +122,7 @@ function rankingEntry(raw: unknown, trackId: TrackId): RankingEntry | null {
   };
   if (isInt(raw.bestStep) && raw.bestStep >= 0 && raw.bestStep <= MAX_STEPS) entry.bestStep = raw.bestStep;
   if (isInt(raw.piezasPerdidas) && raw.piezasPerdidas >= 0 && raw.piezasPerdidas <= MAX_PIEZAS) entry.piezasPerdidas = raw.piezasPerdidas;
+  Object.assign(entry, camposCausa(raw));
   if (isStr(raw.lineageId)) entry.lineageId = raw.lineageId;
   if (isStr(raw.name)) {
     const nombre = limpiarNombre(raw.name);
@@ -172,7 +188,7 @@ function markDetails(raw: unknown, marks: Partial<Record<TrackId, number>>): Sav
     const d = raw[t.id];
     if (marks[t.id] === undefined || !isObj(d)) continue;
     if (isInt(d.bestStep) && d.bestStep >= 0 && d.bestStep <= MAX_STEPS && isInt(d.piezasPerdidas) && d.piezasPerdidas >= 0 && d.piezasPerdidas <= MAX_PIEZAS) {
-      out[t.id] = { bestStep: d.bestStep, piezasPerdidas: d.piezasPerdidas };
+      out[t.id] = { bestStep: d.bestStep, piezasPerdidas: d.piezasPerdidas, ...camposCausa(d) };
     }
   }
   return Object.keys(out).length > 0 ? out : null;
