@@ -101,8 +101,8 @@ test("ev-1 evolucionar este coche, dos generaciones y continuar tras recargar", 
   expect((await estado(page)).pistaEnCarrera).toBe("cordillera");
   await page.screenshot({ path: `${DIR}/${ID}-gen1-360x640.png` });
 
-  await adelantar(page, 200);
-  await adelantar(page, 200);
+  await adelantar(page, 900);
+  await adelantar(page, 900);
   const e = await estado(page);
   expect(e.generacion).toBe(3);
   expect(e.pistaEnCarrera).toBe("cordillera");
@@ -137,7 +137,7 @@ test("ev-9 el panel de evolución corre en la pista elegida y la gen 2 sigue en 
   // El render por software de la CI (SwiftShader) pinta el primer frame de 16 coches entre ~150 y ~230 ms según el runner: el
   // umbral de 200 ms del diseño se valida con la latencia medida en dispositivo real (panel ?rendimiento=1), aquí solo se vigila que no se dispare.
   expect((await latencia(page, "evolucionar"))[0].ms).toBeLessThan(400);
-  await adelantar(page, 200);
+  await adelantar(page, 900);
   const e = await estado(page);
   for (const c of gen1) expectMismaMarca(e.distanciasGeneracion![c.carId], simulateCar(c.genome, "rampa").distance);
   expect(e.pistaEnCarrera).toBe("rampa");
@@ -164,7 +164,7 @@ test("ev-3 el campeón entra en el ranking de su pista y se guarda en el garaje"
   await page.setViewportSize({ width: 360, height: 640 });
   await abrir(page);
   await desdeTaller(page);
-  await adelantar(page, 200);
+  await adelantar(page, 900);
   const e = await estado(page);
   expect(e.ultimaInscripcion).toMatchObject({ trackId: "cordillera", isRecord: true });
   expect(["diseño", "mixto"]).toContain(e.rankings.cordillera[0].origin);
@@ -195,7 +195,7 @@ test("ev-4 un favorito se ve marcado, avisa y tiene hijos seguro", async ({ page
   const favoritos = (await estado(page)).favoritos!;
   expect(favoritos).toHaveLength(1);
   await page.getByTestId("pausar").click();
-  await adelantar(page, 200);
+  await adelantar(page, 900);
   const guardada = (await evolucionGuardada(page))!;
   const hijos = guardada.population.filter((p) => p.parents.includes(favoritos[0]));
   expect(hijos.length).toBeGreaterThanOrEqual(2);
@@ -223,7 +223,7 @@ test("ev-6 el aviso de generación da la mejor distancia y su cambio", async ({ 
   await abrir(page, { vacio: true, evolucion: "demo-gen-8" });
   await page.getByTestId("acceso-continuar").click();
   await expect.poll(async () => (await estado(page)).poblacion?.length ?? 0).toBe(16);
-  await adelantar(page, 200);
+  await adelantar(page, 900);
   await expect(page.getByTestId("aviso-generacion")).toHaveText(/^Gen 8: mejor \d+,\d m \([+−]\d+,\d m\)$/);
   await page.screenshot({ path: `${DIR}/${ID}-aviso-gen-360x640.png` });
 });
@@ -233,7 +233,7 @@ test("ev-7 cambiar de ritmo no cambia las distancias", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   await abrir(page, { vacio: true }, "&semilla=11");
   await desdePanel(page, "rampa");
-  await adelantar(page, 200);
+  await adelantar(page, 900);
   const rapido = (await estado(page)).distanciasGeneracion!;
 
   await abrir(page, { vacio: true }, "&semilla=11");
