@@ -196,7 +196,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* Migración de marcas: banda bajo la cabecera (≤ 36 px) y aviso final arriba (≤ 72 px). */
 .banda-migracion { flex: none; margin: 4px 64px 4px 8px; padding: 6px 10px; border-radius: 10px; background: rgba(16,26,38,.95); border: 2px solid #ffd23f; font-size: .85rem; font-weight: 700; text-align: center; }
-.aviso-migracion { flex: none; display: flex; align-items: center; gap: 8px; margin: 4px 64px 4px 8px; padding: 6px 10px; border-radius: 10px; background: rgba(16,26,38,.97); border: 2px solid #7ee08a; font-size: .85rem; max-height: 30dvh; overflow: auto; }
+.aviso-migracion { flex: none; display: flex; align-items: center; gap: 8px; margin: 4px 64px 4px 8px; padding: 6px 10px; border-radius: 10px; background: rgba(16,26,38,.97); border: 2px solid #7ee08a; font-size: .78rem; line-height: 1.15; max-height: 72px; overflow: auto; }
+.aviso-migracion.espera { max-height: none; flex-wrap: wrap; }
+.aviso-migracion.espera span { flex: 1 1 100%; }
 .aviso-migracion span { flex: 1; }
 .aviso-migracion button { min-width: 44px; min-height: 44px; }
 .rotulo-migracion { font-size: .75rem; color: #ffd23f; }

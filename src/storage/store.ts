@@ -4,6 +4,7 @@ import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
 import { PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import { nombrePropuesto } from "@/app/nombres";
+import { conservarVersiones } from "./marcas";
 import { limpiarNombre, normalizarNombre } from "./nombres";
 import { DEFAULT_META, META_KEY, validateMeta } from "./meta";
 import {
@@ -412,7 +413,7 @@ export async function saveToGarage(car: SavedCar): Promise<GarageResult> {
       return raw ?? garage;
     }
     result = { ok: true };
-    if (i >= 0) garage[i] = car;
+    if (i >= 0) garage[i] = conservarVersiones(garage[i], car);
     else garage.push(car);
     return garage;
   });
