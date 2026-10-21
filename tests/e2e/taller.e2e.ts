@@ -290,11 +290,12 @@ test("tl-4 la ayuda está donde la acción no es obvia", async ({ page }) => {
   await expect(ayuda).toBeHidden();
   await expect(page.getByTestId("etiqueta-radio")).toHaveText("Radio: 0,5 m");
   await expect.poll(async () => (await meta(page))?.seenHelp).toContain("taller");
+  // El «?» global abre el panel de ayuda del Taller (guia-ayuda); la pista de la primera vez ya no se reabre.
   await page.getByTestId("ayuda-boton").click();
-  await expect(ayuda).toBeVisible();
+  await expect(page.getByTestId("ayuda-panel")).toBeVisible();
+  await page.getByTestId("ayuda-cerrar").click();
 
   // Sin ruedas.
-  await page.getByTestId("ayuda-boton").click();
   // El toque anterior añadió una rueda: se espera a verla en el contador antes de leer el estado, o la lectura va un toque por detrás.
   await expect(page.getByTestId("contador-ruedas")).toHaveText("Ruedas: 3/4");
   // Cada toque se confirma en el contador antes del siguiente: dos clics seguidos en la CI lenta se solapan con el repintado y uno se pierde.

@@ -10,6 +10,10 @@ En la portada, «Explorar pista» enseña la pista elegida y se recorre arrastra
 
 En la carrera (y en Evolución) una fila de cinco botones elige el ritmo: ×1, ×2, ×4, ×8 y «Hasta el final» (Turbo en Evolución), que simula sin dibujar hasta la meta con una barra de avance. El último de ×1/×2/×4/×8 se recuerda en los ajustes (`Meta.ritmo`); «Hasta el final» nunca se guarda. Si el dispositivo no llega al ritmo pedido durante 2 s, aparece «real ×N» sobre la fila, sin mover ningún botón. El resultado de un coche no depende del ritmo ni de las pausas, y al ocultarse la pestaña la simulación se pausa y se reanuda sola.
 
+## Ayuda dentro del juego
+
+Cada pantalla tiene un «?» arriba a la derecha que abre un panel con una línea por opción; en la Pista, abrirlo pausa la carrera y cerrarlo la reanuda. «Ver la guía completa» (o «Cómo se juega» en la portada) abre la guía con el recorrido entero y una ficha por pista. Los textos viven en `src/app/ayuda/textos.ts`; el «atrás» del sistema cierra la capa de arriba.
+
 ## Pistas y rankings
 
 Hay cuatro pistas fijas, cada una una función pura de la distancia (`src/sim/tracks.ts`): **La Cordillera** (montañas al azar pero siempre las mismas), **La Rampa** (una recta que se empina sin parar), **Las Dunas** (olas largas que crecen) y **El Pedregal** (piedras cada vez mayores). Se trocean en tramos de 25 m (`src/sim/terrain.ts`). Cada pista tendrá su propio ranking de 10 coches.
