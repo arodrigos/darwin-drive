@@ -272,6 +272,8 @@ export interface OpcionesMigrar {
 export interface ResumenMigracion {
   estado: "completa" | "esperando-pestanas" | "cancelada" | "sin-trabajo";
   medidos: number;
+  /** Coches distintos entre lo medido: un coche con marca en 4 pistas cuenta 1. */
+  coches?: number;
   conservados: string[];
 }
 
@@ -289,6 +291,7 @@ export async function migrar(opts: OpcionesMigrar): Promise<ResumenMigracion> {
   const conservados = new Set<string>(Object.keys(intentos).filter((k) => intentos[k] >= MAX_INTENTOS));
   const resultados = new Map<string, CarResult>();
   let medidos = 0;
+  const coches = new Set<string>();
 
   let pendiente = trabajoPendiente(await leerMigrables(), conservados);
   if (pendiente.length === 0) return { estado: "sin-trabajo", medidos: 0, conservados: [...conservados] };
@@ -329,7 +332,10 @@ export async function migrar(opts: OpcionesMigrar): Promise<ResumenMigracion> {
       resultados.set(clavePrueba(t), r);
       // Una época nueva (importación) cambió lo guardado por debajo: lo medido ya no vale, se recalcula lo pendiente.
       if (epoca !== epocaActual()) resultados.clear();
-      else if (await APLICAR[t.tipo](t, r)) medidos += 1;
+      else if (await APLICAR[t.tipo](t, r)) {
+        medidos += 1;
+        coches.add(t.carId);
+      }
       // Un elemento que no deja escribir (cambió por debajo) gasta intento: así el bucle siempre acaba.
       else intentos[t.clave] = (intentos[t.clave] ?? 0) + 1;
     } else if (medicion.motivo !== "oculta") {
@@ -339,5 +345,5 @@ export async function migrar(opts: OpcionesMigrar): Promise<ResumenMigracion> {
     pendiente = trabajoPendiente(await leerMigrables(), conservados);
   }
   opts.alProgreso?.({ enCurso: false, hechos: medidos, total: medidos, enVuelo: null, intentos: { ...intentos }, conservados: [...conservados] });
-  return { estado: "completa", medidos, conservados: [...conservados] };
+  return { estado: "completa", medidos, coches: coches.size, conservados: [...conservados] };
 }

@@ -126,3 +126,22 @@ test("mig-9 con otra pestaña antigua abierta la migración espera y ofrece reca
     await page.screenshot({ path: `${DIR}/${ID}-espera-pestanas-${t.w}x${t.h}.png` });
   }
 });
+
+test("mig-garaje guardar un coche desde Rankings y reabrir no dispara migración", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.goto("/?pruebas=1");
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await page.evaluate(() => window.__debug!.cargarEscenario({ vacio: true, rankings: "demo" }));
+  await page.reload();
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await page.getByTestId("tarjeta-dunas").click();
+  await page.getByTestId("fila-ranking").first().click();
+  await page.getByTestId("guardar-garaje").click();
+  await expect(page.getByTestId("guardar-garaje")).toBeVisible();
+  await page.reload();
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await page.waitForTimeout(1500);
+  await expect(page.getByTestId("banda-migracion")).toHaveCount(0);
+  await expect(page.getByTestId("aviso-migracion")).toHaveCount(0);
+  expect((await estado(page)).migracion.enCurso).toBe(false);
+});

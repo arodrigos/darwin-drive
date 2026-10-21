@@ -87,7 +87,7 @@ export function useMigracion(alAvanzar: () => Promise<void>) {
         },
       });
       if (!control.signal.aborted) setEsperando(resumen.estado === "esperando-pestanas");
-      if (!control.signal.aborted && resumen.estado === "completa" && resumen.medidos > 0) setTerminadas(resumen.medidos);
+      if (!control.signal.aborted && resumen.estado === "completa" && resumen.medidos > 0) setTerminadas(resumen.coches ?? resumen.medidos);
     } finally {
       runner.terminate();
       if (corriendo.current === control) {

@@ -46,6 +46,7 @@ import { Evolucion, type Campeon } from "./components/Evolucion";
 import { HojaNombre } from "./components/HojaNombre";
 import { fichaOrigen, nombrePropuesto } from "./nombres";
 import { normalizarNombre } from "@/storage/nombres";
+import { aplicarMarca } from "@/storage/marcas";
 import { Especies } from "./components/Especies";
 import { Explorar } from "./components/Explorar";
 import { Garaje } from "./components/Garaje";
@@ -306,13 +307,16 @@ export function App() {
       const id = genomeHash(individual.genome);
       const existente = garageRef.current.find((c) => c.id === id);
       if (!existente && garageRef.current.length >= GARAGE_SIZE) return { aviso: GARAGE_FULL_MESSAGE, hecho: Promise.resolve() };
-      const marks: SavedCar["marks"] = { ...(existente?.marks ?? {}) };
-      marks[result.trackId] = Math.max(marks[result.trackId] ?? 0, result.distance);
+      const { marks, markVersions } = aplicarMarca(existente, result.trackId, result.distance, {
+        trackVersion: result.trackVersion,
+        physicsVersion: result.physicsVersion,
+      });
       const car: SavedCar = {
         id,
         name: nombre,
         genome: individual.genome,
         marks,
+        markVersions,
         origin: originOf(individual.id, lineageRef.current),
         savedAt: new Date().toISOString(),
         lineageId: individual.id,
@@ -530,16 +534,18 @@ export function App() {
     async (genome: Genome, origin: SavedCar["origin"], name?: string, lineageId?: string): Promise<string> => {
       const id = genomeHash(genome);
       const existente = garage.find((c) => c.id === id);
-      const marks: SavedCar["marks"] = { ...(existente?.marks ?? {}) };
+      let base: Pick<SavedCar, "marks" | "markVersions"> | undefined = existente;
       for (const t of Object.keys(rankings) as TrackId[]) {
         const entrada = rankings[t].find((r) => r.genomeHash === id);
-        if (entrada) marks[t] = Math.max(marks[t] ?? 0, entrada.distance);
+        if (entrada) base = aplicarMarca(base, t, entrada.distance, { trackVersion: entrada.trackVersion, physicsVersion: entrada.physicsVersion });
       }
+      const marks = base?.marks ?? {};
       const car: SavedCar = {
         id,
         name: existente?.name ?? name ?? `Diseño ${garage.length + 1}`,
         genome,
         marks,
+        ...(base?.markVersions ? { markVersions: base.markVersions } : {}),
         origin: existente?.origin ?? origin,
         savedAt: new Date().toISOString(),
       };

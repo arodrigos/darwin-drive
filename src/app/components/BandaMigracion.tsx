@@ -38,7 +38,7 @@ export interface EsperaPestanasProps {
 /** La migración no empieza con otra pestaña de una versión anterior abierta: se ofrece recargarla. */
 export function EsperaPestanas({ onRecargar }: EsperaPestanasProps) {
   return (
-    <div className="aviso-migracion" role="status" data-testid="espera-pestanas">
+    <div className="aviso-migracion espera" role="status" data-testid="espera-pestanas">
       <span>Hay otras pestañas abiertas con una versión anterior. Las marcas se actualizan cuando se recarguen.</span>
       <button type="button" className="pastilla" onClick={onRecargar} data-testid="recargar-pestanas">
         Recargar las otras pestañas
