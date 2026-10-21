@@ -6,7 +6,7 @@ import { genomeHash } from "../src/sim/genome";
 import { simulateCar } from "../src/sim/race";
 import { TRACKS } from "../src/sim/tracks";
 import type { RankingEntry } from "../src/storage/schema";
-import { RANKING_SIZE } from "../src/storage/schema";
+import { normalizeRanking, RANKING_SIZE } from "../src/storage/schema";
 import { demoGenomes, DEMO_ORIGINS, demoDate } from "../tests/unit/helpers/demo-rankings";
 
 const rankings: Record<string, RankingEntry[]> = {};
@@ -21,6 +21,8 @@ for (const t of TRACKS) {
       genome,
       genomeHash: genomeHash(genome),
       distance: r.distance,
+      bestStep: r.bestStep,
+      piezasPerdidas: r.piezasPerdidas,
       origin: DEMO_ORIGINS[i % DEMO_ORIGINS.length],
       date: demoDate(i),
       trackId: t.id,
@@ -28,8 +30,8 @@ for (const t of TRACKS) {
       physicsVersion: PHYSICS_VERSION,
     });
   });
-  // Distancia de mayor a menor; con empate, el que entró antes (menor índice) va delante.
-  rankings[t.id] = entries.sort((a, b) => b.distance - a.distance).slice(0, RANKING_SIZE);
+  // El orden único del juego (compararMarcas): sin empates posibles.
+  rankings[t.id] = normalizeRanking(entries);
   if (rankings[t.id].length < RANKING_SIZE) throw new Error(`${t.id}: solo ${rankings[t.id].length} marcas válidas`);
 }
 escribirEscenario(new URL("../src/debug/escenarios/rankings-demo.json", import.meta.url), rankings);

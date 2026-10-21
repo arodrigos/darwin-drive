@@ -4,7 +4,8 @@ import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
 import { PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import { nombrePropuesto } from "@/app/nombres";
-import { conservarVersiones } from "./marcas";
+import { conservarVersiones, mejorMarca } from "./marcas";
+import { compararMarcas, marcaCreible } from "@/sim/clasificacion";
 import { limpiarNombre, normalizarNombre } from "./nombres";
 import { DEFAULT_META, META_KEY, validateMeta } from "./meta";
 import {
@@ -15,6 +16,7 @@ import {
   KEY_LINEAGE,
   KEY_RANKINGS,
   KEY_SPECIES,
+  entradaPendiente,
   normalizeRanking,
   RANKING_SIZE,
   validateEvolution,
@@ -22,6 +24,7 @@ import {
   validateLineage,
   validateRankings,
   validateSpecies,
+  type DetalleMarca,
   type Origin,
   type RankingEntry,
   type Rankings,
@@ -228,7 +231,7 @@ export async function persistente(): Promise<boolean | "unknown"> {
 }
 
 export function isStale(e: RankingEntry): boolean {
-  return e.physicsVersion !== PHYSICS_VERSION || e.trackVersion !== getTrack(e.trackId)?.version;
+  return e.physicsVersion !== PHYSICS_VERSION || e.trackVersion !== getTrack(e.trackId)?.version || entradaPendiente(e);
 }
 
 /** Nunca lanza: cada clave se valida sola y lo malo se sustituye por su valor por defecto. */
@@ -304,7 +307,8 @@ export async function updateRanking(candidate: {
     Number.isFinite(result.distance) &&
     result.distance >= 0 &&
     result.physicsVersion === PHYSICS_VERSION &&
-    result.trackVersion === track.version;
+    result.trackVersion === track.version &&
+    marcaCreible(result);
   if (!valido) return NO_ENTRA;
 
   const genome = normalizeGenome(candidate.genome);
@@ -318,26 +322,29 @@ export async function updateRanking(candidate: {
       outcome = { ...NO_ENTRA, alreadyAt: yaEsta + 1 };
       return raw ?? rankings;
     }
-    // Con el ranking lleno hay que superar al 10.º; un empate pierde (llegó después).
-    if (list.length >= RANKING_SIZE && result.distance <= list[RANKING_SIZE - 1].distance) {
-      outcome = { ...NO_ENTRA, cutoff: list[RANKING_SIZE - 1].distance };
-      return raw ?? rankings;
-    }
     const entry: RankingEntry = {
       carId: result.carId,
       genome,
       genomeHash: hash,
       distance: result.distance,
+      bestStep: result.bestStep,
+      piezasPerdidas: result.piezasPerdidas,
       origin: candidate.origin,
       date: new Date().toISOString(),
       trackId: track.id,
       trackVersion: result.trackVersion,
       physicsVersion: result.physicsVersion,
     };
+    // Con el ranking lleno hay que ir por delante del 10.º según compararMarcas; la fecha de hoy hace que un
+    // empate total pierda (llegó después).
+    if (list.length >= RANKING_SIZE && compararMarcas(entry, list[RANKING_SIZE - 1]) >= 0) {
+      outcome = { ...NO_ENTRA, cutoff: list[RANKING_SIZE - 1].distance };
+      return raw ?? rankings;
+    }
     if (candidate.lineageId !== undefined) entry.lineageId = candidate.lineageId;
     const nombre = candidate.name === undefined ? "" : limpiarNombre(candidate.name);
     if (nombre) entry.name = nombre;
-    const position = list.filter((e) => e.distance >= entry.distance).length + 1;
+    const position = list.filter((e) => compararMarcas(e, entry) < 0).length + 1;
     rankings[track.id] = [...list.slice(0, position - 1), entry, ...list.slice(position - 1)].slice(0, RANKING_SIZE);
     outcome = { entered: true, position, alreadyAt: null, isRecord: position === 1, cutoff: null };
     return rankings;
@@ -382,7 +389,7 @@ export async function remeasureRankings(
         const after = m.reason === "anomaly" ? 0 : m.distance;
         cambios.push({ trackId: t.id, carId: e.carId, before: e.distance, after });
         if (m.reason !== "anomaly") {
-          nuevos.push({ ...e, distance: after, trackVersion: m.trackVersion, physicsVersion: m.physicsVersion });
+          nuevos.push({ ...e, distance: after, bestStep: m.bestStep, piezasPerdidas: m.piezasPerdidas, trackVersion: m.trackVersion, physicsVersion: m.physicsVersion });
         }
       }
       actual[t.id] = normalizeRanking(nuevos);
@@ -430,6 +437,7 @@ export async function recordMark(
   trackId: TrackId,
   distance: number,
   versiones?: { trackVersion: number; physicsVersion: number },
+  detalle?: DetalleMarca,
 ): Promise<void> {
   await actualizar(KEY_GARAGE, (raw) => {
     const garage = garajeDe(raw);
@@ -438,9 +446,11 @@ export async function recordMark(
       const previa = c.markVersions?.[trackId];
       const vigente = previa?.trackVersion === getTrack(trackId)?.version && previa?.physicsVersion === PHYSICS_VERSION;
       // Una marca de otra versión no se compara con la nueva: la nueva manda aunque sea menor.
-      if (c.marks[trackId] === undefined || (versiones && !vigente) || distance > (c.marks[trackId] ?? -1)) {
+      const previaMarca = { distance: c.marks[trackId] ?? 0, ...c.markDetails?.[trackId] };
+      if (c.marks[trackId] === undefined || (versiones && !vigente) || mejorMarca({ distance, ...detalle }, previaMarca)) {
         c.marks[trackId] = distance;
         if (versiones) c.markVersions = { ...c.markVersions, [trackId]: { ...versiones } };
+        if (detalle) c.markDetails = { ...c.markDetails, [trackId]: { ...detalle } };
       }
     }
     return garage;

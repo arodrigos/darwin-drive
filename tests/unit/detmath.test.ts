@@ -17,7 +17,7 @@ test("detmath: se instala en Math y coincide con la matemática exacta a 1e-14",
       assert.ok(Math.abs(nativas.sin(x) ** 2 + nativas.cos(x) ** 2 - 1) < 1e-14);
       assert.ok(Math.abs(det.tan(y) - Math.sin(y) / Math.cos(y)) < 1e-9 * Math.max(1, Math.abs(det.tan(y))));
       assert.ok(Math.abs(det.exp(det.log(Math.abs(x) + 1e-3)) / (Math.abs(x) + 1e-3) - 1) < 1e-13);
-      assert.ok(Math.abs(det.atan2(y, x) - Math.atan(y / x) - (x < 0 ? (y >= 0 ? Math.PI : -Math.PI) : 0)) < 1e-12 || x === 0);
+      assert.ok(Math.abs(det.atan2(y, x) - Math.atan(y / x) - (x < 0 ? (y >= 0 ? Math.PI : -Math.PI) : 0)) < 1e-12 || x === 0 || y === 0); // y = -0 con x < 0 da -π (IEEE), no π: el caso y = 0 lo cubre el test de valores conocidos
     }),
   );
 });

@@ -8,7 +8,7 @@ import { DEFAULT_PARAMS, seedPopulation, type EvolutionState, type GaParams } fr
 import type { SpeciesArchive, SpeciesCell } from "@/evolution/species";
 import { mergeLineage, originOf, pruneLineage, type LineageNode } from "@/evolution/lineage";
 import { createSimRunner } from "@/worker";
-import { PHYSICS_VERSION, type CarResult } from "@/sim/constants";
+import { MAX_STEPS, PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
 import { DEFAULT_TRACK_ID, getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import { DEFAULT_META, loadMeta, META_KEY, saveMeta, type Meta, type RitmoRecordado } from "@/storage/meta";
@@ -285,7 +285,7 @@ export function App() {
         origin,
         lineageId: campeon.individual.id,
       });
-      await recordMark(campeon.result.carId, campeon.result.trackId, campeon.result.distance, { trackVersion: campeon.result.trackVersion, physicsVersion: campeon.result.physicsVersion });
+      await recordMark(campeon.result.carId, campeon.result.trackId, campeon.result.distance, { trackVersion: campeon.result.trackVersion, physicsVersion: campeon.result.physicsVersion }, { bestStep: campeon.result.bestStep, piezasPerdidas: campeon.result.piezasPerdidas });
       runtime.ultimaInscripcion = {
         trackId: campeon.result.trackId,
         position: outcome.position,
@@ -307,16 +307,20 @@ export function App() {
       const id = genomeHash(individual.genome);
       const existente = garageRef.current.find((c) => c.id === id);
       if (!existente && garageRef.current.length >= GARAGE_SIZE) return { aviso: GARAGE_FULL_MESSAGE, hecho: Promise.resolve() };
-      const { marks, markVersions } = aplicarMarca(existente, result.trackId, result.distance, {
-        trackVersion: result.trackVersion,
-        physicsVersion: result.physicsVersion,
-      });
+      const { marks, markVersions, markDetails } = aplicarMarca(
+        existente,
+        result.trackId,
+        result.distance,
+        { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion },
+        { bestStep: result.bestStep, piezasPerdidas: result.piezasPerdidas },
+      );
       const car: SavedCar = {
         id,
         name: nombre,
         genome: individual.genome,
         marks,
         markVersions,
+        ...(markDetails ? { markDetails } : {}),
         origin: originOf(individual.id, lineageRef.current),
         savedAt: new Date().toISOString(),
         lineageId: individual.id,
@@ -427,14 +431,18 @@ export function App() {
           await save(KEY_SPECIES, validos);
           aplicarEspecies(validos);
         }
-        if (e.rankings === "demo" || e.rankings === "demo-version-anterior" || (typeof e.rankings === "object" && e.rankings !== null)) {
+        if (e.rankings === "demo" || e.rankings === "demo-version-anterior" || e.rankings === "demo-empates" || e.rankings === "demo-limites" || (typeof e.rankings === "object" && e.rankings !== null)) {
           // El JSON de demostración solo se descarga cuando un escenario lo pide.
           const datos =
             e.rankings === "demo"
               ? JSON.parse((await import("@/debug/escenarios/rankings-demo.texto")).default)
               : e.rankings === "demo-version-anterior"
                 ? await (await import("@/debug/escenarios/version-anterior")).rankingsVersionAnterior()
-                : e.rankings;
+                : e.rankings === "demo-empates"
+                  ? await (await import("@/debug/escenarios/clasificacion")).rankingsEmpates()
+                  : e.rankings === "demo-limites"
+                    ? await (await import("@/debug/escenarios/clasificacion")).rankingsLimites()
+                    : e.rankings;
           const validos = validateRankings({ ...emptyRankings(), ...datos });
           if (!validos) throw new Error("escenario con rankings inválidos");
           await save(KEY_RANKINGS, validos);
@@ -481,7 +489,7 @@ export function App() {
           const track = campeon?.trackId ? getTrack(campeon.trackId) : null;
           if (campeon && track) {
             await updateRanking({
-              result: { carId: campeon.id, distance: campeon.distance!, reason: "stall", steps: 0, physicsVersion: PHYSICS_VERSION, trackId: track.id, trackVersion: track.version },
+              result: { carId: campeon.id, distance: campeon.distance!, reason: "stall", steps: 0, bestStep: Math.min(MAX_STEPS, Math.ceil(campeon.distance! * 1.2) + 1), piezasPerdidas: 0, physicsVersion: PHYSICS_VERSION, trackId: track.id, trackVersion: track.version },
               genome: campeon.genome,
               origin: originOf(campeon.id, nodos),
               lineageId: campeon.id,
@@ -517,7 +525,7 @@ export function App() {
     async (result: CarResult): Promise<RankingOutcome | null> => {
       if (!trial) return null;
       const outcome = await updateRanking({ result, genome: trial.genome, origin: trial.origin });
-      await recordMark(result.carId, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion });
+      await recordMark(result.carId, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, { bestStep: result.bestStep, piezasPerdidas: result.piezasPerdidas });
       runtime.ultimaInscripcion = {
         trackId: result.trackId,
         position: outcome.position,
@@ -534,10 +542,10 @@ export function App() {
     async (genome: Genome, origin: SavedCar["origin"], name?: string, lineageId?: string): Promise<string> => {
       const id = genomeHash(genome);
       const existente = garage.find((c) => c.id === id);
-      let base: Pick<SavedCar, "marks" | "markVersions"> | undefined = existente;
+      let base: Pick<SavedCar, "marks" | "markVersions" | "markDetails"> | undefined = existente;
       for (const t of Object.keys(rankings) as TrackId[]) {
         const entrada = rankings[t].find((r) => r.genomeHash === id);
-        if (entrada) base = aplicarMarca(base, t, entrada.distance, { trackVersion: entrada.trackVersion, physicsVersion: entrada.physicsVersion });
+        if (entrada) base = aplicarMarca(base, t, entrada.distance, { trackVersion: entrada.trackVersion, physicsVersion: entrada.physicsVersion }, entrada.bestStep === undefined ? undefined : { bestStep: entrada.bestStep, piezasPerdidas: entrada.piezasPerdidas ?? 0 });
       }
       const marks = base?.marks ?? {};
       const car: SavedCar = {
@@ -546,6 +554,7 @@ export function App() {
         genome,
         marks,
         ...(base?.markVersions ? { markVersions: base.markVersions } : {}),
+        ...(base?.markDetails ? { markDetails: base.markDetails } : {}),
         origin: existente?.origin ?? origin,
         savedAt: new Date().toISOString(),
       };
@@ -582,7 +591,7 @@ export function App() {
         onProgress: (n, total) => setMidiendo({ carId: car.id, n, total }),
         registrar: async (result) => {
           const outcome = await updateRanking({ result, genome: car.genome, origin: car.origin, lineageId: car.lineageId, name: car.name });
-          if (result.reason !== "anomaly") await recordMark(car.id, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion });
+          if (result.reason !== "anomaly") await recordMark(car.id, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, { bestStep: result.bestStep, piezasPerdidas: result.piezasPerdidas });
           return outcome;
         },
       });

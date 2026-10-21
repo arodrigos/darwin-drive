@@ -156,12 +156,14 @@ test("nf-4: 200 carreras seguidas dejan 0 cuerpos vivos tras dispose()", () => {
   completa.dispose();
 });
 
-test("nf-4-limites: en llano el coche no se atasca y acaba por tiempo con 10 800 pasos exactos", () => {
+test("nf-4-limites: en llano el coche no se atasca, llega a la meta y para en el paso de su última marca", () => {
   const race = createRace([{ carId: "a", genome: STOCK_CAR }], "cordillera", { heightFn: () => 0 });
   while (!race.done()) race.step(500);
   const r = race.results()[0];
-  assert.equal(r.reason, "timeout");
-  assert.equal(r.steps, 10800);
+  assert.equal(r.reason, "meta");
+  assert.ok(r.steps > 10800 && r.steps < 54000, `pasos ${r.steps}`);
+  assert.equal(r.steps, r.bestStep);
+  assert.equal(r.distance, 5000);
   race.dispose();
 });
 

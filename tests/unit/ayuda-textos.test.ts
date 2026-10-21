@@ -41,3 +41,10 @@ test("gui-6: los ids de sección son únicos", () => {
   const ids = SECCIONES_GUIA.map((s) => s.id);
   assert.equal(new Set(ids).size, ids.length);
 });
+
+test("cla-9: la guía de Rankings explica la meta, las tres claves de desempate y la insignia", () => {
+  const rk = SECCIONES_GUIA.find((s) => s.id === "rankings-clasificacion")!;
+  const texto = rk.parrafos.join(" ");
+  for (const t of ["5000 m", "15 minutos", "entero", "más rápido", "antes", "insignia"]) assert.ok(texto.includes(t), `falta «${t}»`);
+  assert.equal(rk.titulo, "Rankings y clasificación");
+});

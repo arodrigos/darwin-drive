@@ -2710,7 +2710,7 @@
    "id": "3-2d3b2060",
    "parents": [
     "2-c4afff34",
-    "2-086eca3f"
+    "2-766af8c7"
    ],
    "op": "crossover",
    "generation": 3,
@@ -2780,7 +2780,7 @@
      }
     ]
    },
-   "hue": 95.1492883506487,
+   "hue": 98.3083079406897,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -2865,7 +2865,7 @@
    "id": "3-08d4fa2d",
    "parents": [
     "2-c4afff34",
-    "2-90e6264d"
+    "2-086eca3f"
    ],
    "op": "crossover",
    "generation": 3,
@@ -2935,7 +2935,7 @@
      }
     ]
    },
-   "hue": 105.24617857349205,
+   "hue": 92.67272176438456,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -3020,7 +3020,7 @@
    "id": "3-65acd533",
    "parents": [
     "2-c4afff34",
-    "2-90e6264d"
+    "2-086eca3f"
    ],
    "op": "crossover",
    "generation": 3,
@@ -3090,30 +3090,30 @@
      }
     ]
    },
-   "hue": 130.85711774789678,
+   "hue": 118.2836609387893,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "3-cf8e5b38",
    "parents": [
-    "2-90e6264d",
-    "2-086eca3f"
+    "2-086eca3f",
+    "2-766af8c7"
    ],
    "op": "crossover",
    "generation": 3,
-   "distance": 1151.4530823299635,
+   "distance": 1150.3118561875287,
    "trackId": "cordillera",
    "genome": {
     "v": 1,
     "body": [
      {
       "angle": 0.4363323129985824,
-      "length": 1
+      "length": 0.8931360942143911
      },
      {
       "angle": 1.2217304763960306,
-      "length": 0.8360914486865338
+      "length": 0.9
      },
      {
       "angle": 2.007128639793479,
@@ -3168,26 +3168,26 @@
      }
     ]
    },
-   "hue": 111.448185265956,
+   "hue": 102.03374804688951,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "3-2c28edb6",
    "parents": [
-    "2-086eca3f",
-    "2-90e6264d"
+    "2-766af8c7",
+    "2-086eca3f"
    ],
    "op": "crossover",
    "generation": 3,
-   "distance": 1254.7110572828472,
+   "distance": 1254.67485780234,
    "trackId": "cordillera",
    "genome": {
     "v": 1,
     "body": [
      {
       "angle": 0.4363323129985824,
-      "length": 0.8931360942143911
+      "length": 1
      },
      {
       "angle": 1.2217304763960306,
@@ -3246,14 +3246,14 @@
      }
     ]
    },
-   "hue": 88.14967487774783,
+   "hue": 78.73523765868134,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "3-4db40bc2",
    "parents": [
-    "2-90e6264d",
+    "2-086eca3f",
     "2-c4afff34"
    ],
    "op": "crossover",
@@ -3324,7 +3324,7 @@
      }
     ]
    },
-   "hue": 93.99687367048523,
+   "hue": 81.42341686137775,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -3488,7 +3488,7 @@
    "id": "3-a0f8b51b",
    "parents": [
     "2-c4afff34",
-    "2-086eca3f"
+    "2-766af8c7"
    ],
    "op": "crossover",
    "generation": 3,
@@ -3558,7 +3558,7 @@
      }
     ]
    },
-   "hue": 84.56668116174683,
+   "hue": 87.72570075178783,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -3789,7 +3789,7 @@
      }
     ]
    },
-   "hue": 84.56668116174683,
+   "hue": 87.72570075178783,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -4022,7 +4022,7 @@
      }
     ]
    },
-   "hue": 106.87241682680877,
+   "hue": 100.58568842225503,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -4100,7 +4100,7 @@
      }
     ]
    },
-   "hue": 97.99476071173291,
+   "hue": 99.57427050675341,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -4255,7 +4255,7 @@
      }
     ]
    },
-   "hue": 94.5587429310383,
+   "hue": 89.85152432150505,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -4409,7 +4409,7 @@
      }
     ]
    },
-   "hue": 104.41748906889825,
+   "hue": 107.57650865893925,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -4417,7 +4417,7 @@
    "id": "4-dd0d1751",
    "parents": [
     "3-9a830dc0",
-    "3-65acd533"
+    "3-8db4aa9d"
    ],
    "op": "crossover",
    "generation": 4,
@@ -4487,7 +4487,7 @@
      }
     ]
    },
-   "hue": 115.74363828989328,
+   "hue": 98.43685962708963,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -4643,7 +4643,7 @@
      }
     ]
    },
-   "hue": 91.57146404695641,
+   "hue": 85.28473564240267,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -4876,7 +4876,7 @@
      }
     ]
    },
-   "hue": 84.0178239650935,
+   "hue": 85.597333760114,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -4954,89 +4954,12 @@
      }
     ]
    },
-   "hue": 97.42724917246221,
+   "hue": 99.00675896748271,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "5-db0485af",
-   "parents": [
-    "4-654d8b91"
-   ],
-   "op": "clone",
-   "generation": 5,
-   "distance": 1754.3271667887232,
-   "trackId": "cordillera",
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 0.7786390442482596
-     },
-     {
-      "angle": 1.2217304763960306,
-      "length": 0.9
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 0.9
-     },
-     {
-      "angle": 2.792526803190927,
-      "length": 1.1
-     },
-     {
-      "angle": 3.5779249665883754,
-      "length": 1.1
-     },
-     {
-      "angle": 4.16,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 70,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6501118063926696,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7712845822643144,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 84.56668116174683,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "5-0a7e55e7",
    "parents": [
     "4-0ac65c82"
    ],
@@ -5108,7 +5031,84 @@
      }
     ]
    },
-   "hue": 94.5587429310383,
+   "hue": 89.85152432150505,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-0a7e55e7",
+   "parents": [
+    "4-654d8b91"
+   ],
+   "op": "clone",
+   "generation": 5,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 87.72570075178783,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -5186,7 +5186,7 @@
      }
     ]
    },
-   "hue": 89.94729722403389,
+   "hue": 91.52680701905439,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -5264,7 +5264,7 @@
      }
     ]
    },
-   "hue": 78.90100502283974,
+   "hue": 80.48051481786024,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -5272,7 +5272,7 @@
    "id": "5-45476b08",
    "parents": [
     "4-79e28859",
-    "4-654d8b91"
+    "4-0ac65c82"
    ],
    "op": "crossover",
    "generation": 5,
@@ -5342,15 +5342,15 @@
      }
     ]
    },
-   "hue": 88.1914095595684,
+   "hue": 87.69046693717064,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "5-19d03bf3",
    "parents": [
-    "4-0ac65c82",
-    "4-654d8b91"
+    "4-654d8b91",
+    "4-0ac65c82"
    ],
    "op": "crossover",
    "generation": 5,
@@ -5410,7 +5410,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 2.4613262555379585
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
@@ -5420,14 +5420,14 @@
      }
     ]
    },
-   "hue": 105.13615745835574,
+   "hue": 104.36205794860962,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "5-82047387",
    "parents": [
-    "4-0ac65c82",
+    "4-654d8b91",
     "4-38eb5074"
    ],
    "op": "crossover",
@@ -5488,7 +5488,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 2.4613262555379585
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
@@ -5498,7 +5498,7 @@
      }
     ]
    },
-   "hue": 81.60823212702849,
+   "hue": 78.19171103740325,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -5576,7 +5576,7 @@
      }
     ]
    },
-   "hue": 107.4320931838405,
+   "hue": 105.86823877658412,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -5654,15 +5654,15 @@
      }
     ]
    },
-   "hue": 89.72357924124594,
+   "hue": 91.30308903626644,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "5-7f12be61",
    "parents": [
-    "4-654d8b91",
-    "4-0ac65c82"
+    "4-0ac65c82",
+    "4-654d8b91"
    ],
    "op": "crossover",
    "generation": 5,
@@ -5722,7 +5722,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 1.5707963267948966
+      "axisAngle": 2.4613262555379585
      },
      {
       "vertex": -1,
@@ -5732,15 +5732,15 @@
      }
     ]
    },
-   "hue": 95.97592688073337,
+   "hue": 95.2018273709873,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "5-9a1790ee",
    "parents": [
-    "4-654d8b91",
-    "4-0ac65c82"
+    "4-0ac65c82",
+    "4-654d8b91"
    ],
    "op": "crossover",
    "generation": 5,
@@ -5800,7 +5800,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 1.5707963267948966
+      "axisAngle": 2.4613262555379585
      },
      {
       "vertex": -1,
@@ -5810,7 +5810,7 @@
      }
     ]
    },
-   "hue": 86.17679657847094,
+   "hue": 85.40269706872482,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -5895,7 +5895,7 @@
    "id": "5-acf6024d",
    "parents": [
     "4-7b165b1d",
-    "4-654d8b91"
+    "4-0ac65c82"
    ],
    "op": "crossover",
    "generation": 5,
@@ -5965,7 +5965,7 @@
      }
     ]
    },
-   "hue": 107.46202630650089,
+   "hue": 110.10444788638,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -6042,15 +6042,15 @@
      }
     ]
    },
-   "hue": 82.38040836174457,
+   "hue": 76.09367995719083,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "5-ab80f783",
+   "id": "5-c6e16147",
    "parents": [
     "4-38eb5074",
-    "4-654d8b91"
+    "4-0ac65c82"
    ],
    "op": "crossover",
    "generation": 5,
@@ -6110,6 +6110,84 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 101.28360851402454,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "5-a92e8f8e",
+   "parents": [
+    "4-05657b0a",
+    "4-654d8b91"
+   ],
+   "op": "crossover",
+   "generation": 5,
+   "distance": 1381.222774860694,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 1
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.769807092079008,
+      "length": 2.110628870427746
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.4461751699447632,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
       "axisAngle": 1.5707963267948966
      },
      {
@@ -6120,19 +6198,18 @@
      }
     ]
    },
-   "hue": 85.95545581483253,
+   "hue": 88.06745423805842,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "5-7d1ba92e",
+   "id": "6-d050870c",
    "parents": [
-    "4-0ac65c82",
-    "4-dc8fcea3"
+    "5-0a7e55e7"
    ],
-   "op": "crossover",
-   "generation": 5,
-   "distance": 1255.1950284735715,
+   "op": "clone",
+   "generation": 6,
+   "distance": 1754.3271667887232,
    "trackId": "cordillera",
    "genome": {
     "v": 1,
@@ -6176,7 +6253,7 @@
       "vertex": 5,
       "radius": 0.6501118063926696,
       "density": 60,
-      "axisAngle": 2.4783435173912345
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": 7,
@@ -6188,7 +6265,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 2.4613262555379585
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
@@ -6198,12 +6275,12 @@
      }
     ]
    },
-   "hue": 102.35341078737201,
+   "hue": 87.72570075178783,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "6-8f8ed050",
+   "id": "6-a99e9dbf",
    "parents": [
     "5-db0485af"
    ],
@@ -6265,7 +6342,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 1.5707963267948966
+      "axisAngle": 2.4613262555379585
      },
      {
       "vertex": -1,
@@ -6275,18 +6352,18 @@
      }
     ]
    },
-   "hue": 84.56668116174683,
+   "hue": 89.85152432150505,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "6-870ca99e",
+   "id": "6-a151d535",
    "parents": [
-    "5-0a7e55e7"
+    "5-db0485af"
    ],
-   "op": "clone",
+   "op": "mutation",
    "generation": 6,
-   "distance": 1754.3271667887232,
+   "distance": 1254.620595654611,
    "trackId": "cordillera",
    "genome": {
     "v": 1,
@@ -6309,7 +6386,7 @@
      },
      {
       "angle": 3.5779249665883754,
-      "length": 1.1
+      "length": 0.9132235522875357
      },
      {
       "angle": 4.16,
@@ -6340,7 +6417,7 @@
      },
      {
       "vertex": -1,
-      "radius": 0.4,
+      "radius": 0.33820820998037787,
       "density": 60,
       "axisAngle": 2.4613262555379585
      },
@@ -6352,183 +6429,29 @@
      }
     ]
    },
-   "hue": 94.5587429310383,
+   "hue": 94.42081578408022,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "6-abd1a151",
+   "id": "6-21b18eee",
    "parents": [
-    "5-9a1790ee"
-   ],
-   "op": "mutation",
-   "generation": 6,
-   "distance": 1622.971727080232,
-   "trackId": "cordillera",
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 0.7786390442482596
-     },
-     {
-      "angle": 1.2217304763960306,
-      "length": 0.9
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 1.1662386514467893
-     },
-     {
-      "angle": 2.792526803190927,
-      "length": 1.1
-     },
-     {
-      "angle": 3.5779249665883754,
-      "length": 1.2550264053348026
-     },
-     {
-      "angle": 4.137485805089473,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 70,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6501118063926696,
-      "density": 60,
-      "axisAngle": 1.535626624150983
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7712845822643144,
-      "density": 74.45227946974966,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 53.51222963377217,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 78.23121755067781,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 101.02624005739892,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "6-68bfc50d",
-   "parents": [
-    "5-ab80f783"
-   ],
-   "op": "mutation",
-   "generation": 6,
-   "distance": 1578.1981529473985,
-   "trackId": "cordillera",
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 0.6230992565589425
-     },
-     {
-      "angle": 1.2217304763960306,
-      "length": 0.693899970839482
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 0.9
-     },
-     {
-      "angle": 2.792526803190927,
-      "length": 1.1
-     },
-     {
-      "angle": 3.5779249665883754,
-      "length": 1.1
-     },
-     {
-      "angle": 4.16,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 70,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6501118063926696,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7712845822643144,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 72.06248001970025,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 113.57603335055899,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "6-0bf1a468",
-   "parents": [
-    "5-0a7e55e7",
+    "5-c6e16147",
     "5-148a1fa4"
    ],
    "op": "crossover",
    "generation": 6,
-   "distance": 1255.0113727731189,
+   "distance": 1384.6596500887563,
    "trackId": "cordillera",
    "genome": {
     "v": 1,
     "body": [
      {
       "angle": 0.4363323129985824,
-      "length": 0.7786390442482596
+      "length": 1
      },
      {
-      "angle": 1.2958800849767913,
+      "angle": 1.2217304763960306,
       "length": 0.693899970839482
      },
      {
@@ -6540,7 +6463,7 @@
       "length": 1.1
      },
      {
-      "angle": 3.5798584304486276,
+      "angle": 3.5779249665883754,
       "length": 1.1
      },
      {
@@ -6561,13 +6484,91 @@
      {
       "vertex": 5,
       "radius": 0.6501118063926696,
-      "density": 63.29468083733774,
-      "axisAngle": 1.207175665846398
+      "density": 50.32104384152189,
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": 7,
       "radius": 0.7712845822643144,
-      "density": 59.20427458108636,
+      "density": 60,
+      "axisAngle": 3.0170063846973196
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 47.29102782531492,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 90.64743404575165,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "6-0bf1a468",
+   "parents": [
+    "5-db0485af",
+    "5-f02a3075"
+   ],
+   "op": "crossover",
+   "generation": 6,
+   "distance": 1254.5241708789129,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.38056219907596345,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.224746158278967,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.9833476191881005
+     }
+    ],
+    "bodyDensity": 78.27070611941309,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6205467369983245,
+      "density": 60,
+      "axisAngle": 1.8097741301396402
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
       "axisAngle": 1.5707963267948966
      },
      {
@@ -6584,15 +6585,15 @@
      }
     ]
    },
-   "hue": 88.31850969615067,
+   "hue": 97.70881559880382,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "6-7b3d6e7b",
    "parents": [
-    "5-db0485af",
-    "5-0a7e55e7"
+    "5-0a7e55e7",
+    "5-db0485af"
    ],
    "op": "crossover",
    "generation": 6,
@@ -6662,7 +6663,7 @@
      }
     ]
    },
-   "hue": 74.5749163006331,
+   "hue": 73.80081679088698,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -6670,7 +6671,7 @@
    "id": "6-89542447",
    "parents": [
     "5-148a1fa4",
-    "5-ab80f783"
+    "5-c6e16147"
    ],
    "op": "crossover",
    "generation": 6,
@@ -6740,7 +6741,7 @@
      }
     ]
    },
-   "hue": 80.93935425466532,
+   "hue": 85.46006640198442,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -6748,7 +6749,7 @@
    "id": "6-6b4f4d96",
    "parents": [
     "5-148a1fa4",
-    "5-0a7e55e7"
+    "5-db0485af"
    ],
    "op": "crossover",
    "generation": 6,
@@ -6818,15 +6819,15 @@
      }
     ]
    },
-   "hue": 69.20526422055741,
+   "hue": 63.70829071351392,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "6-d707b875",
    "parents": [
-    "5-db0485af",
-    "5-ab80f783"
+    "5-0a7e55e7",
+    "5-c6e16147"
    ],
    "op": "crossover",
    "generation": 6,
@@ -6896,15 +6897,15 @@
      }
     ]
    },
-   "hue": 85.26106848828971,
+   "hue": 94.50465463290618,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "6-e20b6fe8",
    "parents": [
-    "5-db0485af",
-    "5-0a7e55e7"
+    "5-0a7e55e7",
+    "5-db0485af"
    ],
    "op": "crossover",
    "generation": 6,
@@ -6974,7 +6975,7 @@
      }
     ]
    },
-   "hue": 70.85413631305818,
+   "hue": 70.08003680331205,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -6982,7 +6983,7 @@
    "id": "6-60cdad84",
    "parents": [
     "5-45476b08",
-    "5-0a7e55e7"
+    "5-db0485af"
    ],
    "op": "crossover",
    "generation": 6,
@@ -7052,7 +7053,7 @@
      }
     ]
    },
-   "hue": 97.67985787201712,
+   "hue": 95.07577725605165,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -7130,7 +7131,7 @@
      }
     ]
    },
-   "hue": 89.42983865685056,
+   "hue": 85.5045472509455,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -7138,7 +7139,7 @@
    "id": "6-fa906da6",
    "parents": [
     "5-9a1790ee",
-    "5-ab80f783"
+    "5-c6e16147"
    ],
    "op": "crossover",
    "generation": 6,
@@ -7198,7 +7199,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 1.5707963267948966
+      "axisAngle": 2.4613262555379585
      },
      {
       "vertex": -1,
@@ -7208,14 +7209,14 @@
      }
     ]
    },
-   "hue": 104.7619832326044,
+   "hue": 112.03900982732728,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "6-72a2a8c2",
    "parents": [
-    "5-0a7e55e7",
+    "5-db0485af",
     "5-f02a3075"
    ],
    "op": "crossover",
@@ -7286,7 +7287,7 @@
      }
     ]
    },
-   "hue": 111.2424772310336,
+   "hue": 108.1069407226388,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -7363,7 +7364,7 @@
      }
     ]
    },
-   "hue": 82.14740331285577,
+   "hue": 75.86067490830203,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -7371,7 +7372,7 @@
    "id": "6-48fd5d3a",
    "parents": [
     "5-45476b08",
-    "5-db0485af"
+    "5-0a7e55e7"
    ],
    "op": "crossover",
    "generation": 6,
@@ -7441,91 +7442,14 @@
      }
     ]
    },
-   "hue": 89.11261224360908,
+   "hue": 90.44165072743067,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "7-8c7eb732",
    "parents": [
-    "6-8f8ed050"
-   ],
-   "op": "clone",
-   "generation": 7,
-   "distance": 1754.3271667887232,
-   "trackId": "cordillera",
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 0.7786390442482596
-     },
-     {
-      "angle": 1.2217304763960306,
-      "length": 0.9
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 0.9
-     },
-     {
-      "angle": 2.792526803190927,
-      "length": 1.1
-     },
-     {
-      "angle": 3.5779249665883754,
-      "length": 1.1
-     },
-     {
-      "angle": 4.16,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 70,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6501118063926696,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7712845822643144,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 84.56668116174683,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "7-608f169f",
-   "parents": [
-    "6-870ca99e"
+    "6-a99e9dbf"
    ],
    "op": "clone",
    "generation": 7,
@@ -7595,15 +7519,92 @@
      }
     ]
    },
-   "hue": 94.5587429310383,
+   "hue": 89.85152432150505,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "7-608f169f",
+   "parents": [
+    "6-d050870c"
+   ],
+   "op": "clone",
+   "generation": 7,
+   "distance": 1754.3271667887232,
+   "trackId": "cordillera",
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 87.72570075178783,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "7-54d9cc3d",
    "parents": [
-    "6-870ca99e",
-    "6-8f8ed050"
+    "6-d050870c",
+    "6-a99e9dbf"
    ],
    "op": "crossover",
    "generation": 7,
@@ -7663,7 +7664,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 2.4613262555379585
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
@@ -7673,14 +7674,14 @@
      }
     ]
    },
-   "hue": 77.44743526534978,
+   "hue": 76.67333575560366,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "7-faeee32b",
    "parents": [
-    "6-870ca99e",
+    "6-d050870c",
     "6-d707b875"
    ],
    "op": "crossover",
@@ -7751,7 +7752,7 @@
      }
     ]
    },
-   "hue": 85.80823812767085,
+   "hue": 87.01351011035382,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -7759,7 +7760,7 @@
    "id": "7-496f9e0e",
    "parents": [
     "6-89542447",
-    "6-8f8ed050"
+    "6-a99e9dbf"
    ],
    "op": "crossover",
    "generation": 7,
@@ -7829,19 +7830,19 @@
      }
     ]
    },
-   "hue": 71.78815687008853,
+   "hue": 76.69093452362722,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "7-90e12cbf",
    "parents": [
-    "6-abd1a151",
-    "6-8f8ed050"
+    "6-e20b6fe8",
+    "6-a99e9dbf"
    ],
    "op": "crossover",
    "generation": 7,
-   "distance": 1635.6420071078476,
+   "distance": 1579.1038892849292,
    "trackId": "cordillera",
    "genome": {
     "v": 1,
@@ -7860,14 +7861,14 @@
      },
      {
       "angle": 2.792526803190927,
-      "length": 1.1
+      "length": 1.1987467785646257
      },
      {
       "angle": 3.5779249665883754,
-      "length": 1.2550264053348026
+      "length": 1.1
      },
      {
-      "angle": 4.137485805089473,
+      "angle": 4.16,
       "length": 1.53
      },
      {
@@ -7885,29 +7886,29 @@
       "vertex": 5,
       "radius": 0.6501118063926696,
       "density": 60,
-      "axisAngle": 1.535626624150983
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": 7,
       "radius": 0.7712845822643144,
-      "density": 74.45227946974966,
+      "density": 60,
       "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
       "radius": 0.4,
-      "density": 53.51222963377217,
+      "density": 60,
       "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
       "radius": 0.5862947116363233,
-      "density": 78.23121755067781,
+      "density": 60,
       "axisAngle": 0.6619464756513631
      }
     ]
    },
-   "hue": 105.84692133726725,
+   "hue": 93.01624129010293,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -7984,14 +7985,14 @@
      }
     ]
    },
-   "hue": 66.59416810230204,
+   "hue": 75.83775424691851,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "7-f36d06e5",
    "parents": [
-    "6-d707b875"
+    "6-d050870c"
    ],
    "op": "mutation",
    "generation": 7,
@@ -8061,7 +8062,7 @@
      }
     ]
    },
-   "hue": 88.32443281905341,
+   "hue": 90.78906508255153,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -8069,7 +8070,7 @@
    "id": "7-33675c34",
    "parents": [
     "6-d707b875",
-    "6-870ca99e"
+    "6-d050870c"
    ],
    "op": "crossover",
    "generation": 7,
@@ -8139,7 +8140,7 @@
      }
     ]
    },
-   "hue": 89.90990570966403,
+   "hue": 91.115177692347,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -8147,7 +8148,7 @@
    "id": "7-e8382264",
    "parents": [
     "6-89542447",
-    "6-870ca99e"
+    "6-d050870c"
    ],
    "op": "crossover",
    "generation": 7,
@@ -8217,7 +8218,7 @@
      }
     ]
    },
-   "hue": 81.71383392568157,
+   "hue": 80.55766890971591,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -8225,7 +8226,7 @@
    "id": "7-45c36931",
    "parents": [
     "6-fa906da6",
-    "6-8f8ed050"
+    "6-a99e9dbf"
    ],
    "op": "crossover",
    "generation": 7,
@@ -8285,7 +8286,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 1.5707963267948966
+      "axisAngle": 2.4613262555379585
      },
      {
       "vertex": -1,
@@ -8295,14 +8296,14 @@
      }
     ]
    },
-   "hue": 77.34240879185745,
+   "hue": 83.623343669098,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "7-19d6e910",
    "parents": [
-    "6-870ca99e"
+    "6-d050870c"
    ],
    "op": "mutation",
    "generation": 7,
@@ -8362,7 +8363,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 2.4613262555379585
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
@@ -8372,7 +8373,7 @@
      }
     ]
    },
-   "hue": 99.87808187650876,
+   "hue": 93.04503969725829,
    "humanTouched": false,
    "prunedParents": false
   },
@@ -8380,7 +8381,7 @@
    "id": "7-eb5f4840",
    "parents": [
     "6-89542447",
-    "6-870ca99e"
+    "6-d050870c"
    ],
    "op": "crossover",
    "generation": 7,
@@ -8450,14 +8451,14 @@
      }
     ]
    },
-   "hue": 69.84279103254505,
+   "hue": 68.6866260165794,
    "humanTouched": false,
    "prunedParents": false
   },
   {
    "id": "7-e0900c41",
    "parents": [
-    "6-870ca99e"
+    "6-d050870c"
    ],
    "op": "mutation",
    "generation": 7,
@@ -8517,7 +8518,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 2.4613262555379585
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
@@ -8527,18 +8528,19 @@
      }
     ]
    },
-   "hue": 99.13291079908777,
+   "hue": 92.2998686198373,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "7-e34efc86",
+   "id": "7-0403cdf2",
    "parents": [
-    "6-870ca99e"
+    "6-a99e9dbf",
+    "6-d050870c"
    ],
-   "op": "mutation",
+   "op": "crossover",
    "generation": 7,
-   "distance": 1387.6050326536629,
+   "distance": 1579.8314461560915,
    "trackId": "cordillera",
    "genome": {
     "v": 1,
@@ -8569,10 +8571,10 @@
      },
      {
       "angle": 5.235946416714141,
-      "length": 1.0033303480625386
+      "length": 0.9
      },
      {
-      "angle": 5.782643251315596,
+      "angle": 5.895101517028626,
       "length": 1.65
      }
     ],
@@ -8597,26 +8599,26 @@
       "axisAngle": 2.4613262555379585
      },
      {
-      "vertex": 1,
+      "vertex": -1,
       "radius": 0.4,
       "density": 60,
       "axisAngle": 0.6619464756513631
      }
     ]
    },
-   "hue": 83.81879326597368,
+   "hue": 94.1797611312137,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "7-ef322a44",
+   "id": "7-534b4678",
    "parents": [
-    "6-89542447",
-    "6-8f8ed050"
+    "6-d050870c",
+    "6-6b4f4d96"
    ],
    "op": "crossover",
    "generation": 7,
-   "distance": 1167.658549191303,
+   "distance": 1577.645640106181,
    "trackId": "cordillera",
    "genome": {
     "v": 1,
@@ -8627,7 +8629,7 @@
      },
      {
       "angle": 1.2217304763960306,
-      "length": 0.9
+      "length": 0.693899970839482
      },
      {
       "angle": 2.007128639793479,
@@ -8638,7 +8640,7 @@
       "length": 1.1
      },
      {
-      "angle": 3.5779249665883754,
+      "angle": 3.5798584304486276,
       "length": 1.1
      },
      {
@@ -8646,8 +8648,8 @@
       "length": 1.53
      },
      {
-      "angle": 5.235946416714141,
-      "length": 0.9
+      "angle": 5.224746158278967,
+      "length": 1.0573746433922213
      },
      {
       "angle": 5.782643251315596,
@@ -8663,33 +8665,33 @@
       "axisAngle": 1.5707963267948966
      },
      {
-      "vertex": 2,
+      "vertex": 7,
       "radius": 0.7712845822643144,
       "density": 60,
-      "axisAngle": 1.6430079631603425
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 47.29102782531492,
       "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 76.21256579117335,
       "axisAngle": 0.6619464756513631
      }
     ]
    },
-   "hue": 95.96762318004659,
+   "hue": 82.61112086540606,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "8-48c7b689",
+   "id": "8-2045f961",
    "parents": [
-    "7-8c7eb732"
+    "7-33675c34"
    ],
    "op": "clone",
    "generation": 8,
@@ -8759,12 +8761,12 @@
      }
     ]
    },
-   "hue": 84.56668116174683,
+   "hue": 91.115177692347,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "8-d00aa8d4",
+   "id": "8-fe7dd4f2",
    "parents": [
     "7-608f169f"
    ],
@@ -8826,7 +8828,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 2.4613262555379585
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
@@ -8836,14 +8838,14 @@
      }
     ]
    },
-   "hue": 94.5587429310383,
+   "hue": 87.72570075178783,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "8-5dd9f10f",
+   "id": "8-006b9879",
    "parents": [
-    "7-8c7eb732",
+    "7-19d6e910",
     "7-608f169f"
    ],
    "op": "crossover",
@@ -8858,240 +8860,7 @@
       "length": 0.7786390442482596
      },
      {
-      "angle": 1.2217304763960306,
-      "length": 0.9
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 0.9
-     },
-     {
-      "angle": 2.792526803190927,
-      "length": 1.1
-     },
-     {
-      "angle": 3.5779249665883754,
-      "length": 1.1
-     },
-     {
-      "angle": 4.16,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 70,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6501118063926696,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7712845822643144,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 3,
-      "radius": 0.4406799529307238,
-      "density": 60,
-      "axisAngle": 2.4613262555379585
-     },
-     {
-      "vertex": -1,
-      "radius": 0.5232865923434443,
-      "density": 60,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 79.63073546016278,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "8-705aea14",
-   "parents": [
-    "7-8c7eb732"
-   ],
-   "op": "mutation",
-   "generation": 8,
-   "distance": null,
-   "trackId": null,
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 0.7786390442482596
-     },
-     {
-      "angle": 1.2217304763960306,
-      "length": 0.9
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 0.9
-     },
-     {
-      "angle": 2.792526803190927,
-      "length": 1.1
-     },
-     {
-      "angle": 3.5779249665883754,
-      "length": 1.1
-     },
-     {
-      "angle": 4.16,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 70,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6402382604418259,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7712845822643144,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 64.07477974408818,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "8-335a1932",
-   "parents": [
-    "7-608f169f",
-    "7-8c7eb732"
-   ],
-   "op": "crossover",
-   "generation": 8,
-   "distance": null,
-   "trackId": null,
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 0.7786390442482596
-     },
-     {
-      "angle": 1.2217304763960306,
-      "length": 0.9
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 0.9
-     },
-     {
-      "angle": 2.792526803190927,
-      "length": 1.1
-     },
-     {
-      "angle": 3.5779249665883754,
-      "length": 1.1
-     },
-     {
-      "angle": 4.16,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 70,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6501118063926696,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7712845822643144,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 66.3900562576324,
-      "axisAngle": 2.4613262555379585
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 92.80061205455138,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "8-b1217850",
-   "parents": [
-    "7-608f169f",
-    "7-19d6e910"
-   ],
-   "op": "crossover",
-   "generation": 8,
-   "distance": null,
-   "trackId": null,
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 0.7786390442482596
-     },
-     {
-      "angle": 1.2217304763960306,
+      "angle": 1.1118768290008232,
       "length": 0.9
      },
      {
@@ -9122,22 +8891,22 @@
     "bodyDensity": 70,
     "wheels": [
      {
-      "vertex": 3,
+      "vertex": 5,
       "radius": 0.6501118063926696,
       "density": 60,
       "axisAngle": 1.5707963267948966
      },
      {
-      "vertex": 7,
+      "vertex": 2,
       "radius": 0.7712845822643144,
       "density": 60,
       "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
-      "radius": 0.37227417756263015,
-      "density": 58.18687712579258,
-      "axisAngle": 2.4613262555379585
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
@@ -9147,15 +8916,15 @@
      }
     ]
    },
-   "hue": 97.06556052880336,
+   "hue": 92.81474353930446,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "8-d5e9eddc",
+   "id": "8-f497b07f",
    "parents": [
-    "7-90e12cbf",
-    "7-608f169f"
+    "7-979e15da",
+    "7-33675c34"
    ],
    "op": "crossover",
    "generation": 8,
@@ -9165,7 +8934,7 @@
     "v": 1,
     "body": [
      {
-      "angle": 0.4363323129985824,
+      "angle": 0.4875348378188551,
       "length": 0.7786390442482596
      },
      {
@@ -9174,7 +8943,7 @@
      },
      {
       "angle": 2.007128639793479,
-      "length": 0.9
+      "length": 0.7769933779774012
      },
      {
       "angle": 2.792526803190927,
@@ -9182,85 +8951,7 @@
      },
      {
       "angle": 3.5779249665883754,
-      "length": 1.2550264053348026
-     },
-     {
-      "angle": 4.137485805089473,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 77.19531943490179,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6501118063926696,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7712845822643144,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 53.51222963377217,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.5862947116363233,
-      "density": 78.23121755067781,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 101.08682163342115,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "8-8b190b93",
-   "parents": [
-    "7-33675c34",
-    "7-90e12cbf"
-   ],
-   "op": "crossover",
-   "generation": 8,
-   "distance": null,
-   "trackId": null,
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 0.7786390442482596
-     },
-     {
-      "angle": 1.2217304763960306,
-      "length": 0.9
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 0.9
-     },
-     {
-      "angle": 2.792526803190927,
-      "length": 1.1
-     },
-     {
-      "angle": 3.664155652675536,
-      "length": 1.1
+      "length": 0.8953604997323252
      },
      {
       "angle": 4.16,
@@ -9303,12 +8994,399 @@
      }
     ]
    },
-   "hue": 91.02163775099899,
+   "hue": 84.55986424574661,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "8-568de043",
+   "id": "8-43babb1c",
+   "parents": [
+    "7-608f169f"
+   ],
+   "op": "mutation",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.29458667039871217,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 90.38638151778355,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-7e52dd6d",
+   "parents": [
+    "7-90e12cbf",
+    "7-979e15da"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.5862947116363233,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 81.33668976485922,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-04ab98c2",
+   "parents": [
+    "7-33675c34",
+    "7-19d6e910"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.28612411529115,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 88.41190069187923,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-a14407aa",
+   "parents": [
+    "7-45c36931"
+   ],
+   "op": "mutation",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 0.9028111588702464,
+      "length": 0.9
+     },
+     {
+      "angle": 1.962771340307109,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.2550264053348026
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.83153430266751,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 74.45227946974966,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 78.23121755067781,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 84.75041752305458,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-562d9b27",
+   "parents": [
+    "7-979e15da"
+   ],
+   "op": "mutation",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4875348378188551,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.776074134285992,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 1.8136984109233545
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 82.66480567219077,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-03f89775",
    "parents": [
     "7-8c7eb732",
     "7-33675c34"
@@ -9357,7 +9435,7 @@
     "wheels": [
      {
       "vertex": 5,
-      "radius": 0.5310381519465214,
+      "radius": 0.6501118063926696,
       "density": 60,
       "axisAngle": 1.5707963267948966
      },
@@ -9371,7 +9449,7 @@
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 1.5707963267948966
+      "axisAngle": 2.4613262555379585
      },
      {
       "vertex": -1,
@@ -9381,14 +9459,92 @@
      }
     ]
    },
-   "hue": 98.60527678316924,
+   "hue": 90.483351006926,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "8-b327ea20",
+   "id": "8-67730659",
    "parents": [
+    "7-45c36931",
     "7-608f169f"
+   ],
+   "op": "crossover",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 0.9028111588702464,
+      "length": 0.9
+     },
+     {
+      "angle": 1.962771340307109,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 1.53
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.782643251315596,
+      "length": 1.65
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": 7,
+      "radius": 0.7712845822643144,
+      "density": 74.45227946974966,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 78.23121755067781,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 83.70006486948967,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-a73363e8",
+   "parents": [
+    "7-33675c34"
    ],
    "op": "mutation",
    "generation": 8,
@@ -9434,21 +9590,21 @@
     "wheels": [
      {
       "vertex": 5,
-      "radius": 0.6253880339436011,
+      "radius": 0.6501118063926696,
       "density": 60,
       "axisAngle": 1.5707963267948966
      },
      {
       "vertex": 7,
       "radius": 0.7712845822643144,
-      "density": 60,
+      "density": 108.02515268325806,
       "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
       "radius": 0.4,
       "density": 60,
-      "axisAngle": 2.4613262555379585
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": -1,
@@ -9458,15 +9614,15 @@
      }
     ]
    },
-   "hue": 103.39743919909779,
+   "hue": 90.49492653719568,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "8-ca9ad517",
+   "id": "8-7bcec7fb",
    "parents": [
-    "7-608f169f",
-    "7-33675c34"
+    "7-33675c34",
+    "7-608f169f"
    ],
    "op": "crossover",
    "generation": 8,
@@ -9511,84 +9667,7 @@
     "bodyDensity": 70,
     "wheels": [
      {
-      "vertex": 5,
-      "radius": 0.6501118063926696,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 0,
-      "radius": 0.7712845822643144,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 79.80047246939114,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "8-a8e9bc2f",
-   "parents": [
-    "7-33675c34"
-   ],
-   "op": "mutation",
-   "generation": 8,
-   "distance": null,
-   "trackId": null,
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 0.7786390442482596
-     },
-     {
-      "angle": 1.2217304763960306,
-      "length": 0.9
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 0.9
-     },
-     {
-      "angle": 2.7925282434195733,
-      "length": 1.1
-     },
-     {
-      "angle": 3.5779249665883754,
-      "length": 1.1
-     },
-     {
-      "angle": 4.16,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 70,
-    "wheels": [
-     {
-      "vertex": 5,
+      "vertex": 1,
       "radius": 0.6501118063926696,
       "density": 60,
       "axisAngle": 1.5707963267948966
@@ -9613,16 +9692,17 @@
      }
     ]
    },
-   "hue": 80.6751661721363,
+   "hue": 91.90444471802516,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "8-33d1b514",
+   "id": "8-b5141c82",
    "parents": [
-    "7-608f169f"
+    "7-8c7eb732",
+    "7-979e15da"
    ],
-   "op": "mutation",
+   "op": "crossover",
    "generation": 8,
    "distance": null,
    "trackId": null,
@@ -9630,11 +9710,11 @@
     "v": 1,
     "body": [
      {
-      "angle": 0.4108270889887553,
+      "angle": 0.4363323129985824,
       "length": 0.7786390442482596
      },
      {
-      "angle": 1.2217304763960306,
+      "angle": 1.4330630678108633,
       "length": 0.9
      },
      {
@@ -9642,15 +9722,15 @@
       "length": 0.9
      },
      {
-      "angle": 2.792526803190927,
-      "length": 1.1898114540101539
+      "angle": 2.740449139644728,
+      "length": 1.1
      },
      {
       "angle": 3.5779249665883754,
       "length": 1.1
      },
      {
-      "angle": 4.241271970432398,
+      "angle": 4.16,
       "length": 1.53
      },
      {
@@ -9658,7 +9738,7 @@
       "length": 0.9
      },
      {
-      "angle": 5.767126178938895,
+      "angle": 5.782643251315596,
       "length": 1.65
      }
     ],
@@ -9690,92 +9770,15 @@
      }
     ]
    },
-   "hue": 107.65155655996296,
+   "hue": 109.31433321181237,
    "humanTouched": false,
    "prunedParents": false
   },
   {
-   "id": "8-7c73298f",
+   "id": "8-a82502c7",
    "parents": [
+    "7-0403cdf2",
     "7-33675c34"
-   ],
-   "op": "mutation",
-   "generation": 8,
-   "distance": null,
-   "trackId": null,
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 0.7786390442482596
-     },
-     {
-      "angle": 1.2217304763960306,
-      "length": 0.9
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 0.9
-     },
-     {
-      "angle": 2.792526803190927,
-      "length": 1.1
-     },
-     {
-      "angle": 3.5779249665883754,
-      "length": 1.1
-     },
-     {
-      "angle": 4.16,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 70,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6501118063926696,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7712845822643144,
-      "density": 59.598714541429075,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 89.10266189413727,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "8-2a3eaf6a",
-   "parents": [
-    "7-608f169f",
-    "7-19d6e910"
    ],
    "op": "crossover",
    "generation": 8,
@@ -9805,7 +9808,7 @@
       "length": 1.1
      },
      {
-      "angle": 4.152005422096754,
+      "angle": 4.16,
       "length": 1.53
      },
      {
@@ -9813,7 +9816,7 @@
       "length": 0.9
      },
      {
-      "angle": 5.771825416931638,
+      "angle": 5.895101517028626,
       "length": 1.65
      }
     ],
@@ -9823,7 +9826,84 @@
       "vertex": 5,
       "radius": 0.6501118063926696,
       "density": 60,
-      "axisAngle": 1.898542033027673
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.7712845822643144,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 2.4613262555379585
+     },
+     {
+      "vertex": -1,
+      "radius": 0.4,
+      "density": 60,
+      "axisAngle": 0.6619464756513631
+     }
+    ]
+   },
+   "hue": 92.47615117139924,
+   "humanTouched": false,
+   "prunedParents": false
+  },
+  {
+   "id": "8-7a3e482f",
+   "parents": [
+    "7-0403cdf2"
+   ],
+   "op": "mutation",
+   "generation": 8,
+   "distance": null,
+   "trackId": null,
+   "genome": {
+    "v": 1,
+    "body": [
+     {
+      "angle": 0.4363323129985824,
+      "length": 0.7786390442482596
+     },
+     {
+      "angle": 1.2217304763960306,
+      "length": 0.9
+     },
+     {
+      "angle": 2.007128639793479,
+      "length": 0.9
+     },
+     {
+      "angle": 2.792526803190927,
+      "length": 1.1
+     },
+     {
+      "angle": 3.5779249665883754,
+      "length": 1.1
+     },
+     {
+      "angle": 4.16,
+      "length": 0.8569458186626433
+     },
+     {
+      "angle": 5.235946416714141,
+      "length": 0.9
+     },
+     {
+      "angle": 5.895101517028626,
+      "length": 1.089024305343628
+     }
+    ],
+    "bodyDensity": 70,
+    "wheels": [
+     {
+      "vertex": 5,
+      "radius": 0.6501118063926696,
+      "density": 60,
+      "axisAngle": 1.5707963267948966
      },
      {
       "vertex": 7,
@@ -9845,84 +9925,7 @@
      }
     ]
    },
-   "hue": 93.73362528312339,
-   "humanTouched": false,
-   "prunedParents": false
-  },
-  {
-   "id": "8-14d93a6b",
-   "parents": [
-    "7-33675c34"
-   ],
-   "op": "mutation",
-   "generation": 8,
-   "distance": null,
-   "trackId": null,
-   "genome": {
-    "v": 1,
-    "body": [
-     {
-      "angle": 0.4363323129985824,
-      "length": 1.122662190581603
-     },
-     {
-      "angle": 1.2217304763960306,
-      "length": 0.9
-     },
-     {
-      "angle": 2.007128639793479,
-      "length": 0.9
-     },
-     {
-      "angle": 2.792526803190927,
-      "length": 1.1
-     },
-     {
-      "angle": 3.5779249665883754,
-      "length": 1.1
-     },
-     {
-      "angle": 4.16,
-      "length": 1.53
-     },
-     {
-      "angle": 5.235946416714141,
-      "length": 0.9
-     },
-     {
-      "angle": 5.782643251315596,
-      "length": 1.65
-     }
-    ],
-    "bodyDensity": 70,
-    "wheels": [
-     {
-      "vertex": 5,
-      "radius": 0.6501118063926696,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": 7,
-      "radius": 0.7712845822643144,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 1.5707963267948966
-     },
-     {
-      "vertex": -1,
-      "radius": 0.4,
-      "density": 60,
-      "axisAngle": 0.6619464756513631
-     }
-    ]
-   },
-   "hue": 98.87980976081792,
+   "hue": 92.64041822299879,
    "humanTouched": false,
    "prunedParents": false
   }

@@ -18,6 +18,7 @@ import {
 } from "../../src/evolution/lineage";
 import { STOCK_CAR, genomeHash, normalizeGenome, type Genome } from "../../src/sim/genome";
 import type { CarResult } from "../../src/sim/constants";
+import { compararMarcas, marcaDeResultado } from "../../src/sim/clasificacion";
 import type { TrackId } from "../../src/sim/tracks";
 import { evolve, raceGeneration } from "./helpers/evolucionar";
 
@@ -28,6 +29,8 @@ function fakeResults(state: EvolutionState, distanceOf: (g: Genome) => number, t
     distance: distanceOf(p.genome),
     reason: "stall",
     steps: 100,
+    bestStep: Math.ceil(distanceOf(p.genome) * 1.2) + 1,
+    piezasPerdidas: 0,
     physicsVersion: 1,
     trackId,
     trackVersion: 1,
@@ -210,7 +213,9 @@ test("invariante: hijos normalizados con 1 o 2 padres de la generación anterior
           for (const p of child.parents) assert.ok(prevIds.has(p));
           assert.equal(child.generation, prev.generation + 1);
         }
-        const ranked = [...prev.population].sort((a, b) => score(b.genome) - score(a.genome));
+        // El mismo orden que usa el algoritmo: décimas de distancia y, a igualdad, el tiempo.
+        const marcas = fakeResults(prev, score).map((r, i) => marcaDeResultado(r, { genomeHash: prev.population[i].id }));
+        const ranked = prev.population.map((_, i) => i).sort((a, b) => compararMarcas(marcas[a], marcas[b]) || a - b).map((i) => prev.population[i]);
         const elite = new Set(cur.population.map((c) => genomeHash(c.genome)));
         for (const e of ranked.slice(0, s0.params.eliteCount)) assert.ok(elite.has(genomeHash(e.genome)));
         assert.ok(cur.effectiveMutationRate >= s0.params.mutationRate && cur.effectiveMutationRate <= 0.3);

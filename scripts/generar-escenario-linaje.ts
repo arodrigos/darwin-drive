@@ -22,7 +22,8 @@ export function construirLinaje(): EscenarioLinajeDemo {
   const nodos = e.lineage.reduce<LineageNode[]>((acc, n) => mergeLineage(acc, [n]), []);
   const ultima = e.results[e.results.length - 1];
   const mejor = ultima.reduce((a, b) => (b.distance > a.distance ? b : a));
-  return { trackId: "cordillera", campeon: mejor.carId, nodos };
+  // Sin versión de pista: así el escenario sigue enseñando el aviso «medido en una versión anterior» (versionado-migracion).
+  return { trackId: "cordillera", campeon: mejor.carId, nodos: nodos.map(({ trackVersion: _v, ...resto }) => resto) };
 }
 
 if (process.argv[1] && process.argv[1].endsWith("generar-escenario-linaje.ts")) {

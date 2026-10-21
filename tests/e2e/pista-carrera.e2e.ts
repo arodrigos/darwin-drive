@@ -66,7 +66,7 @@ test("pc-1 coche de serie: carrera real en la pista elegida y tarjeta con el mis
   const tarjeta = page.getByTestId("tarjeta-fin");
   await expect(tarjeta).toContainText("Fin de la carrera · La Cordillera");
   await expect(page.getByTestId("fin-distancia")).toHaveText(coma(fin.ultimoResultado!.distance));
-  await expect(page.getByTestId("fin-motivo")).toHaveText(/Motivo: (se atascó|se acabó el tiempo|descalificado)/);
+  await expect(page.getByTestId("fin-motivo")).toHaveText(/Motivo: (se atascó|se acabó el tiempo|descalificado)|¡Meta!/);
   await page.screenshot({ path: `${DIR}/${ID}-fin-360x640.png` });
 
   // Repetir da exactamente la misma cifra.

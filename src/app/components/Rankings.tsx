@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
 import { PHYSICS_VERSION } from "@/sim/constants";
+import { claveTexto, formatTiempo } from "@/sim/clasificacion";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
-import { RANKING_SIZE, type RankingEntry, type Rankings as RankingsData } from "@/storage/schema";
+import { entradaPendiente, RANKING_SIZE, type RankingEntry, type Rankings as RankingsData } from "@/storage/schema";
 import { Silueta } from "./Garaje";
 
 export function textoVacio(pista: string): string {
@@ -20,6 +21,28 @@ export function nombreDe(e: Pick<RankingEntry, "name" | "genomeHash">): string {
 /** Tono estable por coche, para que su silueta sea reconocible entre pestañas. */
 export function tonoDe(hash: string): number {
   return parseInt(hash.slice(0, 6), 16) % 360;
+}
+
+/** «Entero» o «Roto · N piezas»: lo que le pasó al coche hasta su marca. */
+export function textoEstado(e: Pick<RankingEntry, "piezasPerdidas">): string {
+  const n = e.piezasPerdidas ?? 0;
+  return n === 0 ? "Entero" : `Roto · ${n} ${n === 1 ? "pieza" : "piezas"}`;
+}
+
+const ROTULO_INSIGNIA = { entera: "entera", rapida: "+ rápida", llegada: "antes en la tabla" } as const;
+
+/** La insignia de la fila de arriba cuando la siguiente tiene la misma distancia visible, y su explicación. */
+export function insigniaDe(e: RankingEntry, siguiente: RankingEntry | undefined): { rotulo: string; explicacion: string } | null {
+  if (!siguiente || entradaPendiente(e) || entradaPendiente(siguiente)) return null;
+  const clave = claveTexto(e, siguiente);
+  if (!clave) return null;
+  const explicacion =
+    clave === "entera"
+      ? "Misma distancia: este coche llegó entero y el siguiente roto"
+      : clave === "rapida"
+        ? `Misma distancia: llegó ${formatTiempo((siguiente.bestStep ?? 0) - (e.bestStep ?? 0))} antes`
+        : `Misma distancia y tiempo: entró antes en la tabla (${fechaCorta(e.date)})`;
+  return { rotulo: ROTULO_INSIGNIA[clave], explicacion };
 }
 
 export function fechaCorta(iso: string): string {
@@ -47,6 +70,7 @@ export function Rankings(props: RankingsProps) {
   const { rankings } = props;
   const [trackId, setTrackId] = useState<TrackId>(props.initialTrack);
   const [fila, setFila] = useState<RankingEntry | null>(null);
+  const [insignia, setInsignia] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const track = getTrack(trackId)!;
@@ -120,41 +144,76 @@ export function Rankings(props: RankingsProps) {
               Algunas marcas se están volviendo a medir con la versión nueva; el orden puede cambiar al acabar.
             </p>
           )}
+        <div className="ranking-titulos" aria-hidden="true">
+          <span className="titulo-distancia">Distancia</span>
+          <span className="titulo-marca" data-testid="titulo-tiempo">Tiempo</span>
+          <span className="titulo-marca" data-testid="titulo-estado">Estado</span>
+          <span className="titulo-marca" data-testid="titulo-fecha">Fecha</span>
+        </div>
         <ol className="ranking-lista" data-testid="ranking-lista">
-          {lista.slice(0, RANKING_SIZE).map((e, i) => (
-            <li key={e.genomeHash}>
-              <button
-                type="button"
-                className="fila-ranking"
-                data-testid="fila-ranking"
-                data-carid={e.carId}
-                aria-pressed={fila?.genomeHash === e.genomeHash}
-                onClick={() => setFila(e)}
-              >
-                <span className="puesto" data-testid="fila-puesto">
-                  {i + 1}
-                </span>
-                <Silueta genome={e.genome} hue={tonoDe(e.genomeHash)} />
-                <span className="nombre-fila">{nombreDe(e)}</span>
-                <span className="distancia" data-testid="fila-distancia">
-                  {formatMeters(e.distance)}
-                </span>
-                <span className="etiqueta" data-testid="fila-origen">
-                  {e.origin}
-                </span>
-                <span className="fecha">{fechaCorta(e.date)}</span>
-                {noVigente(e, track) && (
-                  <span className="rotulo-migracion" data-testid="fila-migracion">
-                    {props.migracion?.conservados.includes(`ranking/${trackId}/${e.carId}`)
-                      ? "no se pudo volver a medir"
-                      : props.migracion?.enCurso
-                        ? "actualizando…"
-                        : "marca de una versión anterior"}
+          {lista.slice(0, RANKING_SIZE).map((e, i, todas) => {
+            const marca = insigniaDe(e, todas[i + 1]);
+            return (
+              <li key={e.genomeHash}>
+                <button
+                  type="button"
+                  className="fila-ranking"
+                  data-testid="fila-ranking"
+                  data-carid={e.carId}
+                  aria-pressed={fila?.genomeHash === e.genomeHash}
+                  onClick={() => setFila(e)}
+                >
+                  <span className="puesto" data-testid="fila-puesto">
+                    {i + 1}
                   </span>
+                  <Silueta genome={e.genome} hue={tonoDe(e.genomeHash)} />
+                  <span className="nombre-fila" data-testid="fila-nombre">{nombreDe(e)}</span>
+                  <span className="distancia" data-testid="fila-distancia">
+                    {formatMeters(e.distance)}
+                  </span>
+                  <span className="datos-marca">
+                    <span className="celda-marca" data-testid="fila-tiempo">
+                      {e.bestStep === undefined ? "—" : formatTiempo(e.bestStep)}
+                    </span>
+                    <span className="celda-marca" data-testid="fila-estado">
+                      {noVigente(e, track) || entradaPendiente(e) ? (
+                        <span className="rotulo-migracion" data-testid="fila-migracion">
+                          {props.migracion?.conservados.includes(`ranking/${trackId}/${e.carId}`)
+                            ? "no se pudo volver a medir"
+                            : props.migracion?.enCurso
+                              ? "actualizando…"
+                              : "marca de una versión anterior"}
+                        </span>
+                      ) : (
+                        textoEstado(e)
+                      )}
+                    </span>
+                    <span className="celda-marca fecha" data-testid="fila-fecha">
+                      {fechaCorta(e.date)}
+                    </span>
+                  </span>
+                </button>
+                {marca && (
+                  <>
+                    <button
+                      type="button"
+                      className="insignia"
+                      data-testid="fila-insignia"
+                      aria-expanded={insignia === e.genomeHash}
+                      onClick={() => setInsignia(insignia === e.genomeHash ? null : e.genomeHash)}
+                    >
+                      {marca.rotulo}
+                    </button>
+                    {insignia === e.genomeHash && (
+                      <p className="insignia-explica" role="status" data-testid="insignia-explicacion">
+                        {marca.explicacion}
+                      </p>
+                    )}
+                  </>
                 )}
-              </button>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ol>
         </>
       )}
@@ -166,6 +225,12 @@ export function Rankings(props: RankingsProps) {
           <p>
             <strong data-testid="hoja-distancia">{formatMeters(fila.distance)}</strong> ·{" "}
             <span data-testid="hoja-origen">{fila.origin}</span> · {nombreDe(fila)}
+            {fila.bestStep !== undefined && (
+              <>
+                {" "}
+                · <span data-testid="hoja-tiempo">{formatTiempo(fila.bestStep)}</span> · {textoEstado(fila)}
+              </>
+            )}
           </p>
           <div className="acciones">
             <button type="button" className="pastilla principal" onClick={() => props.onWatch(fila)} data-testid="ver-correr">
