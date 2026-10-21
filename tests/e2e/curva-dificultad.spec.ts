@@ -29,18 +29,26 @@ test("dif-3 / dif-4 una partida de la versión anterior se pone al día sola y l
   await page.goto("/?pruebas=1");
   await page.waitForFunction(() => Boolean(window.__debug));
 
-  await expect.poll(async () => (await estado(page)).migracion.enCurso, { timeout: 120_000 }).toBe(false);
-
-  // Los mismos coches, con la marca que da el núcleo con las pistas nuevas.
-  const final = await estado(page);
-  for (const id of ["cordillera", "rampa"] as const) {
-    const genomas = new Map(demo[id].map((e) => [e.carId, e.genome]));
-    expect(final.rankings[id].length).toBe(3);
-    for (const e of final.rankings[id]) {
-      expect(genomas.has(e.carId), `${id}/${e.carId}`).toBe(true);
-      expect(e.distance, `${id}/${e.carId}`).toBe(simulateCar(genomas.get(e.carId)!, id).distance);
-    }
-  }
+  // Los mismos coches, con la marca que da el núcleo con las pistas nuevas. Se espera a ver esas marcas y no a que
+  // «enCurso» sea falso, que también lo es antes de que la migración arranque.
+  const esperadas = Object.fromEntries(
+    (["cordillera", "rampa"] as const).map((id) => [
+      id,
+      demo[id].slice(0, 3).map((e) => [e.carId, simulateCar(e.genome, id).distance]),
+    ]),
+  );
+  await expect
+    .poll(
+      async () => {
+        const r = (await estado(page)).rankings;
+        return Object.fromEntries(
+          (["cordillera", "rampa"] as const).map((id) => [id, r[id].filter((e) => esperadas[id].some(([c, d]) => c === e.carId && d === e.distance)).length]),
+        );
+      },
+      { timeout: 120_000, message: "la migración no dejó las marcas medidas con las pistas nuevas" },
+    )
+    .toEqual({ cordillera: 3, rampa: 3 });
+  await expect.poll(async () => (await estado(page)).migracion.enCurso, { timeout: 30_000 }).toBe(false);
 
   await page.getByTestId("tarjeta-cordillera").click();
   await expect(page.getByTestId("rankings")).toBeVisible();

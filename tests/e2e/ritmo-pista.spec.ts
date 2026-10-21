@@ -105,12 +105,15 @@ test("rit-1 tocar ×4 y ×8 acelera sin reiniciar y ×2 queda en medio", async (
   expect(v2).toBeLessThan(v8);
 });
 
+// Se busca una vez y fuera del test: simular un coche hasta meta cuesta segundos, y el reloj de 30 s es del test.
+const veloz = evolucionDemo.population.find((p) => simulateCar(p.genome as never, "cordillera").reason === "meta")!;
+
 for (const { w, h } of [TAMANOS[0], TAMANOS[2]]) {
   test(`rit-11 con el tope de 5 el rótulo «real ×5» entra sin mover ningún botón a ${w}x${h}`, async ({ page }) => {
+    test.setTimeout(90_000);
     await page.setViewportSize({ width: w, height: h });
     // El coche de serie para en ~30 s simulados y a ×8 la carrera acabaría antes de medir: se prueba un coche
     // de la evolución de demostración, que llega a meta (≈300 s simulados).
-    const veloz = evolucionDemo.population.find((p) => simulateCar(p.genome as never, "cordillera").reason === "meta")!;
     await abrir(page, { vacio: true, genoma: veloz.genome });
     await page.getByTestId("acceso-taller").click();
     await page.getByTestId("probar").click();
