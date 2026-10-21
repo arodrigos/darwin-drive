@@ -93,7 +93,8 @@ export function useMigracion(alAvanzar: () => Promise<void>) {
       if (corriendo.current === control) {
         corriendo.current = null;
         setEstado((e) => ({ ...e, enCurso: false, enVuelo: null }));
-        void avanzar.current();
+        // Sin trabajo no se relee: esa lectura podría pisar un escenario cargado mientras tanto.
+        if (ultimo !== -1) void avanzar.current();
       }
     }
   }, []);
