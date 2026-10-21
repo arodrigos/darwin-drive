@@ -430,10 +430,15 @@ export async function renombrarCoche(carId: string, nombre: string): Promise<str
     for (const c of garage) if (c.id === carId) c.name = final;
     return garage;
   });
+  await renombrarEnRankings(carId, final);
+  return final;
+}
+
+/** Solo las filas de ranking: quien ya escribió el nombre en el garaje por otro camino no repite esa transacción. */
+export async function renombrarEnRankings(carId: string, nombreNormalizado: string): Promise<void> {
   await actualizar(KEY_RANKINGS, (raw) => {
     const rankings = rankingsDe(raw);
-    for (const t of TRACKS) for (const e of rankings[t.id]) if (e.genomeHash === carId) e.name = final;
+    for (const t of TRACKS) for (const e of rankings[t.id]) if (e.genomeHash === carId) e.name = nombreNormalizado;
     return rankings;
   });
-  return final;
 }

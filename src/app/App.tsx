@@ -34,6 +34,8 @@ import {
   loadAll,
   recordMark,
   renombrarCoche,
+  renombrarEnRankings,
+  GARAGE_SIZE,
   removeFromGarage,
   save,
   saveToGarage,
@@ -279,14 +281,19 @@ export function App() {
     [guardarEvolucion, recargar],
   );
 
+  // Devuelve el aviso al instante y las escrituras aparte: «Guardado» tiene que verse en 200 ms aunque la evolución
+  // esté ocupando el hilo. El único fallo posible (garaje lleno) se conoce antes de escribir; si IndexedDB no deja
+  // escribir, el almacén cae a memoria y el aviso lo dice.
   const guardarCampeonConNombre = useCallback(
-    async (campeon: Campeon, nombre: string): Promise<string> => {
+    (campeon: Campeon, nombre: string): { aviso: string; hecho: Promise<void> } => {
       const { individual, result } = campeon;
-      const existente = garageRef.current.find((c) => c.id === result.carId);
+      const id = genomeHash(individual.genome);
+      const existente = garageRef.current.find((c) => c.id === id);
+      if (!existente && garageRef.current.length >= GARAGE_SIZE) return { aviso: GARAGE_FULL_MESSAGE, hecho: Promise.resolve() };
       const marks: SavedCar["marks"] = { ...(existente?.marks ?? {}) };
       marks[result.trackId] = Math.max(marks[result.trackId] ?? 0, result.distance);
       const car: SavedCar = {
-        id: genomeHash(individual.genome),
+        id,
         name: nombre,
         genome: individual.genome,
         marks,
@@ -294,14 +301,10 @@ export function App() {
         savedAt: new Date().toISOString(),
         lineageId: individual.id,
       };
-      const r = await saveToGarage(car);
-      if (!r.ok) return GARAGE_FULL_MESSAGE;
       // Su fila de ranking (la inscribió la generación) lleva el mismo nombre que el coche.
-      await renombrarCoche(car.id, nombre);
-      // El aviso no espera a releerlo todo: la latencia que cuenta es la del toque a «Guardado».
-      void recargar();
+      const hecho = Promise.all([saveToGarage(car), renombrarEnRankings(id, nombre)]).then(() => recargar());
       const aviso = `Guardado en el garaje como «${nombre}»`;
-      return runtime.disponible ? aviso : `${aviso}, pero solo hasta que cierres la pestaña.`;
+      return { aviso: runtime.disponible ? aviso : `${aviso}, pero solo hasta que cierres la pestaña.`, hecho };
     },
     [recargar],
   );
@@ -656,8 +659,12 @@ export function App() {
       if (!hoja) return;
       const nombre = normalizarNombre(valor, hoja.propuesto);
       if (hoja.modo === "guardar" && hoja.campeon) {
-        const texto = await guardarCampeonConNombre(hoja.campeon, nombre);
-        resolverHoja.current?.(texto);
+        const { aviso, hecho } = guardarCampeonConNombre(hoja.campeon, nombre);
+        resolverHoja.current?.(aviso);
+        resolverHoja.current = null;
+        cerrarArriba();
+        await hecho;
+        return;
       } else {
         await renombrarCoche(hoja.carId, nombre);
         await recargar();

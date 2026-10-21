@@ -152,6 +152,8 @@ test("nom-4 con el teclado a la vista la hoja muestra campo y Guardar; Esc, Canc
   }
   await page.screenshot({ path: `${DIR}/${ID}-teclado-360x340.png` });
   await page.setViewportSize({ width: 360, height: 640 });
+  await page.getByTestId("nombre-cancelar").click();
+  await expect(page.getByTestId("hoja-nombre")).toBeHidden();
 
   const cierres: [string, () => Promise<void>][] = [
     ["Esc", () => page.keyboard.press("Escape")],
