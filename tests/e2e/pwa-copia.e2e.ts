@@ -30,10 +30,10 @@ async function leerClaves(page: Page): Promise<Record<string, unknown>> {
   return page.evaluate(
     () =>
       new Promise<Record<string, unknown>>((resolve, reject) => {
-        const req = indexedDB.open("keyval-store");
+        const req = indexedDB.open("darwin-drive-pruebas");
         req.onerror = () => reject(req.error);
         req.onsuccess = () => {
-          const store = req.result.transaction("keyval", "readonly").objectStore("keyval");
+          const store = req.result.transaction("datos", "readonly").objectStore("datos");
           const claves = store.getAllKeys();
           const valores = store.getAll();
           valores.onsuccess = () => {
@@ -82,10 +82,10 @@ async function cargarEstadoCompleto(page: Page) {
     return r.slice(0, 3).map((e) => e.genome);
     async function leerRankings() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open("keyval-store");
+        const req = indexedDB.open("darwin-drive-pruebas");
         req.onerror = () => reject(req.error);
         req.onsuccess = () => {
-          const g = req.result.transaction("keyval", "readonly").objectStore("keyval").get("dd:v1:rankings");
+          const g = req.result.transaction("datos", "readonly").objectStore("datos").get("dd:v1:rankings");
           g.onsuccess = () => resolve(Object.values(g.result as Record<string, unknown[]>).flat());
           g.onerror = () => reject(g.error);
         };

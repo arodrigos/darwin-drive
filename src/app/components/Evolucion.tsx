@@ -14,6 +14,8 @@ import { getTrack } from "@/sim/tracks";
 import type { RankingOutcome } from "@/storage/store";
 import { createSimRunner } from "@/worker";
 import type { FromWorker, Pace, SimRunner } from "@/worker/protocol";
+import { actualizarAviso, SIN_AVISO } from "../ritmo";
+import { ControlRitmo } from "./ControlRitmo";
 import { PanelRendimiento } from "./PanelRendimiento";
 import type { RankingsView } from "./TrackPicker";
 
@@ -150,6 +152,7 @@ export function Evolucion(props: EvolucionProps) {
   // El ritmo y la pausa los ejecuta el efecto que posee el ejecutor; los botones los llaman por aquí.
   const ritmoRef = useRef<(p: Pace) => void>(() => {});
   const pausaRef = useRef<(on: boolean) => void>(() => {});
+  const [rotulo, setRotulo] = useState<number | null>(null);
   const [generation, setGeneration] = useState(props.initial.generation);
   const [history, setHistory] = useState(props.initial.history);
   const [stagnant, setStagnant] = useState(props.initial.stagnantFor >= ESTANCAMIENTO_AVISO);
@@ -286,9 +289,18 @@ export function Evolucion(props: EvolucionProps) {
       liberar();
     };
 
+    let aviso = SIN_AVISO;
+    const medirRitmo = (ritmoReal: number | undefined) => {
+      const nuevo = actualizarAviso(aviso, pace.current, ritmoReal, performance.now());
+      if (nuevo.rotulo !== aviso.rotulo) setRotulo(nuevo.rotulo);
+      aviso = nuevo;
+      if (ritmoReal !== undefined) runtime.ritmoReal = ritmoReal;
+    };
+
     const alMensaje = (m: FromWorker) => {
       if (m.raceId !== raceId || !scene) return;
       if (m.type === "poses") {
+        medirRitmo(m.ritmoReal);
         const lider = m.poses.reduce((a, p) => Math.max(a, p.x), 0);
         scene.setPoses(m.simTime, m.poses, m.simTime - ultimaSim > 0.5);
         ultimaSim = m.simTime;
@@ -314,6 +326,9 @@ export function Evolucion(props: EvolucionProps) {
 
     const unsubscribe = runner.subscribe(alMensaje);
     runtime.ejecutor = runner.kind;
+    runtime.ritmo = pace.current;
+    runtime.aplicarLimite = (max) => runner.post({ type: "limitRate", max });
+    if (runtime.limiteRitmo !== null) runner.post({ type: "limitRate", max: runtime.limiteRitmo });
     runtime.avanzar = (segundos) =>
       new Promise<void>((resolver) => {
         if (!scene || !raceId) return resolver();
@@ -327,8 +342,16 @@ export function Evolucion(props: EvolucionProps) {
     };
     document.addEventListener("visibilitychange", alCambiarVisibilidad);
 
-    const cambiarRitmo = (p: Pace) => runner.post({ type: "setPace", raceId, pace: p });
-    const alternarPausa = (on: boolean) => runner.post({ type: on ? "pause" : "resume", raceId });
+    const cambiarRitmo = (p: Pace) => {
+      aviso = SIN_AVISO;
+      setRotulo(null);
+      runtime.ritmo = p;
+      runner.post({ type: "setPace", raceId, pace: p });
+    };
+    const alternarPausa = (on: boolean) => {
+      runtime.pausada = on;
+      runner.post({ type: on ? "pause" : "resume", raceId });
+    };
     ritmoRef.current = cambiarRitmo;
     pausaRef.current = alternarPausa;
 
@@ -367,6 +390,10 @@ export function Evolucion(props: EvolucionProps) {
       ritmoRef.current = () => {};
       pausaRef.current = () => {};
       runtime.avanzar = null;
+      runtime.aplicarLimite = null;
+      runtime.ritmo = null;
+      runtime.ritmoReal = null;
+      runtime.pausada = false;
       runtime.pistaEnCarrera = null;
       runtime.distanciaLider = null;
       runtime.cochesVivos = 0;
@@ -483,12 +510,8 @@ export function Evolucion(props: EvolucionProps) {
           <span data-testid="mejor-marca">{mejorMarca === null ? "Mejor: —" : `Mejor: ${formatMeters(mejorMarca)}`}</span>
           <span className="ayuda-chica">Toca un coche para marcarlo como favorito</span>
         </div>
+        <ControlRitmo prefijo="evo-ritmo" activo={paceVista} onElegir={elegirRitmo} ritmoReal={rotulo} etiquetaFinal="Turbo" />
         <div className="fila">
-          {(["x1", "x4", "turbo"] as Pace[]).map((p) => (
-            <button key={p} type="button" className="pastilla chica" aria-pressed={paceVista === p} data-testid={`ritmo-${p}`} onClick={() => elegirRitmo(p)}>
-              {p === "x1" ? "×1" : p === "x4" ? "×4" : "Turbo"}
-            </button>
-          ))}
           <button type="button" className="pastilla chica" data-testid="pausar" onClick={alternar}>
             {pausada ? "Seguir" : "Pausar"}
           </button>

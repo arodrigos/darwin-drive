@@ -28,6 +28,14 @@ jobs:
       - run: npm run verificar:frontera-nucleo
       # at-8: repo público, nada interno en el árbol.
       - run: npm run verificar:publico
+      # Los mensajes de commit y el texto del PR también quedan a la vista de todos.
+      - name: Comprobar commits y texto del PR
+        if: github.event_name == 'pull_request'
+        env:
+          PR_TITULO: ${{ github.event.pull_request.title }}
+          PR_CUERPO: ${{ github.event.pull_request.body }}
+          RANGO: ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
+        run: node scripts/comprobar-publico.mjs --commits "$RANGO" --texto "$PR_TITULO"$'\n'"$PR_CUERPO"
       # Dependencias: falla ante una vulnerabilidad alta o crítica.
       - run: npm audit --omit=dev --audit-level=high
 

@@ -97,10 +97,10 @@ async function meta(page: Page) {
   return page.evaluate(
     () =>
       new Promise<{ seenHelp: string[] } | null>((resolve, reject) => {
-        const req = indexedDB.open("keyval-store");
+        const req = indexedDB.open("darwin-drive-pruebas");
         req.onerror = () => reject(req.error);
         req.onsuccess = () => {
-          const get = req.result.transaction("keyval", "readonly").objectStore("keyval").get("dd:v1:meta");
+          const get = req.result.transaction("datos", "readonly").objectStore("datos").get("dd:v1:meta");
           get.onsuccess = () => resolve((get.result as { seenHelp: string[] } | undefined) ?? null);
           get.onerror = () => reject(get.error);
         };

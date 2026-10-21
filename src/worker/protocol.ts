@@ -2,19 +2,24 @@ import type { CarPose, CarResult } from "../sim/constants";
 import type { Genome } from "../sim/genome";
 import type { TrackId } from "../sim/tracks";
 
-export type Pace = "x1" | "x4" | "turbo";
+export type Pace = "x1" | "x2" | "x4" | "x8" | "turbo";
+
+/** Múltiplo de tiempo real de cada ritmo con reloj; vive aquí para que la interfaz no importe el motor (y con él la física). */
+export const MULTIPLIER: Record<Exclude<Pace, "turbo">, number> = { x1: 1, x2: 2, x4: 4, x8: 8 };
 
 export type ToWorker =
   | { type: "startRace"; raceId: string; cars: { carId: string; genome: Genome }[]; trackId: TrackId; pace: Pace }
   | { type: "setPace"; raceId: string; pace: Pace }
   | { type: "pause" | "resume" | "stop"; raceId: string }
-  | { type: "advance"; raceId: string; seconds: number };
+  | { type: "advance"; raceId: string; seconds: number }
+  /** Solo pruebas: tope de velocidad simulada (en múltiplos de tiempo real) para imitar un dispositivo lento; null lo quita. Vale para todas las carreras. */
+  | { type: "limitRate"; max: number | null };
 
 export type FromWorker =
-  /** 30 Hz salvo en turbo. */
-  | { type: "poses"; raceId: string; simTime: number; poses: CarPose[] }
+  /** 30 Hz salvo en turbo. `ritmoReal` es el múltiplo de tiempo real que el dispositivo está logrando de verdad. */
+  | { type: "poses"; raceId: string; simTime: number; poses: CarPose[]; ritmoReal?: number }
   | { type: "carFinished"; raceId: string; result: CarResult }
-  | { type: "progress"; raceId: string; finished: number; total: number }
+  | { type: "progress"; raceId: string; finished: number; total: number; leaderX?: number; simTime?: number; ritmoReal?: number }
   | { type: "raceDone"; raceId: string; results: CarResult[] }
   | { type: "error"; raceId: string; message: string };
 

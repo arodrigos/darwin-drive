@@ -25,3 +25,24 @@ test("invariante: validateMeta nunca lanza y solo devuelve pistas del catálogo"
     { numRuns: 300 },
   );
 });
+
+test("rit-4: una Meta anterior sin ritmo se carga entera y empieza en ×1", () => {
+  const antigua = { seenHelp: ["taller"], persistRequested: true, lastTrack: "rampa" };
+  assert.deepEqual(validateMeta(antigua), { ...antigua, ritmo: "x1" });
+});
+
+test("rit-4: x2/x4/x8 se recuerdan; «turbo» o un ritmo desconocido se ignoran sin descartar la Meta", () => {
+  for (const r of ["x1", "x2", "x4", "x8"]) assert.equal(validateMeta({ ...DEFAULT_META, ritmo: r })?.ritmo, r);
+  for (const r of ["turbo", "x16", 4, null, {}]) assert.equal(validateMeta({ ...DEFAULT_META, ritmo: r })?.ritmo, "x1");
+});
+
+test("invariante: validateMeta no devuelve null para ninguna Meta válida anterior, con cualquier ritmo", () => {
+  fc.assert(
+    fc.property(fc.array(fc.string(), { maxLength: 5 }), fc.boolean(), fc.constantFrom(...TRACKS.map((t) => t.id)), fc.anything(), (seenHelp, persistRequested, lastTrack, ritmo) => {
+      const m = validateMeta({ seenHelp, persistRequested, lastTrack, ritmo });
+      assert.ok(m);
+      assert.ok(["x1", "x2", "x4", "x8"].includes(m.ritmo));
+    }),
+    { numRuns: 200 },
+  );
+});

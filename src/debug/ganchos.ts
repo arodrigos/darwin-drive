@@ -31,6 +31,14 @@ export const runtime = {
   poblacion: null as { carId: string; genome: Genome }[] | null,
   distanciasGeneracion: null as Record<string, number> | null,
   favoritos: null as string[] | null,
+  // Ritmo de la pantalla con carrera (Pista o Evolución) y el que logra de verdad el dispositivo.
+  ritmo: null as string | null,
+  ritmoReal: null as number | null,
+  pausada: false,
+  /** Tope de velocidad simulada de pruebas; lo reaplican los ejecutores nuevos. */
+  limiteRitmo: null as number | null,
+  /** La pantalla con carrera lo registra para que el tope llegue a su ejecutor. */
+  aplicarLimite: null as ((max: number | null) => void) | null,
   /** Avanza la carrera en curso al instante; resuelve con el efecto ya pintado. Solo existe mientras hay una pista abierta. */
   avanzar: null as ((segundos: number) => Promise<void>) | null,
 };
@@ -72,6 +80,9 @@ export function estado() {
     ultimoResultado: runtime.ultimoResultado,
     // Añadidos al contrato por pista-carrera: la pausa de pestaña y el ejecutor activo se prueban con ellos.
     tiempoSim: runtime.tiempoSim,
+    ritmo: runtime.ritmo,
+    ritmoReal: runtime.ritmoReal,
+    pausada: runtime.pausada,
     ejecutor: runtime.ejecutor,
     garaje: runtime.garaje,
     persistente: runtime.persistente,
@@ -86,6 +97,8 @@ export interface Gancho {
   estado: typeof estado;
   cargarEscenario(e: Escenario): Promise<void>;
   adelantarSimulacion(segundos: number): Promise<void>;
+  /** Acota la velocidad simulada a N veces el tiempo real para imitar un dispositivo lento (null lo quita). No cambia ningún CarResult. */
+  limitarRitmo(max: number | null): void;
   /** pw-4 y pw-5: el service worker real, sin esperar a un despliegue. */
   pwa: { readonly controlado: boolean; forzarVersionNueva(): Promise<void> };
 }
@@ -113,6 +126,10 @@ export function instalarGanchos(): void {
     },
     async adelantarSimulacion(segundos) {
       await runtime.avanzar?.(segundos);
+    },
+    limitarRitmo(max) {
+      runtime.limiteRitmo = max;
+      runtime.aplicarLimite?.(max);
     },
     pwa: {
       get controlado() {
