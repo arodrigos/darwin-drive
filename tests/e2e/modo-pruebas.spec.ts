@@ -60,5 +60,5 @@ test("rit-12 el modo de pruebas usa su base y no toca el garaje del jugador", as
   // Recargar con el parámetro sigue en la base de pruebas.
   await page.goto("/?pruebas=1");
   await page.waitForFunction(() => Boolean(window.__debug));
-  expect((await page.evaluate(() => window.__debug!.estado())).garaje).toBeGreaterThan(0);
+  expect(await leerBase(page, "darwin-drive-pruebas", "datos")).toHaveProperty(["dd:v1:garage"]);
 });

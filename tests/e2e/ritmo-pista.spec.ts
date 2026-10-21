@@ -135,12 +135,12 @@ test("rit-3 «Hasta el final» muestra la banda con barra, termina en la tarjeta
   await page.getByTestId("acceso-taller").click();
   await page.getByTestId("probar").click();
   await expect(page.getByTestId("pista")).toBeVisible();
+  // La fila se mide antes: la carrera corta de La Rampa puede acabar enseguida y ocultarla.
+  const fila = (await page.getByTestId("ritmo-x1").boundingBox())!;
   const inicio = Date.now();
   await page.getByTestId("ritmo-final").click();
   await expect(page.getByTestId("banda-final")).toBeVisible();
-  // La banda, la fila, el contador y «← Volver» no se cruzan.
   const banda = (await page.getByTestId("banda-final").boundingBox())!;
-  const fila = (await page.getByTestId("ritmo-x1").boundingBox())!;
   expect(banda.y + banda.height).toBeLessThanOrEqual(fila.y);
   await expect(page.getByTestId("banda-final")).toContainText("Simulando hasta el final…");
   if (Date.now() - inicio < 5000) await page.screenshot({ path: `${DIR}/${ID}-banda-360x640.png` });

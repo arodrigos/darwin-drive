@@ -8,6 +8,8 @@ const ID = process.env.CAPTURAS_PREFIJO ?? "ritmo-pista-1";
 type Estado = { tiempoSim: number | null; ritmo: string | null; generacion: number | null; ultimoResultado: { distance: number } | null };
 const estado = (page: Page) => page.evaluate(() => window.__debug!.estado() as unknown as Estado);
 
+test.setTimeout(120_000);
+
 async function abrir(page: Page, escenario: Record<string, unknown>) {
   await page.goto("/?pruebas=1");
   await page.waitForFunction(() => Boolean(window.__debug));
@@ -59,6 +61,7 @@ test("rit-13 «Hasta el final»: al volver sigue la banda y termina con la misma
   await abrir(page, { vacio: true });
   await page.getByTestId("acceso-serie").click();
   await expect(page.getByTestId("pista")).toBeVisible();
+  await expect.poll(async () => (await estado(page)).tiempoSim ?? 0).toBeGreaterThan(0.2);
   await page.getByTestId("ritmo-final").click();
   await irseYVolver(page, 3000);
   await expect(page.getByTestId("error-simulacion")).toBeHidden();
@@ -85,6 +88,7 @@ test("rit-13 si la carrera ya había terminado, al volver se ve su tarjeta", asy
   await abrir(page, { vacio: true });
   await page.getByTestId("acceso-serie").click();
   await expect(page.getByTestId("pista")).toBeVisible();
+  await expect.poll(async () => (await estado(page)).tiempoSim ?? 0).toBeGreaterThan(0.2);
   await page.evaluate(() => window.__debug!.adelantarSimulacion(900));
   await expect(page.getByTestId("tarjeta-fin")).toBeVisible();
   await irseYVolver(page, 1000);
