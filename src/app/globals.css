@@ -214,3 +214,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .guia h3 { margin: 12px 0 4px; font-size: 1.1rem; }
 .guia p, .guia-fichas { margin: 0 0 6px; font-size: 1rem; }
 .guia-fichas { padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.hoja-nombre-fondo { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.35); display: flex; align-items: flex-start; justify-content: center; padding: 8px 10px; padding-top: calc(8px + env(safe-area-inset-top)); }
+.hoja-nombre { width: min(100%, 520px); display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 14px; border: 2px solid #fff; background: #16222f; font-size: 1rem; }
+.hoja-nombre h2 { margin: 0; font-size: 1.1rem; }
+.hoja-nombre p { margin: 0; font-size: 1rem; }
+.hoja-nombre-ficha { color: #cfd8e3; }
+.hoja-nombre-input { min-height: 44px; padding: 6px 10px; border-radius: 10px; border: 2px solid #fff; background: #0e1722; color: #fff; font-size: 1rem; }
+.hoja-nombre .acciones { display: flex; gap: 8px; }
+.hoja-nombre .acciones .pastilla { flex: 1; }
+.ficha-origen { font-size: .9rem; color: #cfd8e3; overflow-wrap: anywhere; }

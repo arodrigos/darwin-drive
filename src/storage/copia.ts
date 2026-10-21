@@ -1,5 +1,7 @@
 import type { EvolutionState } from "@/evolution/ga";
 import { TRACKS } from "@/sim/tracks";
+import { nombrePropuesto } from "@/app/nombres";
+import { normalizarNombre } from "./nombres";
 import { KEY_EVOLUTION, KEY_GARAGE, KEY_RANKINGS, type Rankings, type SavedCar } from "./schema";
 import { clavesRegistradas, validarEstricto } from "./store";
 
@@ -62,6 +64,31 @@ function canonico(v: unknown): string {
  * Valida el texto de un fichero sin tocar nada. Tope de tamaño, formato y
  * versión, y cada clave contra su validador sin perdonar entradas sueltas.
  */
+/**
+ * El nombre es lo único que una copia puede traer «sucio» sin que deje de ser una copia legítima (una persona puede
+ * editarla a mano): se normaliza antes de comparar, y el resto de campos siguen sin perdonarse.
+ */
+function conNombresNormalizados(key: string, valor: unknown): unknown {
+  const limpiar = (item: unknown, propuesto: string): unknown => {
+    if (typeof item !== "object" || item === null || Array.isArray(item)) return item;
+    const o = item as Record<string, unknown>;
+    if (typeof o.name !== "string") return item;
+    return { ...o, name: normalizarNombre(o.name, propuesto) };
+  };
+  if (key === KEY_GARAGE && Array.isArray(valor)) {
+    return valor.map((c) => limpiar(c, nombrePropuesto(String((c as { id?: unknown } | null)?.id ?? ""))));
+  }
+  if (key === KEY_RANKINGS && typeof valor === "object" && valor !== null && !Array.isArray(valor)) {
+    return Object.fromEntries(
+      Object.entries(valor).map(([pista, lista]) => [
+        pista,
+        Array.isArray(lista) ? lista.map((e) => limpiar(e, nombrePropuesto(String((e as { genomeHash?: unknown } | null)?.genomeHash ?? "")))) : lista,
+      ]),
+    );
+  }
+  return valor;
+}
+
 export function validarCopia(texto: string, bytes: number = new TextEncoder().encode(texto).length): ResultadoCopia {
   const invalida: ResultadoCopia = { ok: false, motivo: COPIA_INVALIDA };
   if (bytes > COPIA_MAX_BYTES) return invalida;
@@ -82,10 +109,11 @@ export function validarCopia(texto: string, bytes: number = new TextEncoder().en
   const validos: Record<string, unknown> = {};
   for (const { key } of clavesRegistradas()) {
     if (!(key in data)) continue;
-    const v = validarEstricto(key, data[key]);
+    const entrada = conNombresNormalizados(key, data[key]);
+    const v = validarEstricto(key, entrada);
     // Los validadores corrigen en vez de rechazar (un genoma fuera de rango se recorta): si lo que
     // sale no es idéntico a lo que entró, el fichero no es una copia que el juego haya escrito.
-    if (!v.ok || canonico(v.value) !== canonico(data[key])) return invalida;
+    if (!v.ok || canonico(v.value) !== canonico(entrada)) return invalida;
     validos[key] = v.value;
   }
   return { ok: true, data: validos, resumen: resumenCopia(validos) };

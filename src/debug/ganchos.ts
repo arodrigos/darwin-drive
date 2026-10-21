@@ -37,6 +37,8 @@ export const runtime = {
   pausada: false,
   /** Pantalla cuyo panel de ayuda está abierto; null si ninguno. */
   ayudaAbierta: null as string | null,
+  /** Hoja para poner nombre; null si no hay ninguna abierta. */
+  hojaNombre: null as { modo: "guardar" | "renombrar"; propuesto: string } | null,
   guia: { abierta: false, seccion: null as string | null, origen: null as string | null },
   /** Tope de velocidad simulada de pruebas; lo reaplican los ejecutores nuevos. */
   limiteRitmo: null as number | null,
@@ -88,6 +90,7 @@ export function estado() {
     pausada: runtime.pausada,
     ayudaAbierta: runtime.ayudaAbierta,
     guia: runtime.guia,
+    hojaNombre: runtime.hojaNombre,
     ejecutor: runtime.ejecutor,
     garaje: runtime.garaje,
     persistente: runtime.persistente,

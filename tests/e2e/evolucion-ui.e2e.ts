@@ -170,6 +170,7 @@ test("ev-3 el campeón entra en el ranking de su pista y se guarda en el garaje"
   expect(["diseño", "mixto"]).toContain(e.rankings.cordillera[0].origin);
   const distancia = e.rankings.cordillera[0].distance;
   await page.getByTestId("guardar-campeon").click();
+  await page.getByTestId("nombre-guardar").click();
   await expect(page.getByTestId("aviso-guardado")).toBeVisible();
   await page.getByTestId("volver").click();
   await page.getByTestId("acceso-garaje").click();
