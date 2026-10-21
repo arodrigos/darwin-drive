@@ -71,6 +71,8 @@ jobs:
       - run: npm run medir:fisica
       # nf-6: la física no premia los fallos (2000 genomas por pista).
       - run: npm run medir:anomalias
+      # dif-2: las cuatro clásicas se complican (mediana ≤ 0,7 × la anterior) sin un muro en ningún tramo.
+      - run: npm run medir:pistas -- --umbral
 
   e2e:
     runs-on: ubuntu-latest
