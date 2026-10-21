@@ -18,6 +18,7 @@ import {
   type VersionMarca,
 } from "./schema";
 import { actualizarClave, epocaActual, leerClave } from "./store";
+import { detalleDe } from "./marcas";
 
 /** Intentos por elemento antes de conservarlo tal cual, rotulado «no se pudo volver a medir». */
 export const MAX_INTENTOS = 3;
@@ -114,7 +115,7 @@ async function aplicarRanking(t: TrabajoMigracion, m: Medida): Promise<boolean> 
     aplicado = true;
     // Una anomalía descalifica: ya no puede estar en el ranking. La fecha, el nombre y el origen se conservan.
     const resto = lista.filter((_, j) => j !== i);
-    rankings[t.trackId] = normalizeRanking(m.reason === "anomaly" ? resto : [...resto, { ...e, distance: m.distance, bestStep: m.bestStep, piezasPerdidas: m.piezasPerdidas, ...versionNueva(m) }]);
+    rankings[t.trackId] = normalizeRanking(m.reason === "anomaly" ? resto : [...resto, { ...e, distance: m.distance, bestStep: m.bestStep, piezasPerdidas: m.piezasPerdidas, causaParada: m.causaParada, pendienteParada: m.pendienteParada, ...versionNueva(m) }]);
     return rankings;
   });
   return aplicado;
@@ -134,7 +135,7 @@ async function aplicarGaraje(t: TrabajoMigracion, m: Medida): Promise<boolean> {
       if (c.markDetails) delete c.markDetails[t.trackId];
     } else {
       c.marks[t.trackId] = m.distance;
-      c.markDetails = { ...c.markDetails, [t.trackId]: { bestStep: m.bestStep, piezasPerdidas: m.piezasPerdidas } };
+      c.markDetails = { ...c.markDetails, [t.trackId]: detalleDe(m) };
       c.markVersions = { ...c.markVersions, [t.trackId]: versionNueva(m) };
     }
     return garage;

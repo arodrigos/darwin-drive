@@ -46,7 +46,7 @@ import { Evolucion, type Campeon } from "./components/Evolucion";
 import { HojaNombre } from "./components/HojaNombre";
 import { fichaOrigen, nombrePropuesto } from "./nombres";
 import { normalizarNombre } from "@/storage/nombres";
-import { aplicarMarca } from "@/storage/marcas";
+import { aplicarMarca, detalleDe } from "@/storage/marcas";
 import { Especies } from "./components/Especies";
 import { Explorar } from "./components/Explorar";
 import { Garaje } from "./components/Garaje";
@@ -285,7 +285,7 @@ export function App() {
         origin,
         lineageId: campeon.individual.id,
       });
-      await recordMark(campeon.result.carId, campeon.result.trackId, campeon.result.distance, { trackVersion: campeon.result.trackVersion, physicsVersion: campeon.result.physicsVersion }, { bestStep: campeon.result.bestStep, piezasPerdidas: campeon.result.piezasPerdidas });
+      await recordMark(campeon.result.carId, campeon.result.trackId, campeon.result.distance, { trackVersion: campeon.result.trackVersion, physicsVersion: campeon.result.physicsVersion }, detalleDe(campeon.result));
       runtime.ultimaInscripcion = {
         trackId: campeon.result.trackId,
         position: outcome.position,
@@ -312,7 +312,7 @@ export function App() {
         result.trackId,
         result.distance,
         { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion },
-        { bestStep: result.bestStep, piezasPerdidas: result.piezasPerdidas },
+        detalleDe(result),
       );
       const car: SavedCar = {
         id,
@@ -497,7 +497,8 @@ export function App() {
             await recargar();
           }
         }
-        if (e.genoma !== undefined) editar(normalizeGenome(e.genoma));
+        // «demo-motor-rampa»: el coche de serie, que en La Rampa se para contra su límite de motor.
+        if (e.genoma !== undefined) editar(e.genoma === "demo-motor-rampa" ? STOCK_CAR : normalizeGenome(e.genoma));
         setScreen("portada");
       },
     });
@@ -525,7 +526,7 @@ export function App() {
     async (result: CarResult): Promise<RankingOutcome | null> => {
       if (!trial) return null;
       const outcome = await updateRanking({ result, genome: trial.genome, origin: trial.origin });
-      await recordMark(result.carId, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, { bestStep: result.bestStep, piezasPerdidas: result.piezasPerdidas });
+      await recordMark(result.carId, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, detalleDe(result));
       runtime.ultimaInscripcion = {
         trackId: result.trackId,
         position: outcome.position,
@@ -545,7 +546,7 @@ export function App() {
       let base: Pick<SavedCar, "marks" | "markVersions" | "markDetails"> | undefined = existente;
       for (const t of Object.keys(rankings) as TrackId[]) {
         const entrada = rankings[t].find((r) => r.genomeHash === id);
-        if (entrada) base = aplicarMarca(base, t, entrada.distance, { trackVersion: entrada.trackVersion, physicsVersion: entrada.physicsVersion }, entrada.bestStep === undefined ? undefined : { bestStep: entrada.bestStep, piezasPerdidas: entrada.piezasPerdidas ?? 0 });
+        if (entrada) base = aplicarMarca(base, t, entrada.distance, { trackVersion: entrada.trackVersion, physicsVersion: entrada.physicsVersion }, entrada.bestStep === undefined ? undefined : { bestStep: entrada.bestStep, piezasPerdidas: entrada.piezasPerdidas ?? 0, causaParada: entrada.causaParada, pendienteParada: entrada.pendienteParada });
       }
       const marks = base?.marks ?? {};
       const car: SavedCar = {
@@ -591,7 +592,7 @@ export function App() {
         onProgress: (n, total) => setMidiendo({ carId: car.id, n, total }),
         registrar: async (result) => {
           const outcome = await updateRanking({ result, genome: car.genome, origin: car.origin, lineageId: car.lineageId, name: car.name });
-          if (result.reason !== "anomaly") await recordMark(car.id, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, { bestStep: result.bestStep, piezasPerdidas: result.piezasPerdidas });
+          if (result.reason !== "anomaly") await recordMark(car.id, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, detalleDe(result));
           return outcome;
         },
       });
@@ -794,6 +795,7 @@ export function App() {
           migrando={migracion.estado.enCurso}
           onTarjeta={setTarjetaFin}
           pausaCapa={hayCapas}
+          onPorQue={() => abrirCapa({ tipo: "guia", seccion: "por-que-se-para" })}
         />
       )}
       {screen === "rankings" && (

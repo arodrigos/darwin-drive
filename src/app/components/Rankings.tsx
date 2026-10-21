@@ -1,5 +1,6 @@
 "use client";
 
+import { textoCausa } from "../ayuda/causas";
 import { useEffect, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
@@ -232,6 +233,9 @@ export function Rankings(props: RankingsProps) {
               </>
             )}
           </p>
+          {fila.causaParada && (
+            <p data-testid="hoja-causa">Se paró: {textoCausa(fila.causaParada, fila.pendienteParada)}</p>
+          )}
           <div className="acciones">
             <button type="button" className="pastilla principal" onClick={() => props.onWatch(fila)} data-testid="ver-correr">
               Ver correr

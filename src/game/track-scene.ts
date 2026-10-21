@@ -1,8 +1,9 @@
 import Phaser from "phaser";
 import { createNoise2D } from "simplex-noise";
+import { runtime } from "@/debug/ganchos";
 import { measureOnNextFrame } from "@/debug/latencias";
 import { formatMeters } from "@/app/format";
-import type { CarPose, CarResult } from "@/sim/constants";
+import { TORQUE_SLOPE_DEG, type CarPose, type CarResult, type CausaParada } from "@/sim/constants";
 import type { Genome } from "@/sim/genome";
 import { SEGMENT_LENGTH, segmentVertices } from "@/sim/terrain";
 import type { Track } from "@/sim/tracks";
@@ -16,6 +17,13 @@ const MAX_LABELS = 14;
 const FINISH_LABEL_MS = 1500;
 const LEADER_SCREEN_X = 0.3;
 const FOLLOW_Y = 0.1;
+// Con la carrera parada por una causa, el suelo sube en pantalla: la tarjeta de fin ocupa la mitad de abajo y el marcador tiene que quedar en la de arriba.
+const ANCLA_CARRERA = 0.6;
+const ANCLA_PARADA = 0.4;
+const PLACA = "#111111";
+const TEXTO_PLACA = "#ffffff";
+const ETIQUETA_PX = 16;
+const ICONOS: Record<CausaParada, string> = { motor: "", agarre: "", vuelco: "↻", "sin-apoyo": "⤓", panza: "▁", obstaculo: "▮", rotura: "✕" };
 const FINISHED_GREY = 0x8a8f94;
 // Radio de acierto de un toque: un dedo no apunta a un coche de 2 m a 20 px/m.
 const PICK_RADIUS_PX = 48;
@@ -92,6 +100,11 @@ class TrackScene extends Phaser.Scene {
   private recvGap = 33;
   private finishedAt = new Map<string, { at: number; text: string }>();
   private measurePending = false;
+  private marca!: Phaser.GameObjects.Graphics;
+  private etiquetaCausa!: Phaser.GameObjects.Text;
+  private etiquetaLimite!: Phaser.GameObjects.Text;
+  private parada: { x: number; causa: CausaParada; pendiente: number | null } | null = null;
+  private ancla = ANCLA_CARRERA;
   private favorites = new Set<string>();
   private pickListener: ((carId: string) => void) | null = null;
   private screenCars: { carId: string; x: number; y: number }[] = [];
@@ -110,6 +123,10 @@ class TrackScene extends Phaser.Scene {
     this.prev = [];
     this.curr = [];
     this.finishedAt.clear();
+    this.parada = null;
+    this.ancla = ANCLA_CARRERA;
+    runtime.marcador = null;
+    runtime.cajaCoche = null;
     this.favorites.clear();
     this.screenCars = [];
     this.skyDirty = true;
@@ -133,6 +150,10 @@ class TrackScene extends Phaser.Scene {
   carFinished(result: CarResult): void {
     const text = result.reason === "anomaly" ? "⚠ descalificado" : `fin · ${formatMeters(result.distance)}`;
     this.finishedAt.set(result.carId, { at: performance.now(), text });
+    // El marcador solo existe en la Pista (un coche): en la evolución hay decenas y no cabría ninguno.
+    if (this.cfg?.cars.length === 1 && result.reason === "stall" && result.causaParada) {
+      this.parada = { x: result.distance, causa: result.causaParada, pendiente: result.pendienteParada };
+    }
   }
 
   create(): void {
@@ -140,6 +161,7 @@ class TrackScene extends Phaser.Scene {
     this.hills = this.add.graphics();
     this.ground = this.add.graphics();
     this.cars = this.add.graphics();
+    this.marca = this.add.graphics();
     this.ruler = this.add.graphics();
     const style = { fontFamily: "system-ui, sans-serif", fontSize: "12px", color: "#ffffff" };
     for (let i = 0; i < MAX_LABELS; i++) this.rulerLabels.push(this.add.text(0, 0, "", style).setVisible(false));
@@ -149,6 +171,9 @@ class TrackScene extends Phaser.Scene {
       );
     }
     this.flagLabel = this.add.text(0, 0, "", { ...style, fontStyle: "bold", backgroundColor: "rgba(0,0,0,.55)", padding: { x: 4, y: 2 } }).setOrigin(0, 1).setVisible(false);
+    const placa = { ...style, fontSize: `${ETIQUETA_PX}px`, fontStyle: "bold", color: TEXTO_PLACA, backgroundColor: PLACA, padding: { x: 6, y: 3 } };
+    this.etiquetaCausa = this.add.text(0, 0, "", placa).setOrigin(0.5, 1).setVisible(false);
+    this.etiquetaLimite = this.add.text(0, 0, "", placa).setOrigin(0, 0.5).setVisible(false);
     this.scale.on("resize", () => (this.skyDirty = true));
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
       if (!this.pickListener) return;
@@ -175,14 +200,17 @@ class TrackScene extends Phaser.Scene {
     const leader = (alive.length ? alive : poses).reduce((a, b) => (b.x > a.x ? b : a));
     this.camX = leader.x - widthM * LEADER_SCREEN_X;
     this.refH = Number.isNaN(this.refH) ? leader.y : this.refH + (leader.y - this.refH) * FOLLOW_Y;
+    const objetivo = this.parada && leader.finished ? ANCLA_PARADA : ANCLA_CARRERA;
+    this.ancla = Math.abs(objetivo - this.ancla) < 0.002 ? objetivo : this.ancla + (objetivo - this.ancla) * 0.1;
     const toX = (x: number) => (x - this.camX) * PX_PER_METER;
-    const toY = (h: number) => H * 0.6 - (h - this.refH) * PX_PER_METER;
+    const toY = (h: number) => H * this.ancla - (h - this.refH) * PX_PER_METER;
 
     this.ensureSegments(widthM);
     if (this.skyDirty) this.drawSky(W, H);
     this.drawHills(W, H);
     this.drawGround(W, H, toX, toY);
     this.drawCars(poses, cfg, toX, toY);
+    this.drawMarcador(cfg, poses, toX, toY);
     this.drawRuler(W, H, toX);
     this.drawFlag(cfg, toX, toY, W);
 
@@ -294,6 +322,87 @@ class TrackScene extends Phaser.Scene {
       }
     });
     for (let i = used; i < this.carLabels.length; i++) this.carLabels[i].setVisible(false);
+  }
+
+  /** Caja del coche en px CSS: el marcador se dimensiona contra ella y las pruebas comprueban que nada se cruza. */
+  private cajaDelCoche(pose: CarPose, genome: Genome, toX: (x: number) => number, toY: (h: number) => number): { x: number; y: number; w: number; h: number } {
+    const xs: number[] = [];
+    const ys: number[] = [];
+    for (const v of genome.body) {
+      const a = v.angle + pose.angle;
+      xs.push(toX(pose.x + Math.cos(a) * v.length));
+      ys.push(toY(pose.y + Math.sin(a) * v.length));
+    }
+    for (const w of pose.wheels) {
+      const r = w.radius * PX_PER_METER;
+      xs.push(toX(w.x) - r, toX(w.x) + r);
+      ys.push(toY(w.y) - r, toY(w.y) + r);
+    }
+    const x = Math.min(...xs);
+    const y = Math.min(...ys);
+    return { x, y, w: Math.max(...xs) - x, h: Math.max(...ys) - y };
+  }
+
+  private drawMarcador(cfg: SceneConfig, poses: CarPose[], toX: (x: number) => number, toY: (h: number) => number): void {
+    const g = this.marca;
+    g.clear();
+    this.etiquetaCausa.setVisible(false);
+    this.etiquetaLimite.setVisible(false);
+    const canvas = this.game.canvas.getBoundingClientRect();
+    const pose = cfg.cars.length === 1 ? poses[0] : undefined;
+    const coche = pose ? this.cajaDelCoche(pose, cfg.cars[0].genome, toX, toY) : null;
+    runtime.cajaCoche = coche ? { x: canvas.left + coche.x, y: canvas.top + coche.y, w: coche.w, h: coche.h } : null;
+    const p = this.parada;
+    if (!p || !pose?.finished || !coche) {
+      runtime.marcador = null;
+      return;
+    }
+    const base = { x: toX(p.x), y: toY(cfg.track.heightAt(p.x)) };
+    const conPendiente = (p.causa === "motor" || p.causa === "agarre") && p.pendiente !== null;
+    let caja = { x: base.x, y: base.y, w: 0, h: 0 };
+    let altoCuna = 0;
+    if (conPendiente) {
+      // La cuña va por delante del coche: en el suelo que no pudo subir, donde se ve la inclinación.
+      const real = (Math.max(1, Math.min(89, p.pendiente as number)) * Math.PI) / 180;
+      const limite = (TORQUE_SLOPE_DEG * Math.PI) / 180;
+      altoCuna = Math.max(coche.h * 1.2, 56);
+      const largo = altoCuna / Math.sin(real);
+      const top = { x: base.x + largo * Math.cos(real), y: base.y - altoCuna };
+      const finLimite = { x: base.x + largo * Math.cos(limite), y: base.y - largo * Math.sin(limite) };
+      g.fillStyle(0xffd23f, 0.35).fillTriangle(base.x, base.y, top.x, base.y, top.x, top.y);
+      g.lineStyle(3, 0xffd23f, 1).lineBetween(base.x, base.y, top.x, top.y);
+      g.lineStyle(2, 0xffffff, 1).lineBetween(top.x, base.y, top.x, top.y).lineBetween(base.x, base.y, top.x, base.y);
+      // Discontinua a mano: Phaser no dibuja trazos.
+      const paso = 10;
+      const n = Math.floor(largo / paso);
+      for (let i = 0; i < n; i += 2) {
+        const a = (i * paso) / largo;
+        const b = Math.min(1, ((i + 1) * paso) / largo);
+        g.lineBetween(base.x + (finLimite.x - base.x) * a, base.y + (finLimite.y - base.y) * a, base.x + (finLimite.x - base.x) * b, base.y + (finLimite.y - base.y) * b);
+      }
+      this.etiquetaLimite.setText(`${TORQUE_SLOPE_DEG}°`).setPosition(finLimite.x + 4, finLimite.y).setVisible(true);
+      this.etiquetaCausa.setText(`${Math.round(p.pendiente as number)}°`).setPosition(top.x, top.y - 4).setVisible(true);
+      const lim = this.etiquetaLimite.getBounds();
+      const eti = this.etiquetaCausa.getBounds();
+      const x0 = Math.min(base.x, eti.x, lim.x);
+      const y0 = Math.min(top.y, eti.y);
+      const x1 = Math.max(top.x, eti.right, lim.right);
+      caja = { x: x0, y: y0, w: x1 - x0, h: base.y - y0 };
+    } else {
+      const icono = ICONOS[p.causa] || "?";
+      this.etiquetaCausa.setText(icono).setPosition(base.x, base.y - coche.h - 8).setVisible(true);
+      const eti = this.etiquetaCausa.getBounds();
+      caja = { x: eti.x, y: eti.y, w: eti.width, h: eti.height };
+      altoCuna = coche.h;
+    }
+    runtime.marcador = {
+      caja: { x: canvas.left + caja.x, y: canvas.top + caja.y, w: caja.w, h: caja.h },
+      tamEtiquetaPx: ETIQUETA_PX,
+      colorPlaca: PLACA,
+      colorTexto: TEXTO_PLACA,
+      altoCochePx: coche.h,
+      altoCunaPx: altoCuna,
+    };
   }
 
   private drawRuler(W: number, H: number, toX: (x: number) => number): void {

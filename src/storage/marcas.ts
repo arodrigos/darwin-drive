@@ -1,7 +1,15 @@
-import { PHYSICS_VERSION } from "@/sim/constants";
+import { PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { getTrack, type TrackId } from "@/sim/tracks";
 import { compararMarcas } from "@/sim/clasificacion";
 import type { DetalleMarca, SavedCar, VersionMarca } from "./schema";
+
+/** Lo que de un resultado se guarda junto a la marca: el desempate y por qué se paró. */
+export const detalleDe = (r: Pick<CarResult, "bestStep" | "piezasPerdidas" | "causaParada" | "pendienteParada">): DetalleMarca => ({
+  bestStep: r.bestStep,
+  piezasPerdidas: r.piezasPerdidas,
+  causaParada: r.causaParada,
+  pendienteParada: r.pendienteParada,
+});
 
 type Marcas = Pick<SavedCar, "marks" | "markVersions" | "markDetails">;
 
