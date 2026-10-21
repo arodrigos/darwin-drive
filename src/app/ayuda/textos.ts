@@ -284,4 +284,7 @@ export const FICHAS_PISTA: Record<TrackId, FichaPista> = {
   rampa: { mecanica: "Una recta que se empina sin parar hasta que el motor no puede más.", premia: "Par motor y agarre en las ruedas." },
   dunas: { mecanica: "Olas largas que crecen: con velocidad, se vuela.", premia: "Velocidad constante y suspensión que aterriza bien." },
   pedregal: { mecanica: "Llano sembrado de piedras cada vez mayores.", premia: "Ruedas grandes que pasan por encima." },
+  glaciar: { mecanica: "Hielo resbaladizo con lomas suaves: las ruedas patinan y frenar cuesta.", premia: "Ruedas anchas, peso bajo y un motor que no patina de más." },
+  trampolines: { mecanica: "Suelo elástico que rebota cada vez más fuerte según el tramo.", premia: "Suspensión que absorbe el golpe y un coche que no vuelca al botar." },
+  escalera: { mecanica: "Escalones de 20 cm a más de un metro que suben y bajan.", premia: "Ruedas grandes y par motor para trepar cada contrahuella." },
 };

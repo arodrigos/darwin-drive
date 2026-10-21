@@ -79,8 +79,11 @@ function conNombresNormalizados(key: string, valor: unknown): unknown {
     return valor.map((c) => limpiar(c, nombrePropuesto(String((c as { id?: unknown } | null)?.id ?? ""))));
   }
   if (key === KEY_RANKINGS && typeof valor === "object" && valor !== null && !Array.isArray(valor)) {
+    // Una copia de antes de las pistas nuevas no trae su clave: el validador la rellena vacía y, sin añadirla aquí,
+    // la comparación estricta de abajo rechazaría una copia legítima.
+    const completa = { ...Object.fromEntries(TRACKS.map((t) => [t.id, []])), ...valor };
     return Object.fromEntries(
-      Object.entries(valor).map(([pista, lista]) => [
+      Object.entries(completa).map(([pista, lista]) => [
         pista,
         Array.isArray(lista) ? lista.map((e) => limpiar(e, nombrePropuesto(String((e as { genomeHash?: unknown } | null)?.genomeHash ?? "")))) : lista,
       ]),

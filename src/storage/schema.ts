@@ -74,7 +74,8 @@ const ORIGINS: readonly Origin[] = ["diseño", "evolución", "mixto"];
 const OPS: readonly Op[] = ["random", "design", "retouch", "clone", "crossover", "mutation"];
 
 export function emptyRankings(): Rankings {
-  return { cordillera: [], rampa: [], dunas: [], pedregal: [] };
+  // Derivado de TRACKS: una pista nueva no puede quedarse sin su clave de ranking.
+  return Object.fromEntries(TRACKS.map((t) => [t.id, []])) as unknown as Rankings;
 }
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);

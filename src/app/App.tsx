@@ -585,7 +585,7 @@ export function App() {
     setScreen("rankings");
   }, []);
 
-  // Corre el coche en las cuatro pistas, una a una y en turbo; cada marca va solo al ranking de su pista.
+  // Corre el coche en todas las pistas, una a una y en turbo; cada marca va solo al ranking de su pista.
   const medirCoche = useCallback(
     async (car: SavedCar) => {
       if (medicion.current) return;

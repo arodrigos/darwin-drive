@@ -35,7 +35,7 @@ export class CarSim {
   ) {
     const g = normalizeGenome(genome);
     this.world = new World({ gravity: Vec2(0, -GRAVITY), allowSleep: false, continuousPhysics: false });
-    this.ground = createGround(this.world, heightAt, opts.friccionSuelo);
+    this.ground = createGround(this.world, heightAt, opts.friccionSuelo, (i) => track.surfaceOfSegment(i));
     this.ground.ensure(-10, 10);
     this.car = buildCar(this.world, g, 0, heightAt(0));
     // El muestreo solo lee el mundo: con o sin él el resultado es idéntico (se comprueba en los tests).

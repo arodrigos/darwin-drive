@@ -72,10 +72,26 @@ function umbral(): void {
       ok,
     });
   }
+  // pn-3: cada pista nueva (no clásica) se ordena distinto de todas las demás.
+  const MAX_SPEARMAN = 0.85;
+  const nuevas = TRACKS.filter((t) => !ES_CLASICA(t.id) && (!process.env.MEDIR_PISTA || process.env.MEDIR_PISTA === t.id));
+  if (nuevas.length > 0) {
+    const rangosDe = new Map(TRACKS.map((t) => [t.id, rangos(genomas.map((g) => simulateCar(g, t.id).distance))] as const));
+    for (const t of nuevas) {
+      for (const u of TRACKS) {
+        if (u.id === t.id) continue;
+        const r = pearson(rangosDe.get(t.id)!, rangosDe.get(u.id)!);
+        if (!(r < MAX_SPEARMAN)) {
+          fallos++;
+          console.error(`medir-pistas --umbral: ${t.id} y ${u.id} se ordenan igual (Spearman ${r.toFixed(3)} ≥ ${MAX_SPEARMAN})`);
+        }
+      }
+    }
+  }
   console.log(`medir-pistas --umbral: ${N} genomas, física actual${MURO ? ", con muro forzado" : ""}`);
   console.table(filas);
   if (fallos > 0) {
-    console.error("medir-pistas --umbral: FALLA (mediana > 0,7 × la anterior o un tramo de 25 m donde se para más del 80 % de los que llegan)");
+    console.error("medir-pistas --umbral: FALLA (mediana > 0,7 × la anterior, un tramo de 25 m donde se para más del 80 % de los que llegan o una pista nueva con Spearman ≥ 0,85 con otra)");
     process.exitCode = 1;
   } else console.log("medir-pistas --umbral: OK");
 }

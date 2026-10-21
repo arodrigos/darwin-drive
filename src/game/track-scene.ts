@@ -9,6 +9,7 @@ import { SEGMENT_LENGTH, segmentVertices } from "@/sim/terrain";
 import type { Track } from "@/sim/tracks";
 import { CONTORNO_COCHE, opacidadesCoche } from "./opacidad";
 import { cssColor, PALETTES } from "./palette";
+import { ASPECTO } from "./superficies";
 
 const PX_PER_METER = 20;
 const AHEAD_M = 60;
@@ -282,11 +283,37 @@ class TrackScene extends Phaser.Scene {
     const body: Vec[] = [vec(line[0].x, H + 4), ...line, vec(line[line.length - 1].x, H + 4)];
     this.ground.fillStyle(pal.earth, 1).fillPoints(body, true);
     this.ground.lineStyle(5, pal.grass, 1).strokePoints(line, false, false);
+    this.drawSuperficies(idxs, toX, toY);
     const startX = toX(0);
     if (startX > -10 && startX < W + 10) {
       const y0 = toY(this.cfg!.track.heightAt(0));
       this.ground.lineStyle(3, 0xffffff, 1).lineBetween(startX, y0, startX, y0 - 70);
       this.ground.fillStyle(0xd62828, 1).fillRect(startX, y0 - 70, 26, 16);
+    }
+  }
+
+  // Hielo y elástico se distinguen por forma (brillos, zigzag) además de por color.
+  private drawSuperficies(idxs: number[], toX: (x: number) => number, toY: (h: number) => number): void {
+    const track = this.cfg!.track;
+    for (const i of idxs) {
+      const aspecto = ASPECTO[track.surfaceOfSegment(i).tipo];
+      if (aspecto.color === null) continue;
+      const pts = this.segments.get(i)!.map((v) => vec(toX(v.x), toY(v.y)));
+      this.ground.lineStyle(9, aspecto.contorno, 1).strokePoints(pts, false, false);
+      this.ground.lineStyle(5, aspecto.color, 1).strokePoints(pts, false, false);
+      if (aspecto.patron === "brillos") {
+        // Una chispa en cruz cada 2 m sobre la franja.
+        this.ground.lineStyle(2, aspecto.color, 1);
+        for (let k = 2; k < pts.length - 1; k += 4) {
+          const p = pts[k];
+          this.ground.lineBetween(p.x - 5, p.y - 10, p.x + 5, p.y - 10).lineBetween(p.x, p.y - 15, p.x, p.y - 5);
+        }
+      } else if (aspecto.patron === "zigzag") {
+        const zig: Vec[] = [];
+        pts.forEach((p, k) => zig.push(vec(p.x, p.y - (k % 2 === 0 ? 4 : 14))));
+        this.ground.lineStyle(3, aspecto.contorno, 1).strokePoints(zig, false, false);
+        this.ground.lineStyle(1.5, aspecto.color, 1).strokePoints(zig, false, false);
+      }
     }
   }
 
