@@ -113,7 +113,7 @@ test("invariante: toda carrera termina en â‰¤ MAX_STEPS, con distancia finita â‰
     const id = IDS[i % IDS.length] as TrackId;
     const r = simulateCar(genome, id);
     assert.ok(r.steps <= MAX_STEPS);
-    assert.ok(["stall", "timeout", "anomaly"].includes(r.reason));
+    assert.ok(["stall", "timeout", "anomaly", "meta"].includes(r.reason));
     assert.ok(Number.isFinite(r.distance) && r.distance >= 0);
     assert.equal(r.trackId, id);
     assert.equal(r.trackVersion, getTrack(id)!.version);
