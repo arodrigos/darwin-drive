@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { STOCK_CAR } from "../../src/sim/genome";
 import { simulateCar } from "../../src/sim/race";
+import evolucionDemo from "../../src/debug/escenarios/evolucion-demo-gen-8.json";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "ritmo-pista-1";
@@ -107,8 +108,14 @@ test("rit-1 tocar ×4 y ×8 acelera sin reiniciar y ×2 queda en medio", async (
 for (const { w, h } of [TAMANOS[0], TAMANOS[2]]) {
   test(`rit-11 con el tope de 5 el rótulo «real ×5» entra sin mover ningún botón a ${w}x${h}`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h });
-    await abrir(page);
-    await verCocheDeSerie(page);
+    // El coche de serie para en ~30 s simulados y a ×8 la carrera acabaría antes de medir: se prueba un coche
+    // de la evolución de demostración, que llega a meta (≈300 s simulados).
+    const veloz = evolucionDemo.population.find((p) => simulateCar(p.genome as never, "cordillera").reason === "meta")!;
+    await abrir(page, { vacio: true, genoma: veloz.genome });
+    await page.getByTestId("acceso-taller").click();
+    await page.getByTestId("probar").click();
+    await expect(page.getByTestId("pista")).toBeVisible();
+    await expect.poll(async () => (await estado(page)).tiempoSim ?? 0).toBeGreaterThan(0.2);
     await page.getByTestId("ritmo-x8").click();
     const antes = await cajas(page, BOTONES);
     await page.evaluate(() => window.__debug!.limitarRitmo(5));

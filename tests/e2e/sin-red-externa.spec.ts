@@ -33,12 +33,12 @@ test("nom-6 un recorrido completo no hace ninguna petición a otro origen", asyn
   await page.getByTestId("acceso-serie").click();
   await expect(page.getByTestId("pista")).toBeVisible();
   await page.getByTestId("ritmo-final").click();
-  await page.evaluate(() => window.__debug!.adelantarSimulacion(200));
+  await page.evaluate(() => window.__debug!.adelantarSimulacion(400));
   await page.getByTestId("volver").click();
 
   await page.getByTestId("acceso-continuar").click();
   await expect.poll(async () => (await estado(page)).generacion ?? 0).toBeGreaterThan(0);
-  await page.evaluate(() => window.__debug!.adelantarSimulacion(200));
+  await page.evaluate(() => window.__debug!.adelantarSimulacion(400));
   await page.getByTestId("guardar-campeon").click();
   await page.getByTestId("nombre-input").fill("Rayo Azul");
   await page.getByTestId("nombre-guardar").click();
