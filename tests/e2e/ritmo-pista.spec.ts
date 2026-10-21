@@ -221,10 +221,11 @@ test("rit-5 y rit-6 las latencias de ritmo, hasta-el-final y repetir se miden y 
   await page.getByTestId("ritmo-final").click();
   await expect(page.getByTestId("tarjeta-fin")).toBeVisible({ timeout: 60_000 });
   await page.getByTestId("repetir").click();
-  const medidas = await page.evaluate(() => window.__debug!.latencias());
+  // La medida se escribe en el fotograma siguiente al clic: se espera a que exista en vez de leerla al instante.
   for (const evento of ["ritmo", "hasta-el-final", "repetir"]) {
-    const m = medidas.filter((l) => l.evento === evento);
-    expect(m.length, evento).toBeGreaterThan(0);
+    await expect
+      .poll(() => page.evaluate((e) => window.__debug!.latencias().filter((l) => l.evento === e).length, evento), { message: evento })
+      .toBeGreaterThan(0);
   }
   await page.goto("/?pruebas=1&rendimiento=1");
   await page.waitForFunction(() => Boolean(window.__debug));

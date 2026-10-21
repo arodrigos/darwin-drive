@@ -3,7 +3,7 @@ import type { Genome } from "@/sim/genome";
 import type { TrackId } from "@/sim/tracks";
 import { latencias } from "./latencias";
 
-export type Pantalla = "portada" | "pista" | "taller" | "evolucion" | "garaje" | "rankings" | "linaje" | "especies";
+export type Pantalla = "portada" | "explorar" | "evolucion-inicio" | "pista" | "taller" | "evolucion" | "garaje" | "rankings" | "linaje" | "especies";
 
 // Estado que la app publica para los ganchos. Se lee, nunca se recalcula aquí.
 export const runtime = {
@@ -35,6 +35,9 @@ export const runtime = {
   ritmo: null as string | null,
   ritmoReal: null as number | null,
   pausada: false,
+  /** Pantalla cuyo panel de ayuda está abierto; null si ninguno. */
+  ayudaAbierta: null as string | null,
+  guia: { abierta: false, seccion: null as string | null, origen: null as string | null },
   /** Tope de velocidad simulada de pruebas; lo reaplican los ejecutores nuevos. */
   limiteRitmo: null as number | null,
   /** La pantalla con carrera lo registra para que el tope llegue a su ejecutor. */
@@ -88,6 +91,8 @@ export function estado() {
     ritmo: runtime.ritmo,
     ritmoReal: runtime.ritmoReal,
     pausada: runtime.pausada,
+    ayudaAbierta: runtime.ayudaAbierta,
+    guia: runtime.guia,
     ejecutor: runtime.ejecutor,
     garaje: runtime.garaje,
     persistente: runtime.persistente,

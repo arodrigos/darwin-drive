@@ -64,6 +64,8 @@ export interface PistaProps {
   migrando?: boolean;
   /** La tarjeta de fin se ve o deja de verse; el aviso final de migración espera a que no haya tarjeta. */
   onTarjeta?: (visible: boolean) => void;
+  /** Una capa (ayuda, guía) está encima: la carrera espera. */
+  pausaCapa?: boolean;
 }
 
 export function Pista(props: PistaProps) {
@@ -99,6 +101,7 @@ export function Pista(props: PistaProps) {
   useEffect(() => {
     alRitmo.current = props.onRitmo;
   });
+  const pausarPorCapa = useRef<(on: boolean) => void>(() => {});
   const [rendimiento] = useState(() => parametrosPrueba().rendimiento);
   // La pista y el genoma se fijan al abrir: cambiarlos a media carrera sería correr una cosa y pintar otra.
   const fijo = useRef({ trackId, genome, propio: Boolean(props.genome), marca: props.rankings[trackId][0]?.distance ?? null });
@@ -119,6 +122,8 @@ export function Pista(props: PistaProps) {
     let aviso = SIN_AVISO;
     // Pausa que pone la pantalla al ocultarse la página; la del jugador (si la hubiera) no se pisa.
     let pausaPorVisibilidad = false;
+    // Pausa que pone una capa abierta encima (el panel de ayuda): sobrevive a ocultar y volver la página.
+    let pausaPorCapa = false;
     let esperas: { hasta: number; resolver: () => void }[] = [];
     const carId = genomeHash(g);
 
@@ -260,12 +265,22 @@ export function Pista(props: PistaProps) {
         runner.post({ type: "pause", raceId });
       } else if (pausaPorVisibilidad) {
         pausaPorVisibilidad = false;
-        runner.post({ type: "resume", raceId });
+        if (!pausaPorCapa) runner.post({ type: "resume", raceId });
       }
       aviso = SIN_AVISO;
       setRotulo(null);
     };
     document.addEventListener("visibilitychange", alCambiarVisibilidad);
+    pausarPorCapa.current = (on) => {
+      if (on === pausaPorCapa) return;
+      pausaPorCapa = on;
+      runtime.pausada = on;
+      if (on) {
+        if (!pausaPorVisibilidad) runner.post({ type: "pause", raceId });
+      } else if (!pausaPorVisibilidad) {
+        runner.post({ type: "resume", raceId });
+      }
+    };
 
     import("@/game/track-scene")
       .then(({ startTrackScene }) => {
@@ -281,6 +296,8 @@ export function Pista(props: PistaProps) {
       cancelled = true;
       if (avisoTimer.current) clearTimeout(avisoTimer.current);
       document.removeEventListener("visibilitychange", alCambiarVisibilidad);
+      pausarPorCapa.current = () => {};
+      runtime.pausada = false;
       runner.post({ type: "stop", raceId });
       unsubscribe();
       runner.terminate();
@@ -301,6 +318,9 @@ export function Pista(props: PistaProps) {
   }, [failed]);
 
   const repetir = useCallback(() => iniciar.current(), []);
+  useEffect(() => {
+    pausarPorCapa.current(Boolean(props.pausaCapa));
+  }, [props.pausaCapa]);
 
   if (failed) {
     return (

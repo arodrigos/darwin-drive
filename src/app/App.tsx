@@ -51,6 +51,8 @@ import { Rankings as PantallaRankings } from "./components/Rankings";
 import { AvisoMigracion, BandaMigracion, EsperaPestanas } from "./components/BandaMigracion";
 import { useMigracion } from "./useMigracion";
 import { recargarAntiguas, saludar } from "@/pwa/pestanas";
+import { BotonAyuda, ComoSeJuega, PanelAyuda } from "./components/CapasAyuda";
+import { useCapas } from "./ayuda/capas";
 import { Taller } from "./components/Taller";
 import { medirEnTodasLasPistas, type MedicionEnCurso } from "./medir-pistas";
 import { resumenMedicion } from "./ranking-text";
@@ -591,6 +593,23 @@ export function App() {
 
   const volverDePista = useCallback(() => setScreen(origenPista), [origenPista]);
 
+  const { capas, abrir: abrirCapa, cerrarArriba } = useCapas();
+  const hayCapas = capas.length > 0;
+  const habiaCapas = useRef(false);
+  const guiaArriba = capas[capas.length - 1]?.tipo === "guia";
+  const guiaCapa = capas.find((c) => c.tipo === "guia");
+  useEffect(() => {
+    runtime.ayudaAbierta = capas.some((c) => c.tipo === "ayuda") ? screen : null;
+    runtime.guia = {
+      abierta: guiaCapa !== undefined,
+      seccion: guiaCapa?.tipo === "guia" ? guiaCapa.seccion : null,
+      origen: guiaCapa !== undefined ? screen : null,
+    };
+    // Al cerrar la última capa el foco vuelve al «?», que es de donde se abrió.
+    if (habiaCapas.current && !hayCapas) document.querySelector<HTMLElement>('[data-testid="ayuda-boton"]')?.focus();
+    habiaCapas.current = hayCapas;
+  }, [capas, guiaCapa, hayCapas, screen]);
+
   return (
     <>
       {screen === "portada" && (
@@ -606,6 +625,7 @@ export function App() {
           onRanking={abrirRanking}
           onTaller={abrirTaller}
           onGarage={() => setScreen("garaje")}
+          onGuia={() => abrirCapa({ tipo: "guia", seccion: null })}
           onLinaje={abrirLinaje}
           onEvolucion={() => {
             setDesdeCoche(null);
@@ -637,6 +657,7 @@ export function App() {
           onRitmo={recordarRitmo}
           migrando={migracion.estado.enCurso}
           onTarjeta={setTarjetaFin}
+          pausaCapa={hayCapas}
         />
       )}
       {screen === "rankings" && (
@@ -797,6 +818,25 @@ export function App() {
       )}
       {migracion.terminadas !== null && !migracion.estado.enCurso && (screen !== "pista" || tarjetaFin) && (
         <AvisoMigracion coches={migracion.terminadas} onCerrar={migracion.cerrarAviso} />
+      )}
+      <BotonAyuda
+        onClick={() => {
+          markInput("ayuda");
+          abrirCapa({ tipo: "ayuda" });
+        }}
+      />
+      {capas.map((c, i) =>
+        c.tipo === "ayuda" ? (
+          <PanelAyuda
+            key={`ayuda-${i}`}
+            pantalla={screen}
+            visible={!(guiaArriba && i < capas.length - 1)}
+            onCerrar={cerrarArriba}
+            onGuia={(seccion) => abrirCapa({ tipo: "guia", seccion })}
+          />
+        ) : (
+          <ComoSeJuega key={`guia-${i}`} seccion={c.seccion} onVolver={cerrarArriba} />
+        ),
       )}
       {warning && (
         <div className="aviso" role="status" data-testid="aviso" onClick={() => setWarning(null)}>
