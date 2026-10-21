@@ -7,6 +7,7 @@ import { TORQUE_SLOPE_DEG, type CarPose, type CarResult, type CausaParada } from
 import type { Genome } from "@/sim/genome";
 import { SEGMENT_LENGTH, segmentVertices } from "@/sim/terrain";
 import type { Track } from "@/sim/tracks";
+import { CONTORNO_COCHE, opacidadesCoche } from "./opacidad";
 import { cssColor, PALETTES } from "./palette";
 
 const PX_PER_METER = 20;
@@ -304,8 +305,16 @@ class TrackScene extends Phaser.Scene {
         const a = v.angle + p.angle;
         return vec(toX(p.x + Math.cos(a) * v.length), toY(p.y + Math.sin(a) * v.length));
       });
-      g.fillStyle(fill, 1).fillPoints(pts, true);
-      g.lineStyle(2, 0x1b1b1b, 1).strokePoints(pts, true, true);
+      // Cada triángulo (centro + dos vértices) se pinta con su opacidad; el contorno va aparte, opaco.
+      const opac = opacidadesCoche(car.genome, p.cargas);
+      if (i === 0) runtime.opacidades = opac;
+      const cx0 = toX(p.x);
+      const cy0 = toY(p.y);
+      pts.forEach((a, k) => {
+        const b = pts[(k + 1) % pts.length];
+        g.fillStyle(fill, opac[k]).fillTriangle(cx0, cy0, a.x, a.y, b.x, b.y);
+      });
+      g.lineStyle(2, CONTORNO_COCHE, 1).strokePoints(pts, true, true);
       for (const w of p.wheels) {
         const cx = toX(w.x);
         const cy = toY(w.y);

@@ -189,8 +189,14 @@ export function Taller(props: TallerProps) {
             max={GENE_RANGES.bodyDensity[1]}
             step={1}
             value={genome.bodyDensity}
-            onChange={(e) => props.onGenome(setBodyDensity(genome, Number(e.target.value)))}
+            onChange={(e) => {
+              markInput("peso");
+              props.onGenome(setBodyDensity(genome, Number(e.target.value)));
+            }}
           />
+          <small className="nota-peso" data-testid="nota-peso">
+            Más peso = más opaco: la carrocería ligera se ve translúcida y la pesada, sólida.
+          </small>
         </label>
         <div className="fila acciones-taller">
           <TrackPicker value={props.trackId} onChange={props.onTrack} rankings={props.rankings} />

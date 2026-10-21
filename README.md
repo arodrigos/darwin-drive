@@ -12,6 +12,8 @@ En la carrera (y en Evolución) una fila de cinco botones elige el ritmo: ×1, �
 
 **Por qué se para un coche.** Un coche se atasca tras 5 s sin avanzar y el resultado dice la causa (`causaParada` y `pendienteParada` en `CarResult`). `src/sim/diagnostico.ts` clasifica sobre las últimas muestras con esta prioridad: vuelco, sin apoyo, panza, motor (cuesta de 33° o más; el motor de todos los coches empuja hasta 35°, `TORQUE_SLOPE_DEG`), agarre y obstáculo. La tarjeta de fin enseña la frase (`src/app/ayuda/causas.ts`) y «¿Por qué?» abre la guía; la pista dibuja una cuña con la pendiente real y la de 35° discontinua. La causa se guarda con la marca y se ve en el detalle del ranking y del Garaje. El diagnóstico no cambia la carrera: el muestreo solo lee.
 
+**Peso y opacidad.** La opacidad del coche refleja su peso: `opacidadBase(bodyDensity)` (`src/game/opacidad.ts`) da cuatro niveles (0,4 · 0,6 · 0,8 · 1,0) en el Taller, el Garaje, el Linaje y la pista. En carrera, cada triángulo de la carrocería sube hacia 1 según la carga (ya suavizada en la simulación) de las ruedas montadas en sus vértices. El contorno es siempre opaco y pintar no cambia ningún resultado.
+
 ## Ayuda dentro del juego
 
 Cada pantalla tiene un «?» arriba a la derecha que abre un panel con una línea por opción; en la Pista, abrirlo pausa la carrera y cerrarlo la reanuda. «Ver la guía completa» (o «Cómo se juega» en la portada) abre la guía con el recorrido entero y una ficha por pista. Los textos viven en `src/app/ayuda/textos.ts`; el «atrás» del sistema cierra la capa de arriba.

@@ -23,6 +23,8 @@ export const runtime = {
   tiempoSim: null as number | null,
   /** Cargas suavizadas por rueda del coche en pista, en [0, 1]; la rellena Pista con cada reparto de poses. */
   cargas: null as number[] | null,
+  /** Opacidad de los 8 triángulos del coche que se pinta (Taller o primer coche de la pista). */
+  opacidades: null as number[] | null,
   /** Cajas en px CSS del viewport: el coche en pista y el marcador de parada (null si no hay). */
   cajaCoche: null as { x: number; y: number; w: number; h: number } | null,
   marcador: null as { caja: { x: number; y: number; w: number; h: number }; tamEtiquetaPx: number; colorPlaca: string; colorTexto: string; altoCochePx: number; altoCunaPx: number } | null,
@@ -96,6 +98,7 @@ export function estado() {
     // Añadidos al contrato por pista-carrera: la pausa de pestaña y el ejecutor activo se prueban con ellos.
     tiempoSim: runtime.tiempoSim,
     cargas: runtime.cargas,
+    opacidades: runtime.opacidades,
     cajaCoche: runtime.cajaCoche,
     marcador: runtime.marcador,
     ritmo: runtime.ritmo,

@@ -1,6 +1,8 @@
 import Phaser from "phaser";
+import { runtime } from "@/debug/ganchos";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
 import { VERTEX_COUNT, type Genome } from "@/sim/genome";
+import { opacidadBase } from "./opacidad";
 import { moveVertex, toggleWheel, wheelAt } from "./editor";
 
 const HANDLE_DIAMETER = 44;
@@ -96,7 +98,10 @@ class WorkshopScene extends Phaser.Scene {
       const p = this.vertexScreen(genome, i);
       return new Phaser.Math.Vector2(p.px, p.py);
     });
-    g.fillStyle(BODY_COLOUR, 1).fillPoints(pts, true);
+    // Solo el relleno cambia con el peso; el contorno siempre opaco para que la forma se lea.
+    const base = opacidadBase(genome.bodyDensity);
+    runtime.opacidades = Array.from({ length: VERTEX_COUNT }, () => base);
+    g.fillStyle(BODY_COLOUR, base).fillPoints(pts, true);
     g.lineStyle(3, 0x1b1b1b, 1).strokePoints(pts, true, true);
     genome.wheels.forEach((w, slot) => {
       if (w.vertex < 0) return;
@@ -192,6 +197,7 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks): Works
 
   return {
     setState(genome, selectedSlot) {
+      if (scene.genome && scene.genome.bodyDensity !== genome.bodyDensity) scene.pendingMeasure = "peso";
       scene.genome = genome;
       scene.selected = selectedSlot;
       scene.invalidate();
