@@ -18,7 +18,7 @@ export interface Ground {
  * tomados del perfil vecino: sin ellos, una rueda choca con el extremo de un
  * tramo al pasar al siguiente (colisión fantasma).
  */
-export function createGround(world: World, heightAt: (x: number) => number): Ground {
+export function createGround(world: World, heightAt: (x: number) => number, friction = 1): Ground {
   const track = { heightAt } as Track;
   const segments = new Map<number, Body>();
 
@@ -30,7 +30,7 @@ export function createGround(world: World, heightAt: (x: number) => number): Gro
     const chain = new Chain(verts, false);
     chain.setPrevVertex(Vec2(first - VERTEX_SPACING, heightAt(first - VERTEX_SPACING)));
     chain.setNextVertex(Vec2(last + VERTEX_SPACING, heightAt(last + VERTEX_SPACING)));
-    body.createFixture(chain, { friction: 1, density: 0 });
+    body.createFixture(chain, { friction, density: 0 });
     return body;
   }
 

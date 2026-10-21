@@ -48,3 +48,17 @@ test("cla-9: la guía de Rankings explica la meta, las tres claves de desempate 
   for (const t of ["5000 m", "15 minutos", "entero", "más rápido", "antes", "insignia"]) assert.ok(texto.includes(t), `falta «${t}»`);
   assert.equal(rk.titulo, "Rankings y clasificación");
 });
+
+test("diag-6: la guía explica por qué se para un coche con el límite de 35°, La Rampa y cada causa con consejo", () => {
+  const s = SECCIONES_GUIA.find((x) => x.id === "por-que-se-para");
+  assert.ok(s, "falta la sección");
+  assert.equal(s.titulo, "Por qué se para un coche");
+  const texto = s.parrafos.join("\n");
+  assert.ok(texto.includes("35°"));
+  assert.ok(texto.includes("La Rampa"));
+  for (const causa of ["Vuelco", "Sin apoyo", "Panza", "Motor", "Agarre", "Obstáculo"]) {
+    const p = s.parrafos.find((x) => x.startsWith(`${causa}.`));
+    assert.ok(p && p.length > causa.length + 30, `${causa} sin explicación y consejo`);
+  }
+  assert.ok(JSON.stringify(AYUDA.pista).includes("¿Por qué?"));
+});

@@ -1,4 +1,6 @@
+import { TORQUE_SLOPE_DEG } from "@/sim/constants";
 import type { TrackId } from "@/sim/tracks";
+import { textoCausa } from "./causas";
 
 /** Las diez pantallas del juego; cada una tiene su «?». */
 export type PantallaAyuda =
@@ -61,6 +63,21 @@ export const SECCIONES_GUIA: readonly SeccionGuia[] = [
       "El ritmo nunca cambia el resultado: el mismo coche llega a la misma distancia a cualquier velocidad. Si tu dispositivo no puede con ×8, un «real ×N» te dice la velocidad que consigue de verdad.",
       "Si apagas la pantalla o cambias de app, la carrera se pausa y sigue al volver.",
       "«Repetir» vuelve a correr con el mismo coche y el mismo ritmo.",
+    ],
+  },
+  {
+    id: "por-que-se-para",
+    titulo: "Por qué se para un coche",
+    parrafos: [
+      `Un coche se para cuando lleva 5 segundos sin avanzar. La tarjeta de fin dice la causa y la pista marca dónde se quedó, con una cuña que enseña la pendiente real.`,
+      `El motor de todos los coches empuja hasta ${TORQUE_SLOPE_DEG}°: es un límite del juego, no de tu diseño. En La Rampa la pendiente crece sin parar, así que tarde o temprano cualquier coche se queda sin fuerza; solo pasa quien llega lanzado.`,
+      `Si la cuesta es de menos de ${TORQUE_SLOPE_DEG}° y aun así se para, la causa es otra. Estas son todas, de la más grave a la más corriente, con un consejo para cada una:`,
+      `Vuelco. ${textoCausa("vuelco")}`,
+      `Sin apoyo. ${textoCausa("sin-apoyo")}`,
+      `Panza. ${textoCausa("panza")}`,
+      `Motor. Más de ${TORQUE_SLOPE_DEG}° de cuesta: el límite del motor. Gana velocidad antes de la subida; un coche más ligero no cambia el límite, pero llega más lanzado.`,
+      `Agarre. ${textoCausa("agarre")}`,
+      `Obstáculo. ${textoCausa("obstaculo")}`,
     ],
   },
   {
@@ -155,6 +172,7 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
       { nombre: "×8", texto: "Ocho veces más rápido; si el dispositivo no llega, avisa con «real ×N»." },
       { nombre: "Hasta el final", texto: "Salta al resultado sin esperar la carrera." },
       { nombre: "Repetir", texto: "Vuelve a correr desde el principio con el mismo ritmo." },
+      { nombre: "¿Por qué?", texto: "En la tarjeta de fin, explica por qué se paró el coche." },
       { nombre: "Bandera", texto: "Marca el récord de la pista: el coche que llegue más lejos." },
       { nombre: "Apagar la pantalla", texto: PAUSA_SEGUNDO_PLANO + "." },
     ],

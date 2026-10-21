@@ -43,7 +43,7 @@ beforeEach(nuevaBase);
 const trackVersion = (t: TrackId) => getTrack(t)!.version;
 
 function result(carId: string, trackId: TrackId, distance: number, over: Partial<CarResult> = {}): CarResult {
-  return { carId, distance, reason: "stall", steps: 100, bestStep: Math.ceil(distance * 1.2) + 1, piezasPerdidas: 0, physicsVersion: PHYSICS_VERSION, trackId, trackVersion: trackVersion(trackId), ...over };
+  return { carId, distance, reason: "stall", steps: 100, bestStep: Math.ceil(distance * 1.2) + 1, piezasPerdidas: 0, causaParada: null, pendienteParada: null, physicsVersion: PHYSICS_VERSION, trackId, trackVersion: trackVersion(trackId), ...over };
 }
 
 function entry(n: number, trackId: TrackId, distance: number, over: Partial<RankingEntry> = {}): RankingEntry {
@@ -392,4 +392,45 @@ test("invariante: save + loadAll devuelve un valor igual para rankings y garaje 
     }),
     { numRuns: 40 },
   );
+});
+
+test("diag-5: causa y pendiente de parada se validan por valor en RankingEntry y markDetails", async () => {
+  const { validateRankings, validateGarage, emptyRankings } = await import("../../src/storage/schema");
+  const base = (extra: Record<string, unknown>) => ({
+    carId: "a",
+    genome: STOCK_CAR,
+    distance: 100,
+    origin: "diseño",
+    date: "2026-10-01T00:00:00.000Z",
+    trackId: "rampa",
+    trackVersion: getTrack("rampa")!.version,
+    physicsVersion: PHYSICS_VERSION,
+    ...extra,
+  });
+  const lee = (extra: Record<string, unknown>) => validateRankings({ ...emptyRankings(), rampa: [base(extra)] })!.rampa[0];
+  const ok = lee({ causaParada: "motor", pendienteParada: 41.5 });
+  assert.equal(ok.causaParada, "motor");
+  assert.equal(ok.pendienteParada, 41.5);
+  // Un valor inválido se descarta solo y la marca sigue en el ranking.
+  const mala = lee({ causaParada: "magia", pendienteParada: 400 });
+  assert.equal(mala.distance, 100);
+  assert.equal(mala.causaParada, undefined);
+  assert.equal(mala.pendienteParada, undefined);
+  assert.equal(lee({}).causaParada, undefined);
+
+  const coche = (id: string, detalle: Record<string, unknown>) => ({
+    id,
+    name: "x",
+    genome: STOCK_CAR,
+    marks: { rampa: 80 },
+    markDetails: { rampa: { bestStep: 100, piezasPerdidas: 0, ...detalle } },
+    origin: "diseño",
+    savedAt: "2026-10-01T00:00:00.000Z",
+  });
+  const g = validateGarage([coche("a", { causaParada: "agarre", pendienteParada: 20 }), coche("b", { causaParada: 7, pendienteParada: "x" })])!;
+  assert.equal(g[0].markDetails?.rampa?.causaParada, "agarre");
+  assert.equal(g[0].markDetails?.rampa?.pendienteParada, 20);
+  assert.equal(g[1].markDetails?.rampa?.bestStep, 100);
+  assert.equal(g[1].markDetails?.rampa?.causaParada, undefined);
+  assert.equal(g[1].markDetails?.rampa?.pendienteParada, undefined);
 });

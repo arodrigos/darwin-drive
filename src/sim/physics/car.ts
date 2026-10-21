@@ -1,10 +1,10 @@
 import "../detmath";
 import { Circle, Polygon, Vec2, WheelJoint, type Body, type World } from "planck";
+import { TORQUE_SLOPE_DEG } from "../constants";
 import { VERTEX_COUNT, type Genome } from "../genome";
 
 export const GRAVITY = 9.81;
-/** Pendiente que el coche debe poder subir parado: fija el par del motor. */
-export const TORQUE_SLOPE_DEG = 35;
+export { TORQUE_SLOPE_DEG };
 export const MOTOR_SPEED = 25;
 export const SUSPENSION_HZ = 4;
 export const SUSPENSION_DAMPING = 0.7;
@@ -17,7 +17,7 @@ export function maxMotorTorque(totalMass: number, radius: number, drivenWheels: 
 
 export interface CarParts {
   chassis: Body;
-  wheels: { body: Body; radius: number }[];
+  wheels: { body: Body; radius: number; joint: WheelJoint }[];
   mass: number;
 }
 
@@ -62,13 +62,13 @@ export function buildCar(world: World, genome: Genome, x: number, groundY: numbe
       allowSleep: false,
     });
     body.createFixture(new Circle(w.radius), { density: w.density, friction: 1, filterGroupIndex: GROUP });
-    wheels.push({ body, radius: w.radius });
+    wheels.push({ body, radius: w.radius, joint: null as unknown as WheelJoint });
   }
 
   let mass = chassis.getMass();
   for (const w of wheels) mass += w.body.getMass();
   active.forEach((w, i) => {
-    world.createJoint(
+    wheels[i].joint = world.createJoint(
       new WheelJoint({
         bodyA: chassis,
         bodyB: wheels[i].body,
@@ -82,7 +82,7 @@ export function buildCar(world: World, genome: Genome, x: number, groundY: numbe
         frequencyHz: SUSPENSION_HZ,
         dampingRatio: SUSPENSION_DAMPING,
       }),
-    );
+    ) as WheelJoint;
   });
   return { chassis, wheels, mass };
 }

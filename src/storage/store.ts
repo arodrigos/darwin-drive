@@ -329,6 +329,8 @@ export async function updateRanking(candidate: {
       distance: result.distance,
       bestStep: result.bestStep,
       piezasPerdidas: result.piezasPerdidas,
+      causaParada: result.causaParada,
+      pendienteParada: result.pendienteParada,
       origin: candidate.origin,
       date: new Date().toISOString(),
       trackId: track.id,
@@ -389,7 +391,7 @@ export async function remeasureRankings(
         const after = m.reason === "anomaly" ? 0 : m.distance;
         cambios.push({ trackId: t.id, carId: e.carId, before: e.distance, after });
         if (m.reason !== "anomaly") {
-          nuevos.push({ ...e, distance: after, bestStep: m.bestStep, piezasPerdidas: m.piezasPerdidas, trackVersion: m.trackVersion, physicsVersion: m.physicsVersion });
+          nuevos.push({ ...e, distance: after, bestStep: m.bestStep, piezasPerdidas: m.piezasPerdidas, causaParada: m.causaParada, pendienteParada: m.pendienteParada, trackVersion: m.trackVersion, physicsVersion: m.physicsVersion });
         }
       }
       actual[t.id] = normalizeRanking(nuevos);
