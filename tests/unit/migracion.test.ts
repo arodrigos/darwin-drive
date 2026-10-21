@@ -53,7 +53,7 @@ function resultadoFalso(genome: Parameters<Medir>[0], trackId: TrackId, over: Pa
   const h = genomeHash(genome);
   let suma = 0;
   for (const ch of h) suma += ch.charCodeAt(0);
-  return { carId: h, distance: (suma % 900) / 10 + 1, reason: "stall", steps: 100, bestStep: 2000, piezasPerdidas: 0, physicsVersion: PHYSICS_VERSION, trackId, trackVersion: trackVersion(trackId), ...over };
+  return { carId: h, distance: (suma % 900) / 10 + 1, reason: "stall", steps: 100, bestStep: 2000, piezasPerdidas: 0, causaParada: null, pendienteParada: null, physicsVersion: PHYSICS_VERSION, trackId, trackVersion: trackVersion(trackId), ...over };
 }
 
 /** Navegador falso: el reloj y la visibilidad los mueve el test. */
