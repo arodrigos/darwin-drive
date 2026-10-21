@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { PHYSICS_VERSION } from "../../src/sim/constants";
 import { STOCK_CAR, genomeHash } from "../../src/sim/genome";
 import { getTrack } from "../../src/sim/tracks";
 
@@ -172,7 +173,7 @@ test("pc-5 eventos: bandera del n.º 1 y etiqueta de fin sobre el coche", async 
     date: new Date().toISOString(),
     trackId: "cordillera",
     trackVersion: track.version,
-    physicsVersion: 1,
+    physicsVersion: PHYSICS_VERSION,
   };
   for (const t of TAMANOS) {
     await page.setViewportSize({ width: t.w, height: t.h });
