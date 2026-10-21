@@ -711,8 +711,28 @@ export function App() {
     habiaCapas.current = hayCapasAyuda;
   }, [capas, guiaCapa, hayCapasAyuda, screen]);
 
+  // La banda y los avisos ocupan su propia franja en el flujo, encima de las pantallas: así no se montan sobre nada tocable.
+  const franjaMigracion = (
+    <>
+      {migracion.estado.enCurso && <BandaMigracion hechos={migracion.estado.hechos} total={migracion.estado.total} />}
+      {migracion.esperando && !migracion.estado.enCurso && (
+        <EsperaPestanas
+          onRecargar={() => {
+            recargarAntiguas();
+            void iniciarMigracion();
+          }}
+        />
+      )}
+      {migracion.terminadas !== null && !migracion.estado.enCurso && (screen !== "pista" || tarjetaFin) && (
+        <AvisoMigracion coches={migracion.terminadas} onCerrar={migracion.cerrarAviso} />
+      )}
+    </>
+  );
+
   return (
     <>
+      {franjaMigracion}
+      <div className="contenido">
       {screen === "portada" && (
         <Portada
           rankings={rankings}
@@ -910,18 +930,6 @@ export function App() {
           }}
         />
       )}
-      {migracion.estado.enCurso && <BandaMigracion hechos={migracion.estado.hechos} total={migracion.estado.total} />}
-      {migracion.esperando && !migracion.estado.enCurso && (
-        <EsperaPestanas
-          onRecargar={() => {
-            recargarAntiguas();
-            void iniciarMigracion();
-          }}
-        />
-      )}
-      {migracion.terminadas !== null && !migracion.estado.enCurso && (screen !== "pista" || tarjetaFin) && (
-        <AvisoMigracion coches={migracion.terminadas} onCerrar={migracion.cerrarAviso} />
-      )}
       <BotonAyuda
         onClick={() => {
           markInput("ayuda");
@@ -958,6 +966,7 @@ export function App() {
         </div>
       )}
       <span hidden data-meta={meta.lastTrack} />
+      </div>
     </>
   );
 }

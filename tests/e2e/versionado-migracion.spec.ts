@@ -20,6 +20,18 @@ type Estado = {
 };
 const estado = (page: Page) => page.evaluate(() => window.__debug!.estado() as unknown as Estado);
 
+// La franja reserva su sitio: nada tocable de las pantallas puede empezar por encima de su borde inferior.
+async function sinCruzarNada(page: Page, testid: string) {
+  const franja = (await page.getByTestId(testid).boundingBox())!;
+  const tops = await page.evaluate(() =>
+    [...document.querySelectorAll<HTMLElement>(".contenido button, .contenido [role=tab], .contenido a")]
+      .filter((e) => e.getClientRects().length > 0)
+      .map((e) => e.getBoundingClientRect().top),
+  );
+  expect(tops.length).toBeGreaterThan(0);
+  for (const top of tops) expect(top).toBeGreaterThanOrEqual(franja.y + franja.height - 0.5);
+}
+
 async function abrirConMigracionFrenada(page: Page) {
   await page.goto("/?pruebas=1");
   await page.waitForFunction(() => Boolean(window.__debug));
@@ -45,6 +57,7 @@ test("mig-1/2/3 la banda y los rótulos se ven mientras migra y al acabar cada m
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(t.w);
     const banda = (await page.getByTestId("banda-migracion").boundingBox())!;
     expect(banda.height).toBeLessThanOrEqual(72);
+    await sinCruzarNada(page, "banda-migracion");
     await page.screenshot({ path: `${DIR}/${ID}-banda-${t.w}x${t.h}.png` });
   }
 
@@ -54,6 +67,7 @@ test("mig-1/2/3 la banda y los rótulos se ven mientras migra y al acabar cada m
   await expect(page.getByTestId("fila-migracion")).toHaveCount(0);
   for (const t of TAMANOS) {
     await page.setViewportSize({ width: t.w, height: t.h });
+    await sinCruzarNada(page, "aviso-migracion");
     await page.screenshot({ path: `${DIR}/${ID}-aviso-${t.w}x${t.h}.png` });
   }
   const aviso = (await page.getByTestId("aviso-migracion").boundingBox())!;
