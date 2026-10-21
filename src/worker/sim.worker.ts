@@ -2,7 +2,7 @@ import { RaceEngine } from "./engine";
 import type { FromWorker, ToWorker } from "./protocol";
 
 const TICK_MS = 8;
-const BUDGET_MS = 6;
+const BUDGET_MS = 8;
 
 const engine = new RaceEngine((m: FromWorker) => postMessage(m));
 let timer: ReturnType<typeof setInterval> | null = null;

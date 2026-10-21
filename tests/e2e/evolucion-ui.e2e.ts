@@ -41,10 +41,10 @@ async function evolucionGuardada(page: Page): Promise<Evol | null> {
   return page.evaluate(
     () =>
       new Promise<Evol | null>((resolve, reject) => {
-        const req = indexedDB.open("keyval-store");
+        const req = indexedDB.open("darwin-drive-pruebas");
         req.onerror = () => reject(req.error);
         req.onsuccess = () => {
-          const get = req.result.transaction("keyval", "readonly").objectStore("keyval").get("dd:v1:evolution");
+          const get = req.result.transaction("datos", "readonly").objectStore("datos").get("dd:v1:evolution");
           get.onsuccess = () => resolve((get.result as Evol | undefined) ?? null);
           get.onerror = () => reject(get.error);
         };
@@ -149,7 +149,7 @@ test("ev-2 turbo: barra de progreso, generaciones nuevas y pausa inmediata", asy
   await page.setViewportSize({ width: 360, height: 640 });
   await abrir(page);
   await desdeTaller(page);
-  await page.getByTestId("ritmo-turbo").click();
+  await page.getByTestId("evo-ritmo-turbo").click();
   await expect(page.getByTestId("barra-progreso-texto")).toHaveText(/^Gen \d+ · \d+\/16 coches$/);
   await expect.poll(async () => (await estado(page)).generacion ?? 0, { timeout: 90_000, intervals: [1000] }).toBeGreaterThanOrEqual(3);
   await page.screenshot({ path: `${DIR}/${ID}-turbo-360x640.png` });
@@ -241,8 +241,8 @@ test("ev-7 cambiar de ritmo no cambia las distancias", async ({ page }) => {
   await page.getByTestId("pista-rampa").click();
   await page.getByTestId("empezar-evolucion").click();
   await expect.poll(async () => (await estado(page)).poblacion?.length ?? 0).toBe(16);
-  await page.getByTestId("ritmo-x4").click();
-  await page.getByTestId("ritmo-turbo").click();
+  await page.getByTestId("evo-ritmo-x4").click();
+  await page.getByTestId("evo-ritmo-turbo").click();
   await expect.poll(async () => (await estado(page)).generacion ?? 0, { timeout: 90_000, intervals: [500] }).toBeGreaterThanOrEqual(2);
   await page.getByTestId("pausar").click();
   const turbo = (await estado(page)).distanciasGeneracion!;
@@ -263,7 +263,7 @@ for (const t of TAMANOS) {
     const ancho = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(ancho).toBeLessThanOrEqual(0);
     await page.screenshot({ path: `${DIR}/${ID}-carrera-${t.w}x${t.h}.png` });
-    await page.getByTestId("ritmo-turbo").click();
+    await page.getByTestId("evo-ritmo-turbo").click();
     await expect(page.getByTestId("turbo-panel")).toBeVisible();
     await page.screenshot({ path: `${DIR}/${ID}-turbo-${t.w}x${t.h}.png` });
     await page.getByTestId("pausar").click();

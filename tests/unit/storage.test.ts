@@ -90,7 +90,7 @@ test("gd-1-ida-vuelta: cada clave sobrevive a recrear el almacén", async () => 
     { id: "n1", parents: [], op: "random" as const, generation: 0, distance: null, trackId: null, genome: ids(1), hue: 10, humanTouched: false, prunedParents: false },
     { id: "n2", parents: ["n1"], op: "mutation" as const, generation: 1, distance: 33.3, trackId: "dunas" as const, genome: ids(2), hue: 20, humanTouched: true, prunedParents: false },
   ];
-  const meta = { seenHelp: ["taller"], persistRequested: true, lastTrack: "pedregal" as const };
+  const meta = { seenHelp: ["taller"], persistRequested: true, lastTrack: "pedregal" as const, ritmo: "x1" as const };
   await save(KEY_RANKINGS, rankings);
   await save(KEY_GARAGE, garage);
   await save(KEY_EVOLUTION, evolution);

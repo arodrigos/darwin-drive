@@ -4,16 +4,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
 import { avisoRanking, textoRanking } from "@/app/ranking-text";
 import { runtime } from "@/debug/ganchos";
-import { measureOnNextFrame } from "@/debug/latencias";
+import { markInput, measureOnNextFrame } from "@/debug/latencias";
 import { registrarPoses, reiniciarRendimiento } from "@/debug/rendimiento";
 import type { TrackSceneHandle } from "@/game/track-scene";
 import type { CarResult, EndReason } from "@/sim/constants";
 import { STOCK_CAR, genomeHash, type Genome } from "@/sim/genome";
 import { getTrack, type TrackId } from "@/sim/tracks";
+import type { RitmoRecordado } from "@/storage/meta";
 import { RANKING_SIZE } from "@/storage/schema";
 import type { RankingOutcome } from "@/storage/store";
 import { createSimRunner } from "@/worker";
-import type { FromWorker, SimRunner } from "@/worker/protocol";
+import type { FromWorker, Pace, SimRunner } from "@/worker/protocol";
+import { actualizarAviso, SIN_AVISO } from "../ritmo";
+import { ControlRitmo } from "./ControlRitmo";
 import { PanelRendimiento } from "./PanelRendimiento";
 import type { RankingsView } from "./TrackPicker";
 
@@ -22,6 +25,8 @@ export const MENSAJE_ERROR = "La simulación se ha detenido por un error. Toca R
 const MOTIVO: Record<EndReason, string> = { stall: "se atascó", timeout: "se acabó el tiempo", anomaly: "descalificado" };
 const STOCK_HUE = 28;
 const AVISO_RANKING_MS = 2500;
+// La barra de «Hasta el final» se llena hasta los 5 km de la meta.
+const OBJETIVO_BARRA_M = 5000;
 
 function canDraw(): boolean {
   try {
@@ -52,6 +57,9 @@ export interface PistaProps {
   genome?: Genome;
   /** Con esta función la marca se inscribe en el ranking de la pista; el resultado es el que enseña la tarjeta. */
   onFinish?: (result: CarResult) => Promise<RankingOutcome | null>;
+  /** El último de ×1/×2/×4/×8 con el que se corrió; «Hasta el final» no se recuerda. */
+  ritmoInicial?: RitmoRecordado;
+  onRitmo?: (ritmo: RitmoRecordado) => void;
 }
 
 export function Pista(props: PistaProps) {
@@ -69,6 +77,17 @@ export function Pista(props: PistaProps) {
   useEffect(() => {
     alTerminar.current = props.onFinish;
   });
+  const [ritmo, setRitmo] = useState<RitmoRecordado>(props.ritmoInicial ?? "x1");
+  const [final, setFinal] = useState(false);
+  const [avance, setAvance] = useState(0);
+  const [rotulo, setRotulo] = useState<number | null>(null);
+  // Lo que ya sabe el efecto que posee el ejecutor: se escribe aquí y los botones lo leen.
+  const ritmoRecordado = useRef<RitmoRecordado>(props.ritmoInicial ?? "x1");
+  const eligeRitmo = useRef<(p: Pace) => void>(() => {});
+  const alRitmo = useRef(props.onRitmo);
+  useEffect(() => {
+    alRitmo.current = props.onRitmo;
+  });
   const [rendimiento] = useState(() => parametrosPrueba().rendimiento);
   // La pista y el genoma se fijan al abrir: cambiarlos a media carrera sería correr una cosa y pintar otra.
   const fijo = useRef({ trackId, genome, propio: Boolean(props.genome), marca: props.rankings[trackId][0]?.distance ?? null });
@@ -85,6 +104,10 @@ export function Pista(props: PistaProps) {
     let intento = 0;
     let maxX = 0;
     let ultimaSim = 0;
+    let pace: Pace = ritmoRecordado.current;
+    let aviso = SIN_AVISO;
+    // Pausa que pone la pantalla al ocultarse la página; la del jugador (si la hubiera) no se pisa.
+    let pausaPorVisibilidad = false;
     let esperas: { hasta: number; resolver: () => void }[] = [];
     const carId = genomeHash(g);
 
@@ -94,9 +117,26 @@ export function Pista(props: PistaProps) {
       pendientes.forEach((e) => e.resolver());
     };
 
+    const medirRitmo = (ritmoReal: number | undefined) => {
+      const nuevo = actualizarAviso(aviso, pace, ritmoReal, performance.now());
+      if (nuevo.rotulo !== aviso.rotulo) setRotulo(nuevo.rotulo);
+      aviso = nuevo;
+      if (ritmoReal !== undefined) runtime.ritmoReal = ritmoReal;
+    };
+
     const alMensaje = (m: FromWorker) => {
       if (m.raceId !== raceId || !scene) return;
-      if (m.type === "poses") {
+      if (m.type === "progress") {
+        // En «Hasta el final» no hay poses: el contador y la barra siguen al coche por aquí.
+        if (m.leaderX !== undefined && m.simTime !== undefined && pace === "turbo") {
+          maxX = Math.max(maxX, m.leaderX);
+          runtime.distanciaLider = maxX;
+          runtime.tiempoSim = m.simTime;
+          if (hud.current) hud.current.textContent = formatMeters(maxX);
+          setAvance(maxX);
+        }
+      } else if (m.type === "poses") {
+        medirRitmo(m.ritmoReal);
         const lider = m.poses.reduce((a, p) => Math.max(a, p.x), 0);
         maxX = Math.max(maxX, lider);
         scene.setPoses(m.simTime, m.poses, m.simTime - ultimaSim > 0.5);
@@ -143,6 +183,14 @@ export function Pista(props: PistaProps) {
     const lanzar = () => {
       if (!scene) return;
       raceId = `carrera-${++intento}`;
+      // «Repetir» vuelve al ritmo recordado: «Hasta el final» era cosa de la carrera anterior.
+      pace = ritmoRecordado.current;
+      aviso = SIN_AVISO;
+      setRotulo(null);
+      setFinal(false);
+      setAvance(0);
+      runtime.ritmo = pace;
+      runtime.ritmoReal = null;
       maxX = 0;
       ultimaSim = 0;
       reiniciarRendimiento();
@@ -155,14 +203,36 @@ export function Pista(props: PistaProps) {
       setFase({ tipo: "corriendo" });
       setInscripcion(null);
       measureOnNextFrame("probar");
-      runner.post({ type: "startRace", raceId, cars: [{ carId, genome: g }], trackId: id, pace: "x1" });
+      runner.post({ type: "startRace", raceId, cars: [{ carId, genome: g }], trackId: id, pace });
+      measureOnNextFrame("repetir");
     };
     iniciar.current = lanzar;
+    eligeRitmo.current = (p) => {
+      const evento = p === "turbo" ? "hasta-el-final" : "ritmo";
+      markInput(evento);
+      pace = p;
+      aviso = SIN_AVISO;
+      setRotulo(null);
+      runtime.ritmo = p;
+      runner.post({ type: "setPace", raceId, pace: p });
+      if (p === "turbo") {
+        setAvance(maxX);
+        setFinal(true);
+      } else {
+        setFinal(false);
+        setRitmo(p);
+        ritmoRecordado.current = p;
+        alRitmo.current?.(p);
+      }
+      measureOnNextFrame(evento);
+    };
 
     const unsubscribe = runner.subscribe(alMensaje);
     runtime.pistaEnCarrera = id;
     runtime.genomaEnPista = g;
     runtime.ejecutor = runner.kind;
+    runtime.aplicarLimite = (max) => runner.post({ type: "limitRate", max });
+    if (runtime.limiteRitmo !== null) runner.post({ type: "limitRate", max: runtime.limiteRitmo });
     runtime.avanzar = (segundos) =>
       new Promise<void>((resolver) => {
         if (!scene) return resolver();
@@ -174,7 +244,15 @@ export function Pista(props: PistaProps) {
       );
 
     const alCambiarVisibilidad = () => {
-      runner.post({ type: document.visibilityState === "hidden" ? "pause" : "resume", raceId });
+      if (document.visibilityState === "hidden") {
+        pausaPorVisibilidad = true;
+        runner.post({ type: "pause", raceId });
+      } else if (pausaPorVisibilidad) {
+        pausaPorVisibilidad = false;
+        runner.post({ type: "resume", raceId });
+      }
+      aviso = SIN_AVISO;
+      setRotulo(null);
     };
     document.addEventListener("visibilitychange", alCambiarVisibilidad);
 
@@ -199,6 +277,9 @@ export function Pista(props: PistaProps) {
       liberar();
       iniciar.current = () => {};
       runtime.avanzar = null;
+      runtime.aplicarLimite = null;
+      runtime.ritmo = null;
+      runtime.ritmoReal = null;
       runtime.pistaEnCarrera = null;
       runtime.genomaEnPista = null;
       runtime.distanciaLider = null;
@@ -223,7 +304,7 @@ export function Pista(props: PistaProps) {
 
   return (
     <div className="explorar" data-testid="pista">
-      <div className="lienzo" ref={host} data-testid="lienzo" />
+      <div className={final ? "lienzo atenuado" : "lienzo"} ref={host} data-testid="lienzo" />
       <div className="cabecera">
         <button type="button" className="pastilla" onClick={props.onBack} data-testid="volver">
           ← Volver
@@ -239,6 +320,23 @@ export function Pista(props: PistaProps) {
       {aviso && (
         <div className="aviso-ranking" role="status" data-testid="aviso-ranking">
           {aviso}
+        </div>
+      )}
+      {fase.tipo === "corriendo" && (
+        <div className="pie-pista">
+          {final && (
+            <div className="banda-final" role="status" data-testid="banda-final">
+              <span>Simulando hasta el final…</span>
+              <progress max={OBJETIVO_BARRA_M} value={avance} data-testid="barra-final" />
+            </div>
+          )}
+          <ControlRitmo
+            prefijo="ritmo"
+            activo={final ? "turbo" : ritmo}
+            onElegir={(p) => eligeRitmo.current(p)}
+            ritmoReal={rotulo}
+            etiquetaFinal="Hasta el final"
+          />
         </div>
       )}
       {fase.tipo === "fin" && (
@@ -261,7 +359,12 @@ export function Pista(props: PistaProps) {
             </>
           )}
           <div className="acciones">
-            <button type="button" className="pastilla" onClick={repetir} data-testid="repetir">
+            <button type="button" className="pastilla" onClick={() => {
+                markInput("repetir");
+                repetir();
+              }}
+              data-testid="repetir"
+            >
               Repetir
             </button>
             <button type="button" className="pastilla" onClick={props.onBack} data-testid="volver-fin">

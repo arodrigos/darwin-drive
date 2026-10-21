@@ -1,4 +1,5 @@
-import { createStore, del, get, set, update, type UseStore } from "idb-keyval";
+import { del, get, set, update, type UseStore } from "idb-keyval";
+import { abrirBase } from "./base";
 import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
 import { PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
@@ -57,7 +58,6 @@ registerKey(META_KEY, (raw) => validateMeta(raw), DEFAULT_META, "ajustes");
 
 // --- Acceso: IndexedDB o, si no se puede abrir, memoria hasta cerrar la pestaña.
 
-const DB = "keyval-store"; // mismo almacén que usa idb-keyval por defecto, donde ya vive la meta
 let almacen: UseStore | null = null;
 let disponible = true;
 const memoria = new Map<string, unknown>();
@@ -66,7 +66,7 @@ function abrir(): UseStore | null {
   if (!disponible) return null;
   if (!almacen) {
     try {
-      almacen = createStore(DB, "keyval");
+      almacen = abrirBase();
     } catch {
       disponible = false;
     }

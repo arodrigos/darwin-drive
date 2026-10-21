@@ -11,7 +11,7 @@ import { createSimRunner } from "@/worker";
 import { PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
 import { DEFAULT_TRACK_ID, getTrack, TRACKS, type TrackId } from "@/sim/tracks";
-import { DEFAULT_META, loadMeta, META_KEY, saveMeta, type Meta } from "@/storage/meta";
+import { DEFAULT_META, loadMeta, META_KEY, saveMeta, type Meta, type RitmoRecordado } from "@/storage/meta";
 import {
   emptyRankings,
   KEY_EVOLUTION,
@@ -116,6 +116,15 @@ export function App() {
     runtime.pistaSeleccionada = id;
     setMeta((m) => {
       const next = { ...m, lastTrack: id };
+      void saveMeta(next);
+      return next;
+    });
+  }, []);
+
+  const recordarRitmo = useCallback((ritmo: RitmoRecordado) => {
+    setMeta((m) => {
+      if (m.ritmo === ritmo) return m;
+      const next = { ...m, ritmo };
       void saveMeta(next);
       return next;
     });
@@ -599,6 +608,8 @@ export function App() {
           onFinish={trial ? inscribir : undefined}
           onBack={volverDePista}
           rankings={rankings}
+          ritmoInicial={meta.ritmo}
+          onRitmo={recordarRitmo}
         />
       )}
       {screen === "rankings" && (
