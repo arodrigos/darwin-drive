@@ -20,16 +20,18 @@ type Estado = {
 };
 const estado = (page: Page) => page.evaluate(() => window.__debug!.estado() as unknown as Estado);
 
-// La franja reserva su sitio: nada tocable de las pantallas puede empezar por encima de su borde inferior.
+// La franja reserva su sitio: ningún control visible se solapa con ella (el «?» fijo queda en el margen que se le deja).
 async function sinCruzarNada(page: Page, testid: string) {
   const franja = (await page.getByTestId(testid).boundingBox())!;
-  const tops = await page.evaluate(() =>
-    [...document.querySelectorAll<HTMLElement>(".contenido button, .contenido [role=tab], .contenido a")]
+  const solapados = await page.evaluate((f) => {
+    const cajas = [...document.querySelectorAll<HTMLElement>(".contenido button, .contenido [role=tab], .contenido a")]
       .filter((e) => e.getClientRects().length > 0)
-      .map((e) => e.getBoundingClientRect().top),
-  );
-  expect(tops.length).toBeGreaterThan(0);
-  for (const top of tops) expect(top).toBeGreaterThanOrEqual(franja.y + franja.height - 0.5);
+      .map((e) => ({ id: e.getAttribute("data-testid") ?? e.textContent ?? "", r: e.getBoundingClientRect() }));
+    const cruza = cajas.filter(({ r }) => r.left < f.x + f.width && r.right > f.x && r.top < f.y + f.height && r.bottom > f.y);
+    return { total: cajas.length, cruzan: cruza.map((c) => c.id) };
+  }, franja);
+  expect(solapados.total).toBeGreaterThan(0);
+  expect(solapados.cruzan).toEqual([]);
 }
 
 async function abrirConMigracionFrenada(page: Page) {
