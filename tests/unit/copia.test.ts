@@ -2,6 +2,7 @@ import "fake-indexeddb/auto";
 import { IDBFactory } from "fake-indexeddb";
 import { beforeEach, test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import fc from "fast-check";
 import { PHYSICS_VERSION } from "../../src/sim/constants";
 import { genomeHash } from "../../src/sim/genome";
@@ -17,7 +18,11 @@ import {
   validarCopia,
 } from "../../src/storage/copia";
 import { emptyRankings, KEY_EVOLUTION, KEY_GARAGE, KEY_LINEAGE, KEY_RANKINGS, KEY_SPECIES, type RankingEntry, type SavedCar } from "../../src/storage/schema";
-import { leerGuardado, loadAll, reemplazarTodo, resetStoreConnection, save } from "../../src/storage/store";
+import { isStale, leerGuardado, loadAll, reemplazarTodo, resetStoreConnection, save } from "../../src/storage/store";
+import { migrar, type Medir } from "../../src/storage/migracion";
+import { compararMarcas } from "../../src/sim/clasificacion";
+import { CAUSAS_PARADA, MAX_STEPS } from "../../src/sim/constants";
+import type { CarResult } from "../../src/sim/race";
 import { seededGenomes } from "./helpers/rng";
 
 const GENOMAS = seededGenomes(31, 40);
@@ -213,4 +218,60 @@ test("invariante: un fichero estropeado de cualquier forma no cambia el guardado
     }),
     { numRuns: 150 },
   );
+});
+
+const FIXTURE_INVALIDOS = readFileSync("tests/fixtures/copia-valores-invalidos.json", "utf8");
+
+test("cla-7-b / cla-10: una copia con marcas inválidas y «pruebas-llana» se importa, queda pendiente y se vuelve a medir", async () => {
+  const r = validarCopia(FIXTURE_INVALIDOS);
+  assert.equal(r.ok, true, JSON.stringify(r));
+  if (!r.ok) return;
+  await reemplazarTodo(r.data);
+  const { data, warnings } = await loadAll();
+  assert.deepEqual(warnings, []);
+  const rankings = data[KEY_RANKINGS] as Record<string, RankingEntry[]>;
+  const garaje = data[KEY_GARAGE] as SavedCar[];
+  assert.equal("pruebas-llana" in rankings, false);
+  assert.equal("pruebas-llana" in garaje[0].marks, false);
+  assert.equal(garaje[0].markDetails === undefined || !("pruebas-llana" in garaje[0].markDetails), true);
+  // Todas las que traían un campo de marca roto (c0-c5) y la de 5000 m (increíble, c7) quedan pendientes; la sana (c8) y la de solo fecha (c6), no.
+  assert.equal(rankings.cordillera.length, 9);
+  const pendientes = rankings.cordillera.filter(isStale).map((e) => e.carId);
+  for (const id of ["c0", "c1", "c2", "c3", "c4", "c5", "c7"]) assert.ok(pendientes.includes(id), id);
+  assert.ok(!pendientes.includes("c8"));
+  assert.equal(rankings.cordillera.find((e) => e.carId === "c8")!.bestStep, 108);
+
+  // La migración los vuelve a medir con valores válidos y el orden es el de compararMarcas.
+  // Medida falsa y determinista: la real tarda minutos y aquí lo que importa es qué se vuelve a medir y qué se guarda.
+  const medir: Medir = async (g, t): Promise<CarResult> => ({
+    carId: genomeHash(g), distance: 40 + (parseInt(genomeHash(g).slice(0, 4), 16) % 500) / 10, reason: "stall", steps: 300, bestStep: 250,
+    piezasPerdidas: 0, metroRotura: null, causaParada: null, pendienteParada: null, physicsVersion: PHYSICS_VERSION, trackId: t, trackVersion: getTrack(t)!.version,
+  });
+  const res = await migrar({ medir });
+  assert.equal(res.estado, "completa");
+  const despues = (await loadAll()).data[KEY_RANKINGS] as Record<string, RankingEntry[]>;
+  for (const e of despues.cordillera) {
+    assert.ok(Number.isInteger(e.bestStep) && e.bestStep! >= 0 && e.bestStep! <= MAX_STEPS, `bestStep ${e.bestStep}`);
+    // c6 solo traía la fecha rota: su medida es válida y no se repite, y piezasPerdidas es opcional.
+    assert.ok(e.piezasPerdidas === undefined || (Number.isInteger(e.piezasPerdidas) && e.piezasPerdidas >= 0 && e.piezasPerdidas <= 8));
+    assert.ok(e.causaParada === null || e.causaParada === undefined || CAUSAS_PARADA.includes(e.causaParada));
+    assert.equal(isStale(e), false);
+  }
+  assert.deepEqual(despues.cordillera, [...despues.cordillera].sort(compararMarcas));
+  const ayer = despues.cordillera.find((e) => e.carId === "c6")!;
+  assert.ok(Date.now() - Date.parse(ayer.date) < 5 * 60_000, "la fecha ilegible toma la de la importación");
+});
+
+test("cla-7-b: con un genoma inválido la copia sigue rechazándose entera (mig-4)", () => {
+  const c = JSON.parse(FIXTURE_INVALIDOS);
+  c.data[KEY_RANKINGS].cordillera[0].genome = { v: 1 };
+  const r = validarCopia(JSON.stringify(c));
+  assert.equal(r.ok, false);
+  if (!r.ok) assert.equal(r.motivo, COPIA_INVALIDA);
+});
+
+test("cla-10: otra pista desconocida sigue rechazando la copia entera", () => {
+  const c = JSON.parse(FIXTURE_INVALIDOS);
+  c.data[KEY_RANKINGS].marte = [];
+  assert.equal(validarCopia(JSON.stringify(c)).ok, false);
 });

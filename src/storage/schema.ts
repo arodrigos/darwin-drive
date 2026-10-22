@@ -85,15 +85,20 @@ const isStr = (v: unknown): v is string => typeof v === "string";
 const isStrArray = (v: unknown): v is string[] => Array.isArray(v) && v.every(isStr);
 const isOrigin = (v: unknown): v is Origin => ORIGINS.includes(v as Origin);
 const isOp = (v: unknown): v is Op => OPS.includes(v as Op);
-const isDate = (v: unknown): v is string => isStr(v) && !Number.isNaN(Date.parse(v));
+export const isDate = (v: unknown): v is string => isStr(v) && !Number.isNaN(Date.parse(v));
 
-const isCausa = (v: unknown): v is CausaParada => CAUSAS_PARADA.includes(v as CausaParada);
+/** Rangos de los campos de marca: los comparte la carga de lo guardado y el saneado de una copia importada. */
+export const bestStepValido = (v: unknown): v is number => isInt(v) && v >= 0 && v <= MAX_STEPS;
+export const piezasValidas = (v: unknown): v is number => isInt(v) && v >= 0 && v <= MAX_PIEZAS;
+export const causaValida = (v: unknown): v is CausaParada | null => v === null || CAUSAS_PARADA.includes(v as CausaParada);
+export const pendienteValida = (v: unknown): v is number | null => v === null || (isNum(v) && v >= -90 && v <= 90);
+
 
 /** Validación por valor: un campo de causa fuera de rango se descarta solo; la marca sigue siendo válida. */
 function camposCausa(raw: Record<string, unknown>): Pick<DetalleMarca, "causaParada" | "pendienteParada"> {
   const out: Pick<DetalleMarca, "causaParada" | "pendienteParada"> = {};
-  if (raw.causaParada === null || isCausa(raw.causaParada)) out.causaParada = raw.causaParada;
-  if (raw.pendienteParada === null || (isNum(raw.pendienteParada) && raw.pendienteParada >= -90 && raw.pendienteParada <= 90)) out.pendienteParada = raw.pendienteParada as number | null;
+  if (causaValida(raw.causaParada)) out.causaParada = raw.causaParada;
+  if (pendienteValida(raw.pendienteParada)) out.pendienteParada = raw.pendienteParada;
   return out;
 }
 
@@ -121,8 +126,8 @@ function rankingEntry(raw: unknown, trackId: TrackId): RankingEntry | null {
     trackVersion: raw.trackVersion,
     physicsVersion: raw.physicsVersion,
   };
-  if (isInt(raw.bestStep) && raw.bestStep >= 0 && raw.bestStep <= MAX_STEPS) entry.bestStep = raw.bestStep;
-  if (isInt(raw.piezasPerdidas) && raw.piezasPerdidas >= 0 && raw.piezasPerdidas <= MAX_PIEZAS) entry.piezasPerdidas = raw.piezasPerdidas;
+  if (bestStepValido(raw.bestStep)) entry.bestStep = raw.bestStep;
+  if (piezasValidas(raw.piezasPerdidas)) entry.piezasPerdidas = raw.piezasPerdidas;
   Object.assign(entry, camposCausa(raw));
   if (isStr(raw.lineageId)) entry.lineageId = raw.lineageId;
   if (isStr(raw.name)) {
@@ -188,7 +193,7 @@ function markDetails(raw: unknown, marks: Partial<Record<TrackId, number>>): Sav
   for (const t of TRACKS) {
     const d = raw[t.id];
     if (marks[t.id] === undefined || !isObj(d)) continue;
-    if (isInt(d.bestStep) && d.bestStep >= 0 && d.bestStep <= MAX_STEPS && isInt(d.piezasPerdidas) && d.piezasPerdidas >= 0 && d.piezasPerdidas <= MAX_PIEZAS) {
+    if (bestStepValido(d.bestStep) && piezasValidas(d.piezasPerdidas)) {
       out[t.id] = { bestStep: d.bestStep, piezasPerdidas: d.piezasPerdidas, ...camposCausa(d) };
     }
   }
