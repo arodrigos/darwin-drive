@@ -2,6 +2,7 @@ import "../detmath";
 import { Vec2, World, type Body } from "planck";
 import { DT, ANOMALY_HEIGHT, ANOMALY_SPEED, MAX_STEPS, META_DISTANCE, STALL_MIN_PROGRESS, STALL_STEPS, PHYSICS_VERSION } from "../constants";
 import type { CarPose, CarResult, EndReason } from "../constants";
+import { Fragilidad } from "./rotura-sim";
 import { ALFA_CARGA, BufferParada, clasificarParada, type Diagnostico } from "../diagnostico";
 import { normalizeGenome, type Genome } from "../genome";
 import type { Track } from "../tracks";
@@ -24,6 +25,9 @@ export class CarSim {
   private readonly buffer: BufferParada | null;
   private cargas: number[] = [];
   private diagnostico: Diagnostico | null = null;
+  private readonly frag: Fragilidad;
+  private metroRotura: number | null = null;
+  private readonly pendientesRotura: { i: number; x: number; y: number }[] = [];
 
   constructor(
     readonly carId: string,
@@ -31,13 +35,14 @@ export class CarSim {
     private readonly track: Track,
     private readonly heightAt: (x: number) => number,
     private readonly maxSteps: number = MAX_STEPS,
-    opts: { sinDiagnostico?: boolean; friccionSuelo?: number } = {},
+    opts: { sinDiagnostico?: boolean; friccionSuelo?: number; caida?: number } = {},
   ) {
     const g = normalizeGenome(genome);
     this.world = new World({ gravity: Vec2(0, -GRAVITY), allowSleep: false, continuousPhysics: false });
     this.ground = createGround(this.world, heightAt, opts.friccionSuelo, (i) => track.surfaceOfSegment(i));
     this.ground.ensure(-10, 10);
-    this.car = buildCar(this.world, g, 0, heightAt(0));
+    this.car = buildCar(this.world, g, 0, heightAt(0) + (opts.caida ?? 0));
+    this.frag = new Fragilidad(this.world, this.car);
     // El muestreo solo lee el mundo: con o sin él el resultado es idéntico (se comprueba en los tests).
     this.buffer = opts.sinDiagnostico ? null : new BufferParada();
     this.cargas = this.car.wheels.map(() => 0);
@@ -57,6 +62,7 @@ export class CarSim {
     let lo = car.chassis.getPosition().x;
     let hi = lo;
     for (const w of car.wheels) {
+      if (w.suelta) continue;
       const x = w.body.getPosition().x;
       if (x < lo) lo = x;
       if (x > hi) hi = x;
@@ -77,7 +83,12 @@ export class CarSim {
         y: w.body.getPosition().y,
         angle: w.body.getAngle(),
         radius: w.radius,
+        ...(w.suelta ? { suelta: true } : {}),
+        ...(w.fuera ? { fuera: true } : {}),
       })),
+      piezas: this.frag.piezas,
+      ...(this.frag.cuerpos > 0 ? { sueltas: this.frag.sueltasPose() } : {}),
+      ...(this.pendientesRotura.length > 0 ? { roturas: this.pendientesRotura.splice(0) } : {}),
       ...(this.buffer ? { cargas: [...this.cargas] } : {}),
       finished,
       ...(this.end ? { reason: this.end } : {}),
@@ -112,6 +123,10 @@ export class CarSim {
     let patinaje = 0;
     let carga = 0;
     car.wheels.forEach((w, i) => {
+      if (!w.joint) {
+        this.cargas[i] = 0;
+        return;
+      }
       const f = w.joint.getReactionForce(1 / DT);
       this.cargas[i] += ALFA_CARGA * (Math.min(1, Math.hypot(f.x, f.y) / pesoPorRueda) - this.cargas[i]);
       carga += this.cargas[i];
@@ -139,6 +154,17 @@ export class CarSim {
     this.ground!.ensure(lo, hi);
     this.world!.step(DT, 8, 3);
     this.stepCount++;
+    // Las roturas van justo tras el paso y antes de medir: un coche destrozado no suma el metro de ese paso.
+    if (this.frag.aplicar() > 0) {
+      this.metroRotura ??= this.maxX;
+      this.pendientesRotura.push(...this.frag.tomarRoturas());
+      if (this.frag.destrozado()) {
+        this.diagnostico = { causa: "rotura", pendiente: Math.max(-90, Math.min(90, this.pendienteBajoElCoche(this.maxX))) };
+        this.finish("destrozado");
+        return;
+      }
+    }
+    this.frag.limpiar(this.car!.chassis.getPosition().x);
     if (this.buffer) this.muestrear();
 
     // La distancia se congela en el último paso sano: el paso anómalo no la toca.
@@ -170,15 +196,22 @@ export class CarSim {
 
   private finish(reason: EndReason): void {
     this.end = reason;
-    if (reason === "stall" && this.buffer) this.diagnostico = clasificarParada(this.buffer.muestras());
+    if (reason === "stall" && this.buffer) this.diagnostico = clasificarParada(this.buffer.muestras(), this.sinRuedas());
     this.lastPose = this.readPose(true);
     this.release();
   }
 
+  /** Tenía ruedas y las perdió todas: ya no puede empujar. */
+  private sinRuedas(): boolean {
+    const ruedas = this.car!.wheels;
+    return ruedas.length > 0 && ruedas.every((w) => w.suelta);
+  }
+
   private release(): void {
     this.ground?.dispose();
+    this.frag.dispose();
     if (this.world && this.car) {
-      for (const w of this.car.wheels) this.world.destroyBody(w.body);
+      for (const w of this.car.wheels) if (!w.suelta) this.world.destroyBody(w.body);
       this.world.destroyBody(this.car.chassis);
     }
     this.world = null;
@@ -199,7 +232,8 @@ export class CarSim {
       reason: this.end,
       steps: this.stepCount,
       bestStep: this.bestStep,
-      piezasPerdidas: 0,
+      piezasPerdidas: this.frag.piezasPerdidas,
+      metroRotura: this.metroRotura,
       causaParada: this.diagnostico?.causa ?? null,
       pendienteParada: this.diagnostico?.pendiente ?? null,
       physicsVersion: PHYSICS_VERSION,

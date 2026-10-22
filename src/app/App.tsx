@@ -64,6 +64,9 @@ import { Taller } from "./components/Taller";
 import { medirEnTodasLasPistas, type MedicionEnCurso } from "./medir-pistas";
 import { resumenMedicion } from "./ranking-text";
 
+/** Genoma de pruebas de la rotura: una carrocería irregular que en La Cordillera pierde piezas y aun así avanza. */
+const GENOMA_DEMO_FRAGIL: Genome = {"v":1,"body":[{"angle":0.678465353041328,"length":1.9828049719333647},{"angle":1.16317559758428,"length":1.76544371843338},{"angle":1.7264106655024205,"length":0.7348043262958526},{"angle":2.5218158488767792,"length":1.9281890034675597},{"angle":3.3254861893698675,"length":1.5384865283966063},{"angle":4.616152019909353,"length":0.519283241033554},{"angle":5.16290480437055,"length":0.3325004756450653},{"angle":6.028116714266141,"length":0.8758008599281311}],"bodyDensity":68.3933699131012,"wheels":[{"vertex":4,"radius":1.085308027267456,"density":22.73451805114746,"axisAngle":2.413072745114252},{"vertex":0,"radius":1.1341673851013183,"density":36.10156297683716,"axisAngle":3.283626691111853},{"vertex":-1,"radius":0.6408769607543945,"density":70.26972889900208,"axisAngle":4.094320182721254},{"vertex":-1,"radius":0.6308840632438659,"density":100.65406084060669,"axisAngle":0.9913837700847736}]};
+
 type Pantalla = "portada" | "explorar" | "pista" | "taller" | "garaje" | "rankings" | "evolucion-inicio" | "evolucion" | "linaje" | "especies";
 
 export const SIN_GUARDADO =
@@ -499,7 +502,7 @@ export function App() {
           const track = campeon?.trackId ? getTrack(campeon.trackId) : null;
           if (campeon && track) {
             await updateRanking({
-              result: { carId: campeon.id, distance: campeon.distance!, reason: "stall", steps: 0, bestStep: Math.min(MAX_STEPS, Math.ceil(campeon.distance! * 1.2) + 1), piezasPerdidas: 0, causaParada: null, pendienteParada: null, physicsVersion: PHYSICS_VERSION, trackId: track.id, trackVersion: track.version },
+              result: { carId: campeon.id, distance: campeon.distance!, reason: "stall", steps: 0, bestStep: Math.min(MAX_STEPS, Math.ceil(campeon.distance! * 1.2) + 1), piezasPerdidas: 0, metroRotura: null, causaParada: null, pendienteParada: null, physicsVersion: PHYSICS_VERSION, trackId: track.id, trackVersion: track.version },
               genome: campeon.genome,
               origin: originOf(campeon.id, nodos),
               lineageId: campeon.id,
@@ -509,9 +512,11 @@ export function App() {
         }
         // «demo-motor-rampa»: el coche de serie, que en La Rampa se para contra su límite de motor.
         // «demo-ligero» y «demo-pesado»: el de serie en los dos extremos del peso, para ver la opacidad.
+        // «demo-fragil»: en La Cordillera pierde dos piezas hacia los 247 m y sigue; sirve para ver la rotura.
         if (e.genoma !== undefined) {
           const demo: Record<string, Genome> = {
             "demo-motor-rampa": STOCK_CAR,
+            "demo-fragil": GENOMA_DEMO_FRAGIL,
             "demo-ligero": { ...STOCK_CAR, bodyDensity: GENE_RANGES.bodyDensity[0] },
             "demo-pesado": { ...STOCK_CAR, bodyDensity: GENE_RANGES.bodyDensity[1] },
           };

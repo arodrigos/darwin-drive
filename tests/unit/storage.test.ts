@@ -43,7 +43,7 @@ beforeEach(nuevaBase);
 const trackVersion = (t: TrackId) => getTrack(t)!.version;
 
 function result(carId: string, trackId: TrackId, distance: number, over: Partial<CarResult> = {}): CarResult {
-  return { carId, distance, reason: "stall", steps: 100, bestStep: Math.ceil(distance * 1.2) + 1, piezasPerdidas: 0, causaParada: null, pendienteParada: null, physicsVersion: PHYSICS_VERSION, trackId, trackVersion: trackVersion(trackId), ...over };
+  return { carId, distance, reason: "stall", steps: 100, bestStep: Math.ceil(distance * 1.2) + 1, piezasPerdidas: 0, metroRotura: null, causaParada: null, pendienteParada: null, physicsVersion: PHYSICS_VERSION, trackId, trackVersion: trackVersion(trackId), ...over };
 }
 
 function entry(n: number, trackId: TrackId, distance: number, over: Partial<RankingEntry> = {}): RankingEntry {

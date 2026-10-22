@@ -65,6 +65,24 @@ export interface TrackSceneHandle {
 type Vec = Phaser.Math.Vector2;
 const vec = (x: number, y: number): Vec => new Phaser.Math.Vector2(x, y);
 
+/** El destello dura 300 ms de reloj real aunque la carrera vaya a ×8: lo que se ve no puede depender del ritmo. */
+const DESTELLO_MS = 300;
+const DESTELLO_M = 0.6;
+const DESTELLO_CONTORNO = 0x0c0c0c;
+const DESTELLO_BLANCO = 0xffffff;
+const DESTELLO_AMARILLO = 0xffd400;
+
+/** Estrella de ocho puntas: radio exterior r, interior r/2. */
+function puntosEstrella(cx: number, cy: number, r: number): Vec[] {
+  const pts: Vec[] = [];
+  for (let k = 0; k < 16; k++) {
+    const rr = k % 2 === 0 ? r : r / 2;
+    const a = (k * Math.PI) / 8;
+    pts.push(vec(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr));
+  }
+  return pts;
+}
+
 function hueColour(hue: number, light: number): number {
   return Phaser.Display.Color.HSLToColor(hue / 360, 0.7, light).color;
 }
@@ -95,6 +113,7 @@ class TrackScene extends Phaser.Scene {
   private rulerLabels: Phaser.GameObjects.Text[] = [];
   private carLabels: Phaser.GameObjects.Text[] = [];
   private flagLabel!: Phaser.GameObjects.Text;
+  private destellos: { x: number; y: number; at: number }[] = [];
   private skyDirty = true;
   private refH = 0;
   private camX = 0;
@@ -143,6 +162,8 @@ class TrackScene extends Phaser.Scene {
     const now = performance.now();
     this.prev = snap || this.curr.length === 0 ? poses : this.curr;
     this.curr = poses;
+    // Los destellos se anotan al recibir la pose, no al pintar: cada rotura llega en una sola pose.
+    for (const p of poses) for (const r of p.roturas ?? []) this.destellos.push({ x: r.x, y: r.y, at: now });
     this.recvGap = Math.min(100, Math.max(16, now - this.recvAt));
     this.recvAt = now;
   }
@@ -338,12 +359,38 @@ class TrackScene extends Phaser.Scene {
       if (i === 0) runtime.opacidades = opac;
       const cx0 = toX(p.x);
       const cy0 = toY(p.y);
+      const mascara = p.piezas ?? 255;
       pts.forEach((a, k) => {
+        if ((mascara & (1 << k)) === 0) return;
         const b = pts[(k + 1) % pts.length];
         g.fillStyle(fill, opac[k]).fillTriangle(cx0, cy0, a.x, a.y, b.x, b.y);
       });
-      g.lineStyle(2, CONTORNO_COCHE, 1).strokePoints(pts, true, true);
+      if (mascara === 255) g.lineStyle(2, CONTORNO_COCHE, 1).strokePoints(pts, true, true);
+      else {
+        // Con triángulos perdidos solo se contornea lo que queda: el hueco se ve como hueco.
+        g.lineStyle(2, CONTORNO_COCHE, 1);
+        pts.forEach((a, k) => {
+          if ((mascara & (1 << k)) === 0) return;
+          const b = pts[(k + 1) % pts.length];
+          g.lineBetween(cx0, cy0, a.x, a.y).lineBetween(a.x, a.y, b.x, b.y).lineBetween(b.x, b.y, cx0, cy0);
+        });
+      }
+      for (const s of p.sueltas ?? []) {
+        const loc = (k: number) => {
+          const v = car.genome.body[k % car.genome.body.length];
+          return { x: Math.cos(v.angle) * v.length, y: Math.sin(v.angle) * v.length };
+        };
+        const rot = (q: { x: number; y: number }) => vec(toX(s.x + q.x * Math.cos(s.angle) - q.y * Math.sin(s.angle)), toY(s.y + q.x * Math.sin(s.angle) + q.y * Math.cos(s.angle)));
+        const tri = [rot({ x: 0, y: 0 }), rot(loc(s.i)), rot(loc(s.i + 1))];
+        g.fillStyle(fill, 0.9).fillTriangle(tri[0].x, tri[0].y, tri[1].x, tri[1].y, tri[2].x, tri[2].y);
+        g.lineStyle(2, CONTORNO_COCHE, 1).strokePoints(tri, true, true);
+      }
+      if (i === 0) {
+        runtime.piezas = mascara;
+        runtime.sueltas = (p.sueltas?.length ?? 0) + p.wheels.filter((w) => w.suelta && !w.fuera).length;
+      }
       for (const w of p.wheels) {
+        if (w.fuera) continue;
         const cx = toX(w.x);
         const cy = toY(w.y);
         const r = w.radius * PX_PER_METER;
@@ -364,6 +411,17 @@ class TrackScene extends Phaser.Scene {
       }
     });
     for (let i = used; i < this.carLabels.length; i++) this.carLabels[i].setVisible(false);
+    this.destellos = this.destellos.filter((d) => now - d.at < DESTELLO_MS);
+    runtime.destellos = this.destellos.length;
+    for (const d of this.destellos) {
+      // Contorno oscuro bajo la estrella blanca y amarilla: se lee sobre cielo claro y sobre suelo oscuro.
+      const r = (DESTELLO_M * PX_PER_METER) / 2;
+      const cx = toX(d.x);
+      const cy = toY(d.y);
+      g.fillStyle(DESTELLO_CONTORNO, 1).fillPoints(puntosEstrella(cx, cy, r + 3), true);
+      g.fillStyle(DESTELLO_BLANCO, 1).fillPoints(puntosEstrella(cx, cy, r), true);
+      g.fillStyle(DESTELLO_AMARILLO, 1).fillPoints(puntosEstrella(cx, cy, r * 0.55), true);
+    }
   }
 
   /** Caja del coche en px CSS: el marcador se dimensiona contra ella y las pruebas comprueban que nada se cruza. */

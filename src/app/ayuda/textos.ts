@@ -75,6 +75,16 @@ export const SECCIONES_GUIA: readonly SeccionGuia[] = [
     ],
   },
   {
+    id: "fragilidad",
+    titulo: "Fragilidad",
+    parrafos: [
+      "La carrocería se rompe por triángulos. Un golpe fuerte contra el suelo (una caída, un salto mal aterrizado) arranca los triángulos que no lo aguantan: se ve un destello, la pieza cae y el coche sigue con lo que le queda.",
+      "Aguantan más los coches densos, los triángulos gruesos y los grandes; se rompen antes los ligeros y los que acaban en punta fina.",
+      "Una rueda se suelta cuando pierde los dos triángulos de su vértice. Al romperse el coche pesa menos, pero el motor nunca empuja más por kilo: romperse no sale a cuenta. Si casi no queda carrocería, el coche queda destrozado y la carrera acaba en el último metro sano.",
+      "Perder piezas penaliza: a igual distancia en el ranking gana el coche que llegó entero. La tarjeta de fin dice cuántas piezas perdió y a qué metro cedió la primera.",
+    ],
+  },
+  {
     id: "por-que-se-para",
     titulo: "Por qué se para un coche",
     parrafos: [
@@ -182,6 +192,7 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
       { nombre: "Hasta el final", texto: "Salta al resultado sin esperar la carrera." },
       { nombre: "Repetir", texto: "Vuelve a correr desde el principio con el mismo ritmo." },
       { nombre: "¿Por qué?", texto: "En la tarjeta de fin, explica por qué se paró el coche." },
+      { nombre: "Destello", texto: "Una estrella marca dónde se rompió una pieza; la tarjeta cuenta cuántas perdió. Más en «Fragilidad»." },
       { nombre: "Bandera", texto: "Marca el récord de la pista: el coche que llegue más lejos." },
       { nombre: "Apagar la pantalla", texto: PAUSA_SEGUNDO_PLANO + "." },
     ],

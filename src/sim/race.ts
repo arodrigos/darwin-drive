@@ -29,12 +29,12 @@ export function liveBodyCount(): number {
  * Un mundo de Planck por coche: cada coche avanza sus propios pasos de DT, así
  * su resultado no depende de con quién corre ni de cómo se troceen los pasos.
  * `heightFn` y `maxSteps` solo son para tests: sustituyen el perfil de la pista
- * y acortan la carrera para que una evolución entera quepa en un test; `sinDiagnostico` y `friccionSuelo` también.
+ * y acortan la carrera para que una evolución entera quepa en un test; `sinDiagnostico`, `friccionSuelo` y `caida` (metros extra de altura al salir, para medir la rotura) también.
  */
 export function createRace(
   cars: { carId: string; genome: Genome }[],
   trackId: TrackId,
-  opts?: { heightFn?: (x: number) => number; maxSteps?: number; sinDiagnostico?: boolean; friccionSuelo?: number },
+  opts?: { heightFn?: (x: number) => number; maxSteps?: number; sinDiagnostico?: boolean; friccionSuelo?: number; caida?: number },
 ): Race {
   const track = resolverPista(trackId);
   if (!track) throw new Error(`Pista desconocida: ${String(trackId)}`);
