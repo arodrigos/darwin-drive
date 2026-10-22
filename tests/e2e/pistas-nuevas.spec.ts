@@ -12,7 +12,7 @@ const NUEVAS = [
   { id: "trampolines", nombre: "Los Trampolines" },
   { id: "escalera", nombre: "La Escalera" },
 ] as const;
-const TODAS = ["cordillera", "rampa", "dunas", "pedregal", "glaciar", "trampolines", "escalera", "acantilado", "recta"];
+const TODAS = ["cordillera", "rampa", "dunas", "pedregal", "glaciar", "trampolines", "escalera", "acantilado", "recta", "mosaico"];
 
 type Estado = { rankings: Record<string, { distance: number }[]>; pistaSeleccionada: string };
 const estado = (page: Page) => page.evaluate(() => window.__debug!.estado() as unknown as Estado);
@@ -72,7 +72,7 @@ test("pn-5 el carrusel cabe en 120 px, deja ver todo el lienzo y «Probar» en c
       const hoja = page.getByTestId("hoja-pistas");
       await expect(hoja).toBeVisible();
       const tarjetas = hoja.locator("button.tarjeta-pista");
-      await expect(tarjetas).toHaveCount(9);
+      await expect(tarjetas).toHaveCount(10);
       const carrusel = (await page.getByTestId("carrusel-pistas").boundingBox())!;
       expect(carrusel.height).toBeLessThanOrEqual(120);
       for (const caja of await tarjetas.evaluateAll((bs) => bs.map((b) => { const r = b.getBoundingClientRect(); return [r.width, r.height]; }))) {
@@ -109,7 +109,7 @@ test("pn-1 cada pista nueva se puede elegir en el selector y se recuerda", async
     await expect(page.getByTestId("selector-pista")).toHaveText(`Pista: ${p.nombre} ▾`);
     expect((await estado(page)).pistaSeleccionada).toBe(p.id);
   }
-  expect(TODAS).toHaveLength(9);
+  expect(TODAS).toHaveLength(10);
 });
 
 test("pn-6 una pista nueva sin marcas enseña el estado vacío en Rankings", async ({ page }) => {

@@ -164,6 +164,7 @@ test("invariante: exportar e importar es la identidad para cualquier estado vál
       escalera: fc.uniqueArray(fc.integer({ min: 0, max: 39 }), { maxLength: 10 }),
       acantilado: fc.uniqueArray(fc.integer({ min: 0, max: 39 }), { maxLength: 10 }),
       recta: fc.uniqueArray(fc.integer({ min: 0, max: 39 }), { maxLength: 10 }),
+      mosaico: fc.uniqueArray(fc.integer({ min: 0, max: 39 }), { maxLength: 10 }),
     }),
     distancias: fc.array(fc.integer({ min: 0, max: 100_000 }), { minLength: 10, maxLength: 10 }),
     coches: fc.uniqueArray(fc.integer({ min: 0, max: 39 }), { maxLength: 8 }),

@@ -1,4 +1,4 @@
-import type { TipoSuperficie } from "@/sim/tracks";
+import { TIPOS_TRAMO, tipoTramo, type TipoSuperficie, type TipoTramo } from "@/sim/tracks";
 
 export type PatronSuperficie = "ninguno" | "brillos" | "zigzag";
 
@@ -30,4 +30,20 @@ function luminancia(rgb: number): number {
 export function contraste(a: number, b: number): number {
   const [hi, lo] = [luminancia(a), luminancia(b)].sort((x, y) => y - x);
   return (hi + 0.05) / (lo + 0.05);
+}
+
+const NOMBRE_TRAMO: Record<TipoTramo, string> = {
+  llano: "Tramo llano",
+  loma: "Loma",
+  ondas: "Ondas",
+  piedras: "Piedras",
+  hielo: "Hielo",
+  "hielo-loma": "Loma de hielo",
+  elastico: "Suelo elástico",
+  "elastico-ondas": "Ondas elásticas",
+};
+
+/** Rótulo del tramo de 25 m en el que está el coche (solo El Mosaico lo enseña). */
+export function rotuloTramo(x: number): string {
+  return NOMBRE_TRAMO[TIPOS_TRAMO[tipoTramo(Math.floor(x / 25))]];
 }

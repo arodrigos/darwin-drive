@@ -13,7 +13,7 @@ export const runtime = {
   pistaSeleccionada: "cordillera" as TrackId,
   disponible: true,
   persistente: "unknown" as boolean | "unknown",
-  rankings: { cordillera: [], rampa: [], dunas: [], pedregal: [], glaciar: [], trampolines: [], escalera: [], acantilado: [], recta: [] } as Record<TrackId, { carId: string; distance: number; origin: string }[]>,
+  rankings: { cordillera: [], rampa: [], dunas: [], pedregal: [], glaciar: [], trampolines: [], escalera: [], acantilado: [], recta: [], mosaico: [] } as Record<TrackId, { carId: string; distance: number; origin: string }[]>,
   // Carrera en pantalla (la rellena Pista).
   pistaEnCarrera: null as TrackId | null,
   distanciaLider: null as number | null,

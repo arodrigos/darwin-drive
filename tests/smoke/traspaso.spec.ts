@@ -6,7 +6,7 @@ import { test, expect } from "@playwright/test";
 // amplían el recorrido hasta el que declara el diseño.
 const BASE_URL = process.env.BASE_URL ?? "http://127.0.0.1:3000";
 
-test("el juego carga, enseña las nueve pistas y el selector cambia la pista", async ({ page }) => {
+test("el juego carga, enseña las diez pistas y el selector cambia la pista", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   const ajenas: string[] = [];
   const origen = new URL(BASE_URL).origin;

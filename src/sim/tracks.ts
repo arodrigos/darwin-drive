@@ -3,7 +3,7 @@ import { createNoise2D } from "simplex-noise";
 import { curvaDificultad } from "./dificultad";
 import { FLAT_START, VERTEX_SPACING } from "./terrain";
 
-export type TrackId = "cordillera" | "rampa" | "dunas" | "pedregal" | "glaciar" | "trampolines" | "escalera" | "acantilado" | "recta";
+export type TrackId = "cordillera" | "rampa" | "dunas" | "pedregal" | "glaciar" | "trampolines" | "escalera" | "acantilado" | "recta" | "mosaico";
 
 export type TipoSuperficie = "roca" | "hielo" | "elastico";
 
@@ -201,6 +201,79 @@ function escaleraHeight(x: number): number {
 // que en el Pedregal (Spearman 0,95); con 0,3 el orden cambia de verdad.
 const ESCALERA_SUELO: Superficie = { ...ROCA, friction: 0.3 };
 
+
+/** Plantillas del Mosaico, una por tramo de 25 m. El orden es el del índice de TIPOS_TRAMO. */
+export const TIPOS_TRAMO = ["llano", "loma", "ondas", "piedras", "hielo", "hielo-loma", "elastico", "elastico-ondas"] as const;
+export type TipoTramo = (typeof TIPOS_TRAMO)[number];
+const ELASTICO_MOSAICO: Superficie = { tipo: "elastico", friction: 0.4, restitution: 0.65 };
+const SUPERFICIE_TRAMO: Record<TipoTramo, Superficie> = {
+  llano: ROCA,
+  loma: ROCA,
+  ondas: ROCA,
+  piedras: ROCA,
+  hielo: HIELO,
+  "hielo-loma": HIELO,
+  elastico: ELASTICO_MOSAICO,
+  "elastico-ondas": ELASTICO_MOSAICO,
+};
+const TRAMO_LARGO = 25;
+const MOSAICO_TABLA = 1000;
+// Los tres primeros tramos son fijos (salida llana, una loma, ondas): el jugador ve variedad desde el principio.
+const ARRANQUE = [4, 6, 0] as const;
+const mosaicoTabla: Uint8Array = (() => {
+  const t = new Uint8Array(MOSAICO_TABLA);
+  for (let i = 0; i < MOSAICO_TABLA; i++) t[i] = i < 3 ? ARRANQUE[i] : siguienteTipo(i, t[i - 1]);
+  return t;
+})();
+// Elige entre los demás tipos: nunca repite el anterior, y sigue siendo función pura del índice.
+function siguienteTipo(i: number, anterior: number): number {
+  const k = cellHash(i, 31) % (TIPOS_TRAMO.length - 1);
+  return k >= anterior ? k + 1 : k;
+}
+/** Índice en TIPOS_TRAMO del tramo `i` (de 25 m desde x = 0). Para i ≥ 3 nunca coincide con el del tramo anterior. */
+export function tipoTramo(i: number): number {
+  const n = Math.max(0, Math.floor(i));
+  if (n < MOSAICO_TABLA) return mosaicoTabla[n];
+  let t = mosaicoTabla[MOSAICO_TABLA - 1];
+  for (let k = MOSAICO_TABLA; k <= n; k++) t = siguienteTipo(k, t);
+  return t;
+}
+const MOSAICO_TECHO = 2.4;
+function mosaicoHeight(x: number): number {
+  const d = x - FLAT_START;
+  if (d <= 0) return 0;
+  const i = Math.floor(x / TRAMO_LARGO);
+  const u = (x - i * TRAMO_LARGO) / TRAMO_LARGO;
+  // Ventana sen²: vale 0 con derivada 0 en los dos bordes, así las fronteras entre plantillas quedan fundidas y sin escalón.
+  const ventana = Math.sin(Math.PI * u) ** 2;
+  // El tamaño sigue la curva de dificultad en el centro del tramo.
+  const tam = MOSAICO_TECHO * (0.25 + 0.75 * curvaDificultad((i + 0.5) * TRAMO_LARGO - FLAT_START));
+  switch (TIPOS_TRAMO[tipoTramo(i)]) {
+    case "loma":
+    case "hielo-loma":
+      return tam * ventana;
+    case "ondas":
+    case "elastico-ondas":
+      return 0.4 * tam * ventana * Math.sin(4 * Math.PI * u);
+    case "piedras": {
+      // Dos piedras por tramo, en sitios que cambian con el índice y lejos de los bordes (por eso no necesitan ventana).
+      const c1 = 0.25 + 0.15 * ((cellHash(i, 41) % 1000) / 999);
+      const c2 = 0.65 + 0.15 * ((cellHash(i, 42) % 1000) / 999);
+      const bulto = (c: number) => Math.max(0, 1 - Math.abs(u - c) / 0.08);
+      return 0.35 * tam * Math.max(bulto(c1), bulto(c2));
+    }
+    case "elastico":
+      return 0.2 * tam * ventana * Math.sin(2 * Math.PI * u);
+    case "hielo":
+      return 0;
+    default:
+      return 0;
+  }
+}
+function mosaicoSurface(index: number): Superficie {
+  return SUPERFICIE_TRAMO[TIPOS_TRAMO[tipoTramo(index)]];
+}
+
 const rocaSiempre = (): Superficie => ROCA;
 
 export const ACANTILADO_PASO = 14;
@@ -326,6 +399,12 @@ export const TRACKS: readonly Track[] = [
     tagline: "Casi llana: una contrarreloj hasta la meta.",
     heightAt: rectaHeight,
     surfaceOfSegment: rocaSiempre,
+    id: "mosaico",
+    version: 1,
+    name: "El Mosaico",
+    tagline: "Cada 25 metros, un suelo distinto: gana el que sirve para todo.",
+    heightAt: mosaicoHeight,
+    surfaceOfSegment: mosaicoSurface,
   },
 ];
 

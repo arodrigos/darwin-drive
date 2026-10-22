@@ -27,11 +27,12 @@ const HASH_REFERENCIA: Record<string, string> = {
   escalera: "468cb282f3168c09e1a680d83d1e2e7bb4041cebb51d750c5ecab4946496d53a",
   acantilado: "750bdce74f7a330fe0091492940fdda90e7938b2de44d53584e8b7dd906c4d16",
   recta: "1c98330d057266a2940ebb167e150d3e6e5e5cc14921b750f02dd325a8771043",
+  mosaico: "acf9b6ceeae467ea28f6e0750f8e3dfc12965577c62a4e15d72fa5e715ec328a",
 };
 
 const MAX_DY = Math.tan((MAX_SLOPE_DEG * Math.PI) / 180) * VERTEX_SPACING;
 
-test("at-1-hash: las nueve pistas dan el hash fijado, en dos procesos, y son distintas", () => {
+test("at-1-hash: las diez pistas dan el hash fijado, en dos procesos, y son distintas", () => {
   const otroProceso = JSON.parse(
     execFileSync(process.execPath, ["--import", "tsx", "tests/unit/helpers/hash-pistas.ts", "imprimir"], {
       encoding: "utf8",
@@ -44,7 +45,7 @@ test("at-1-hash: las nueve pistas dan el hash fijado, en dos procesos, y son dis
     assert.equal(otroProceso[t.id], h, `${t.id} en un segundo proceso`);
     vistos.add(h);
   }
-  assert.equal(vistos.size, 9);
+  assert.equal(vistos.size, 10);
 });
 
 test("at-1-hash límites: salida llana, final finito, getTrack desconocido", () => {
@@ -59,7 +60,7 @@ test("at-1-hash límites: salida llana, final finito, getTrack desconocido", () 
   assert.equal(DEFAULT_TRACK_ID, "cordillera");
   assert.deepEqual(
     TRACKS.map((t) => t.id),
-    ["cordillera", "rampa", "dunas", "pedregal", "glaciar", "trampolines", "escalera", "acantilado", "recta"],
+    ["cordillera", "rampa", "dunas", "pedregal", "glaciar", "trampolines", "escalera", "acantilado", "recta", "mosaico"],
   );
 });
 
