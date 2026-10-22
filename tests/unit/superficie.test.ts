@@ -9,7 +9,7 @@ import { ESCALON_MAX, ESCALON_MIN, ESCALERA_HUELLA, HIELO, ROCA, TRACKS, getTrac
 import { FLAT_START, MAX_SLOPE_DEG, VERTEX_SPACING } from "../../src/sim/terrain";
 
 const CLASICAS = ["cordillera", "rampa", "dunas", "pedregal"] as const;
-const NUEVAS = ["glaciar", "trampolines", "escalera"] as const;
+const NUEVAS = ["glaciar", "trampolines", "escalera", "acantilado", "recta"] as const;
 const SLOPE_RAD = (MAX_SLOPE_DEG * Math.PI) / 180;
 
 test("invariante pn-2: surfaceOfSegment es pura y queda en friction [0,02, 1] y restitution [0, 0,85]", () => {

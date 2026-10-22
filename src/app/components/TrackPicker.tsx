@@ -42,7 +42,7 @@ export function TrackPicker(props: { value: TrackId; onChange: (id: TrackId) => 
     if (open) measureOnNextFrame("abrir-pista");
   }, [open]);
 
-  // Con siete pistas la elegida puede quedar fuera de la vista del carrusel.
+  // Con nueve pistas la elegida puede quedar fuera de la vista del carrusel.
   useEffect(() => {
     if (open) activa.current?.scrollIntoView?.({ inline: "center", block: "nearest" });
   }, [open]);

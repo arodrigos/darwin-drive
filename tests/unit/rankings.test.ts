@@ -154,5 +154,5 @@ test("pn-6: una partida con 4 claves de ranking carga sin avisos y las pistas nu
   const antiguo = { cordillera: [], rampa: [], dunas: [], pedregal: [] };
   const out = validateRankings(antiguo, (m) => avisos.push(m))!;
   assert.deepEqual(avisos, []);
-  for (const id of ["glaciar", "trampolines", "escalera"] as const) assert.deepEqual(out[id], []);
+  for (const id of ["glaciar", "trampolines", "escalera", "acantilado", "recta"] as const) assert.deepEqual(out[id], []);
 });

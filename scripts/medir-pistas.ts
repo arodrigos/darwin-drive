@@ -74,7 +74,9 @@ function umbral(): void {
   }
   // pn-3: cada pista nueva (no clásica) se ordena distinto de todas las demás.
   const MAX_SPEARMAN = 0.85;
-  const nuevas = TRACKS.filter((t) => !ES_CLASICA(t.id) && (!process.env.MEDIR_PISTA || process.env.MEDIR_PISTA === t.id));
+  // La Recta es llana y de roca por diseño (bx-3): se ordena como las clásicas y lo que la distingue es el tiempo,
+  // así que no se le exige distinto orden de distancia.
+  const nuevas = TRACKS.filter((t) => !ES_CLASICA(t.id) && t.id !== "recta" && (!process.env.MEDIR_PISTA || process.env.MEDIR_PISTA === t.id));
   if (nuevas.length > 0) {
     const rangosDe = new Map(TRACKS.map((t) => [t.id, rangos(genomas.map((g) => simulateCar(g, t.id).distance))] as const));
     for (const t of nuevas) {
@@ -86,6 +88,29 @@ function umbral(): void {
           console.error(`medir-pistas --umbral: ${t.id} y ${u.id} se ordenan igual (Spearman ${r.toFixed(3)} ≥ ${MAX_SPEARMAN})`);
         }
       }
+    }
+  }
+  // bx-2 y bx-3: El Acantilado premia la robustez y La Recta es una contrarreloj que casi todos terminan.
+  const quiereBx = !process.env.MEDIR_PISTA || ["acantilado", "recta"].includes(process.env.MEDIR_PISTA);
+  if (quiereBx) {
+    const tasaRotura = (id: TrackId) => genomas.filter((g) => simulateCar(g, id).piezasPerdidas > 0).length / N;
+    const clasicas = TRACKS.filter((t) => ES_CLASICA(t.id)).map((t) => tasaRotura(t.id));
+    const media = clasicas.reduce((x, y) => x + y, 0) / clasicas.length;
+    const acantilado = tasaRotura("acantilado");
+    const recta = genomas.map((g) => simulateCar(g, "recta"));
+    const viablesRecta = recta.filter((r) => r.distance >= 20);
+    const llegan = viablesRecta.filter((r) => r.reason === "meta").length / Math.max(1, viablesRecta.length);
+    console.log(
+      `bx-2: rotura en El Acantilado ${(acantilado * 100).toFixed(1)} % frente a ${(media * 100).toFixed(1)} % de media en las clásicas (se pide ≥ 2×)`,
+    );
+    console.log(`bx-3: en La Recta llega a meta el ${(llegan * 100).toFixed(1)} % de los viables (se pide ≥ 50 %)`);
+    if (!(acantilado >= 2 * media)) {
+      fallos++;
+      console.error("medir-pistas --umbral: El Acantilado no rompe el doble que la media de las clásicas");
+    }
+    if (!(llegan >= 0.5)) {
+      fallos++;
+      console.error("medir-pistas --umbral: menos de la mitad de los viables llega a la meta en La Recta");
     }
   }
   console.log(`medir-pistas --umbral: ${N} genomas, física actual${MURO ? ", con muro forzado" : ""}`);

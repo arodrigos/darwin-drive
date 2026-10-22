@@ -3,7 +3,7 @@ import { createNoise2D } from "simplex-noise";
 import { curvaDificultad } from "./dificultad";
 import { FLAT_START, VERTEX_SPACING } from "./terrain";
 
-export type TrackId = "cordillera" | "rampa" | "dunas" | "pedregal" | "glaciar" | "trampolines" | "escalera";
+export type TrackId = "cordillera" | "rampa" | "dunas" | "pedregal" | "glaciar" | "trampolines" | "escalera" | "acantilado" | "recta";
 
 export type TipoSuperficie = "roca" | "hielo" | "elastico";
 
@@ -203,6 +203,57 @@ const ESCALERA_SUELO: Superficie = { ...ROCA, friction: 0.3 };
 
 const rocaSiempre = (): Superficie => ROCA;
 
+export const ACANTILADO_PASO = 14;
+export const ACANTILADO_MIN = 0.5;
+export const ACANTILADO_MAX = 6;
+const ACANTILADO_ESCALONES = 1000;
+/** Cara de 65°: por debajo de los 70° que admite el terreno, y un escalón de 6 m ocupa ~2,8 m en horizontal. */
+const ACANTILADO_TAN_CARA = Math.tan((65 * Math.PI) / 180);
+/** Caída de cada escalón: 0,5 m al principio y 6 m como techo, con la variedad de cada celda. */
+function acantiladoCaida(n: number): number {
+  const c = Math.min(1, 2 * curvaDificultad((n + 0.5) * ACANTILADO_PASO));
+  const variedad = 0.8 + 0.2 * ((cellHash(n, 12) % 1000) / 999);
+  return Math.min(ACANTILADO_MAX, ACANTILADO_MIN + (ACANTILADO_MAX - ACANTILADO_MIN) * c * variedad);
+}
+/** Nivel del rellano de cada escalón (siempre bajando): se calcula una vez y heightAt sigue siendo pura. */
+const acantiladoNiveles: Float64Array = (() => {
+  const t = new Float64Array(ACANTILADO_ESCALONES + 1);
+  for (let n = 0; n < ACANTILADO_ESCALONES; n++) t[n + 1] = t[n] - acantiladoCaida(n);
+  return t;
+})();
+function acantiladoHeight(x: number): number {
+  const d = x - FLAT_START;
+  if (d <= 0) return 0;
+  const n = Math.floor(d / ACANTILADO_PASO);
+  if (n >= ACANTILADO_ESCALONES) return acantiladoNiveles[ACANTILADO_ESCALONES];
+  const caida = acantiladoCaida(n);
+  const ancho = caida / ACANTILADO_TAN_CARA;
+  const t = Math.min(1, (d - n * ACANTILADO_PASO) / ancho);
+  return acantiladoNiveles[n] - caida * t;
+}
+/**
+ * Los dos primeros tramos van fijos (hielo y roca): con arranque de roca, los ~90 % de coches que se paran en los
+ * primeros metros se ordenan igual que en las clásicas (Spearman 0,95) y la pista no premiaría nada distinto.
+ */
+const ACANTILADO_ARRANQUE: readonly Superficie[] = [HIELO, ROCA];
+/** Placas de hielo sobre la roca, cada vez más frecuentes con la distancia. */
+function acantiladoSurface(index: number): Superficie {
+  const c = curvaDificultad(index * 25 + 12.5);
+  // Antes de la salida no hay placas: el suelo bajo el coche al nacer es el de siempre.
+  if (index < 0) return ROCA;
+  if (index < ACANTILADO_ARRANQUE.length) return ACANTILADO_ARRANQUE[index];
+  return (cellHash(index, 13) % 1000) / 999 < 0.1 + 0.4 * c ? HIELO : ROCA;
+}
+
+const RECTA_TECHO = 0.5;
+const rectaNoise = createNoise2D(mulberry32(5150));
+/** Casi llana: una ondulación larga de menos de 0,5 m y sin curva de dificultad. */
+function rectaHeight(x: number): number {
+  const d = x - FLAT_START;
+  if (d <= 0) return 0;
+  return smoothstep(d / 30) * RECTA_TECHO * rectaNoise(d / 120, 4.5);
+}
+
 export const TRACKS: readonly Track[] = [
   {
     id: "cordillera",
@@ -259,6 +310,22 @@ export const TRACKS: readonly Track[] = [
     tagline: "Escalones de 20 cm a más de un metro, cuesta abajo.",
     heightAt: escaleraHeight,
     surfaceOfSegment: () => ESCALERA_SUELO,
+  },
+  {
+    id: "acantilado",
+    version: 1,
+    name: "El Acantilado",
+    tagline: "Escalones hacia abajo de medio metro a seis, con placas de hielo.",
+    heightAt: acantiladoHeight,
+    surfaceOfSegment: acantiladoSurface,
+  },
+  {
+    id: "recta",
+    version: 1,
+    name: "La Recta",
+    tagline: "Casi llana: una contrarreloj hasta la meta.",
+    heightAt: rectaHeight,
+    surfaceOfSegment: rocaSiempre,
   },
 ];
 
