@@ -7,6 +7,7 @@ import { avisoRanking, textoRanking } from "@/app/ranking-text";
 import { runtime } from "@/debug/ganchos";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
 import { registrarPoses, reiniciarRendimiento } from "@/debug/rendimiento";
+import { rotuloTramo } from "@/game/superficies";
 import type { TrackSceneHandle } from "@/game/track-scene";
 import type { CarResult, EndReason } from "@/sim/constants";
 import { STOCK_CAR, genomeHash, type Genome } from "@/sim/genome";
@@ -77,6 +78,7 @@ export function Pista(props: PistaProps) {
   const track = resolverPista(trackId)!;
   const host = useRef<HTMLDivElement>(null);
   const hud = useRef<HTMLDivElement>(null);
+  const tramo = useRef<HTMLDivElement>(null);
   const iniciar = useRef<() => void>(() => {});
   const [failed, setFailed] = useState(() => !canDraw());
   const [fase, setFase] = useState<Fase>({ tipo: "corriendo" });
@@ -130,6 +132,10 @@ export function Pista(props: PistaProps) {
     let pausaPorCapa = false;
     let esperas: { hasta: number; resolver: () => void }[] = [];
     const carId = genomeHash(g);
+    // Solo El Mosaico cambia de suelo cada tramo; en las demás pistas el rótulo ni se monta.
+    const pintarTramo = (x: number) => {
+      if (tramo.current) tramo.current.textContent = rotuloTramo(x);
+    };
 
     const liberar = () => {
       const pendientes = esperas;
@@ -153,6 +159,7 @@ export function Pista(props: PistaProps) {
           runtime.distanciaLider = maxX;
           runtime.tiempoSim = m.simTime;
           if (hud.current) hud.current.textContent = formatMeters(maxX);
+          pintarTramo(maxX);
           setAvance(maxX);
         }
       } else if (m.type === "poses") {
@@ -167,6 +174,7 @@ export function Pista(props: PistaProps) {
         runtime.cochesVivos = m.poses.filter((p) => !p.finished).length;
         registrarPoses(m.simTime, runtime.cochesVivos);
         if (hud.current) hud.current.textContent = formatMeters(maxX);
+        pintarTramo(maxX);
         // Con todos los coches terminados el motor emite raceDone justo después: si la espera se resolviera
         // aquí, adelantarSimulacion podría devolver antes de que exista ultimoResultado (CI lento).
         if (runtime.cochesVivos > 0) esperas = esperas.filter((e) => (m.simTime >= e.hasta ? (e.resolver(), false) : true));
@@ -220,6 +228,7 @@ export function Pista(props: PistaProps) {
       runtime.cochesVivos = 1;
       runtime.tiempoSim = 0;
       if (hud.current) hud.current.textContent = formatMeters(0);
+      pintarTramo(0);
       scene.begin({ track: pista, cars: [{ carId, genome: g, hue: STOCK_HUE, label: propio ? "Tu coche" : "Coche de serie" }], flag: marca });
       setFase({ tipo: "corriendo" });
       setInscripcion(null);
@@ -357,6 +366,11 @@ export function Pista(props: PistaProps) {
       <div className="hud-distancia" ref={hud} data-testid="hud-distancia" aria-live="off">
         0,0 m
       </div>
+      {track.id === "mosaico" && (
+        <div className="rotulo-tramo" ref={tramo} data-testid="rotulo-tramo" aria-live="off">
+          {rotuloTramo(0)}
+        </div>
+      )}
       {rendimiento && <PanelRendimiento />}
       {aviso && (
         <div className="aviso-ranking" role="status" data-testid="aviso-ranking">

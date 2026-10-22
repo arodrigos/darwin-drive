@@ -61,10 +61,10 @@ test("at-9 portada: sin scroll horizontal, botones ≥44 px, siete pistas con es
     await page.setViewportSize({ width: t.w, height: t.h });
     await abrir(page);
     await expect(page.getByRole("heading", { name: "Darwin Drive" })).toBeVisible();
-    for (const nombre of ["La Cordillera", "La Rampa", "Las Dunas", "El Pedregal", "El Glaciar", "Los Trampolines", "La Escalera"]) {
+    for (const nombre of ["La Cordillera", "La Rampa", "Las Dunas", "El Pedregal", "El Glaciar", "Los Trampolines", "La Escalera", "El Mosaico"]) {
       await expect(page.getByTestId("portada").getByText(nombre, { exact: true })).toBeVisible();
     }
-    await expect(page.getByText("sin marcas todavía")).toHaveCount(7);
+    await expect(page.getByText("sin marcas todavía")).toHaveCount(8);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     const lados = await page.$$eval("button", (bs) => bs.map((b) => { const r = b.getBoundingClientRect(); return [r.width, r.height]; }));
     for (const [w, h] of lados) {
@@ -134,8 +134,8 @@ test("at-10 selector: siete tarjetas, elegir La Rampa cambia la pista y se recue
   await page.getByTestId("acceso-explorar").click();
   await page.getByTestId("selector-pista").click();
   const hoja = page.getByTestId("hoja-pistas");
-  await expect(hoja.locator("button.tarjeta-pista")).toHaveCount(7);
-  await expect(hoja.getByText("sin marcas todavía")).toHaveCount(7);
+  await expect(hoja.locator("button.tarjeta-pista")).toHaveCount(8);
+  await expect(hoja.getByText("sin marcas todavía")).toHaveCount(8);
   await expect(hoja.getByText("Una recta que se empina sin parar.")).toBeVisible();
   await page.screenshot({ path: `${DIR}/${ID}-selector-hoja-360x640.png` });
 
