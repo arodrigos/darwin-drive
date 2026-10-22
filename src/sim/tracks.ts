@@ -264,6 +264,24 @@ export const TRACKS: readonly Track[] = [
 
 export const DEFAULT_TRACK_ID: TrackId = "cordillera";
 
+export const PRUEBAS_LLANA_ID = "pruebas-llana";
+
+// Llana y de roca para llegar a la meta en un recorrido de prueba. Queda fuera de TRACKS a propósito:
+// ni selectores, ni Rankings, ni Especies la ven, y getTrack la ignora, así que nada suyo se guarda.
+const PRUEBAS_LLANA: Track = {
+  id: PRUEBAS_LLANA_ID as TrackId,
+  version: 1,
+  name: "Llana de pruebas",
+  tagline: "Solo para pruebas.",
+  heightAt: () => 0,
+  surfaceOfSegment: rocaSiempre,
+};
+
+/** Como getTrack, pero también resuelve la pista de pruebas: solo la usan la simulación y la escena. */
+export function resolverPista(id: unknown): Track | null {
+  return getTrack(id) ?? (id === PRUEBAS_LLANA_ID ? PRUEBAS_LLANA : null);
+}
+
 export function getTrack(id: unknown): Track | null {
   return TRACKS.find((t) => t.id === id) ?? null;
 }

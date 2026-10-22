@@ -20,6 +20,9 @@ export const PALETTES: Record<TrackId, TrackPalette> = {
   pedregal: { skyTop: 0x93a6b8, skyBottom: 0xdfe5ea, far: 0x9aa3ab, near: 0x7d8288, earth: 0x6b6862, grass: 0x9a9a8a },
 };
 
+// La llana de pruebas no es una pista del juego (no está en TrackId): comparte el tono de La Cordillera.
+PALETTES["pruebas-llana" as TrackId] = PALETTES.cordillera;
+
 export function cssColor(c: number): string {
   return `#${c.toString(16).padStart(6, "0")}`;
 }

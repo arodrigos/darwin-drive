@@ -10,7 +10,7 @@ import { mergeLineage, originOf, pruneLineage, type LineageNode } from "@/evolut
 import { createSimRunner } from "@/worker";
 import { MAX_STEPS, PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { GENE_RANGES, genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
-import { DEFAULT_TRACK_ID, getTrack, TRACKS, type TrackId } from "@/sim/tracks";
+import { DEFAULT_TRACK_ID, getTrack, PRUEBAS_LLANA_ID, TRACKS, type TrackId } from "@/sim/tracks";
 import { DEFAULT_META, loadMeta, META_KEY, saveMeta, type Meta, type RitmoRecordado } from "@/storage/meta";
 import {
   emptyRankings,
@@ -391,6 +391,11 @@ export function App() {
           setTrackId(m.lastTrack);
           runtime.pistaSeleccionada = m.lastTrack;
         }
+        // La llana de pruebas se corre pero no se guarda: ni lastTrack ni selectores la conocen.
+        if (e.pista === PRUEBAS_LLANA_ID) {
+          setTrackId(PRUEBAS_LLANA_ID as TrackId);
+          runtime.pistaSeleccionada = PRUEBAS_LLANA_ID as TrackId;
+        }
         if (e.vacio) {
           await save(KEY_RANKINGS, null);
           await save(KEY_GARAGE, null);
@@ -534,7 +539,7 @@ export function App() {
     async (result: CarResult): Promise<RankingOutcome | null> => {
       if (!trial) return null;
       const outcome = await updateRanking({ result, genome: trial.genome, origin: trial.origin });
-      await recordMark(result.carId, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, detalleDe(result));
+      if (getTrack(result.trackId)) await recordMark(result.carId, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, detalleDe(result));
       runtime.ultimaInscripcion = {
         trackId: result.trackId,
         position: outcome.position,
