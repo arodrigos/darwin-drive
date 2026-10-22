@@ -3,7 +3,7 @@ import { createNoise2D } from "simplex-noise";
 import { runtime } from "@/debug/ganchos";
 import { measureOnNextFrame } from "@/debug/latencias";
 import { formatMeters } from "@/app/format";
-import { TORQUE_SLOPE_DEG, type CarPose, type CarResult, type CausaParada } from "@/sim/constants";
+import { META_DISTANCE, TORQUE_SLOPE_DEG, type CarPose, type CarResult, type CausaParada } from "@/sim/constants";
 import type { Genome } from "@/sim/genome";
 import { SEGMENT_LENGTH, segmentVertices } from "@/sim/terrain";
 import type { Track } from "@/sim/tracks";
@@ -220,6 +220,7 @@ class TrackScene extends Phaser.Scene {
     this.drawMarcador(cfg, poses, toX, toY);
     this.drawRuler(W, H, toX);
     this.drawFlag(cfg, toX, toY, W);
+    this.drawMeta(cfg, toX, toY, W);
 
     if (this.measurePending) {
       this.measurePending = false;
@@ -460,6 +461,28 @@ class TrackScene extends Phaser.Scene {
       used++;
     }
     for (let i = used; i < MAX_LABELS; i++) this.rulerLabels[i].setVisible(false);
+  }
+
+  /** Bandera a cuadros en META_DISTANCE: la carrera acaba ahí en cualquier pista. */
+  private drawMeta(cfg: SceneConfig, toX: (x: number) => number, toY: (h: number) => number, W: number): void {
+    const x = toX(META_DISTANCE);
+    if (x < -60 || x > W + 10) {
+      runtime.metaX = null;
+      return;
+    }
+    runtime.metaX = x;
+    const y = toY(cfg.track.heightAt(META_DISTANCE));
+    const ALTO = 120;
+    const COLS = 6;
+    const FILAS = 4;
+    const LADO = 9;
+    this.cars.lineStyle(4, 0xffffff, 1).lineBetween(x, y, x, y - ALTO);
+    for (let f = 0; f < FILAS; f++) {
+      for (let c = 0; c < COLS; c++) {
+        this.cars.fillStyle((f + c) % 2 === 0 ? 0x111111 : 0xffffff, 1).fillRect(x + 2 + c * LADO, y - ALTO + f * LADO, LADO, LADO);
+      }
+    }
+    this.cars.lineStyle(2, 0x111111, 1).strokeRect(x + 2, y - ALTO, COLS * LADO, FILAS * LADO);
   }
 
   private drawFlag(cfg: SceneConfig, toX: (x: number) => number, toY: (h: number) => number, W: number): void {

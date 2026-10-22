@@ -10,7 +10,7 @@ import { registrarPoses, reiniciarRendimiento } from "@/debug/rendimiento";
 import type { TrackSceneHandle } from "@/game/track-scene";
 import type { CarResult, EndReason } from "@/sim/constants";
 import { STOCK_CAR, genomeHash, type Genome } from "@/sim/genome";
-import { getTrack, type TrackId } from "@/sim/tracks";
+import { resolverPista, type TrackId } from "@/sim/tracks";
 import type { RitmoRecordado } from "@/storage/meta";
 import { textoCausa } from "@/app/ayuda/causas";
 import { RANKING_SIZE } from "@/storage/schema";
@@ -74,7 +74,7 @@ export interface PistaProps {
 
 export function Pista(props: PistaProps) {
   const { trackId, genome = STOCK_CAR } = props;
-  const track = getTrack(trackId)!;
+  const track = resolverPista(trackId)!;
   const host = useRef<HTMLDivElement>(null);
   const hud = useRef<HTMLDivElement>(null);
   const iniciar = useRef<() => void>(() => {});
@@ -108,12 +108,12 @@ export function Pista(props: PistaProps) {
   const pausarPorCapa = useRef<(on: boolean) => void>(() => {});
   const [rendimiento] = useState(() => parametrosPrueba().rendimiento);
   // La pista y el genoma se fijan al abrir: cambiarlos a media carrera sería correr una cosa y pintar otra.
-  const fijo = useRef({ trackId, genome, propio: Boolean(props.genome), marca: props.rankings[trackId][0]?.distance ?? null });
+  const fijo = useRef({ trackId, genome, propio: Boolean(props.genome), marca: props.rankings[trackId]?.[0]?.distance ?? null });
 
   useEffect(() => {
     if (failed) return;
     const { trackId: id, genome: g, marca, propio } = fijo.current;
-    const pista = getTrack(id)!;
+    const pista = resolverPista(id)!;
     const prueba = parametrosPrueba();
     const runner: SimRunner = createSimRunner({ worker: prueba.worker, failFirstStart: prueba.fallo });
     let scene: TrackSceneHandle | null = null;

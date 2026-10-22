@@ -28,6 +28,8 @@ export const runtime = {
   /** Cajas en px CSS del viewport: el coche en pista y el marcador de parada (null si no hay). */
   cajaCoche: null as { x: number; y: number; w: number; h: number } | null,
   marcador: null as { caja: { x: number; y: number; w: number; h: number }; tamEtiquetaPx: number; colorPlaca: string; colorTexto: string; altoCochePx: number; altoCunaPx: number } | null,
+  /** Bandera de meta (5000 m): x en px CSS de su asta si está en pantalla en el último frame, null si no. */
+  metaX: null as number | null,
   ejecutor: null as "worker" | "en-linea" | null,
   // Taller, garaje e inscripción (los publica App).
   genomaEnTaller: null as Genome | null,
@@ -62,7 +64,7 @@ export const runtime = {
 
 export interface Escenario {
   vacio?: true;
-  pista?: TrackId;
+  pista?: TrackId | "pruebas-llana";
   [otro: string]: unknown;
 }
 
@@ -101,6 +103,7 @@ export function estado() {
     opacidades: runtime.opacidades,
     cajaCoche: runtime.cajaCoche,
     marcador: runtime.marcador,
+    metaX: runtime.metaX,
     ritmo: runtime.ritmo,
     ritmoReal: runtime.ritmoReal,
     pausada: runtime.pausada,
