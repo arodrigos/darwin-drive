@@ -83,9 +83,9 @@ test("diag-1 el coche de serie se para en La Rampa, la tarjeta dice por qué y l
     expect(dentro({ x: c.x, y: c.y, w: c.width, h: c.height }, 360, 640)).toBe(true);
   }
   // El aviso de récord no se monta sobre «← Volver» de la cabecera.
-  const aviso = page.getByTestId("aviso-ranking");
-  if (await aviso.isVisible()) {
-    const av = (await aviso.boundingBox())!;
+  // Sin isVisible() antes: el aviso se va solo y entre las dos llamadas boundingBox() devolvería null.
+  const av = await page.getByTestId("aviso-ranking").boundingBox();
+  if (av) {
     const vo = (await page.getByTestId("volver").boundingBox())!;
     expect(cruzan({ x: av.x, y: av.y, w: av.width, h: av.height }, { x: vo.x, y: vo.y, w: vo.width, h: vo.height })).toBe(false);
   }
@@ -131,6 +131,17 @@ for (const ritmo of ["ritmo-final", "ritmo-x1"] as const) {
       const t: Caja = { x: tarjeta.x, y: tarjeta.y, w: tarjeta.width, h: tarjeta.height };
       expect(cruzan(m.caja, t)).toBe(false);
       expect(cruzan(coche, t)).toBe(false);
+      // El aviso de récord (la primera carrera de demo-motor-rampa lo es) no puede taparlos durante sus 2,5 s.
+      for (let i = 0; i < 12; i++) {
+        const av = await page.getByTestId("aviso-ranking").boundingBox();
+        if (av) {
+          const a: Caja = { x: av.x, y: av.y, w: av.width, h: av.height };
+          const ahora = await estado(page);
+          expect(cruzan(a, ahora.marcador!.caja)).toBe(false);
+          expect(cruzan(a, ahora.cajaCoche!)).toBe(false);
+        }
+        await page.waitForTimeout(250);
+      }
       await page.screenshot({ path: `${DIR}/${ID}-marcador-${ritmo === "ritmo-x1" ? "x1" : "final"}-${w}x${h}.png` });
     });
   }

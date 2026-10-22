@@ -1,8 +1,20 @@
 import type { EvolutionState } from "@/evolution/ga";
-import { TRACKS } from "@/sim/tracks";
+import { PRUEBAS_LLANA_ID, TRACKS } from "@/sim/tracks";
+import { compararMarcas, type Marca } from "@/sim/clasificacion";
 import { nombrePropuesto } from "@/app/nombres";
 import { normalizarNombre } from "./nombres";
-import { KEY_EVOLUTION, KEY_GARAGE, KEY_RANKINGS, type Rankings, type SavedCar } from "./schema";
+import {
+  bestStepValido,
+  causaValida,
+  isDate,
+  KEY_EVOLUTION,
+  KEY_GARAGE,
+  KEY_RANKINGS,
+  pendienteValida,
+  piezasValidas,
+  type Rankings,
+  type SavedCar,
+} from "./schema";
 import { clavesRegistradas, validarEstricto } from "./store";
 
 export const COPIA_FORMAT = "darwin-drive-copia";
@@ -92,6 +104,90 @@ function conNombresNormalizados(key: string, valor: unknown): unknown {
   return valor;
 }
 
+const esObjeto = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+
+/**
+ * El validador reordena cada ranking con compararMarcas, y quitar un bestStep cambia ese orden: se ordena aquí igual
+ * para que la comparación estricta no vea una diferencia que no es de la copia. Si hay algo que no es una marca, se
+ * deja como está y el validador la rechaza.
+ */
+function ordenarMarcas(lista: unknown[]): unknown[] {
+  if (!lista.every((e) => esObjeto(e) && typeof e.distance === "number")) return lista;
+  return [...(lista as Marca[])].sort(compararMarcas);
+}
+
+/**
+ * Los campos de marca fuera de rango no son una copia rota: al cargar lo guardado se quitan y la marca queda pendiente
+ * de volver a medirse. Se quitan aquí, antes de la comparación estricta, para que esa comparación siga exigiendo
+ * igualdad en todo lo estructural (genoma, ids, pistas) y no en lo que el juego sabe volver a medir.
+ */
+function conMarcasSaneadas(key: string, valor: unknown, ahora: string): unknown {
+  const sanearEntrada = (e: unknown): unknown => {
+    if (!esObjeto(e)) return e;
+    const o = { ...e };
+    // Un solo campo de marca roto invalida la medida entera: sin bestStep la entrada queda pendiente y la migración
+    // la vuelve a medir, en vez de quedarse con una marca a medias (piezas o causa sin medir).
+    const rota =
+      !bestStepValido(o.bestStep) ||
+      ("piezasPerdidas" in o && !piezasValidas(o.piezasPerdidas)) ||
+      ("causaParada" in o && !causaValida(o.causaParada)) ||
+      ("pendienteParada" in o && !pendienteValida(o.pendienteParada));
+    if (rota) {
+      delete o.bestStep;
+      delete o.piezasPerdidas;
+      delete o.causaParada;
+      delete o.pendienteParada;
+    }
+    if (!isDate(o.date)) o.date = ahora;
+    return o;
+  };
+  // «pruebas-llana» es la pista del modo de pruebas: no viaja en una copia legítima y se ignora sin más.
+  // Cualquier otra pista desconocida sigue rechazando la copia.
+  const sinLlana = (m: unknown): unknown => {
+    if (!esObjeto(m)) return m;
+    const resto = { ...m };
+    delete resto[PRUEBAS_LLANA_ID];
+    return resto;
+  };
+  if (key === KEY_RANKINGS && esObjeto(valor)) {
+    return Object.fromEntries(
+      Object.entries(sinLlana(valor) as Record<string, unknown>).map(([pista, lista]) => [pista, Array.isArray(lista) ? ordenarMarcas(lista.map(sanearEntrada)) : lista]),
+    );
+  }
+  if (key === KEY_GARAGE && Array.isArray(valor)) {
+    return valor.map((c) => {
+      if (!esObjeto(c)) return c;
+      const coche: Record<string, unknown> = { ...c, marks: sinLlana(c.marks) };
+      if ("markVersions" in coche) coche.markVersions = sinLlana(coche.markVersions);
+      if ("markDetails" in coche) coche.markDetails = sinLlana(coche.markDetails);
+      if (esObjeto(coche.markVersions)) {
+        const v = Object.fromEntries(
+          Object.entries(coche.markVersions).filter(([, x]) => esObjeto(x) && Number.isInteger(x.trackVersion) && Number.isInteger(x.physicsVersion)),
+        );
+        if (Object.keys(v).length > 0) coche.markVersions = v;
+        else delete coche.markVersions;
+      }
+      if (esObjeto(coche.markDetails)) {
+        const d = Object.fromEntries(
+          Object.entries(coche.markDetails)
+            .filter(
+              ([, x]) =>
+                esObjeto(x) &&
+                bestStepValido(x.bestStep) &&
+                piezasValidas(x.piezasPerdidas) &&
+                (!("causaParada" in x) || causaValida(x.causaParada)) &&
+                (!("pendienteParada" in x) || pendienteValida(x.pendienteParada)),
+            ),
+        );
+        if (Object.keys(d).length > 0) coche.markDetails = d;
+        else delete coche.markDetails;
+      }
+      return coche;
+    });
+  }
+  return valor;
+}
+
 export function validarCopia(texto: string, bytes: number = new TextEncoder().encode(texto).length): ResultadoCopia {
   const invalida: ResultadoCopia = { ok: false, motivo: COPIA_INVALIDA };
   if (bytes > COPIA_MAX_BYTES) return invalida;
@@ -110,9 +206,10 @@ export function validarCopia(texto: string, bytes: number = new TextEncoder().en
   // Una clave que este juego no conoce viene de otra versión: mejor no importar que perderla en silencio.
   if (Object.keys(data).some((k) => !conocidas.has(k))) return invalida;
   const validos: Record<string, unknown> = {};
+  const ahora = new Date().toISOString();
   for (const { key } of clavesRegistradas()) {
     if (!(key in data)) continue;
-    const entrada = conNombresNormalizados(key, data[key]);
+    const entrada = conNombresNormalizados(key, conMarcasSaneadas(key, data[key], ahora));
     const v = validarEstricto(key, entrada);
     // Los validadores corrigen en vez de rechazar (un genoma fuera de rango se recorta): si lo que
     // sale no es idéntico a lo que entró, el fichero no es una copia que el juego haya escrito.
