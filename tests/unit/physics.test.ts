@@ -89,8 +89,8 @@ test("nf-3-serie: el coche de serie avanza lo exigido y acaba por atasco o tiemp
     console.log(`  serie en ${id}: ${r.distance.toFixed(1)} m, ${r.reason}, ${r.steps} pasos`);
     assert.ok(r.distance >= (id === "cordillera" ? 40 : 20), `${id}: ${r.distance}`);
     // En el hielo, en los trampolines y en el Mosaico (tramos suaves tras el arranque) no hay
-    // cuestas que frenen al coche de serie: llega a la meta.
-    const llegaAMeta = id === "glaciar" || id === "trampolines" || id === "mosaico";
+    // cuestas que frenen al coche de serie (y La Recta es plana por diseño): llega a la meta.
+    const llegaAMeta = id === "glaciar" || id === "trampolines" || id === "mosaico" || id === "recta";
     assert.ok(r.reason === "stall" || r.reason === "timeout" || (llegaAMeta && r.reason === "meta"), `${id}: ${r.reason}`);
   }
 });

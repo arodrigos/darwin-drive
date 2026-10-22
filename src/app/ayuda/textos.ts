@@ -298,5 +298,7 @@ export const FICHAS_PISTA: Record<TrackId, FichaPista> = {
   glaciar: { mecanica: "Hielo resbaladizo con lomas suaves: las ruedas patinan y frenar cuesta.", premia: "Ruedas anchas, peso bajo y un motor que no patina de más." },
   trampolines: { mecanica: "Suelo elástico que rebota cada vez más fuerte según el tramo.", premia: "Suspensión que absorbe el golpe y un coche que no vuelca al botar." },
   escalera: { mecanica: "Escalones de 20 cm a más de un metro que suben y bajan.", premia: "Ruedas grandes y par motor para trepar cada contrahuella." },
+  acantilado: { mecanica: "Escalones hacia abajo de medio metro a seis, con placas de hielo cada vez más frecuentes.", premia: "Un coche robusto que aguante las caídas sin romperse ni volcar." },
+  recta: { mecanica: "Una pista casi llana hasta la meta: gana el más rápido, no el que más lejos llega.", premia: "Velocidad punta y buen reparto de peso: se ordena por tiempo." },
   mosaico: { mecanica: "Cada 25 metros cambia el suelo: lomas, ondas, piedras, hielo y suelo elástico.", premia: "El coche que sirve para todo, no el que brilla en una sola pista." },
 };
