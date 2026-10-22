@@ -356,10 +356,14 @@ export function App() {
 
   useEffect(() => {
     instalarGanchos();
+    // La lectura inicial de meta puede resolverse después de cargarEscenario({pista: "pruebas-llana"}) y no debe pisarla.
+    let llanaDePruebas = false;
     loadMeta().then(({ meta: loaded, warning: w, available }) => {
       setMeta(loaded);
-      setTrackId(loaded.lastTrack);
-      runtime.pistaSeleccionada = loaded.lastTrack;
+      if (!llanaDePruebas) {
+        setTrackId(loaded.lastTrack);
+        runtime.pistaSeleccionada = loaded.lastTrack;
+      }
       runtime.disponible = available;
       // Sin almacén se avisa una sola vez, con el texto único del producto.
       setWarning(available ? w : SIN_GUARDADO);
@@ -393,6 +397,7 @@ export function App() {
         }
         // La llana de pruebas se corre pero no se guarda: ni lastTrack ni selectores la conocen.
         if (e.pista === PRUEBAS_LLANA_ID) {
+          llanaDePruebas = true;
           setTrackId(PRUEBAS_LLANA_ID as TrackId);
           runtime.pistaSeleccionada = PRUEBAS_LLANA_ID as TrackId;
         }
