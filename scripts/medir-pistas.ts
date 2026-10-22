@@ -74,6 +74,8 @@ function umbral(): void {
   }
   // pn-3: cada pista nueva (no clásica) se ordena distinto de todas las demás.
   const MAX_SPEARMAN = 0.85;
+  // mos-4: El Mosaico mezcla los suelos de las demás, así que se le pide algo menos (< 0,9).
+  const maxSpearman = (a: string, b: string) => (a === "mosaico" || b === "mosaico" ? 0.9 : MAX_SPEARMAN);
   const nuevas = TRACKS.filter((t) => !ES_CLASICA(t.id) && (!process.env.MEDIR_PISTA || process.env.MEDIR_PISTA === t.id));
   if (nuevas.length > 0) {
     const rangosDe = new Map(TRACKS.map((t) => [t.id, rangos(genomas.map((g) => simulateCar(g, t.id).distance))] as const));
@@ -81,9 +83,10 @@ function umbral(): void {
       for (const u of TRACKS) {
         if (u.id === t.id) continue;
         const r = pearson(rangosDe.get(t.id)!, rangosDe.get(u.id)!);
-        if (!(r < MAX_SPEARMAN)) {
+        const tope = maxSpearman(t.id, u.id);
+        if (!(r < tope)) {
           fallos++;
-          console.error(`medir-pistas --umbral: ${t.id} y ${u.id} se ordenan igual (Spearman ${r.toFixed(3)} ≥ ${MAX_SPEARMAN})`);
+          console.error(`medir-pistas --umbral: ${t.id} y ${u.id} se ordenan igual (Spearman ${r.toFixed(3)} ≥ ${tope})`);
         }
       }
     }

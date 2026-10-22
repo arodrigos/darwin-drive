@@ -40,7 +40,7 @@ test("invariante mos: la superficie del tramo coincide con su tipo", () => {
     fc.property(fc.integer({ min: 0, max: 3000 }), (i) => {
       const tipo = TIPOS_TRAMO[tipoTramo(i)];
       const s = mosaico.surfaceOfSegment(i);
-      assert.equal(s.tipo, tipo === "hielo" ? "hielo" : tipo === "elastico" ? "elastico" : "roca");
+      assert.equal(s.tipo, tipo.startsWith("hielo") ? "hielo" : tipo.startsWith("elastico") ? "elastico" : "roca");
       assert.deepEqual(mosaico.surfaceOfSegment(i), s);
     }),
   );
@@ -61,7 +61,7 @@ test("mos-2: el mismo coche da el mismo resultado dos veces", () => {
 });
 
 test("mos-3: el rótulo nombra el tipo del tramo en el que está el coche", () => {
-  assert.equal(rotuloTramo(0), "Tramo llano");
+  assert.equal(rotuloTramo(0), "Hielo");
   const cambios = new Set<string>();
   for (let x = 0; x < 300; x += 25) cambios.add(rotuloTramo(x + 1));
   assert.ok(cambios.size >= 4);

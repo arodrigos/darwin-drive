@@ -38,7 +38,9 @@ const NOMBRE_TRAMO: Record<TipoTramo, string> = {
   ondas: "Ondas",
   piedras: "Piedras",
   hielo: "Hielo",
+  "hielo-loma": "Loma de hielo",
   elastico: "Suelo elástico",
+  "elastico-ondas": "Ondas elásticas",
 };
 
 /** Rótulo del tramo de 25 m en el que está el coche (solo El Mosaico lo enseña). */

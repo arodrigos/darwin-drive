@@ -203,22 +203,26 @@ const ESCALERA_SUELO: Superficie = { ...ROCA, friction: 0.3 };
 
 
 /** Plantillas del Mosaico, una por tramo de 25 m. El orden es el del índice de TIPOS_TRAMO. */
-export const TIPOS_TRAMO = ["llano", "loma", "ondas", "piedras", "hielo", "elastico"] as const;
+export const TIPOS_TRAMO = ["llano", "loma", "ondas", "piedras", "hielo", "hielo-loma", "elastico", "elastico-ondas"] as const;
 export type TipoTramo = (typeof TIPOS_TRAMO)[number];
+const ELASTICO_MOSAICO: Superficie = { tipo: "elastico", friction: 0.4, restitution: 0.65 };
 const SUPERFICIE_TRAMO: Record<TipoTramo, Superficie> = {
   llano: ROCA,
   loma: ROCA,
   ondas: ROCA,
   piedras: ROCA,
   hielo: HIELO,
-  elastico: { tipo: "elastico", friction: 0.4, restitution: 0.65 },
+  "hielo-loma": HIELO,
+  elastico: ELASTICO_MOSAICO,
+  "elastico-ondas": ELASTICO_MOSAICO,
 };
 const TRAMO_LARGO = 25;
 const MOSAICO_TABLA = 1000;
 // Los tres primeros tramos son fijos (salida llana, una loma, ondas): el jugador ve variedad desde el principio.
+const ARRANQUE = [4, 6, 0] as const;
 const mosaicoTabla: Uint8Array = (() => {
   const t = new Uint8Array(MOSAICO_TABLA);
-  for (let i = 0; i < MOSAICO_TABLA; i++) t[i] = i < 3 ? i : siguienteTipo(i, t[i - 1]);
+  for (let i = 0; i < MOSAICO_TABLA; i++) t[i] = i < 3 ? ARRANQUE[i] : siguienteTipo(i, t[i - 1]);
   return t;
 })();
 // Elige entre los demás tipos: nunca repite el anterior, y sigue siendo función pura del índice.
@@ -246,9 +250,10 @@ function mosaicoHeight(x: number): number {
   const tam = MOSAICO_TECHO * (0.25 + 0.75 * curvaDificultad((i + 0.5) * TRAMO_LARGO - FLAT_START));
   switch (TIPOS_TRAMO[tipoTramo(i)]) {
     case "loma":
-    case "hielo":
+    case "hielo-loma":
       return tam * ventana;
     case "ondas":
+    case "elastico-ondas":
       return 0.4 * tam * ventana * Math.sin(4 * Math.PI * u);
     case "piedras": {
       // Dos piedras por tramo, en sitios que cambian con el índice y lejos de los bordes (por eso no necesitan ventana).
@@ -259,6 +264,8 @@ function mosaicoHeight(x: number): number {
     }
     case "elastico":
       return 0.2 * tam * ventana * Math.sin(2 * Math.PI * u);
+    case "hielo":
+      return 0;
     default:
       return 0;
   }

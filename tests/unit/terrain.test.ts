@@ -25,7 +25,7 @@ const HASH_REFERENCIA: Record<string, string> = {
   glaciar: "cb8fa9cd0e4e5e14a6ec63a295a02318c5746918799f7528a1d8087e7d560451",
   trampolines: "d8022de2b9efe15754baadaf71882ba7fccbf2088810f4f6d941e6b092ae78f3",
   escalera: "468cb282f3168c09e1a680d83d1e2e7bb4041cebb51d750c5ecab4946496d53a",
-  mosaico: "9a9854d99f5bc8c24f5a91f38983c3623dd54e30de7541da7093aa291ed9e488",
+  mosaico: "acf9b6ceeae467ea28f6e0750f8e3dfc12965577c62a4e15d72fa5e715ec328a",
 };
 
 const MAX_DY = Math.tan((MAX_SLOPE_DEG * Math.PI) / 180) * VERTEX_SPACING;
