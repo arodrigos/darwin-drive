@@ -24,7 +24,7 @@ import type { RankingsView } from "./TrackPicker";
 
 const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarlo o a abrirlo en Safari o Chrome.";
 export const MENSAJE_ERROR = "La simulación se ha detenido por un error. Toca Reintentar para volver a empezar esta carrera.";
-const MOTIVO: Record<EndReason, string> = { meta: "¡Meta!", stall: "se atascó", timeout: "se acabó el tiempo", anomaly: "descalificado" };
+const MOTIVO: Record<EndReason, string> = { meta: "¡Meta!", stall: "se atascó", timeout: "se acabó el tiempo", anomaly: "descalificado", destrozado: "se rompió en pedazos" };
 const STOCK_HUE = 28;
 const AVISO_RANKING_MS = 2500;
 // La barra de «Hasta el final» se llena hasta los 5 km de la meta.
@@ -253,6 +253,7 @@ export function Pista(props: PistaProps) {
     runtime.genomaEnPista = g;
     runtime.ejecutor = runner.kind;
     runtime.aplicarLimite = (max) => runner.post({ type: "limitRate", max });
+    runtime.forzarFin = (parcial) => setFase((f) => (f.tipo === "fin" ? { tipo: "fin", result: { ...f.result, ...parcial } } : f));
     if (runtime.limiteRitmo !== null) runner.post({ type: "limitRate", max: runtime.limiteRitmo });
     runtime.avanzar = (segundos) =>
       new Promise<void>((resolver) => {
@@ -311,6 +312,7 @@ export function Pista(props: PistaProps) {
       iniciar.current = () => {};
       runtime.avanzar = null;
       runtime.aplicarLimite = null;
+      runtime.forzarFin = null;
       runtime.ritmo = null;
       runtime.ritmoReal = null;
       runtime.pistaEnCarrera = null;
@@ -386,15 +388,20 @@ export function Pista(props: PistaProps) {
             <span data-testid="fin-distancia">{formatMeters(fase.result.distance)}</span> en <span data-testid="fin-tiempo">{formatTiempo(fase.result.bestStep)}</span>
           </p>
           <p data-testid="fin-motivo">{fase.result.reason === "meta" ? MOTIVO.meta : `Motivo: ${MOTIVO[fase.result.reason]}`}</p>
-          {fase.result.reason === "stall" && (
+          {(fase.result.reason === "stall" || fase.result.reason === "destrozado") && (
             <>
-              <p data-testid="fin-causa">{textoCausa(fase.result.causaParada, fase.result.pendienteParada)}</p>
+              <p data-testid="fin-causa">{textoCausa(fase.result.causaParada, fase.result.pendienteParada, fase.result.reason === "destrozado")}</p>
               {props.onPorQue && (
                 <button type="button" className="pastilla" onClick={props.onPorQue} data-testid="fin-porque">
                   ¿Por qué?
                 </button>
               )}
             </>
+          )}
+          {fase.result.piezasPerdidas > 0 && fase.result.metroRotura !== null && (
+            <p data-testid="fin-piezas">
+              Perdió {fase.result.piezasPerdidas} {fase.result.piezasPerdidas === 1 ? "pieza" : "piezas"} (la primera a los {formatMeters(fase.result.metroRotura)})
+            </p>
           )}
           {inscripcion && (
             <>

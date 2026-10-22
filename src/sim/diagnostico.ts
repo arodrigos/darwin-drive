@@ -58,11 +58,12 @@ export interface Diagnostico {
 const fraccion = (m: MuestraParada[], cumple: (x: MuestraParada) => boolean): number => (m.length === 0 ? 0 : m.filter(cumple).length / m.length);
 const media = (m: MuestraParada[], f: (x: MuestraParada) => number): number => (m.length === 0 ? 0 : m.reduce((a, x) => a + f(x), 0) / m.length);
 
-/** Prioridad: vuelco > sin-apoyo > panza > motor > agarre > obstáculo. Pura: mismas muestras, misma causa. */
-export function clasificarParada(muestras: MuestraParada[]): Diagnostico {
+/** Prioridad: vuelco > rotura > sin-apoyo > panza > motor > agarre > obstáculo. Pura: mismas muestras y `sinRuedas`, misma causa. */
+export function clasificarParada(muestras: MuestraParada[], sinRuedas = false): Diagnostico {
   const pendiente = Math.max(-90, Math.min(90, media(muestras, (x) => x.pendiente)));
   const limite = (UMBRAL_VUELCO_GRADOS * Math.PI) / 180;
   if (fraccion(muestras, (x) => Math.abs(x.angulo) > limite) > UMBRAL_VUELCO_FRACCION) return { causa: "vuelco", pendiente };
+  if (sinRuedas) return { causa: "rotura", pendiente };
   if (fraccion(muestras, (x) => x.ruedasEnContacto === 0) >= UMBRAL_SIN_APOYO_FRACCION) return { causa: "sin-apoyo", pendiente };
   if (fraccion(muestras, (x) => x.carroceriaEnContacto && x.carga < UMBRAL_PANZA_CARGA) >= UMBRAL_PANZA_FRACCION) return { causa: "panza", pendiente };
   if (pendiente >= UMBRAL_MOTOR_GRADOS) return { causa: "motor", pendiente };

@@ -1,6 +1,7 @@
 import "../detmath";
-import { Circle, Polygon, Vec2, WheelJoint, type Body, type World } from "planck";
+import { Circle, Polygon, Vec2, WheelJoint, type Body, type Fixture, type World } from "planck";
 import { TORQUE_SLOPE_DEG } from "../constants";
+import { umbralRotura } from "../rotura";
 import { VERTEX_COUNT, type Genome } from "../genome";
 
 export const GRAVITY = 9.81;
@@ -10,15 +11,27 @@ export const SUSPENSION_HZ = 4;
 export const SUSPENSION_DAMPING = 0.7;
 const SPAWN_CLEARANCE = 0.3;
 
-/** Par máximo de una rueda motriz: masa·g·sen 35°·r repartido entre las ruedas motrices. */
+/** Par máximo de una rueda motriz: masa·g·sen 35°·r repartido entre las ruedas motrices (las de origen, ver `CarParts.motrices`). */
 export function maxMotorTorque(totalMass: number, radius: number, drivenWheels: number): number {
   return (totalMass * GRAVITY * Math.sin((TORQUE_SLOPE_DEG * Math.PI) / 180) * radius) / Math.max(1, drivenWheels);
 }
 
+/** Un triángulo del abanico: lo que se rompe y el umbral al que lo hace (ver `umbralRotura`). */
+export interface Triangulo {
+  fixture: Fixture | null;
+  umbral: number;
+}
+
 export interface CarParts {
   chassis: Body;
-  wheels: { body: Body; radius: number; joint: WheelJoint }[];
+  /** `vertex` es el vértice del que cuelga la rueda; `suelta` la marca cuando perdió sus dos triángulos. */
+  wheels: { body: Body; radius: number; joint: WheelJoint | null; vertex: number; suelta: boolean; fuera?: boolean }[];
+  /** Los 8 triángulos por índice: son los únicos que pueden romperse. */
+  tris: Triangulo[];
+  /** Masa con la que se construyó: la referencia del impulso y del 5 % de destrozado. */
   mass: number;
+  /** Ruedas motrices de origen: el reparto del par no sube al perder ruedas. */
+  motrices: number;
 }
 
 // Mismo grupo negativo en carrocería y ruedas: no chocan entre sí, solo con el suelo.
@@ -44,12 +57,16 @@ export function buildCar(world: World, genome: Genome, x: number, groundY: numbe
     allowSleep: false,
   });
   const pts = genome.body.map((v) => Vec2(Math.cos(v.angle) * v.length, Math.sin(v.angle) * v.length));
+  const tris: Triangulo[] = [];
   for (let i = 0; i < VERTEX_COUNT; i++) {
-    chassis.createFixture(new Polygon([Vec2(0, 0), pts[i], pts[(i + 1) % VERTEX_COUNT]]), {
+    const a = pts[i];
+    const b = pts[(i + 1) % VERTEX_COUNT];
+    const fixture = chassis.createFixture(new Polygon([Vec2(0, 0), a, b]), {
       density: genome.bodyDensity,
       friction: 0.3,
       filterGroupIndex: GROUP,
     });
+    tris.push({ fixture, umbral: umbralRotura(genome.bodyDensity, a, b) });
   }
 
   const active = genome.wheels.filter((w) => w.vertex >= 0);
@@ -62,7 +79,7 @@ export function buildCar(world: World, genome: Genome, x: number, groundY: numbe
       allowSleep: false,
     });
     body.createFixture(new Circle(w.radius), { density: w.density, friction: 1, filterGroupIndex: GROUP });
-    wheels.push({ body, radius: w.radius, joint: null as unknown as WheelJoint });
+    wheels.push({ body, radius: w.radius, joint: null, vertex: w.vertex, suelta: false });
   }
 
   let mass = chassis.getMass();
@@ -84,5 +101,5 @@ export function buildCar(world: World, genome: Genome, x: number, groundY: numbe
       }),
     ) as WheelJoint;
   });
-  return { chassis, wheels, mass };
+  return { chassis, wheels, tris, mass, motrices: active.length };
 }

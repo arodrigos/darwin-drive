@@ -31,6 +31,7 @@ function fakeResults(state: EvolutionState, distanceOf: (g: Genome) => number, t
     steps: 100,
     bestStep: Math.ceil(distanceOf(p.genome) * 1.2) + 1,
     piezasPerdidas: 0,
+    metroRotura: null,
     causaParada: null,
     pendienteParada: null,
     physicsVersion: 1,

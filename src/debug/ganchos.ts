@@ -25,6 +25,10 @@ export const runtime = {
   cargas: null as number[] | null,
   /** Opacidad de los 8 triángulos del coche que se pinta (Taller o primer coche de la pista). */
   opacidades: null as number[] | null,
+  /** Rotura del primer coche en pista: máscara de triángulos que quedan, piezas sueltas vivas y destellos visibles ahora. */
+  piezas: 255 as number,
+  sueltas: 0 as number,
+  destellos: 0 as number,
   /** Cajas en px CSS del viewport: el coche en pista y el marcador de parada (null si no hay). */
   cajaCoche: null as { x: number; y: number; w: number; h: number } | null,
   marcador: null as { caja: { x: number; y: number; w: number; h: number }; tamEtiquetaPx: number; colorPlaca: string; colorTexto: string; altoCochePx: number; altoCunaPx: number } | null,
@@ -53,6 +57,7 @@ export const runtime = {
   limiteRitmo: null as number | null,
   /** La pantalla con carrera lo registra para que el tope llegue a su ejecutor. */
   aplicarLimite: null as ((max: number | null) => void) | null,
+  forzarFin: null as ((parcial: Partial<CarResult>) => void) | null,
   /** Avanza la carrera en curso al instante; resuelve con el efecto ya pintado. Solo existe mientras hay una pista abierta. */
   avanzar: null as ((segundos: number) => Promise<void>) | null,
   /** Migración de marcas: la publica el hook; `frenada` retiene la cola entre un elemento y el siguiente. */
@@ -101,6 +106,9 @@ export function estado() {
     tiempoSim: runtime.tiempoSim,
     cargas: runtime.cargas,
     opacidades: runtime.opacidades,
+    piezas: runtime.piezas,
+    sueltas: runtime.sueltas,
+    destellos: runtime.destellos,
     cajaCoche: runtime.cajaCoche,
     marcador: runtime.marcador,
     metaX: runtime.metaX,
@@ -133,6 +141,8 @@ export interface Gancho {
   adelantarSimulacion(segundos: number): Promise<void>;
   /** Acota la velocidad simulada a N veces el tiempo real para imitar un dispositivo lento (null lo quita). No cambia ningún CarResult. */
   limitarRitmo(max: number | null): void;
+  /** Con la tarjeta de fin en pantalla, la repinta con esos campos (p. ej. reason «destrozado») para ver su caso peor; no toca lo guardado. */
+  forzarTarjetaFin(parcial: Partial<CarResult>): void;
   /** true retiene la cola de migración antes de la siguiente medida; false la suelta. */
   frenarMigracion(frenar: boolean): void;
   /** pw-4 y pw-5: el service worker real, sin esperar a un despliegue. */
@@ -169,6 +179,9 @@ export function instalarGanchos(): void {
     limitarRitmo(max) {
       runtime.limiteRitmo = max;
       runtime.aplicarLimite?.(max);
+    },
+    forzarTarjetaFin(parcial) {
+      runtime.forzarFin?.(parcial);
     },
     frenarMigracion(frenar) {
       runtime.migracionFrenada = frenar;
