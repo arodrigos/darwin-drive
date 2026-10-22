@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { test, expect, type Page } from "@playwright/test";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
@@ -73,3 +74,46 @@ for (const t of TAMANOS) {
     expect(html).not.toContain("Llana de pruebas");
   });
 }
+
+test("cla-7-b / cla-10 una copia con marcas inválidas se importa, queda pendiente y se vuelve a medir", async ({ page }) => {
+  const errores: string[] = [];
+  page.on("pageerror", (e) => errores.push(e.message));
+  page.on("console", (m) => m.type() === "error" && errores.push(m.text()));
+  const copia = readFileSync("tests/fixtures/copia-valores-invalidos.json");
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.goto("/?pruebas=1&migracion=frenada");
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await page.evaluate(() => window.__debug!.cargarEscenario({ vacio: true }));
+  await page.reload();
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await page.getByTestId("acceso-garaje").click();
+  await expect(page.getByTestId("garaje")).toBeVisible();
+  await page.getByTestId("copia-fichero").setInputFiles({ name: "copia.json", mimeType: "application/json", buffer: copia });
+  await page.getByTestId("copia-reemplazar").click();
+  await expect(page.getByTestId("copia-ok")).toContainText("Copia importada");
+  await expect(page.getByText("Este fichero no es una copia de Darwin Drive")).toHaveCount(0);
+
+  // Recarga con la migración frenada: se ven las marcas pendientes de volver a medir.
+  await page.goto("/?pruebas=1&migracion=frenada");
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await page.getByTestId("tarjeta-cordillera").click();
+  await expect(page.getByTestId("rankings")).toBeVisible();
+  await expect(page.getByTestId("fila-ranking")).toHaveCount(9);
+  await expect(page.getByTestId("fila-migracion")).toHaveCount(7);
+  await expect(page.getByTestId("fila-migracion").first()).toHaveText("actualizando…");
+  await expect(page.getByTestId("fila-tiempo").filter({ hasText: "—" })).toHaveCount(7);
+  await page.screenshot({ path: `${DIR}/${ID}-copia-pendiente-360x640.png` });
+
+  await page.evaluate(() => window.__debug!.frenarMigracion(false));
+  await expect.poll(async () => page.evaluate(() => (window.__debug!.estado() as unknown as { migracion: { enCurso: boolean } }).migracion.enCurso), { timeout: 180_000 }).toBe(false);
+  await page.reload();
+  await page.waitForFunction(() => Boolean(window.__debug));
+  await page.getByTestId("tarjeta-cordillera").click();
+  await expect(page.getByTestId("fila-migracion")).toHaveCount(0);
+  await expect(page.getByTestId("fila-tiempo").filter({ hasText: "—" })).toHaveCount(0);
+  await page.screenshot({ path: `${DIR}/${ID}-copia-medida-360x640.png` });
+  // «pruebas-llana» no llega a ninguna parte del estado guardado.
+  const claves = await page.evaluate(() => JSON.stringify((window.__debug!.estado() as unknown as { rankings: unknown }).rankings));
+  expect(claves).not.toContain("pruebas-llana");
+  expect(errores).toEqual([]);
+});
