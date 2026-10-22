@@ -101,7 +101,8 @@ test("cla-7-b / cla-10 una copia con marcas inválidas se importa, queda pendien
   await expect(page.getByTestId("fila-ranking")).toHaveCount(9);
   await expect(page.getByTestId("fila-migracion")).toHaveCount(7);
   await expect(page.getByTestId("fila-migracion").first()).toHaveText("actualizando…");
-  await expect(page.getByTestId("fila-tiempo").filter({ hasText: "—" })).toHaveCount(7);
+  // La de 5000 m trae un bestStep de 1: tiene tiempo, pero no es creíble y también se vuelve a medir.
+  await expect(page.getByTestId("fila-tiempo").filter({ hasText: "—" })).toHaveCount(6);
   await page.screenshot({ path: `${DIR}/${ID}-copia-pendiente-360x640.png` });
 
   await page.evaluate(() => window.__debug!.frenarMigracion(false));
