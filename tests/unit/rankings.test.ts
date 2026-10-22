@@ -106,7 +106,9 @@ test("rk-4: medir el coche de serie da exactamente simulateCar en cada pista, un
     assert.deepEqual(m.result, simulateCar(STOCK_CAR, m.trackId), m.trackId);
     assert.equal(m.outcome, m.result.distance);
   }
-  assert.equal(new Set(marcas.map((m) => m.result.distance)).size, TRACKS.length, "las marcas de cada pista son distintas entre sí");
+  // Las pistas donde el coche de serie llega a la meta empatan en el techo (5000 m): solo las demás deben ser distintas.
+  const sinMeta = marcas.filter((m) => m.result.reason !== "meta");
+  assert.equal(new Set(sinMeta.map((m) => m.result.distance)).size, sinMeta.length, "las marcas de las pistas sin meta son distintas entre sí");
 });
 
 test("rk-4 (propiedad): para cualquier coche y cualquier troceo de adelantar, una marca por pista igual a simulateCar", async () => {
