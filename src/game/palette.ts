@@ -17,6 +17,7 @@ export const PALETTES: Record<TrackId, TrackPalette> = {
   glaciar: { skyTop: 0x3d6f9e, skyBottom: 0xcfe6f5, far: 0x7f9fc4, near: 0x5d7fa8, earth: 0x5f86ad, grass: 0xeaf8ff },
   trampolines: { skyTop: 0x7b4fa8, skyBottom: 0xf3d3ef, far: 0xb08ac4, near: 0x8a5fa8, earth: 0x8a5fa8, grass: 0xffe14d },
   escalera: { skyTop: 0x62717f, skyBottom: 0xd7dde3, far: 0x8b95a0, near: 0x6b7480, earth: 0x7b8794, grass: 0xf0b429 },
+  mosaico: { skyTop: 0x4f7f8f, skyBottom: 0xe3efe8, far: 0x7f9f94, near: 0x5f8274, earth: 0x6f7f5a, grass: 0xff7a59 },
   pedregal: { skyTop: 0x93a6b8, skyBottom: 0xdfe5ea, far: 0x9aa3ab, near: 0x7d8288, earth: 0x6b6862, grass: 0x9a9a8a },
 };
 

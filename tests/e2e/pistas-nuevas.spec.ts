@@ -72,7 +72,7 @@ test("pn-5 el carrusel cabe en 120 px, deja ver todo el lienzo y «Probar» en c
       const hoja = page.getByTestId("hoja-pistas");
       await expect(hoja).toBeVisible();
       const tarjetas = hoja.locator("button.tarjeta-pista");
-      await expect(tarjetas).toHaveCount(7);
+      await expect(tarjetas).toHaveCount(8);
       const carrusel = (await page.getByTestId("carrusel-pistas").boundingBox())!;
       expect(carrusel.height).toBeLessThanOrEqual(120);
       for (const caja of await tarjetas.evaluateAll((bs) => bs.map((b) => { const r = b.getBoundingClientRect(); return [r.width, r.height]; }))) {
