@@ -14,12 +14,15 @@ import { createInlineRunner } from "../../src/worker/inline";
 import { DEMO_CARS, DEMO_ORIGINS, demoDate, demoGenomes } from "./helpers/demo-rankings";
 import { seededGenomes } from "./helpers/rng";
 
+// El escenario demo trae las cuatro claves clásicas, como una partida guardada antes de las pistas nuevas.
+const CLASICAS = TRACKS.filter((t) => ["cordillera", "rampa", "dunas", "pedregal"].includes(t.id));
+
 const DEMO = JSON.parse(readFileSync(new URL("../../src/debug/escenarios/rankings-demo.json", import.meta.url), "utf8"));
 
 test("rk-1: el escenario demo es válido, con 10 marcas por pista y clasificaciones distintas entre pistas", () => {
   const validos = validateRankings(DEMO);
   assert.ok(validos, "el JSON pasa el validador del guardado");
-  for (const t of TRACKS) {
+  for (const t of CLASICAS) {
     assert.equal(validos[t.id].length, RANKING_SIZE, t.id);
     const d: number[] = validos[t.id].map((e) => e.distance);
     assert.deepEqual(d, [...d].sort((a, b) => b - a), `${t.id} de mayor a menor`);
@@ -33,7 +36,7 @@ test("rk-1: el escenario demo es válido, con 10 marcas por pista y clasificacio
 test("rk-1: el escenario demo coincide con volver a simular a los 12 coches con el núcleo", () => {
   const genomas = demoGenomes();
   assert.equal(genomas.length, DEMO_CARS);
-  for (const t of TRACKS) {
+  for (const t of CLASICAS) {
     for (const e of DEMO[t.id] as { carId: string; distance: number; origin: string; date: string }[]) {
       const i = genomas.findIndex((g) => genomeHash(g) === e.carId);
       assert.ok(i >= 0, "el coche del JSON es uno de los 12");
@@ -97,13 +100,15 @@ async function medir(genome: typeof STOCK_CAR, adelantos: number[]) {
 
 test("rk-4: medir el coche de serie da exactamente simulateCar en cada pista, una vez por pista y en orden", async () => {
   const { marcas, llamadas, progreso } = await medir(STOCK_CAR, [800]);
-  assert.deepEqual(progreso, [1, 2, 3, 4]);
+  assert.deepEqual(progreso, TRACKS.map((_, i) => i + 1));
   assert.deepEqual(llamadas.map((l) => l.trackId), TRACKS.map((t) => t.id));
   for (const m of marcas) {
     assert.deepEqual(m.result, simulateCar(STOCK_CAR, m.trackId), m.trackId);
     assert.equal(m.outcome, m.result.distance);
   }
-  assert.equal(new Set(marcas.map((m) => m.result.distance)).size, TRACKS.length, "las cuatro marcas son distintas entre sí");
+  // Las pistas donde el coche de serie llega a la meta empatan en el techo (5000 m): solo las demás deben ser distintas.
+  const sinMeta = marcas.filter((m) => m.result.reason !== "meta");
+  assert.equal(new Set(sinMeta.map((m) => m.result.distance)).size, sinMeta.length, "las marcas de las pistas sin meta son distintas entre sí");
 });
 
 test("rk-4 (propiedad): para cualquier coche y cualquier troceo de adelantar, una marca por pista igual a simulateCar", async () => {
@@ -142,4 +147,12 @@ test("rk-4: cancelar la medición rechaza y no deja nada por registrar", async (
   await assert.rejects(m.terminada, /cancelada/);
   runner.terminate();
   assert.equal(registros, 0);
+});
+
+test("pn-6: una partida con 4 claves de ranking carga sin avisos y las pistas nuevas quedan vacías", () => {
+  const avisos: string[] = [];
+  const antiguo = { cordillera: [], rampa: [], dunas: [], pedregal: [] };
+  const out = validateRankings(antiguo, (m) => avisos.push(m))!;
+  assert.deepEqual(avisos, []);
+  for (const id of ["glaciar", "trampolines", "escalera"] as const) assert.deepEqual(out[id], []);
 });

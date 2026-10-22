@@ -25,6 +25,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hoja h2 { grid-column: 1 / -1; margin: 0; font-size: 1.1rem; }
 .hoja .tarjeta-pista[aria-current="true"] { border-color: #ffd23f; }
 .hoja .lema { font-size: .85rem; opacity: .9; }
+.hoja.hoja-pistas { display: block; }
+.carrusel { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; }
+.carrusel .tarjeta-pista { flex: 0 0 min(210px, 72%); scroll-snap-align: center; min-height: 44px; max-height: 120px; overflow: hidden; }
+.carrusel .tarjeta-pista .lema { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .explorar { position: absolute; inset: 0; }
 .explorar .lienzo { position: absolute; inset: 0; touch-action: none; }

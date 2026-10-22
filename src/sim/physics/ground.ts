@@ -1,7 +1,7 @@
 import "../detmath";
 import { Chain, Vec2, type Body, type World } from "planck";
 import { SEGMENT_LENGTH, VERTEX_SPACING, segmentVertices } from "../terrain";
-import type { Track } from "../tracks";
+import { ROCA, type Superficie, type Track } from "../tracks";
 
 /** Cuánto suelo se mantiene por delante y por detrás de lo que rueda. */
 export const GROUND_AHEAD = 35;
@@ -18,7 +18,12 @@ export interface Ground {
  * tomados del perfil vecino: sin ellos, una rueda choca con el extremo de un
  * tramo al pasar al siguiente (colisión fantasma).
  */
-export function createGround(world: World, heightAt: (x: number) => number, friction = 1): Ground {
+export function createGround(
+  world: World,
+  heightAt: (x: number) => number,
+  friction?: number,
+  surfaceOfSegment: (index: number) => Superficie = () => ROCA,
+): Ground {
   const track = { heightAt } as Track;
   const segments = new Map<number, Body>();
 
@@ -30,7 +35,8 @@ export function createGround(world: World, heightAt: (x: number) => number, fric
     const chain = new Chain(verts, false);
     chain.setPrevVertex(Vec2(first - VERTEX_SPACING, heightAt(first - VERTEX_SPACING)));
     chain.setNextVertex(Vec2(last + VERTEX_SPACING, heightAt(last + VERTEX_SPACING)));
-    body.createFixture(chain, { friction, density: 0 });
+    const surface = surfaceOfSegment(index);
+    body.createFixture(chain, { friction: friction ?? surface.friction, restitution: surface.restitution, density: 0 });
     return body;
   }
 

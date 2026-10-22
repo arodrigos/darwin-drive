@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { trackProfile } from "@/sim/terrain";
 import { TRACKS, type Track, type TrackId } from "@/sim/tracks";
@@ -35,10 +35,16 @@ export function TrackMiniature({ track }: { track: Track }) {
 export function TrackPicker(props: { value: TrackId; onChange: (id: TrackId) => void; rankings: RankingsView }) {
   const { value, onChange, rankings } = props;
   const [open, setOpen] = useState(false);
+  const activa = useRef<HTMLButtonElement | null>(null);
   const current = TRACKS.find((t) => t.id === value) ?? TRACKS[0];
 
   useEffect(() => {
     if (open) measureOnNextFrame("abrir-pista");
+  }, [open]);
+
+  // Con siete pistas la elegida puede quedar fuera de la vista del carrusel.
+  useEffect(() => {
+    if (open) activa.current?.scrollIntoView?.({ inline: "center", block: "nearest" });
   }, [open]);
 
   return (
@@ -57,11 +63,13 @@ export function TrackPicker(props: { value: TrackId; onChange: (id: TrackId) => 
       {open &&
         createPortal(
         <div className="hoja-fondo" onClick={() => setOpen(false)} data-testid="hoja-pistas">
-          <div className="hoja" role="dialog" aria-label="Elegir pista" onClick={(e) => e.stopPropagation()}>
+          <div className="hoja hoja-pistas" role="dialog" aria-label="Elegir pista" onClick={(e) => e.stopPropagation()}>
             <h2>Elegir pista</h2>
+            <div className="carrusel" data-testid="carrusel-pistas">
             {TRACKS.map((t) => (
               <button
                 key={t.id}
+                ref={t.id === value ? activa : undefined}
                 type="button"
                 className="tarjeta-pista"
                 aria-current={t.id === value}
@@ -79,6 +87,7 @@ export function TrackPicker(props: { value: TrackId; onChange: (id: TrackId) => 
                 <span className="marca">{topMark(rankings, t.id)}</span>
               </button>
             ))}
+            </div>
           </div>
         </div>,
         document.body,

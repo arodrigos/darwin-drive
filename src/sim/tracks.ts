@@ -3,7 +3,20 @@ import { createNoise2D } from "simplex-noise";
 import { curvaDificultad } from "./dificultad";
 import { FLAT_START, VERTEX_SPACING } from "./terrain";
 
-export type TrackId = "cordillera" | "rampa" | "dunas" | "pedregal";
+export type TrackId = "cordillera" | "rampa" | "dunas" | "pedregal" | "glaciar" | "trampolines" | "escalera";
+
+export type TipoSuperficie = "roca" | "hielo" | "elastico";
+
+/** Material de un tramo de 25 m: fricción y rebote del suelo (se combinan con los de las ruedas). */
+export interface Superficie {
+  tipo: TipoSuperficie;
+  friction: number;
+  restitution: number;
+}
+
+/** Suelo de las cuatro clásicas: es el que había antes de que existieran las superficies. */
+export const ROCA: Superficie = { tipo: "roca", friction: 1, restitution: 0 };
+export const HIELO: Superficie = { tipo: "hielo", friction: 0.05, restitution: 0 };
 
 export interface Track {
   id: TrackId;
@@ -13,6 +26,8 @@ export interface Track {
   tagline: string;
   /** Pura, en metros y con y hacia arriba; 0 en [0, FLAT_START]. */
   heightAt(x: number): number;
+  /** Pura: material del tramo de 25 m con ese índice. Las clásicas devuelven ROCA. */
+  surfaceOfSegment(index: number): Superficie;
 }
 
 // PRNG propio y mínimo: simplex-noise solo necesita una función () => [0,1),
@@ -129,6 +144,65 @@ function pedregalHeight(x: number): number {
   return base + stone;
 }
 
+const GLACIAR_TECHO = 5;
+function glaciarHeight(x: number): number {
+  const d = x - FLAT_START;
+  if (d <= 0) return 0;
+  // Lomas largas y suaves: lo difícil del hielo es frenar y arrancar, no la altura.
+  const c = Math.min(1, 1.2 * curvaDificultad(d));
+  const n = (glaciarNoise(d / 90, 2.5) + 0.35 * glaciarNoise(d / 35, 11.5)) / 1.35;
+  return smoothstep(d / 30) * GLACIAR_TECHO * (0.25 + 0.75 * c) * n;
+}
+const glaciarNoise = createNoise2D(mulberry32(3301));
+
+const TRAMPOLIN_TECHO = 0.9;
+function trampolinesHeight(x: number): number {
+  const d = x - FLAT_START;
+  if (d <= 0) return 0;
+  const c = curvaDificultad(d);
+  return (smoothstep(d / 20) * TRAMPOLIN_TECHO * (0.3 + 0.7 * c) * (Math.sin((2 * Math.PI * d) / 21) + 0.4 * Math.sin((2 * Math.PI * d) / 8))) / 1.4;
+}
+/** Rebote 0,5-0,85 por tramo: cada cama elástica tiene el suyo. */
+function trampolinesSurface(index: number): Superficie {
+  return { tipo: "elastico", friction: 0.4, restitution: 0.5 + 0.35 * ((cellHash(index, 9) % 1000) / 999) };
+}
+
+export const ESCALERA_HUELLA = 6;
+export const ESCALON_MIN = 0.2;
+export const ESCALON_MAX = 1.2;
+// Los escalones suben de dos en dos y bajan de dos en dos: la altura total no se dispara.
+const ESCALERA_GRUPO = 2;
+const ESCALERA_ESCALONES = 2000;
+/** Pendiente media de bajada (~6°): sin ella, un coche sin empuje se queda quieto en el primer rellano y no hay nada que medir. */
+const ESCALERA_BAJADA = 0.105;
+/** Altura de cada escalón; el salto ocupa un intervalo de vértice (0,5 m), de ahí la contrahuella máxima de ~67°. */
+const escaleraNiveles: Float64Array = (() => {
+  const t = new Float64Array(ESCALERA_ESCALONES + 1);
+  for (let n = 0; n < ESCALERA_ESCALONES; n++) {
+    // Lineal y lenta: el escalón de 1,2 m llega a los 1500 m, así que mide la rueda y no el ánimo.
+    const c = Math.min(1, ((n + 1) * ESCALERA_HUELLA) / 1500);
+    const cc = Math.min(1, c * (0.75 + 0.25 * ((cellHash(n, 6) % 1000) / 999)) * 1.15);
+    const subida = ESCALON_MIN + (ESCALON_MAX - ESCALON_MIN) * cc;
+    t[n + 1] = t[n] + (Math.floor(n / ESCALERA_GRUPO) % 2 === 0 ? subida : -subida);
+  }
+  return t;
+})();
+function escaleraHeight(x: number): number {
+  const d = x - FLAT_START;
+  if (d <= 0) return 0;
+  const n = Math.floor(d / ESCALERA_HUELLA);
+  const bajada = ESCALERA_BAJADA * d;
+  if (n >= ESCALERA_ESCALONES) return escaleraNiveles[ESCALERA_ESCALONES] - bajada;
+  const t = Math.min(1, (d - n * ESCALERA_HUELLA) / VERTEX_SPACING);
+  return lerp(escaleraNiveles[n], escaleraNiveles[n + 1], t) - bajada;
+}
+
+// Menos agarre que la roca: con fricción plena los mismos coches pasan o no pasan en la escalera
+// que en el Pedregal (Spearman 0,95); con 0,3 el orden cambia de verdad.
+const ESCALERA_SUELO: Superficie = { ...ROCA, friction: 0.3 };
+
+const rocaSiempre = (): Superficie => ROCA;
+
 export const TRACKS: readonly Track[] = [
   {
     id: "cordillera",
@@ -136,6 +210,7 @@ export const TRACKS: readonly Track[] = [
     name: "La Cordillera",
     tagline: "Montañas al azar, siempre las mismas, cada vez más altas.",
     heightAt: cordilleraHeight,
+    surfaceOfSegment: rocaSiempre,
   },
   {
     id: "rampa",
@@ -143,6 +218,7 @@ export const TRACKS: readonly Track[] = [
     name: "La Rampa",
     tagline: "Una recta que se empina sin parar.",
     heightAt: rampaHeight,
+    surfaceOfSegment: rocaSiempre,
   },
   {
     id: "dunas",
@@ -150,6 +226,7 @@ export const TRACKS: readonly Track[] = [
     name: "Las Dunas",
     tagline: "Olas largas que crecen: con velocidad, se vuela.",
     heightAt: dunasHeight,
+    surfaceOfSegment: rocaSiempre,
   },
   {
     id: "pedregal",
@@ -157,6 +234,31 @@ export const TRACKS: readonly Track[] = [
     name: "El Pedregal",
     tagline: "Llano sembrado de piedras cada vez mayores.",
     heightAt: pedregalHeight,
+    surfaceOfSegment: rocaSiempre,
+  },
+  {
+    id: "glaciar",
+    version: 1,
+    name: "El Glaciar",
+    tagline: "Hielo resbaladizo: arrancar es fácil, frenar no.",
+    heightAt: glaciarHeight,
+    surfaceOfSegment: () => HIELO,
+  },
+  {
+    id: "trampolines",
+    version: 1,
+    name: "Los Trampolines",
+    tagline: "Suelo elástico que te devuelve el golpe.",
+    heightAt: trampolinesHeight,
+    surfaceOfSegment: trampolinesSurface,
+  },
+  {
+    id: "escalera",
+    version: 1,
+    name: "La Escalera",
+    tagline: "Escalones de 20 cm a más de un metro, cuesta abajo.",
+    heightAt: escaleraHeight,
+    surfaceOfSegment: () => ESCALERA_SUELO,
   },
 ];
 

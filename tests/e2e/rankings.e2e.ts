@@ -111,11 +111,11 @@ test("rk-4 y rk-3 medir en todas las pistas, y ver correr repite la marca sin to
   await page.getByTestId("acceso-garaje").click();
   const medir = page.getByTestId("garaje-medir");
   await medir.click();
-  await expect(page.getByTestId("progreso-medicion")).toHaveText("Midiendo 1/4…");
+  await expect(page.getByTestId("progreso-medicion")).toHaveText(`Midiendo 1/${TRACKS.length}…`);
   await expect(medir).toBeDisabled();
   await page.screenshot({ path: `${DIR}/${ID}-midiendo-360x640.png` });
   await adelantar(page, 800);
-  await expect(page.getByTestId("resumen-medicion")).toContainText("Entra en 4 rankings:");
+  await expect(page.getByTestId("resumen-medicion")).toContainText(`Entra en ${TRACKS.length} rankings:`);
   await expect(page.getByTestId("progreso-medicion")).toHaveCount(0);
   await expect(medir).toBeEnabled();
   await page.screenshot({ path: `${DIR}/${ID}-medido-360x640.png` });
@@ -130,7 +130,8 @@ test("rk-4 y rk-3 medir en todas las pistas, y ver correr repite la marca sin to
     expect(texto).toContain(`${t.name} ${coma(d)}`);
     vistas.add(d);
   }
-  expect(vistas.size).toBe(4);
+  // El coche de serie llega a la meta (5000 m) en el hielo y en los trampolines, así que esas dos marcas coinciden.
+  expect(vistas.size).toBe(new Set(TRACKS.map((t) => simulateCar(STOCK_CAR, t.id).distance)).size);
   const lat = await page.evaluate(() => window.__debug!.latencias());
   const medirPistas = lat.filter((m) => m.evento === "medir-pistas");
   expect(medirPistas.length).toBeGreaterThan(0);
