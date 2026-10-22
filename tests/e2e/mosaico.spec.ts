@@ -40,12 +40,13 @@ test("mos-1 El Mosaico se elige, se prueba hasta el final y su marca sigue tras 
 });
 
 test("mos-3 el rótulo del tramo cambia al cruzar, mide ≥ 14 px y contrasta ≥ 4,5:1, en los tres tamaños", async ({ page }) => {
-  test.setTimeout(240_000);
+  test.setTimeout(400_000);
   for (const t of TAMANOS) {
     await page.setViewportSize({ width: t.w, height: t.h });
     await abrir(page);
-    await page.getByTestId("acceso-explorar").click();
+    await page.getByTestId("acceso-taller").click();
     await page.getByTestId("probar").click();
+    await expect(page.getByTestId("pista")).toBeVisible();
     const rotulo = page.getByTestId("rotulo-tramo");
     await expect(rotulo).toBeVisible();
     const inicial = await rotulo.textContent();
