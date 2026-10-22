@@ -25,6 +25,10 @@ export const runtime = {
   cargas: null as number[] | null,
   /** Opacidad de los 8 triángulos del coche que se pinta (Taller o primer coche de la pista). */
   opacidades: null as number[] | null,
+  /** Rotura del primer coche en pista: máscara de triángulos que quedan, piezas sueltas vivas y destellos visibles ahora. */
+  piezas: 255 as number,
+  sueltas: 0 as number,
+  destellos: 0 as number,
   /** Cajas en px CSS del viewport: el coche en pista y el marcador de parada (null si no hay). */
   cajaCoche: null as { x: number; y: number; w: number; h: number } | null,
   marcador: null as { caja: { x: number; y: number; w: number; h: number }; tamEtiquetaPx: number; colorPlaca: string; colorTexto: string; altoCochePx: number; altoCunaPx: number } | null,
@@ -101,6 +105,9 @@ export function estado() {
     tiempoSim: runtime.tiempoSim,
     cargas: runtime.cargas,
     opacidades: runtime.opacidades,
+    piezas: runtime.piezas,
+    sueltas: runtime.sueltas,
+    destellos: runtime.destellos,
     cajaCoche: runtime.cajaCoche,
     marcador: runtime.marcador,
     metaX: runtime.metaX,
