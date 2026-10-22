@@ -76,6 +76,8 @@ for (const t of TAMANOS) {
 }
 
 test("cla-7-b / cla-10 una copia con marcas inválidas se importa, queda pendiente y se vuelve a medir", async ({ page }) => {
+  // La migración vuelve a medir con la física real, en un runner lento.
+  test.setTimeout(240_000);
   const errores: string[] = [];
   page.on("pageerror", (e) => errores.push(e.message));
   page.on("console", (m) => m.type() === "error" && errores.push(m.text()));

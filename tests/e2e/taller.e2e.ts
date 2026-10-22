@@ -377,6 +377,8 @@ test("tl-8 aviso arriba al entrar en un ranking, y se va a los 2,5 s", async ({ 
   await page.getByTestId("probar").click();
   await expect.poll(async () => (await estado(page)).genomaEnPista !== null).toBe(true);
   await adelantar(page, 200);
+  // El resultado llega del worker: se espera a la tarjeta antes de leerlo del estado.
+  await expect(page.getByTestId("fin-distancia")).toBeVisible();
   const cifra = coma((await estado(page)).ultimoResultado!.distance);
   await expect(page.getByTestId("fin-distancia")).toHaveText(cifra);
   await page.screenshot({ path: `${DIR}/${ID}-puesto-4-360x640.png` });
