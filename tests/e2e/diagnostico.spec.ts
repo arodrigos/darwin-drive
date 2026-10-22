@@ -77,6 +77,18 @@ test("diag-1 el coche de serie se para en La Rampa, la tarjeta dice por qué y l
   expect(texto).toContain(`Cuesta de ${n}°`);
   expect(texto).toContain("(35°)");
   await page.screenshot({ path: `${DIR}/${ID}-tarjeta-360x640.png` });
+  // Causa y récord a la vez: las acciones tienen que verse sin desplazar nada.
+  for (const id of ["repetir", "volver-fin"]) {
+    const c = (await page.getByTestId(id).boundingBox())!;
+    expect(dentro({ x: c.x, y: c.y, w: c.width, h: c.height }, 360, 640)).toBe(true);
+  }
+  // El aviso de récord no se monta sobre «← Volver» de la cabecera.
+  const aviso = page.getByTestId("aviso-ranking");
+  if (await aviso.isVisible()) {
+    const av = (await aviso.boundingBox())!;
+    const vo = (await page.getByTestId("volver").boundingBox())!;
+    expect(cruzan({ x: av.x, y: av.y, w: av.width, h: av.height }, { x: vo.x, y: vo.y, w: vo.width, h: vo.height })).toBe(false);
+  }
   const entradas = e.rankings.rampa.length;
 
   await page.getByTestId("fin-porque").click();

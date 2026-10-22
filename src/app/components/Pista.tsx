@@ -382,6 +382,7 @@ export function Pista(props: PistaProps) {
       )}
       {fase.tipo === "fin" && (
         <div className="tarjeta-fin" role="dialog" aria-label="Fin de la carrera" data-testid="tarjeta-fin">
+          <div className="cuerpo-fin">
           <h2>Fin de la carrera · {track.name}</h2>
           <p className="cifra" data-testid="fin-marca">
             <span data-testid="fin-distancia">{formatMeters(fase.result.distance)}</span> en <span data-testid="fin-tiempo">{formatTiempo(fase.result.bestStep)}</span>
@@ -419,6 +420,7 @@ export function Pista(props: PistaProps) {
               Récord pendiente: se confirma al terminar de actualizar las marcas.
             </p>
           )}
+          </div>
           <div className="acciones">
             <button type="button" className="pastilla" onClick={() => {
                 markInput("repetir");
