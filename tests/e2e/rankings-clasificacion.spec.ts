@@ -45,3 +45,31 @@ test("cla-8 los límites (5000 m, 40 caracteres, 8 piezas, pendiente) no desbord
     await page.screenshot({ path: `${DIR}/${ID}-limites-${t.w}x${t.h}.png` });
   }
 });
+
+for (const t of TAMANOS) {
+  test(`cla-5 la bandera a cuadros marca la meta de 5000 m y la llana de pruebas no aparece en ningún listado (${t.w}x${t.h})`, async ({ page }) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize({ width: t.w, height: t.h });
+    await page.goto("/?pruebas=1");
+    await page.waitForFunction(() => Boolean(window.__debug));
+    await page.evaluate(() => window.__debug!.cargarEscenario({ pista: "pruebas-llana" }));
+    await page.getByTestId("acceso-taller").click();
+    await page.getByTestId("probar").click();
+    await expect(page.getByTestId("pista")).toBeVisible();
+    await page.getByTestId("ritmo-final").click();
+    await expect(page.getByTestId("tarjeta-fin")).toBeVisible({ timeout: 90_000 });
+    // La carrera ha corrido en la llana (no en La Cordillera) y acaba en meta.
+    await expect(page.getByTestId("fin-motivo")).toContainText("Meta");
+    await expect(page.getByTestId("fin-distancia")).toHaveText("5000,0 m");
+    const metaX = await page.evaluate(() => (window.__debug!.estado() as unknown as { metaX: number | null }).metaX);
+    expect(metaX).not.toBeNull();
+    expect(metaX!).toBeGreaterThanOrEqual(0);
+    expect(metaX!).toBeLessThanOrEqual(t.w);
+    await page.screenshot({ path: `${DIR}/${ID}-meta-${t.w}x${t.h}.png` });
+    // cla-10: sin rastro de la pista de pruebas en selectores, Rankings ni Especies.
+    await page.getByTestId("volver-fin").click();
+    const html = await page.content();
+    expect(html).not.toContain("pruebas-llana");
+    expect(html).not.toContain("Llana de pruebas");
+  });
+}

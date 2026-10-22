@@ -1,7 +1,7 @@
 import "./detmath";
 import { CarSim } from "./physics/car-sim";
 import { genomeHash, type Genome } from "./genome";
-import { getTrack, type TrackId } from "./tracks";
+import { resolverPista, type TrackId } from "./tracks";
 import { PHYSICS_VERSION, type CarPose, type CarResult } from "./constants";
 
 export * from "./constants";
@@ -36,7 +36,7 @@ export function createRace(
   trackId: TrackId,
   opts?: { heightFn?: (x: number) => number; maxSteps?: number; sinDiagnostico?: boolean; friccionSuelo?: number },
 ): Race {
-  const track = getTrack(trackId);
+  const track = resolverPista(trackId);
   if (!track) throw new Error(`Pista desconocida: ${String(trackId)}`);
   const heightAt = opts?.heightFn ?? track.heightAt;
   const sims = cars.map((c) => new CarSim(c.carId, c.genome, track, heightAt, opts?.maxSteps, opts));
@@ -87,7 +87,7 @@ export class CacheResultados {
   simulaciones = 0;
 
   private clave(genome: Genome, trackId: TrackId): string {
-    const t = getTrack(trackId);
+    const t = resolverPista(trackId);
     return `${genomeHash(genome)}/${trackId}/${t?.version ?? 0}/${PHYSICS_VERSION}`;
   }
 

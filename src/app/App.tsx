@@ -10,7 +10,7 @@ import { mergeLineage, originOf, pruneLineage, type LineageNode } from "@/evolut
 import { createSimRunner } from "@/worker";
 import { MAX_STEPS, PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { GENE_RANGES, genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
-import { DEFAULT_TRACK_ID, getTrack, TRACKS, type TrackId } from "@/sim/tracks";
+import { DEFAULT_TRACK_ID, getTrack, PRUEBAS_LLANA_ID, TRACKS, type TrackId } from "@/sim/tracks";
 import { DEFAULT_META, loadMeta, META_KEY, saveMeta, type Meta, type RitmoRecordado } from "@/storage/meta";
 import {
   emptyRankings,
@@ -356,10 +356,14 @@ export function App() {
 
   useEffect(() => {
     instalarGanchos();
+    // La lectura inicial de meta puede resolverse después de cargarEscenario({pista: "pruebas-llana"}) y no debe pisarla.
+    let llanaDePruebas = false;
     loadMeta().then(({ meta: loaded, warning: w, available }) => {
       setMeta(loaded);
-      setTrackId(loaded.lastTrack);
-      runtime.pistaSeleccionada = loaded.lastTrack;
+      if (!llanaDePruebas) {
+        setTrackId(loaded.lastTrack);
+        runtime.pistaSeleccionada = loaded.lastTrack;
+      }
       runtime.disponible = available;
       // Sin almacén se avisa una sola vez, con el texto único del producto.
       setWarning(available ? w : SIN_GUARDADO);
@@ -390,6 +394,12 @@ export function App() {
           setMeta(m);
           setTrackId(m.lastTrack);
           runtime.pistaSeleccionada = m.lastTrack;
+        }
+        // La llana de pruebas se corre pero no se guarda: ni lastTrack ni selectores la conocen.
+        if (e.pista === PRUEBAS_LLANA_ID) {
+          llanaDePruebas = true;
+          setTrackId(PRUEBAS_LLANA_ID as TrackId);
+          runtime.pistaSeleccionada = PRUEBAS_LLANA_ID as TrackId;
         }
         if (e.vacio) {
           await save(KEY_RANKINGS, null);
@@ -534,7 +544,7 @@ export function App() {
     async (result: CarResult): Promise<RankingOutcome | null> => {
       if (!trial) return null;
       const outcome = await updateRanking({ result, genome: trial.genome, origin: trial.origin });
-      await recordMark(result.carId, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, detalleDe(result));
+      if (getTrack(result.trackId)) await recordMark(result.carId, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, detalleDe(result));
       runtime.ultimaInscripcion = {
         trackId: result.trackId,
         position: outcome.position,
