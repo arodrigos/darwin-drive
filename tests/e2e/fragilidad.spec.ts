@@ -37,3 +37,19 @@ test("fra-1 el coche demo-fragil pierde piezas en La Cordillera y la pista las e
     await page.screenshot({ path: `${DIR}/${ID}-roto-${t.w}x${t.h}.png` });
   }
 });
+
+test("fra-12 la tarjeta de fin cuenta las piezas perdidas y cabe a los tres tamaños", async ({ page }) => {
+  for (const t of TAMANOS) {
+    await page.setViewportSize({ width: t.w, height: t.h });
+    await abrir(page, { vacio: true, genoma: "demo-fragil", pista: "cordillera" });
+    await page.getByTestId("acceso-taller").click();
+    await page.getByTestId("probar").click();
+    await page.getByTestId("ritmo-final").click();
+    await expect(page.getByTestId("tarjeta-fin")).toBeVisible({ timeout: 90_000 });
+    await expect(page.getByTestId("fin-piezas")).toContainText(/Perdió \d+ piezas? \(la primera a los/);
+    const caja = await page.getByTestId("tarjeta-fin").boundingBox();
+    expect(caja!.y + caja!.height).toBeLessThanOrEqual(t.h);
+    expect(caja!.width).toBeLessThanOrEqual(t.w);
+    await page.screenshot({ path: `${DIR}/${ID}-tarjeta-${t.w}x${t.h}.png` });
+  }
+});
