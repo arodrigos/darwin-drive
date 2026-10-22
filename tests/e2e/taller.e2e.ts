@@ -147,8 +147,7 @@ test("tl-1 diseñar, elegir pista, probar y entrar en el ranking, y persiste", a
   const cifra = coma(fin.ultimoResultado!.distance);
   await expect(page.getByTestId("fin-distancia")).toHaveText(cifra);
   await expect(page.getByTestId("tarjeta-ranking")).toHaveText(`¡Nuevo récord en La Rampa! ${cifra}`);
-  // El aviso flotante ya no se monta con la tarjeta de fin: la línea del récord es la de tarjeta-ranking.
-  await expect(page.getByTestId("aviso-ranking")).toHaveCount(0);
+  await expect(page.getByTestId("aviso-ranking")).toHaveText(`¡Nuevo récord en La Rampa! ${cifra}`);
   await expect(page.getByTestId("tarjeta-puesto")).toHaveText("Puesto 1 de 10 en La Rampa");
   await page.screenshot({ path: `${DIR}/${ID}-record-360x640.png` });
 
@@ -377,12 +376,11 @@ test("tl-8 aviso arriba al entrar en un ranking, y se va a los 2,5 s", async ({ 
   await page.getByTestId("probar").click();
   await expect.poll(async () => (await estado(page)).genomaEnPista !== null).toBe(true);
   await adelantar(page, 200);
-  // El resultado llega del worker: se espera a la tarjeta antes de leerlo del estado.
-  await expect(page.getByTestId("fin-distancia")).toBeVisible();
   const cifra = coma((await estado(page)).ultimoResultado!.distance);
-  await expect(page.getByTestId("fin-distancia")).toHaveText(cifra);
+  await expect(page.getByTestId("aviso-ranking")).toHaveText(`Puesto 4 en Las Dunas · ${cifra}`);
   await page.screenshot({ path: `${DIR}/${ID}-puesto-4-360x640.png` });
   await expect(page.getByTestId("tarjeta-ranking")).toHaveText("Entra en el ranking de Las Dunas: puesto 4 de 10");
+  await page.waitForTimeout(3000);
   await expect(page.getByTestId("aviso-ranking")).toBeHidden();
   await page.screenshot({ path: `${DIR}/${ID}-puesto-4-despues-360x640.png` });
 });

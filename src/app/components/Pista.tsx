@@ -372,8 +372,7 @@ export function Pista(props: PistaProps) {
         </div>
       )}
       {rendimiento && <PanelRendimiento />}
-      {/* Con la tarjeta de fin en pantalla el aviso sobra (la tarjeta lleva la misma línea) y tapaba el marcador de la parada. */}
-      {aviso && fase.tipo !== "fin" && (
+      {aviso && (
         <div className="aviso-ranking" role="status" data-testid="aviso-ranking">
           {aviso}
         </div>
