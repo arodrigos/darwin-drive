@@ -399,6 +399,8 @@ export const TRACKS: readonly Track[] = [
     tagline: "Casi llana: una contrarreloj hasta la meta.",
     heightAt: rectaHeight,
     surfaceOfSegment: rocaSiempre,
+  },
+  {
     id: "mosaico",
     version: 1,
     name: "El Mosaico",
