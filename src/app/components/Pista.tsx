@@ -253,6 +253,7 @@ export function Pista(props: PistaProps) {
     runtime.genomaEnPista = g;
     runtime.ejecutor = runner.kind;
     runtime.aplicarLimite = (max) => runner.post({ type: "limitRate", max });
+    runtime.forzarFin = (parcial) => setFase((f) => (f.tipo === "fin" ? { tipo: "fin", result: { ...f.result, ...parcial } } : f));
     if (runtime.limiteRitmo !== null) runner.post({ type: "limitRate", max: runtime.limiteRitmo });
     runtime.avanzar = (segundos) =>
       new Promise<void>((resolver) => {
@@ -311,6 +312,7 @@ export function Pista(props: PistaProps) {
       iniciar.current = () => {};
       runtime.avanzar = null;
       runtime.aplicarLimite = null;
+      runtime.forzarFin = null;
       runtime.ritmo = null;
       runtime.ritmoReal = null;
       runtime.pistaEnCarrera = null;
