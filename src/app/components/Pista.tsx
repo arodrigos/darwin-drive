@@ -385,15 +385,20 @@ export function Pista(props: PistaProps) {
             <span data-testid="fin-distancia">{formatMeters(fase.result.distance)}</span> en <span data-testid="fin-tiempo">{formatTiempo(fase.result.bestStep)}</span>
           </p>
           <p data-testid="fin-motivo">{fase.result.reason === "meta" ? MOTIVO.meta : `Motivo: ${MOTIVO[fase.result.reason]}`}</p>
-          {fase.result.reason === "stall" && (
+          {(fase.result.reason === "stall" || fase.result.reason === "destrozado") && (
             <>
-              <p data-testid="fin-causa">{textoCausa(fase.result.causaParada, fase.result.pendienteParada)}</p>
+              <p data-testid="fin-causa">{textoCausa(fase.result.causaParada, fase.result.pendienteParada, fase.result.reason === "destrozado")}</p>
               {props.onPorQue && (
                 <button type="button" className="pastilla" onClick={props.onPorQue} data-testid="fin-porque">
                   ¿Por qué?
                 </button>
               )}
             </>
+          )}
+          {fase.result.piezasPerdidas > 0 && fase.result.metroRotura !== null && (
+            <p data-testid="fin-piezas">
+              Perdió {fase.result.piezasPerdidas} {fase.result.piezasPerdidas === 1 ? "pieza" : "piezas"} (la primera a los {formatMeters(fase.result.metroRotura)})
+            </p>
           )}
           {inscripcion && (
             <>

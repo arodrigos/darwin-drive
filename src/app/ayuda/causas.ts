@@ -8,11 +8,14 @@ const TEXTOS: Record<Exclude<CausaParada, "motor">, string> = {
   panza: "Se quedó sentado sobre la carrocería, con las ruedas casi sin apoyo. Súbela o usa ruedas más grandes para salvar las crestas.",
   "sin-apoyo": "Ninguna rueda toca el suelo. Ponle al menos una rueda que llegue hasta él.",
   obstaculo: "Se topó con un obstáculo que no pudo salvar. Las ruedas más grandes suben escalones más altos.",
-  rotura: "Se rompió y no pudo seguir. Una carrocería más ligera y sin esquinas finas aguanta mejor los golpes.",
+  rotura: "Se rompió y perdió las ruedas: sin ellas no puede empujar. Una carrocería más gruesa y sin esquinas finas aguanta mejor los golpes.",
 };
 
+const EN_PEDAZOS = "Se rompió en pedazos: casi no le quedó carrocería. Más densidad y menos esquinas finas la hacen aguantar los golpes.";
+
 /** El motor de todos los coches empuja hasta TORQUE_SLOPE_DEG: la frase lo dice con el número real de la constante. */
-export function textoCausa(causa: CausaParada | null | undefined, pendiente?: number | null): string {
+export function textoCausa(causa: CausaParada | null | undefined, pendiente?: number | null, destrozado = false): string {
+  if (destrozado) return EN_PEDAZOS;
   if (causa === "motor") {
     const n = typeof pendiente === "number" && Number.isFinite(pendiente) ? Math.round(pendiente) : TORQUE_SLOPE_DEG;
     return `Cuesta de ${n}°: más de lo que puede empujar el motor (${TORQUE_SLOPE_DEG}°). Todos los coches tienen ese límite: solo pasa quien llega lanzado.`;
