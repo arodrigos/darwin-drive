@@ -499,7 +499,7 @@ export function App() {
           const track = campeon?.trackId ? getTrack(campeon.trackId) : null;
           if (campeon && track) {
             await updateRanking({
-              result: { carId: campeon.id, distance: campeon.distance!, reason: "stall", steps: 0, bestStep: Math.min(MAX_STEPS, Math.ceil(campeon.distance! * 1.2) + 1), piezasPerdidas: 0, causaParada: null, pendienteParada: null, physicsVersion: PHYSICS_VERSION, trackId: track.id, trackVersion: track.version },
+              result: { carId: campeon.id, distance: campeon.distance!, reason: "stall", steps: 0, bestStep: Math.min(MAX_STEPS, Math.ceil(campeon.distance! * 1.2) + 1), piezasPerdidas: 0, metroRotura: null, causaParada: null, pendienteParada: null, physicsVersion: PHYSICS_VERSION, trackId: track.id, trackVersion: track.version },
               genome: campeon.genome,
               origin: originOf(campeon.id, nodos),
               lineageId: campeon.id,

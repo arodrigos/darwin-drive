@@ -24,7 +24,7 @@ import type { RankingsView } from "./TrackPicker";
 
 const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarlo o a abrirlo en Safari o Chrome.";
 export const MENSAJE_ERROR = "La simulación se ha detenido por un error. Toca Reintentar para volver a empezar esta carrera.";
-const MOTIVO: Record<EndReason, string> = { meta: "¡Meta!", stall: "se atascó", timeout: "se acabó el tiempo", anomaly: "descalificado" };
+const MOTIVO: Record<EndReason, string> = { meta: "¡Meta!", stall: "se atascó", timeout: "se acabó el tiempo", anomaly: "descalificado", destrozado: "se rompió en pedazos" };
 const STOCK_HUE = 28;
 const AVISO_RANKING_MS = 2500;
 // La barra de «Hasta el final» se llena hasta los 5 km de la meta.
