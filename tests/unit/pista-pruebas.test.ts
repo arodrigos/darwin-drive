@@ -6,7 +6,7 @@ import { getTrack, PRUEBAS_LLANA_ID, resolverPista, TRACKS } from "../../src/sim
 
 test("cla-5 la llana de pruebas se simula pero no es una pista del juego", () => {
   assert.equal(getTrack(PRUEBAS_LLANA_ID), null);
-  assert.equal(TRACKS.some((t) => t.id === PRUEBAS_LLANA_ID), false);
+  assert.equal(TRACKS.some((t) => (t.id as string) === PRUEBAS_LLANA_ID), false);
   const pista = resolverPista(PRUEBAS_LLANA_ID);
   assert.ok(pista);
   assert.equal(pista.heightAt(2500), 0);
