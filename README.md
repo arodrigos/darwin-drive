@@ -1,54 +1,131 @@
 # Darwin Drive
 
-Juego web 2D de coches: diseña uno, elige pista y mira hasta dónde llega. Corre entero en el navegador (móvil e iPad), sin servidor ni cuenta.
+Juego web 2D de coches: diseña uno, elige pista y mira hasta dónde llega, o deja que un algoritmo genético los evolucione por ti. Corre entero en el navegador (pensado para móvil e iPad), sin servidor ni cuenta: todo se guarda en el propio dispositivo y funciona sin conexión tras la primera visita.
 
-## Cómo jugar
+## Qué se puede hacer
 
-En la portada, «Explorar pista» enseña la pista elegida y se recorre arrastrando con el dedo. Taller, Evolución, Garaje, Linaje y Especies se irán activando en las siguientes entregas.
+Desde la portada se llega a todo:
 
-## Ritmos de la carrera
+- **Explorar pista**: recorre la pista elegida sin coche, arrastrando con el dedo.
+- **Ver el coche de serie**: corre el coche de ejemplo en la pista elegida.
+- **Taller**: diseñas el coche arrastrando los puntos de la carrocería y tocando un punto para ponerle o quitarle una rueda. Cada rueda tiene radio, par motor y suspensión; la carrocería tiene peso. «Probar» lo lleva a la pista y «Guardar» al Garaje.
+- **Garaje**: los coches guardados. Desde cada uno se puede probar, abrir en el Taller, evolucionar, medir en todas las pistas, renombrar o borrar. Aquí están también el «Estado del guardado» y la copia de seguridad.
+- **Rankings**: al tocar una pista en la portada se abre su ranking. Cada fila se puede ver correr, abrir en el Taller o guardar en el Garaje.
+- **Evolución**: se elige pista, semilla (coches aleatorios, el del Taller o uno del Garaje), tamaño de población y fuerza de mutación. Cada generación corre, se queda con los mejores, los cruza y los muta. Se puede pausar, marcar un favorito para que sobreviva, ver un aviso de estancamiento y guardar el campeón en el Garaje. La gráfica enseña la mejor marca, la del 25 % superior y la media. Si hay una evolución a medias, la portada ofrece «Continuar evolución».
+- **Linaje**: el árbol de los coches (de cuál viene cada uno), con zoom y arrastre, coloreado con las marcas de la pista elegida. Tocar un nodo permite ver, abrir o guardar ese coche.
+- **Especies**: busca variedad en vez de un único ganador (MAP-Elites, `src/evolution/species.ts`). Es una rejilla de 4 × 4 por pista (filas: número de ruedas; columnas: largo de la carrocería) y cada casilla guarda el coche que más lejos llegó con esa forma. Cada búsqueda prueba un lote de coches nuevos; tocar una casilla permite verla correr o evolucionarla.
 
-En la carrera (y en Evolución) una fila de cinco botones elige el ritmo: ×1, ×2, ×4, ×8 y «Hasta el final» (Turbo en Evolución), que simula sin dibujar hasta la meta con una barra de avance. El último de ×1/×2/×4/×8 se recuerda en los ajustes (`Meta.ritmo`); «Hasta el final» nunca se guarda. Si el dispositivo no llega al ritmo pedido durante 2 s, aparece «real ×N» sobre la fila, sin mover ningún botón. El resultado de un coche no depende del ritmo ni de las pausas, y al ocultarse la pestaña la simulación se pausa y se reanuda sola.
+### La carrera
 
-**Por qué se para un coche.** Un coche se atasca tras 5 s sin avanzar y el resultado dice la causa (`causaParada` y `pendienteParada` en `CarResult`). `src/sim/diagnostico.ts` clasifica sobre las últimas muestras con esta prioridad: vuelco, sin apoyo, panza, motor (cuesta de 33° o más; el motor de todos los coches empuja hasta 35°, `TORQUE_SLOPE_DEG`), agarre y obstáculo. La tarjeta de fin enseña la frase (`src/app/ayuda/causas.ts`) y «¿Por qué?» abre la guía; la pista dibuja una cuña con la pendiente real y la de 35° discontinua. La causa se guarda con la marca y se ve en el detalle del ranking y del Garaje. El diagnóstico no cambia la carrera: el muestreo solo lee.
+- El coche corre solo y cuenta metros. Una fila de botones elige el ritmo: ×1, ×2, ×4, ×8 y «Hasta el final», que salta al resultado sin dibujar la carrera (en Evolución, «Turbo» salta de generación en generación). El último ritmo entre ×1 y ×8 se recuerda; «Hasta el final» no. Si el dispositivo no llega al ritmo pedido, aparece «real ×N».
+- El ritmo y las pausas nunca cambian el resultado. Al ocultar la pestaña o apagar la pantalla, la carrera se pausa y sigue al volver.
+- La carrera acaba al llegar a la meta de 5000 m o a los 15 minutos de simulación. Un coche se da por parado tras 5 s sin avanzar.
+- **Por qué se para**: la tarjeta de fin dice la causa (vuelco, sin apoyo, panza, motor, agarre u obstáculo) y «¿Por qué?» abre la guía. La pista dibuja una cuña con la pendiente real. El motor de todos los coches empuja hasta 35°. La causa se guarda con la marca y se ve también en el detalle del ranking y del Garaje.
+- **Fragilidad**: la carrocería se rompe por triángulos con los golpes fuertes. La pieza cae, un destello marca dónde se rompió y el coche sigue con lo que le queda; una rueda se suelta si pierde los dos triángulos de su vértice. La tarjeta de fin dice cuántas piezas perdió y en qué metro cedió la primera.
+- **Peso y opacidad**: la opacidad del coche refleja el peso de la carrocería, en cuatro escalones, igual en el Taller, el Garaje, el Linaje y la pista. En carrera, cada parte se ve más opaca cuanto más carga soporta su rueda. Es solo visual.
 
-**Peso y opacidad.** La opacidad del coche refleja su peso: `opacidadBase(bodyDensity)` (`src/game/opacidad.ts`) da cuatro niveles (0,4 · 0,6 · 0,8 · 1,0) en el Taller, el Garaje, el Linaje y la pista. En carrera, cada triángulo de la carrocería sube hacia 1 según la carga (ya suavizada en la simulación) de las ruedas montadas en sus vértices. El contorno es siempre opaco y pintar no cambia ningún resultado.
+### Pistas
 
-## Ayuda dentro del juego
+Hay diez pistas fijas (`src/sim/tracks.ts`), cada una con su propio ranking de 10 coches:
 
-Cada pantalla tiene un «?» arriba a la derecha que abre un panel con una línea por opción; en la Pista, abrirlo pausa la carrera y cerrarlo la reanuda. «Ver la guía completa» (o «Cómo se juega» en la portada) abre la guía con el recorrido entero y una ficha por pista. Los textos viven en `src/app/ayuda/textos.ts`; el «atrás» del sistema cierra la capa de arriba.
+| Pista | Cómo es |
+| --- | --- |
+| La Cordillera | Montañas al azar, siempre las mismas, cada vez más altas. |
+| La Rampa | Una recta que se empina sin parar. |
+| Las Dunas | Olas largas que crecen. |
+| El Pedregal | Llano con piedras cada vez mayores. |
+| El Glaciar | Hielo resbaladizo con lomas suaves. |
+| Los Trampolines | Suelo elástico que rebota más según el tramo. |
+| La Escalera | Escalones de 20 cm a más de un metro. |
+| El Acantilado | Escalones hacia abajo de medio metro a seis, con placas de hielo. |
+| La Recta | Casi llana hasta la meta; se ordena por tiempo. |
+| El Mosaico | Cada 25 m cambia el tipo de suelo; un rótulo nombra el tramo actual. |
 
-## Pistas y rankings
+Las cuatro clásicas (Cordillera, Rampa, Dunas y Pedregal) siguen una curva de dificultad común (`src/sim/dificultad.ts`) que se complica pronto, con un respiro cada 250 m. El dibujo distingue las superficies por forma además de por color. El selector de pista es un carrusel horizontal.
 
-Hay diez pistas fijas, cada una una función pura de la distancia (`src/sim/tracks.ts`): **La Cordillera** (montañas al azar pero siempre las mismas), **La Rampa** (una recta que se empina sin parar), **Las Dunas** (olas largas que crecen), **El Pedregal** (piedras cada vez mayores), **El Glaciar** (hielo, fricción 0,05), **Los Trampolines** (suelo elástico con rebote de 0,5 a 0,85 según el tramo) **La Escalera** (escalones de 0,2 a 1,2 m cuesta abajo y con poco agarre), **El Acantilado** (escalones hacia abajo de 0,5 a 6 m con cara de 65° y placas de hielo cada vez más frecuentes; los dos primeros tramos van fijos, hielo y roca) **La Recta** (casi llana, ondulación de menos de 0,5 m, sin curva de dificultad: una contrarreloj hasta la meta, que se ordena por tiempo) y **El Mosaico** (cada tramo de 25 m es de un tipo distinto: llano, loma, ondas, piedras, hielo o suelo elástico; `tipoTramo(i)` nunca repite el anterior y el tamaño sigue la curva de dificultad; un rótulo sobre el contador nombra el tramo actual). Se trocean en tramos de 25 m (`src/sim/terrain.ts`). Las cuatro se complican pronto y siguiendo una misma curva cóncava (`src/sim/dificultad.ts`: a 120 m ya llevan la mitad de su techo y a 450 m el 80 %), con un respiro cada 250 m; los techos no suben. A los 100 m la Cordillera ya pasa de 3 m de relieve, la Rampa de 20°, las Dunas de 3 m y las piedras de 0,45 m. `npm run medir:pistas -- --umbral` (en el CI) compara con las pistas anteriores (`tests/fixtures/pistas-v-anterior.ts`) y falla si la mediana de los coches viables no baja al 70 % o si un tramo de 25 m para a más del 80 % de los que llegan. Cada pista tiene su propio ranking de 10 coches (los `Record` se derivan de `TRACKS`: una partida guardada con solo las cuatro claves clásicas carga sin avisos y las nuevas arrancan vacías). Las pistas nuevas nacen en la versión 1. Las clásicas siguen con suelo de roca (`ROCA`): las superficies no las alteran. Su dorado (`tests/fixtures/dorado-clasicas.json`) se regeneró con la rotura de fragilidad (PHYSICS_VERSION 4), que sí cambia sus resultados.
+### Rankings y marcas
 
-**Superficies.** Cada tramo de 25 m tiene un material (`surfaceOfSegment(i)`: fricción y rebote) que la física aplica al suelo; el dibujo lo distingue por forma además de por color (`src/game/superficies.ts`: brillos en el hielo, zigzag en el elástico) con contraste ≥ 3:1. Los selectores de pista (`TrackPicker`) son un carrusel horizontal. `npm run medir:pistas -- --umbral` exige también que cada pista nueva tenga Spearman < 0,85 con las demás (salvo La Recta, que es llana y de roca por diseño), que El Acantilado rompa piezas al menos el doble que la media de las clásicas y que ≥ 50 % de los viables lleguen a la meta de La Recta.
+El ranking de cada pista ordena con un único criterio (`compararMarcas`, en `src/sim/clasificacion.ts`): más distancia, llegar entero, menos tiempo hasta la marca y, por último, quien la logró antes. Cuando la distancia que se ve empata, una insignia en la fila dice qué criterio decidió.
 
-**Meta y clasificación.** La carrera acaba al llegar a 5000 m («¡Meta!») o a los 15 minutos de simulación (54 000 pasos). El ranking de cada pista ordena con un único criterio (`compararMarcas`, en `src/sim/clasificacion.ts`): quien no está descalificado, más décimas de distancia, llegar entero, menos tiempo hasta la marca, antes en la tabla y, por último, el hash del genoma. Cuando la distancia que se ve es la misma, una insignia en la fila dice qué clave decidió. Cada marca guarda `bestStep` (el paso de su mejor distancia) y `piezasPerdidas`; una marca sin ellos, o que la física no permite, se vuelve a medir con la migración de marcas.
+Cada marca guarda con qué versión de pista y de física se midió. Si cambia alguna, al abrir el juego (o al importar una copia antigua) se vuelven a medir, una a una, las marcas del ranking, del garaje y de las especies; el linaje queda como historia. Una banda «Actualizando marcas…» arriba lo cuenta. Si una marca no se puede volver a medir, se conserva con «no se pudo volver a medir». Si hay otra pestaña abierta con una versión anterior, la migración espera y ofrece recargarla.
 
-## Guardado en el dispositivo
+### Ayuda
 
-Todo se guarda en IndexedDB del propio dispositivo, con claves `dd:v1:*` validadas al leer (rankings, garaje, evolución, linaje, especies y ajustes). Tras el primer guardado se pide `navigator.storage.persist()`, y el Garaje dice en «Estado del guardado» si es duradero o si Safari puede borrarlo.
+Cada pantalla tiene un «?» arriba a la derecha con una línea por opción (en la pista, abrirlo pausa la carrera). «Ver la guía completa», o «Cómo se juega» en la portada, abre la guía con el recorrido entero y una ficha por pista. Los textos están en `src/app/ayuda/textos.ts`.
 
-**Nombres.** «Guardar campeón» (Evolución) abre una hoja con un nombre propuesto; «Renombrar» en el Garaje la reutiliza. El nombre cambia en el coche y en sus filas de ranking sin tocar su fecha. Se le quitan los caracteres de control y de formato (Unicode Cc y Cf), se juntan espacios y se corta a 40 caracteres, también al cargar lo guardado y al importar una copia; siempre se pinta como texto.
+### Guardado, copia y sin conexión
 
-**Copia de seguridad.** En el Garaje, «Exportar copia» descarga `darwin-drive-copia-AAAA-MM-DD.json` y «Importar copia» lo vuelve a cargar: se valida entero (máximo 5 MB), se resume lo que trae y se pide confirmación antes de reemplazar. Un fichero inválido no cambia nada. Los campos de marca fuera de rango (tiempo, piezas, causa o pendiente de la parada, fecha ilegible) no invalidan la copia: esa marca queda pendiente y se vuelve a medir al importar, y la pista de pruebas `pruebas-llana` se ignora; un genoma inválido o una pista desconocida sí la rechazan entera.
+- Todo se guarda en IndexedDB del dispositivo, con claves `dd:v1:*` validadas al leer (rankings, garaje, evolución, linaje, especies y ajustes). Tras el primer guardado se pide almacenamiento persistente, y el Garaje dice en «Estado del guardado» si es duradero o si el navegador puede borrarlo.
+- **Nombres**: «Guardar campeón» (Evolución) pide un nombre con uno propuesto; «Renombrar» en el Garaje cambia el nombre en el coche y en sus filas de ranking. Se limpian caracteres de control y se corta a 40 caracteres.
+- **Copia de seguridad**: en el Garaje, «Exportar copia» descarga `darwin-drive-copia-AAAA-MM-DD.json` e «Importar copia» la vuelve a cargar (máximo 5 MB). Se valida entera, se resume lo que trae y se pide confirmación antes de reemplazar; un fichero inválido no cambia nada.
+- **Sin conexión**: un service worker (Serwist) guarda el juego tras la primera visita, solo en el build de producción. Una versión nueva solo se activa al tocar «Recargar» en el aviso «Hay una versión nueva». `/?sw=0` desinstala el worker y vacía su caché.
 
-**Sin conexión.** Un service worker (Serwist) guarda el juego tras la primera visita. Una versión nueva solo se activa cuando se toca «Recargar» en el aviso «Hay una versión nueva · Recargar», nunca a mitad de una evolución. `/?sw=0` desinstala el worker y vacía su caché.
+## Stack
 
-**Fragilidad.** La carrocería se rompe por triángulos (`src/sim/rotura.ts`, `src/sim/physics/rotura-sim.ts`). El impulso normal que recibe cada triángulo en un paso se acumula en el `post-solve` sin tocar el mundo; justo después de `world.step` y en orden de índice se rompe el que supera `umbral_i = V_ROTURA · (densidad/70)^0,5 · clamp(ángulo agudo/30°, 0,35, 1) · clamp(√(área/0,5), 0,5, 1,5)` por kilo de masa de origen. La pieza se separa como cuerpo nuevo con la velocidad `v + ω × r`, la rueda se suelta cuando caen los dos triángulos de su vértice, el par se recalcula con la masa que queda (repartido entre las motrices de origen, así que el empuje por kilo nunca sube) y con menos del 5 % de masa el coche queda destrozado con la distancia del último paso sano. Las piezas sueltas desaparecen a los 600 pasos o 20 m por detrás. `CarResult` gana `metroRotura` y `PHYSICS_VERSION` pasa a 4, así que todas las marcas se vuelven a medir una vez. La pista pinta lo que queda, las piezas sueltas y un destello de 300 ms de reloj real; la tarjeta de fin dice «Perdió N piezas (la primera a los M m)» y Rankings «Roto · N piezas». `npm run medir:fragilidad` (en el CI) comprueba que lo ligero rompe antes que lo pesado.
+- [Next.js](https://nextjs.org/) 16 y React 19, en TypeScript.
+- [Phaser](https://phaser.io/) 4 para dibujar pista, taller y coches.
+- [Planck](https://piqnt.com/planck.js/) para la física 2D, que corre en un Web Worker (`src/worker/`).
+- `@serwist/*` y `serwist` para el service worker; `idb-keyval` para IndexedDB.
+- `@dagrejs/dagre` para colocar el árbol del Linaje; `pure-rand` y `simplex-noise` para el azar con semilla y el relieve.
+- Pruebas: `node:test` con `tsx` y `fast-check` (unitarias, con `fake-indexeddb`) y Playwright (extremo a extremo).
 
-**Marcas por versión.** Cada marca guarda con qué versión de pista y de física se midió. Si cambia alguna, al abrir el juego (o al importar una copia antigua) se vuelven a medir, de una en una y en turbo, las del ranking, las del garaje y las celdas de los archivos de especies; el linaje queda como historia. Una banda «Actualizando marcas…» lo cuenta y, al acabar, un aviso, los dos en una franja propia arriba que empuja el contenido en vez de taparlo, se queda hasta cerrarlo. Cada medida se escribe solo si el elemento sigue como estaba; tras 3 fallos (o 60 s de pantalla visible) la marca se conserva con «no se pudo volver a medir». Si hay otra pestaña abierta con una versión anterior, la migración espera y ofrece «Recargar las otras pestañas». Con `?pruebas=1&migracion=frenada` la cola arranca retenida (`__debug.frenarMigracion(false)` la suelta) y `cargarEscenario({ rankings, garaje, especies: "demo-version-anterior" })` deja datos de una versión anterior.
+El producto no usa activos externos: todo se genera por código (ver `ACTIVOS.md`).
+
+## Arrancar en local
+
+Se necesita Node.js y npm (el CI usa Node 22).
+
+```
+npm ci
+npm run dev                  # servidor de desarrollo de Next.js
+```
+
+Para probar el build de producción (incluido el service worker):
+
+```
+npm run build
+npm run start                # sirve en http://localhost:3000 por defecto
+```
+
+## Variables de entorno
+
+El juego no necesita ninguna variable para arrancar: no hay `.env` que rellenar. Las que lee el código hoy son opcionales:
+
+| Variable | Dónde | Para qué |
+| --- | --- | --- |
+| `VERCEL_GIT_COMMIT_SHA` | `next.config.ts` (build) | Revisión del despliegue para versionar el precache del service worker. Si falta, se usa `git rev-parse HEAD` y, si tampoco hay git, un identificador aleatorio. |
+| `BASE_URL` | `playwright.config.ts`, `tests/smoke/traspaso.spec.ts` | Probar contra un servidor ya en marcha en lugar de levantar uno local. |
+| `URL_OBJETIVO` | `scripts/smoke-traspaso.sh` | Lanzar el smoke contra un despliegue en vez de en local. |
+| `CAPTURAS_DIR`, `CAPTURAS_PREFIJO` | `tests/e2e/*` | Carpeta y prefijo de las capturas de las pruebas e2e. |
+| `MEDIR_N`, `MEDIR_PISTA`, `MEDIR_TASA_MAX`, `MEDIR_MURO` | `scripts/medir-pistas.ts`, `scripts/medir-anomalias.ts` | Ajustes de las medidas (número de coches, una sola pista, umbrales). |
+| `PATRONES_PUBLICO_EXTRA` | `scripts/comprobar-publico.mjs` | Patrones extra que `verificar:publico` no debe encontrar en el repo. |
+
+`NEXT_PUBLIC_VERSION_APP` la fija `next.config.ts` en el build; no hay que definirla.
 
 ## Pruebas
-
-Con `?pruebas=1` se expone `window.__debug` y todo el guardado va a una base aparte (`darwin-drive-pruebas`), de modo que el garaje del jugador no se toca. Sin el parámetro, `__debug` no existe.
 
 ```
 npm ci
 npm run lint && npm run typecheck
-npm run test:unit            # núcleo en Node (node:test + fast-check)
+npm run test:unit            # núcleo en Node (node:test + fast-check); `npm test` hace lo mismo
 npm run build && npm run verificar:presupuesto-bundle
-npm run verificar:publico    # sin infraestructura interna; con --commits <rango> y --texto <texto> revisa también mensajes y PR
-npm run test:e2e             # Playwright; necesita `npx playwright install chromium`
+npm run verificar:frontera-nucleo
+npm run verificar:publico    # nada interno en el árbol; con --commits <rango> y --texto <texto> revisa también mensajes y PR
+npm run test:e2e             # Playwright; necesita `npx playwright install chromium` y un `npm run build` previo
+npm run smoke:traspaso       # construye, arranca y prueba el juego en local (o contra URL_OBJETIVO)
 ```
+
+Medidas de la física y de las pistas (también en el CI):
+
+```
+npm run medir:fisica
+npm run medir:anomalias
+npm run medir:fragilidad
+npm run medir:pistas -- --umbral
+```
+
+`npm run medir:evolucion` mide la evolución, y los scripts `generar:escenario*` regeneran los escenarios de demostración de `src/debug/escenarios/`.
+
+### Modo pruebas
+
+Con `?pruebas=1` en la URL se expone `window.__debug` y todo el guardado va a una base aparte (`darwin-drive-pruebas`), así que el garaje del jugador no se toca. Sin el parámetro, `__debug` no existe. `__debug.cargarEscenario({...})` carga datos de ejemplo; por ejemplo, `genoma: "demo-ligero"` o `"demo-pesado"` (el coche de serie con el peso mínimo o máximo), `"demo-fragil"` o `"demo-motor-rampa"`, y `rankings`, `garaje` o `especies: "demo-version-anterior"` para ver la migración de marcas. Con `?pruebas=1&migracion=frenada` la cola de migración arranca retenida hasta `__debug.frenarMigracion(false)`.
