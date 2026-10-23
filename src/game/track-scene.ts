@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { colocarMarcador, cruzan } from "./colocar-marcador";
 import { createNoise2D } from "simplex-noise";
 import { runtime } from "@/debug/ganchos";
 import { measureOnNextFrame } from "@/debug/latencias";
@@ -113,6 +114,8 @@ class TrackScene extends Phaser.Scene {
   private ruler!: Phaser.GameObjects.Graphics;
   private rulerLabels: Phaser.GameObjects.Text[] = [];
   private carLabels: Phaser.GameObjects.Text[] = [];
+  /** Caja local (px del lienzo) del rótulo «fin · N m» del primer coche en este frame; null si no se ve. */
+  private cajaEtiquetaFin: { x: number; y: number; w: number; h: number } | null = null;
   private flagLabel!: Phaser.GameObjects.Text;
   private destellos: { x: number; y: number; at: number }[] = [];
   private skyDirty = true;
@@ -166,6 +169,7 @@ class TrackScene extends Phaser.Scene {
     this.parada = null;
     this.ancla = ANCLA_CARRERA;
     runtime.marcador = null;
+    runtime.etiquetaFin = null;
     runtime.cajaCoche = null;
     this.favorites.clear();
     this.screenCars = [];
@@ -360,6 +364,7 @@ class TrackScene extends Phaser.Scene {
   }
 
   private drawCars(poses: CarPose[], cfg: SceneConfig, toX: (x: number) => number, toY: (h: number) => number): void {
+    this.cajaEtiquetaFin = null;
     const g = this.cars;
     g.clear();
     const now = performance.now();
@@ -427,6 +432,10 @@ class TrackScene extends Phaser.Scene {
       const label = this.carLabels[used];
       if (label && text) {
         label.setText(text).setPosition(toX(p.x), top).setVisible(true);
+        if (i === 0 && fin) {
+          const b = label.getBounds();
+          this.cajaEtiquetaFin = { x: b.x, y: b.y, w: b.width, h: b.height };
+        }
         used++;
       }
     });
@@ -471,12 +480,15 @@ class TrackScene extends Phaser.Scene {
     const canvas = this.game.canvas.getBoundingClientRect();
     const pose = cfg.cars.length === 1 ? poses[0] : undefined;
     const coche = pose ? this.cajaDelCoche(pose, cfg.cars[0].genome, toX, toY) : null;
+    const eti = this.cajaEtiquetaFin;
+    runtime.etiquetaFin = eti ? { x: canvas.left + eti.x, y: canvas.top + eti.y, w: eti.w, h: eti.h } : null;
     runtime.cajaCoche = coche ? { x: canvas.left + coche.x, y: canvas.top + coche.y, w: coche.w, h: coche.h } : null;
     const p = this.parada;
     if (!p || !pose?.finished || !coche) {
       runtime.marcador = null;
       return;
     }
+    const rotulo = this.cajaEtiquetaFin;
     // Si el coche resbaló cuesta abajo tras su punto más lejano, el marcador se acerca a él: más allá cae fuera de la pantalla.
     const xMarca = Math.min(p.x, pose.x + MARGEN_MARCADOR_M);
     const base = { x: toX(xMarca), y: toY(cfg.track.heightAt(xMarca)) };
@@ -504,6 +516,11 @@ class TrackScene extends Phaser.Scene {
       }
       this.etiquetaLimite.setText(`${TORQUE_SLOPE_DEG}°`).setPosition(finLimite.x + 4, finLimite.y).setVisible(true);
       this.etiquetaCausa.setText(`${Math.round(p.pendiente as number)}°`).setPosition(top.x, top.y - 4).setVisible(true);
+      // Las placas de la cuña tampoco tapan el rótulo «fin · N m»: la del ángulo real sube sobre él y la del límite se aparta a su derecha.
+      this.etiquetaCausa.setOrigin(0.5, 1);
+      const cajaDe = (b: Phaser.Geom.Rectangle) => ({ x: b.x, y: b.y, w: b.width, h: b.height });
+      if (rotulo && cruzan(cajaDe(this.etiquetaCausa.getBounds()), rotulo)) this.etiquetaCausa.setPosition(top.x, rotulo.y - 4);
+      if (rotulo && cruzan(cajaDe(this.etiquetaLimite.getBounds()), rotulo)) this.etiquetaLimite.setPosition(rotulo.x + rotulo.w + 4, finLimite.y);
       const lim = this.etiquetaLimite.getBounds();
       const eti = this.etiquetaCausa.getBounds();
       const x0 = Math.min(base.x, eti.x, lim.x);
@@ -512,9 +529,12 @@ class TrackScene extends Phaser.Scene {
       caja = { x: x0, y: y0, w: x1 - x0, h: base.y - y0 };
     } else {
       const icono = ICONOS[p.causa] || "?";
-      this.etiquetaCausa.setText(icono).setPosition(base.x, base.y - coche.h - 8).setVisible(true);
-      const eti = this.etiquetaCausa.getBounds();
-      caja = { x: eti.x, y: eti.y, w: eti.width, h: eti.height };
+      this.etiquetaCausa.setText(icono).setOrigin(0, 0).setVisible(true);
+      const tam = this.etiquetaCausa.getBounds();
+      // Fuera del rótulo y del coche, y siempre junto a él (colocarMarcador).
+      const sitio = colocarMarcador(coche, rotulo, { w: this.scale.width, h: this.scale.height }, { w: tam.width, h: tam.height });
+      this.etiquetaCausa.setPosition(sitio.x, sitio.y);
+      caja = sitio;
       altoCuna = coche.h;
     }
     runtime.marcador = {
