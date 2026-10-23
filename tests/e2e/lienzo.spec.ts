@@ -211,17 +211,22 @@ for (const { w, h } of TAMANOS) {
     page,
   }) => {
     test.setTimeout(180_000);
-    await abrir(page, w, h, { evolucion: "demo-gen-8" });
+    await abrir(page, w, h, { vacio: true, evolucion: "demo-gen-8" });
 
     await page.getByTestId("acceso-explorar").click();
     await expect(page.getByTestId("explorar")).toBeVisible();
-    const y = h / 2;
-    await page.mouse.move(w - 30, y);
+    // La escena tiene que haber pintado antes de arrastrar: si no, el gesto se pierde.
+    await page.waitForFunction(() => window.__debug!.estado().tramosGenerados > 0);
+    const caja = (await page.getByTestId("lienzo").boundingBox())!;
+    const y = caja.y + caja.height / 2;
+    await page.mouse.move(caja.x + caja.width - 30, y);
     await page.mouse.down();
-    await page.mouse.move(30, y, { steps: 8 });
+    await page.mouse.move(caja.x + 30, y, { steps: 8 });
     await page.mouse.up();
+    await expect
+      .poll(async () => (await estado(page)).camaraX, { timeout: 5_000 })
+      .toBeGreaterThan(0);
     const camara = (await estado(page)).camaraX;
-    expect(camara).toBeGreaterThan(0);
     await page.evaluate(() =>
       window.__debug!.perderLienzo({ msRestaurar: 300 }),
     );
