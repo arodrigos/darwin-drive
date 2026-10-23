@@ -254,7 +254,7 @@ for (const { w, h } of TAMANOS) {
     await page.screenshot({ path: `${DIR}/${ID}-taller-${w}x${h}.png` });
     await page.getByTestId("volver").click();
 
-    await page.getByTestId("acceso-evolucion").click();
+    // «Continuar» cuelga de la portada: pasar antes por «Evolución» llevaría a otra pantalla.
     await page.getByTestId("acceso-continuar").click();
     await expect
       .poll(async () => (await estado(page)).generacion ?? 0, {
