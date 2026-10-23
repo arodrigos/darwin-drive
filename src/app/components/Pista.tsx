@@ -31,6 +31,12 @@ const AVISO_RANKING_MS = 2500;
 // La barra de «Hasta el final» se llena hasta los 5 km de la meta.
 const OBJETIVO_BARRA_M = 5000;
 
+function limpiarForzado(): void {
+  if (!runtime.forzado) return;
+  runtime.forzado = null;
+  runtime.alForzar?.();
+}
+
 function canDraw(): boolean {
   try {
     const c = document.createElement("canvas");
@@ -71,6 +77,8 @@ export interface PistaProps {
   pausaCapa?: boolean;
   /** Abre la guía en «Por qué se para un coche»; la tarjeta sigue debajo y se recupera al cerrar. */
   onPorQue?: () => void;
+  /** Solo pruebas (forzarTarjetaFin): enseña el récord pendiente sin migración en curso. */
+  recordPendienteForzado?: boolean;
 }
 
 export function Pista(props: PistaProps) {
@@ -120,6 +128,8 @@ export function Pista(props: PistaProps) {
     const runner: SimRunner = createSimRunner({ worker: prueba.worker, failFirstStart: prueba.fallo });
     let scene: TrackSceneHandle | null = null;
     let cancelled = false;
+    // Último resultado de la tarjeta, con lo forzado encima: la escena rehace el marcador a partir de él.
+    let resultadoFin: CarResult | null = null;
     let raceId = "";
     let intento = 0;
     let maxX = 0;
@@ -183,6 +193,7 @@ export function Pista(props: PistaProps) {
       } else if (m.type === "raceDone") {
         // La tarjeta enseña el resultado del ejecutor tal cual, sin recalcular nada aquí.
         const result = m.results[0];
+        resultadoFin = result;
         runtime.ultimoResultado = result;
         runtime.cochesVivos = 0;
         if (hud.current) hud.current.textContent = formatMeters(result.distance);
@@ -212,6 +223,8 @@ export function Pista(props: PistaProps) {
     const lanzar = () => {
       if (!scene) return;
       raceId = `carrera-${++intento}`;
+      resultadoFin = null;
+      limpiarForzado();
       // «Repetir» vuelve al ritmo recordado: «Hasta el final» era cosa de la carrera anterior.
       pace = ritmoRecordado.current;
       aviso = SIN_AVISO;
@@ -262,7 +275,14 @@ export function Pista(props: PistaProps) {
     runtime.genomaEnPista = g;
     runtime.ejecutor = runner.kind;
     runtime.aplicarLimite = (max) => runner.post({ type: "limitRate", max });
-    runtime.forzarFin = (parcial) => setFase((f) => (f.tipo === "fin" ? { tipo: "fin", result: { ...f.result, ...parcial } } : f));
+    runtime.forzarFin = (parcial) => {
+      if (!resultadoFin) return;
+      resultadoFin = { ...resultadoFin, ...parcial };
+      const nuevo = resultadoFin;
+      setFase((f) => (f.tipo === "fin" ? { tipo: "fin", result: nuevo } : f));
+      // La pista pinta el marcador y el rótulo al recibir carFinished: se reaplica con el resultado forzado.
+      scene?.carFinished(nuevo);
+    };
     if (runtime.limiteRitmo !== null) runner.post({ type: "limitRate", max: runtime.limiteRitmo });
     runtime.avanzar = (segundos) =>
       new Promise<void>((resolver) => {
@@ -322,6 +342,7 @@ export function Pista(props: PistaProps) {
       runtime.avanzar = null;
       runtime.aplicarLimite = null;
       runtime.forzarFin = null;
+      limpiarForzado();
       runtime.ritmo = null;
       runtime.ritmoReal = null;
       runtime.pistaEnCarrera = null;
@@ -430,7 +451,7 @@ export function Pista(props: PistaProps) {
               )}
             </>
           )}
-          {props.migrando && (
+          {(props.migrando || props.recordPendienteForzado) && (
             <p className="nota-migracion" data-testid="fin-record-pendiente">
               Récord pendiente: se confirma al terminar de actualizar las marcas.
             </p>

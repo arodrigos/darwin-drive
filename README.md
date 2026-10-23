@@ -115,6 +115,8 @@ npm run test:e2e             # Playwright; necesita `npx playwright install chro
 npm run smoke:traspaso       # construye, arranca y prueba el juego en local (o contra URL_OBJETIVO)
 ```
 
+Con `?pruebas=1`, `__debug.forzarTarjetaFin({reason, causaParada, recordPendiente, avisoMigracion})` repinta la tarjeta de fin con su caso peor (récord pendiente, aviso de migración y marcador de la parada) solo en memoria; lo cubre `tests/e2e/tarjeta-gancho.spec.ts`.
+
 Medidas de la física y de las pistas (también en el CI):
 
 ```
