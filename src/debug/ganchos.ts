@@ -32,6 +32,8 @@ export const runtime = {
   destellos: 0 as number,
   /** Cajas en px CSS del viewport: el coche en pista y el marcador de parada (null si no hay). */
   cajaCoche: null as { x: number; y: number; w: number; h: number } | null,
+  /** Caja en px CSS del viewport del rótulo «fin · N m» del primer coche si se ve en el último frame. */
+  etiquetaFin: null as { x: number; y: number; w: number; h: number } | null,
   marcador: null as { caja: { x: number; y: number; w: number; h: number }; tamEtiquetaPx: number; colorPlaca: string; colorTexto: string; altoCochePx: number; altoCunaPx: number } | null,
   /** Bandera de meta (5000 m): x en px CSS de su asta si está en pantalla en el último frame, null si no. */
   metaX: null as number | null,
@@ -119,6 +121,7 @@ export function estado() {
     destellos: runtime.destellos,
     cajaCoche: runtime.cajaCoche,
     marcador: runtime.marcador,
+    etiquetaFin: runtime.etiquetaFin,
     metaX: runtime.metaX,
     ritmo: runtime.ritmo,
     ritmoReal: runtime.ritmoReal,

@@ -345,6 +345,7 @@ export function Pista(props: PistaProps) {
       runtime.cargas = null;
       runtime.cajaCoche = null;
       runtime.marcador = null;
+      runtime.etiquetaFin = null;
       runtime.ejecutor = null;
     };
   }, [failed]);
