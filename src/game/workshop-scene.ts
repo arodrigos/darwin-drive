@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { runtime } from "@/debug/ganchos";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
 import { VERTEX_COUNT, type Genome } from "@/sim/genome";
+import { gestionarLienzo, type OpcionesGestor } from "./lienzo";
 import { opacidadBase } from "./opacidad";
 import { moveVertex, toggleWheel, wheelAt } from "./editor";
 
@@ -122,22 +123,34 @@ class WorkshopScene extends Phaser.Scene {
   }
 }
 
-export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks): WorkshopHandle {
-  const scene = new WorkshopScene("taller");
-  const game = new Phaser.Game({
-    type: Phaser.AUTO,
+export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opciones: OpcionesGestor = {}): WorkshopHandle {
+  let scene = new WorkshopScene("taller");
+  const gestor = gestionarLienzo(
     parent,
-    backgroundColor: "#16222f",
-    render: { preserveDrawingBuffer: true },
-    scale: { mode: Phaser.Scale.RESIZE, width: parent.clientWidth || 360, height: parent.clientHeight || 400 },
-    // La entrada la gestiona este módulo con eventos del DOM: así un arrastre que sale del lienzo sigue vivo.
-    input: { mouse: false, touch: false },
-    scene,
-  });
+    (reconstruccion) => {
+      if (reconstruccion) {
+        const vieja = scene;
+        scene = new WorkshopScene("taller");
+        scene.genome = vieja.genome;
+        scene.selected = vieja.selected;
+      }
+      return new Phaser.Game({
+        type: Phaser.AUTO,
+        parent,
+        backgroundColor: "#16222f",
+        render: { preserveDrawingBuffer: true },
+        scale: { mode: Phaser.Scale.RESIZE, width: parent.clientWidth || 360, height: parent.clientHeight || 400 },
+        // La entrada la gestiona este módulo con eventos del DOM: así un arrastre que sale del lienzo sigue vivo.
+        input: { mouse: false, touch: false },
+        scene,
+      });
+    },
+    opciones,
+  );
 
   // Phaser solo reacciona al redimensionado de la ventana; el panel del Taller cambia de alto sin que la ventana se mueva.
   const observer = new ResizeObserver(() => {
-    if (parent.clientWidth > 0 && parent.clientHeight > 0) game.scale.resize(parent.clientWidth, parent.clientHeight);
+    if (parent.clientWidth > 0 && parent.clientHeight > 0) gestor.juego()?.scale.resize(parent.clientWidth, parent.clientHeight);
   });
   observer.observe(parent);
   scene.pendingMeasure = "abrir-pista";
@@ -208,7 +221,7 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks): Works
       parent.removeEventListener("pointerup", up);
       parent.removeEventListener("pointercancel", cancel);
       observer.disconnect();
-      game.destroy(true);
+      gestor.destruir();
     },
   };
 }

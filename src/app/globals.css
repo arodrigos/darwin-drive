@@ -259,3 +259,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hoja-nombre .acciones { display: flex; gap: 8px; }
 .hoja-nombre .acciones .pastilla { flex: 1; }
 .ficha-origen { font-size: .9rem; color: #cfd8e3; overflow-wrap: anywhere; }
+
+/* Aviso de lienzo perdido: va dentro del contenedor del lienzo, por encima del dibujo y por debajo de la tarjeta de fin. */
+.lienzo-aviso { position: absolute; left: 50%; top: 28%; transform: translateX(-50%); z-index: 20; width: min(86%, 340px); padding: 12px 14px; border-radius: 12px; border: 2px solid #fff; background: rgba(16,26,38,.92); text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.lienzo-aviso p { margin: 0; }
+.lienzo-aviso[data-testid="lienzo-recuperando"] { pointer-events: none; }
+.lienzo-aviso .pastilla { min-width: 44px; }

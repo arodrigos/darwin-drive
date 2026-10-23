@@ -7,6 +7,7 @@ import { META_DISTANCE, TORQUE_SLOPE_DEG, type CarPose, type CarResult, type Cau
 import type { Genome } from "@/sim/genome";
 import { SEGMENT_LENGTH, segmentVertices } from "@/sim/terrain";
 import type { Track } from "@/sim/tracks";
+import { gestionarLienzo, type OpcionesGestor } from "./lienzo";
 import { CONTORNO_COCHE, opacidadesCoche } from "./opacidad";
 import { cssColor, PALETTES } from "./palette";
 import { ASPECTO } from "./superficies";
@@ -134,6 +135,22 @@ class TrackScene extends Phaser.Scene {
 
   setFavorites(ids: string[]): void {
     this.favorites = new Set(ids);
+  }
+
+  /** Recoge de la escena anterior lo que sabe de la carrera para seguir donde iba tras rehacer el juego. */
+  traspasar(otra: TrackScene): void {
+    this.cfg = otra.cfg;
+    this.prev = otra.prev;
+    this.curr = otra.curr;
+    this.recvAt = otra.recvAt;
+    this.recvGap = otra.recvGap;
+    this.finishedAt = otra.finishedAt;
+    this.parada = otra.parada;
+    this.ancla = otra.ancla;
+    this.favorites = otra.favorites;
+    this.pickListener = otra.pickListener;
+    this.camX = otra.camX;
+    this.destellos = otra.destellos;
   }
 
   onPick(listener: ((carId: string) => void) | null): void {
@@ -560,17 +577,28 @@ class TrackScene extends Phaser.Scene {
   }
 }
 
-export function startTrackScene(parent: HTMLElement, track: Track): TrackSceneHandle {
-  const scene = new TrackScene("pista");
-  const game = new Phaser.Game({
-    type: Phaser.AUTO,
+export function startTrackScene(parent: HTMLElement, track: Track, opciones: OpcionesGestor = {}): TrackSceneHandle {
+  let scene = new TrackScene("pista");
+  const gestor = gestionarLienzo(
     parent,
-    backgroundColor: cssColor(PALETTES[track.id].skyTop),
-    // preserveDrawingBuffer deja leer el lienzo en las pruebas de pantalla.
-    render: { preserveDrawingBuffer: true },
-    scale: { mode: Phaser.Scale.RESIZE, width: parent.clientWidth || 360, height: parent.clientHeight || 640 },
-    scene,
-  });
+    (reconstruccion) => {
+      if (reconstruccion) {
+        const vieja = scene;
+        scene = new TrackScene("pista");
+        scene.traspasar(vieja);
+      }
+      return new Phaser.Game({
+        type: Phaser.AUTO,
+        parent,
+        backgroundColor: cssColor(PALETTES[track.id].skyTop),
+        // preserveDrawingBuffer deja leer el lienzo en las pruebas de pantalla.
+        render: { preserveDrawingBuffer: true },
+        scale: { mode: Phaser.Scale.RESIZE, width: parent.clientWidth || 360, height: parent.clientHeight || 640 },
+        scene,
+      });
+    },
+    opciones,
+  );
   return {
     begin: (cfg) => scene.begin(cfg),
     setPoses: (t, p, s) => scene.setPoses(t, p, s),
@@ -578,6 +606,6 @@ export function startTrackScene(parent: HTMLElement, track: Track): TrackSceneHa
     carFinished: (r) => scene.carFinished(r),
     setFavorites: (ids) => scene.setFavorites(ids),
     onPick: (l) => scene.onPick(l),
-    destroy: () => game.destroy(true),
+    destroy: () => gestor.destruir(),
   };
 }

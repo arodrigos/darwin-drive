@@ -18,6 +18,7 @@ import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
 import { PanelRendimiento } from "./PanelRendimiento";
 import type { RankingsView } from "./TrackPicker";
+import { puedeDibujar } from "@/game/lienzo";
 
 const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarlo o a abrirlo en Safari o Chrome.";
 export const MENSAJE_ERROR_EVOLUCION = "La simulación se ha detenido por un error. Toca Reintentar para volver a lanzar esta generación.";
@@ -42,15 +43,6 @@ export interface EvolucionProps {
   /** Pide el nombre y lleva al campeón al garaje; devuelve el texto del aviso, o null si se canceló. */
   onGuardarCampeon: (campeon: Campeon) => Promise<string | null>;
   onBack: () => void;
-}
-
-function canDraw(): boolean {
-  try {
-    const c = document.createElement("canvas");
-    return Boolean(c.getContext("webgl2") || c.getContext("webgl") || c.getContext("2d"));
-  } catch {
-    return false;
-  }
 }
 
 function mostrarRendimiento(): boolean {
@@ -140,7 +132,7 @@ export function Grafica({ history, grande = false }: { history: GenerationStats[
 export function Evolucion(props: EvolucionProps) {
   const track = getTrack(props.initial.trackId)!;
   const host = useRef<HTMLDivElement>(null);
-  const [failed, setFailed] = useState(() => !canDraw());
+  const [failed, setFailed] = useState(() => !puedeDibujar());
   const [, forzar] = useReducer((n: number) => n + 1, 0);
   const stateRef = useRef(props.initial);
   const latest = useRef(props);
@@ -358,7 +350,7 @@ export function Evolucion(props: EvolucionProps) {
     import("@/game/track-scene")
       .then(({ startTrackScene }) => {
         if (cancelled || !host.current) return;
-        scene = startTrackScene(host.current, track);
+        scene = startTrackScene(host.current, track, { alSinLienzo: () => setFailed(true) });
         scene.onPick((carId) => {
           markInput("favorito");
           const antes = stateRef.current;

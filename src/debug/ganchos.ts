@@ -1,6 +1,7 @@
 import type { CarResult } from "@/sim/constants";
 import type { Genome } from "@/sim/genome";
 import type { TrackId } from "@/sim/tracks";
+import { contadoresLienzo, estadoLienzo, muestraLienzo, perderLienzo } from "@/game/lienzo";
 import { latencias } from "./latencias";
 
 export type Pantalla = "portada" | "explorar" | "evolucion-inicio" | "pista" | "taller" | "evolucion" | "garaje" | "rankings" | "linaje" | "especies";
@@ -122,6 +123,10 @@ export function estado() {
     garaje: runtime.garaje,
     persistente: runtime.persistente,
     disponible: runtime.disponible,
+    // Contextos WebGL vivos (creados − liberados), sondas de soporte hechas y qué hace el lienzo ahora.
+    contextosWebgl: contadoresLienzo.creados - contadoresLienzo.liberados,
+    sondasLienzo: contadoresLienzo.sondas,
+    lienzo: estadoLienzo(),
     migracion: {
       enCurso: runtime.migracion?.enCurso ?? false,
       hechos: runtime.migracion?.hechos ?? 0,
@@ -143,6 +148,10 @@ export interface Gancho {
   limitarRitmo(max: number | null): void;
   /** Con la tarjeta de fin en pantalla, la repinta con esos campos (p. ej. reason «destrozado») para ver su caso peor; no toca lo guardado. */
   forzarTarjetaFin(parcial: Partial<CarResult>): void;
+  /** Pierde el contexto WebGL de la pantalla actual y, salvo restaurar:false, lo devuelve a los msRestaurar (300 por defecto). */
+  perderLienzo(op?: { restaurar?: boolean; msRestaurar?: number }): Promise<void>;
+  /** Reduce el lienzo visible a 32x32 y devuelve la fracción de píxeles casi negros. */
+  muestraLienzo(): { ancho: number; alto: number; fraccionNegra: number };
   /** true retiene la cola de migración antes de la siguiente medida; false la suelta. */
   frenarMigracion(frenar: boolean): void;
   /** pw-4 y pw-5: el service worker real, sin esperar a un despliegue. */
@@ -183,6 +192,8 @@ export function instalarGanchos(): void {
     forzarTarjetaFin(parcial) {
       runtime.forzarFin?.(parcial);
     },
+    perderLienzo,
+    muestraLienzo,
     frenarMigracion(frenar) {
       runtime.migracionFrenada = frenar;
     },

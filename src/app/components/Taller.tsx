@@ -8,21 +8,13 @@ import type { WorkshopHandle } from "@/game/workshop-scene";
 import { GENE_RANGES, type Genome } from "@/sim/genome";
 import type { TrackId } from "@/sim/tracks";
 import { TrackPicker, type RankingsView } from "./TrackPicker";
+import { puedeDibujar } from "@/game/lienzo";
 
 const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarlo o a abrirlo en Safari o Chrome.";
 export const AYUDA_TALLER =
   "Arrastra los puntos blancos para dar forma a la carrocería. Toca un punto para ponerle o quitarle una rueda. Elige abajo en qué pista lo pruebas.";
 export const SIN_RUEDAS = "Sin ruedas no hay motor: este coche no avanzará.";
 const AVISO_MS = 2000;
-
-function canDraw(): boolean {
-  try {
-    const c = document.createElement("canvas");
-    return Boolean(c.getContext("webgl2") || c.getContext("webgl") || c.getContext("2d"));
-  } catch {
-    return false;
-  }
-}
 
 export interface TallerProps {
   genome: Genome;
@@ -47,7 +39,7 @@ export function Taller(props: TallerProps) {
   useEffect(() => {
     latest.current = props;
   });
-  const [failed, setFailed] = useState(() => !canDraw());
+  const [failed, setFailed] = useState(() => !puedeDibujar());
   const [slot, setSlot] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(!helpSeen);
   const [toast, setToast] = useState<string | null>(null);
@@ -69,7 +61,7 @@ export function Taller(props: TallerProps) {
             setShowHelp(false);
             latest.current.onHelpSeen();
           },
-        });
+        }, { alSinLienzo: () => setFailed(true) });
         handle.current.setState(latest.current.genome, null);
       })
       .catch(() => {
