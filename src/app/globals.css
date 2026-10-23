@@ -47,7 +47,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .tarjeta-fin h2 { margin: 0; font-size: 1.05rem; }
 .tarjeta-fin p { margin: 0; }
 /* Las acciones quedan fuera de la zona con scroll: con causa y récord a la vez «Repetir» y «Volver» siguen a la vista. */
-.tarjeta-fin:not(.error) { top: auto; bottom: 8px; transform: translateX(-50%); max-height: 66%; padding: 8px 12px; gap: 6px; overflow: hidden; }
+.tarjeta-fin:not(.error) { top: auto; bottom: 8px; transform: translateX(-50%); max-height: 50%; padding: 8px 12px; gap: 6px; overflow: hidden; }
+/* Con el récord pendiente la tarjeta lleva una línea más: solo entonces gana altura, para no tapar el coche ni su marcador en el caso normal. */
+.tarjeta-fin.con-record:not(.error) { max-height: 66%; }
 .tarjeta-fin .cuerpo-fin { display: flex; flex-direction: column; gap: 4px; min-height: 0; overflow-y: auto; }
 .tarjeta-fin:not(.error) > .acciones { flex: none; }
 .tarjeta-fin .cifra { font-size: 1.4rem; font-weight: 800; font-variant-numeric: tabular-nums; }

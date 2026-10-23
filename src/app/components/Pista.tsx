@@ -417,7 +417,7 @@ export function Pista(props: PistaProps) {
         </div>
       )}
       {fase.tipo === "fin" && (
-        <div className="tarjeta-fin" role="dialog" aria-label="Fin de la carrera" data-testid="tarjeta-fin">
+        <div className={`tarjeta-fin${props.migrando || props.recordPendienteForzado ? " con-record" : ""}`} role="dialog" aria-label="Fin de la carrera" data-testid="tarjeta-fin">
           <div className="cuerpo-fin">
           <h2>Fin de la carrera · {track.name}</h2>
           <p className="cifra" data-testid="fin-marca">
