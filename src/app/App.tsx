@@ -169,6 +169,18 @@ export function App() {
   const migracion = useMigracion(recargar);
   const iniciarMigracion = migracion.iniciar;
   const [tarjetaFin, setTarjetaFin] = useState(false);
+  // Solo pruebas: lo que forzarTarjetaFin añade a la tarjeta (récord pendiente y aviso final), sin tocar la migración real.
+  const [forzado, setForzado] = useState(runtime.forzado);
+  useEffect(() => {
+    runtime.alForzar = () => setForzado(runtime.forzado);
+    return () => {
+      runtime.alForzar = null;
+    };
+  }, []);
+  const cerrarAvisoForzado = useCallback(() => {
+    runtime.forzado = runtime.forzado?.recordPendiente ? { ...runtime.forzado, avisoMigracion: null } : null;
+    setForzado(runtime.forzado);
+  }, []);
 
   // Cada pestaña avisa de que existe, para que una migración no empiece con otra de versión antigua abierta.
   useEffect(() => {
@@ -762,8 +774,12 @@ export function App() {
           }}
         />
       )}
-      {migracion.terminadas !== null && !migracion.estado.enCurso && (screen !== "pista" || tarjetaFin) && (
-        <AvisoMigracion coches={migracion.terminadas} onCerrar={migracion.cerrarAviso} />
+      {forzado?.avisoMigracion != null && screen === "pista" && tarjetaFin ? (
+        <AvisoMigracion coches={forzado.avisoMigracion} onCerrar={cerrarAvisoForzado} />
+      ) : (
+        migracion.terminadas !== null && !migracion.estado.enCurso && (screen !== "pista" || tarjetaFin) && (
+          <AvisoMigracion coches={migracion.terminadas} onCerrar={migracion.cerrarAviso} />
+        )
       )}
     </>
   );
@@ -816,6 +832,7 @@ export function App() {
           ritmoInicial={meta.ritmo}
           onRitmo={recordarRitmo}
           migrando={migracion.estado.enCurso}
+          recordPendienteForzado={forzado?.recordPendiente ?? false}
           onTarjeta={setTarjetaFin}
           pausaCapa={hayCapas}
           onPorQue={() => abrirCapa({ tipo: "guia", seccion: "por-que-se-para" })}

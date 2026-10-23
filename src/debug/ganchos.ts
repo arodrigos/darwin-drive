@@ -59,6 +59,10 @@ export const runtime = {
   /** La pantalla con carrera lo registra para que el tope llegue a su ejecutor. */
   aplicarLimite: null as ((max: number | null) => void) | null,
   forzarFin: null as ((parcial: Partial<CarResult>) => void) | null,
+  /** Lo que forzarTarjetaFin pinta además del resultado; solo memoria, nunca lo guardado. Se limpia con Repetir, Volver o el ✕ del aviso. */
+  forzado: null as { recordPendiente: boolean; avisoMigracion: number | null } | null,
+  /** App se suscribe aquí para repintar cuando cambia `forzado`. */
+  alForzar: null as (() => void) | null,
   /** Avanza la carrera en curso al instante; resuelve con el efecto ya pintado. Solo existe mientras hay una pista abierta. */
   avanzar: null as ((segundos: number) => Promise<void>) | null,
   /** Migración de marcas: la publica el hook; `frenada` retiene la cola entre un elemento y el siguiente. */
@@ -67,6 +71,9 @@ export const runtime = {
   /** Solo pruebas (?pestanas=antiguas): finge que hay una pestaña de versión anterior abierta. */
   pestanasAntiguasFingidas: false,
 };
+
+/** Coches que dice el aviso forzado con avisoMigracion: true. */
+const AVISO_FORZADO_COCHES = 12;
 
 export interface Escenario {
   vacio?: true;
@@ -146,8 +153,8 @@ export interface Gancho {
   adelantarSimulacion(segundos: number): Promise<void>;
   /** Acota la velocidad simulada a N veces el tiempo real para imitar un dispositivo lento (null lo quita). No cambia ningún CarResult. */
   limitarRitmo(max: number | null): void;
-  /** Con la tarjeta de fin en pantalla, la repinta con esos campos (p. ej. reason «destrozado») para ver su caso peor; no toca lo guardado. */
-  forzarTarjetaFin(parcial: Partial<CarResult>): void;
+  /** Con la tarjeta de fin en pantalla, la repinta con esos campos (p. ej. reason «destrozado»), con el récord pendiente y el aviso final de migración si se piden; con reason «stall» y causa rehace el marcador de la pista. No toca lo guardado. */
+  forzarTarjetaFin(parcial: Partial<CarResult> & { recordPendiente?: boolean; avisoMigracion?: boolean | number }): void;
   /** Pierde el contexto WebGL de la pantalla actual y, salvo restaurar:false, lo devuelve a los msRestaurar (300 por defecto). */
   perderLienzo(op?: { restaurar?: boolean; msRestaurar?: number }): Promise<void>;
   /** Reduce el lienzo visible a 32x32 y devuelve la fracción de píxeles casi negros. */
@@ -190,7 +197,12 @@ export function instalarGanchos(): void {
       runtime.aplicarLimite?.(max);
     },
     forzarTarjetaFin(parcial) {
-      runtime.forzarFin?.(parcial);
+      const { recordPendiente, avisoMigracion, ...resultado } = parcial;
+      // Cada llamada fija el estado completo: una clave ausente equivale a false.
+      const aviso = avisoMigracion === true ? AVISO_FORZADO_COCHES : typeof avisoMigracion === "number" ? avisoMigracion : null;
+      runtime.forzado = recordPendiente || aviso !== null ? { recordPendiente: Boolean(recordPendiente), avisoMigracion: aviso } : null;
+      runtime.alForzar?.();
+      runtime.forzarFin?.(resultado);
     },
     perderLienzo,
     muestraLienzo,
