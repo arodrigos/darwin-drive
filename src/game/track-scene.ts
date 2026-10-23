@@ -178,6 +178,9 @@ class TrackScene extends Phaser.Scene {
     // El marcador solo existe en la Pista (un coche): en la evolución hay decenas y no cabría ninguno.
     if (this.cfg?.cars.length === 1 && result.reason === "stall" && result.causaParada) {
       this.parada = { x: result.distance, causa: result.causaParada, pendiente: result.pendienteParada };
+    } else {
+      // forzarTarjetaFin reaplica carFinished con otro motivo: el marcador anterior ya no vale.
+      this.parada = null;
     }
   }
 
