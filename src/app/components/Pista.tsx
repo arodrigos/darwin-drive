@@ -22,6 +22,7 @@ import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
 import { PanelRendimiento } from "./PanelRendimiento";
 import type { RankingsView } from "./TrackPicker";
+import { puedeDibujar } from "@/game/lienzo";
 
 const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarlo o a abrirlo en Safari o Chrome.";
 export const MENSAJE_ERROR = "La simulación se ha detenido por un error. Toca Reintentar para volver a empezar esta carrera.";
@@ -35,15 +36,6 @@ function limpiarForzado(): void {
   if (!runtime.forzado) return;
   runtime.forzado = null;
   runtime.alForzar?.();
-}
-
-function canDraw(): boolean {
-  try {
-    const c = document.createElement("canvas");
-    return Boolean(c.getContext("webgl2") || c.getContext("webgl") || c.getContext("2d"));
-  } catch {
-    return false;
-  }
 }
 
 /** Los parámetros de prueba solo valen con ?pruebas=1: en el juego normal no existen. */
@@ -88,7 +80,7 @@ export function Pista(props: PistaProps) {
   const hud = useRef<HTMLDivElement>(null);
   const tramo = useRef<HTMLDivElement>(null);
   const iniciar = useRef<() => void>(() => {});
-  const [failed, setFailed] = useState(() => !canDraw());
+  const [failed, setFailed] = useState(() => !puedeDibujar());
   const [fase, setFase] = useState<Fase>({ tipo: "corriendo" });
   const [inscripcion, setInscripcion] = useState<{ outcome: RankingOutcome; distance: number } | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
@@ -320,7 +312,7 @@ export function Pista(props: PistaProps) {
     import("@/game/track-scene")
       .then(({ startTrackScene }) => {
         if (cancelled || !host.current) return;
-        scene = startTrackScene(host.current, pista);
+        scene = startTrackScene(host.current, pista, { alSinLienzo: () => setFailed(true) });
         lanzar();
       })
       .catch(() => {

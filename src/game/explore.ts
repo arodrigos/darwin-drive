@@ -3,6 +3,7 @@ import { createNoise2D } from "simplex-noise";
 import { measureOnNextFrame, markInput } from "@/debug/latencias";
 import { SEGMENT_LENGTH, segmentVertices } from "@/sim/terrain";
 import type { Track } from "@/sim/tracks";
+import { gestionarLienzo, type OpcionesGestor } from "./lienzo";
 import { cssColor, PALETTES } from "./palette";
 
 export const PX_PER_METER = 20;
@@ -31,7 +32,7 @@ type Vec = Phaser.Math.Vector2;
 const vec = (x: number, y: number): Vec => new Phaser.Math.Vector2(x, y);
 
 class ExploreScene extends Phaser.Scene {
-  private track: Track;
+  track: Track;
   private camX = 0;
   private segments = new Map<number, Point[]>();
   private generated = 0;
@@ -64,6 +65,11 @@ class ExploreScene extends Phaser.Scene {
     return this.camX;
   }
 
+  traspasar(otra: ExploreScene): void {
+    this.track = otra.track;
+    this.camX = otra.camX;
+  }
+
   create(): void {
     this.sky = this.add.graphics();
     this.hills = this.add.graphics();
@@ -92,8 +98,6 @@ class ExploreScene extends Phaser.Scene {
     const stop = () => (this.dragging = false);
     this.input.on("pointerup", stop);
     this.input.on("pointerupoutside", stop);
-    // Con el contexto WebGL perdido el lienzo se queda en blanco: al volver, se repinta desde el estado.
-    this.game.canvas.addEventListener("webglcontextrestored", () => (this.dirty = true));
     markInput("abrir-pista");
   }
 
@@ -202,20 +206,31 @@ class ExploreScene extends Phaser.Scene {
   }
 }
 
-export function startExplore(parent: HTMLElement, track: Track, onFrame: (f: ExploreFrame) => void): ExploreHandle {
-  const scene = new ExploreScene(track, onFrame);
-  const game = new Phaser.Game({
-    type: Phaser.AUTO,
+export function startExplore(parent: HTMLElement, track: Track, onFrame: (f: ExploreFrame) => void, opciones: OpcionesGestor = {}): ExploreHandle {
+  let scene = new ExploreScene(track, onFrame);
+  const gestor = gestionarLienzo(
     parent,
-    backgroundColor: cssColor(PALETTES[track.id].skyTop),
-    // preserveDrawingBuffer deja leer el lienzo en las pruebas de pantalla.
-    render: { preserveDrawingBuffer: true },
-    scale: { mode: Phaser.Scale.RESIZE, width: parent.clientWidth || 360, height: parent.clientHeight || 640 },
-    scene,
-  });
+    (reconstruccion) => {
+      if (reconstruccion) {
+        const vieja = scene;
+        scene = new ExploreScene(vieja.track, onFrame);
+        scene.traspasar(vieja);
+      }
+      return new Phaser.Game({
+        type: Phaser.AUTO,
+        parent,
+        backgroundColor: cssColor(PALETTES[scene.track.id].skyTop),
+        // preserveDrawingBuffer deja leer el lienzo en las pruebas de pantalla.
+        render: { preserveDrawingBuffer: true },
+        scale: { mode: Phaser.Scale.RESIZE, width: parent.clientWidth || 360, height: parent.clientHeight || 640 },
+        scene,
+      });
+    },
+    opciones,
+  );
   return {
     setTrack: (t) => scene.setTrack(t),
     cameraX: () => scene.cameraX(),
-    destroy: () => game.destroy(true),
+    destroy: () => gestor.destruir(),
   };
 }

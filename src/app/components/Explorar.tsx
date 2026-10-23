@@ -6,18 +6,9 @@ import { runtime } from "@/debug/ganchos";
 import { getTrack, type TrackId } from "@/sim/tracks";
 import { formatMeters } from "@/app/format";
 import { TrackPicker, type RankingsView } from "./TrackPicker";
+import { puedeDibujar } from "@/game/lienzo";
 
 const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarlo o a abrirlo en Safari o Chrome.";
-
-// Comprueba antes de cargar Phaser: sin WebGL ni Canvas 2D no hay nada que pintar.
-function canDraw(): boolean {
-  try {
-    const c = document.createElement("canvas");
-    return Boolean(c.getContext("webgl2") || c.getContext("webgl") || c.getContext("2d"));
-  } catch {
-    return false;
-  }
-}
 
 export function Explorar(props: { trackId: TrackId; onTrack: (id: TrackId) => void; onBack: () => void; rankings: RankingsView }) {
   const { trackId } = props;
@@ -26,7 +17,7 @@ export function Explorar(props: { trackId: TrackId; onTrack: (id: TrackId) => vo
   const ruler = useRef<HTMLDivElement>(null);
   const trackRef = useRef(trackId);
   // Se decide al montar (la app no se renderiza en el servidor): sin lienzo posible, se explica y no se carga Phaser.
-  const [failed, setFailed] = useState(() => !canDraw());
+  const [failed, setFailed] = useState(() => !puedeDibujar());
   const track = getTrack(trackId)!;
 
   useEffect(() => {
@@ -39,7 +30,7 @@ export function Explorar(props: { trackId: TrackId; onTrack: (id: TrackId) => vo
           runtime.camaraX = f.camX;
           runtime.tramosGenerados = f.generated;
           if (ruler.current) ruler.current.textContent = formatMeters(f.camX);
-        });
+        }, { alSinLienzo: () => setFailed(true) });
       })
       .catch(() => {
         if (!cancelled) setFailed(true);

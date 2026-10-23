@@ -21,6 +21,7 @@ Desde la portada se llega a todo:
 - El ritmo y las pausas nunca cambian el resultado. Al ocultar la pestaña o apagar la pantalla, la carrera se pausa y sigue al volver.
 - La carrera acaba al llegar a la meta de 5000 m o a los 15 minutos de simulación. Un coche se da por parado tras 5 s sin avanzar.
 - **Por qué se para**: la tarjeta de fin dice la causa (vuelco, sin apoyo, panza, motor, agarre u obstáculo) y «¿Por qué?» abre la guía. La pista dibuja una cuña con la pendiente real. El motor de todos los coches empuja hasta 35°. La causa se guarda con la marca y se ve también en el detalle del ranking y del Garaje.
+- **Si el dispositivo pierde el dibujo**: el lienzo avisa con «Recuperando el dibujo…» y rehace la escena donde iba, sin tocar la simulación (el resultado es el mismo). Si el contexto no vuelve en 5 s, o ya hubo 3 recuperaciones en un minuto, sale «Reintentar dibujo». El soporte de dibujo se comprueba una sola vez por sesión y cada pantalla libera su contexto al salir (`src/game/lienzo.ts`).
 - **Peso y opacidad**: la opacidad del coche refleja el peso de la carrocería, en cuatro escalones, igual en el Taller, el Garaje, el Linaje y la pista. En carrera, cada parte se ve más opaca cuanto más carga soporta su rueda. Es solo visual.
 
 ### Ayuda
@@ -139,4 +140,4 @@ npm run medir:pistas -- --umbral
 
 ### Modo pruebas
 
-Con `?pruebas=1` en la URL se expone `window.__debug` y todo el guardado va a una base aparte (`darwin-drive-pruebas`), así que el garaje del jugador no se toca. Sin el parámetro, `__debug` no existe. `__debug.cargarEscenario({...})` carga datos de ejemplo; por ejemplo, `genoma: "demo-ligero"` o `"demo-pesado"` (el coche de serie con el peso mínimo o máximo), `"demo-fragil"` o `"demo-motor-rampa"`, y `rankings`, `garaje` o `especies: "demo-version-anterior"` para ver la migración de marcas.
+Con `?pruebas=1` en la URL se expone `window.__debug` y todo el guardado va a una base aparte (`darwin-drive-pruebas`), así que el garaje del jugador no se toca. Sin el parámetro, `__debug` no existe. `__debug.cargarEscenario({...})` carga datos de ejemplo; por ejemplo, `genoma: "demo-ligero"` o `"demo-pesado"` (el coche de serie con el peso mínimo o máximo), `"demo-fragil"` o `"demo-motor-rampa"`, y `rankings`, `garaje` o `especies: "demo-version-anterior"` para ver la migración de marcas. Con `?pruebas=1&migracion=frenada` la cola de migración arranca retenida hasta `__debug.frenarMigracion(false)`. `perderLienzo()` y `muestraLienzo()` pierden y miden el lienzo; `estado()` suma `lienzo`, `contextosWebgl` y `sondasLienzo`.
