@@ -2,7 +2,7 @@
 
 Juego web 2D de coches: diseña uno, elige pista y mira hasta dónde llega, o deja que un algoritmo genético los evolucione por ti. Corre entero en el navegador (pensado para móvil e iPad), sin servidor ni cuenta: todo se guarda en el propio dispositivo y funciona sin conexión tras la primera visita.
 
-## Qué se puede hacer
+## Cómo jugar
 
 Desde la portada se llega a todo:
 
@@ -21,10 +21,46 @@ Desde la portada se llega a todo:
 - El ritmo y las pausas nunca cambian el resultado. Al ocultar la pestaña o apagar la pantalla, la carrera se pausa y sigue al volver.
 - La carrera acaba al llegar a la meta de 5000 m o a los 15 minutos de simulación. Un coche se da por parado tras 5 s sin avanzar.
 - **Por qué se para**: la tarjeta de fin dice la causa (vuelco, sin apoyo, panza, motor, agarre u obstáculo) y «¿Por qué?» abre la guía. La pista dibuja una cuña con la pendiente real. El motor de todos los coches empuja hasta 35°. La causa se guarda con la marca y se ve también en el detalle del ranking y del Garaje.
-- **Fragilidad**: la carrocería se rompe por triángulos con los golpes fuertes. La pieza cae, un destello marca dónde se rompió y el coche sigue con lo que le queda; una rueda se suelta si pierde los dos triángulos de su vértice. La tarjeta de fin dice cuántas piezas perdió y en qué metro cedió la primera.
 - **Peso y opacidad**: la opacidad del coche refleja el peso de la carrocería, en cuatro escalones, igual en el Taller, el Garaje, el Linaje y la pista. En carrera, cada parte se ve más opaca cuanto más carga soporta su rueda. Es solo visual.
 
-### Pistas
+### Ayuda
+
+Cada pantalla tiene un «?» arriba a la derecha con una línea por opción (en la pista, abrirlo pausa la carrera). «Ver la guía completa», o «Cómo se juega» en la portada, abre la guía con el recorrido entero y una ficha por pista. Los textos están en `src/app/ayuda/textos.ts`.
+
+## Cómo arrancar
+
+Se necesita Node.js y npm (el CI usa Node 22).
+
+```
+npm ci
+npm run dev                  # servidor de desarrollo de Next.js
+```
+
+Para probar el build de producción (incluido el service worker):
+
+```
+npm run build
+npm run start                # sirve en http://localhost:3000 por defecto
+```
+
+Stack: [Next.js](https://nextjs.org/) 16 y React 19 en TypeScript; [Phaser](https://phaser.io/) 4 para dibujar pista, taller y coches; [Planck](https://piqnt.com/planck.js/) para la física 2D, que corre en un Web Worker (`src/worker/`); `serwist` para el service worker e `idb-keyval` para IndexedDB; `@dagrejs/dagre` para el árbol del Linaje; `pure-rand` y `simplex-noise` para el azar con semilla y el relieve. El producto no usa activos externos: todo se genera por código (ver `ACTIVOS.md`).
+
+## Variables de entorno
+
+El juego no necesita ninguna variable para arrancar: no hay `.env` que rellenar. Las que lee el código hoy son opcionales:
+
+| Variable | Dónde | Para qué |
+| --- | --- | --- |
+| `VERCEL_GIT_COMMIT_SHA` | `next.config.ts` (build) | Revisión del despliegue para versionar el precache del service worker. Si falta, se usa `git rev-parse HEAD` y, si tampoco hay git, un identificador aleatorio. |
+| `BASE_URL` | `playwright.config.ts`, `tests/smoke/traspaso.spec.ts` | Probar contra un servidor ya en marcha en lugar de levantar uno local. |
+| `URL_OBJETIVO` | `scripts/smoke-traspaso.sh` | Lanzar el smoke contra un despliegue en vez de en local. |
+| `CAPTURAS_DIR`, `CAPTURAS_PREFIJO` | `tests/e2e/*` | Carpeta y prefijo de las capturas de las pruebas e2e. |
+| `MEDIR_N`, `MEDIR_PISTA`, `MEDIR_TASA_MAX`, `MEDIR_MURO` | `scripts/medir-pistas.ts`, `scripts/medir-anomalias.ts` | Ajustes de las medidas (número de coches, una sola pista, umbrales). |
+| `PATRONES_PUBLICO_EXTRA` | `scripts/comprobar-publico.mjs` | Patrones extra que `verificar:publico` no debe encontrar en el repo. |
+
+`NEXT_PUBLIC_VERSION_APP` la fija `next.config.ts` en el build; no hay que definirla.
+
+## Pistas y rankings
 
 Hay diez pistas fijas (`src/sim/tracks.ts`), cada una con su propio ranking de 10 coches:
 
@@ -43,71 +79,44 @@ Hay diez pistas fijas (`src/sim/tracks.ts`), cada una con su propio ranking de 1
 
 Las cuatro clásicas (Cordillera, Rampa, Dunas y Pedregal) siguen una curva de dificultad común (`src/sim/dificultad.ts`) que se complica pronto, con un respiro cada 250 m. El dibujo distingue las superficies por forma además de por color. El selector de pista es un carrusel horizontal.
 
-### Rankings y marcas
+## Clasificación y desempates
 
-El ranking de cada pista ordena con un único criterio (`compararMarcas`, en `src/sim/clasificacion.ts`): más distancia, llegar entero, menos tiempo hasta la marca y, por último, quien la logró antes. Cuando la distancia que se ve empata, una insignia en la fila dice qué criterio decidió.
+Todo el juego (ranking, garaje, especies, élite del algoritmo genético) ordena con un único criterio, `compararMarcas` en `src/sim/clasificacion.ts`, sin empates posibles. Por orden:
 
-Cada marca guarda con qué versión de pista y de física se midió. Si cambia alguna, al abrir el juego (o al importar una copia antigua) se vuelven a medir, una a una, las marcas del ranking, del garaje y de las especies; el linaje queda como historia. Una banda «Actualizando marcas…» arriba lo cuenta. Si una marca no se puede volver a medir, se conserva con «no se pudo volver a medir». Si hay otra pestaña abierta con una versión anterior, la migración espera y ofrece recargarla.
+1. Una marca descalificada (anomalía de la física) va siempre detrás.
+2. Más distancia, comparada en décimas de metro, que es lo que ve el jugador.
+3. Llegar entero: sin piezas perdidas gana a con piezas perdidas.
+4. Menos tiempo hasta la marca (`bestStep`); una marca sin medida va por detrás de las medidas.
+5. Quien la logró antes (fecha de entrada en la tabla).
+6. El hash del genoma, como último recurso para que el orden sea total.
 
-### Ayuda
+Cuando la distancia que se ve empata, una insignia en la fila dice qué criterio decidió (entero, más rápido o llegó antes).
 
-Cada pantalla tiene un «?» arriba a la derecha con una línea por opción (en la pista, abrirlo pausa la carrera). «Ver la guía completa», o «Cómo se juega» en la portada, abre la guía con el recorrido entero y una ficha por pista. Los textos están en `src/app/ayuda/textos.ts`.
+## Fragilidad
 
-### Guardado, copia y sin conexión
+La carrocería se rompe por triángulos con los golpes fuertes (`src/sim/rotura.ts` y `src/sim/physics/rotura-sim.ts`). Cada triángulo aguanta un impulso por kilo que crece con la densidad, con el ángulo más agudo y con el área, a partir de `V_ROTURA` (6 m/s para un triángulo grueso de referencia): los coches ligeros o puntiagudos se rompen antes. La pieza que cede se suelta y cae, un destello marca dónde se rompió y el coche sigue con lo que le queda; una rueda se suelta si pierde los dos triángulos de su vértice. Las piezas sueltas viven 600 pasos o hasta quedar a 20 m por detrás del coche, y se cuentan como mucho 8. Si queda montada menos del 5 % de la masa original, el coche está destrozado. La tarjeta de fin dice cuántas piezas perdió y en qué metro cedió la primera. El umbral se calibra con `npm run medir:fragilidad`, que también corre en el CI.
+
+## Guardado en el dispositivo
 
 - Todo se guarda en IndexedDB del dispositivo, con claves `dd:v1:*` validadas al leer (rankings, garaje, evolución, linaje, especies y ajustes). Tras el primer guardado se pide almacenamiento persistente, y el Garaje dice en «Estado del guardado» si es duradero o si el navegador puede borrarlo.
 - **Nombres**: «Guardar campeón» (Evolución) pide un nombre con uno propuesto; «Renombrar» en el Garaje cambia el nombre en el coche y en sus filas de ranking. Se limpian caracteres de control y se corta a 40 caracteres.
 - **Copia de seguridad**: en el Garaje, «Exportar copia» descarga `darwin-drive-copia-AAAA-MM-DD.json` e «Importar copia» la vuelve a cargar (máximo 5 MB). Se valida entera, se resume lo que trae y se pide confirmación antes de reemplazar; un fichero inválido no cambia nada.
 - **Sin conexión**: un service worker (Serwist) guarda el juego tras la primera visita, solo en el build de producción. Una versión nueva solo se activa al tocar «Recargar» en el aviso «Hay una versión nueva». `/?sw=0` desinstala el worker y vacía su caché.
 
-## Stack
+## Versiones de pista y migración
 
-- [Next.js](https://nextjs.org/) 16 y React 19, en TypeScript.
-- [Phaser](https://phaser.io/) 4 para dibujar pista, taller y coches.
-- [Planck](https://piqnt.com/planck.js/) para la física 2D, que corre en un Web Worker (`src/worker/`).
-- `@serwist/*` y `serwist` para el service worker; `idb-keyval` para IndexedDB.
-- `@dagrejs/dagre` para colocar el árbol del Linaje; `pure-rand` y `simplex-noise` para el azar con semilla y el relieve.
-- Pruebas: `node:test` con `tsx` y `fast-check` (unitarias, con `fake-indexeddb`) y Playwright (extremo a extremo).
+Cada marca guarda con qué versión de pista y de física se midió (`PHYSICS_VERSION` en `src/sim/constants.ts` y la versión de cada pista en `src/sim/tracks.ts`). Si cambia alguna, al abrir el juego (o al importar una copia antigua) se vuelven a medir, una a una y a ritmo turbo, las marcas del ranking, del garaje y de las especies; el linaje queda como historia. Ninguna marca se borra. Una banda «Actualizando marcas…» arriba cuenta el avance (`src/storage/migracion.ts`) y, al acabar, un aviso «Marcas actualizadas…» queda hasta que se cierra; nunca se enseña con una tarjeta de fin delante.
 
-El producto no usa activos externos: todo se genera por código (ver `ACTIVOS.md`).
-
-## Arrancar en local
-
-Se necesita Node.js y npm (el CI usa Node 22).
-
-```
-npm ci
-npm run dev                  # servidor de desarrollo de Next.js
-```
-
-Para probar el build de producción (incluido el service worker):
-
-```
-npm run build
-npm run start                # sirve en http://localhost:3000 por defecto
-```
-
-## Variables de entorno
-
-El juego no necesita ninguna variable para arrancar: no hay `.env` que rellenar. Las que lee el código hoy son opcionales:
-
-| Variable | Dónde | Para qué |
-| --- | --- | --- |
-| `VERCEL_GIT_COMMIT_SHA` | `next.config.ts` (build) | Revisión del despliegue para versionar el precache del service worker. Si falta, se usa `git rev-parse HEAD` y, si tampoco hay git, un identificador aleatorio. |
-| `BASE_URL` | `playwright.config.ts`, `tests/smoke/traspaso.spec.ts` | Probar contra un servidor ya en marcha en lugar de levantar uno local. |
-| `URL_OBJETIVO` | `scripts/smoke-traspaso.sh` | Lanzar el smoke contra un despliegue en vez de en local. |
-| `CAPTURAS_DIR`, `CAPTURAS_PREFIJO` | `tests/e2e/*` | Carpeta y prefijo de las capturas de las pruebas e2e. |
-| `MEDIR_N`, `MEDIR_PISTA`, `MEDIR_TASA_MAX`, `MEDIR_MURO` | `scripts/medir-pistas.ts`, `scripts/medir-anomalias.ts` | Ajustes de las medidas (número de coches, una sola pista, umbrales). |
-| `PATRONES_PUBLICO_EXTRA` | `scripts/comprobar-publico.mjs` | Patrones extra que `verificar:publico` no debe encontrar en el repo. |
-
-`NEXT_PUBLIC_VERSION_APP` la fija `next.config.ts` en el build; no hay que definirla.
+- Cada elemento tiene 3 intentos. Una medida cuenta como fallo si tarda más de 60 s con la pantalla visible. Tras el tercer fallo, la marca se conserva con «no se pudo volver a medir».
+- Si hay otra pestaña abierta con una versión anterior, la migración espera y ofrece recargarla (`src/pwa/pestanas.ts`).
+- Con `?pruebas=1&migracion=frenada` la cola arranca retenida hasta `__debug.frenarMigracion(false)`.
 
 ## Pruebas
 
 ```
 npm ci
 npm run lint && npm run typecheck
-npm run test:unit            # núcleo en Node (node:test + fast-check); `npm test` hace lo mismo
+npm run test:unit            # núcleo en Node (node:test + tsx + fast-check); `npm test` hace lo mismo
 npm run build && npm run verificar:presupuesto-bundle
 npm run verificar:frontera-nucleo
 npm run verificar:publico    # nada interno en el árbol; con --commits <rango> y --texto <texto> revisa también mensajes y PR
@@ -128,4 +137,4 @@ npm run medir:pistas -- --umbral
 
 ### Modo pruebas
 
-Con `?pruebas=1` en la URL se expone `window.__debug` y todo el guardado va a una base aparte (`darwin-drive-pruebas`), así que el garaje del jugador no se toca. Sin el parámetro, `__debug` no existe. `__debug.cargarEscenario({...})` carga datos de ejemplo; por ejemplo, `genoma: "demo-ligero"` o `"demo-pesado"` (el coche de serie con el peso mínimo o máximo), `"demo-fragil"` o `"demo-motor-rampa"`, y `rankings`, `garaje` o `especies: "demo-version-anterior"` para ver la migración de marcas. Con `?pruebas=1&migracion=frenada` la cola de migración arranca retenida hasta `__debug.frenarMigracion(false)`.
+Con `?pruebas=1` en la URL se expone `window.__debug` y todo el guardado va a una base aparte (`darwin-drive-pruebas`), así que el garaje del jugador no se toca. Sin el parámetro, `__debug` no existe. `__debug.cargarEscenario({...})` carga datos de ejemplo; por ejemplo, `genoma: "demo-ligero"` o `"demo-pesado"` (el coche de serie con el peso mínimo o máximo), `"demo-fragil"` o `"demo-motor-rampa"`, y `rankings`, `garaje` o `especies: "demo-version-anterior"` para ver la migración de marcas.
