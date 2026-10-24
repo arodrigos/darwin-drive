@@ -16,6 +16,7 @@ type Estado = {
   contextosWebgl: number;
   sondasLienzo: number;
   camaraX: number;
+  cajaCoche: { x: number; y: number; w: number; h: number } | null;
   generacion: number | null;
   genomaEnTaller: { body: { length: number }[] } | null;
   ultimoResultado: Record<string, unknown> | null;
@@ -144,6 +145,15 @@ for (const { w, h } of TAMANOS) {
     expect(e.distanciaLider ?? 0).toBeGreaterThan(antes);
     expect(e.contextosWebgl).toBeLessThanOrEqual(1);
     expect((await muestra(page)).fraccionNegra).toBeLessThan(0.3);
+    // fraccionNegra no ve un suelo marrón a pantalla completa: el coche tiene que estar en el viewport y por debajo de la cabecera.
+    const caja = e.cajaCoche;
+    expect(caja).not.toBeNull();
+    const cabecera = await page.locator(".hud-distancia").boundingBox();
+    expect(cabecera).not.toBeNull();
+    expect(caja!.y).toBeGreaterThanOrEqual(cabecera!.y + cabecera!.height);
+    expect(caja!.y + caja!.h).toBeLessThanOrEqual(h);
+    expect(caja!.x).toBeGreaterThanOrEqual(0);
+    expect(caja!.x + caja!.w).toBeLessThanOrEqual(w);
     await page.screenshot({ path: `${DIR}/${ID}-recuperado-${w}x${h}.png` });
 
     await page.evaluate(() => window.__debug!.adelantarSimulacion(900));
