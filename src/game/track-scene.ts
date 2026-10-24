@@ -153,6 +153,10 @@ class TrackScene extends Phaser.Scene {
     this.favorites = otra.favorites;
     this.pickListener = otra.pickListener;
     this.camX = otra.camX;
+    // Sin NaN la escena nueva arranca con la altura de referencia en 0 y tarda en subir por la cuesta: el coche quedaba fuera de plano.
+    // Con NaN el primer frame encuadra al líder directamente.
+    this.refH = Number.NaN;
+    this.skyDirty = true;
     this.destellos = otra.destellos;
   }
 
