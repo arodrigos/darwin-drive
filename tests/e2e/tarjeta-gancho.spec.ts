@@ -70,6 +70,11 @@ test("gt-1 @tamanos el caso peor de la tarjeta se ve entero y sin cruzarse con e
       expect(c.height, id).toBeGreaterThanOrEqual(44);
       expect(c.y + c.height, id).toBeLessThanOrEqual(t.h);
     }
+    // Sin scroll interno: lo que el criterio pide ver tiene que verse, no quedar tras un desplazamiento.
+    const cuerpo = await page.locator(".cuerpo-fin").evaluate((el) => ({ sh: el.scrollHeight, ch: el.clientHeight }));
+    expect(cuerpo.sh).toBeLessThanOrEqual(cuerpo.ch + 1);
+    const rec = (await page.getByTestId("fin-record-pendiente").boundingBox())!;
+    expect(rec.y + rec.height).toBeLessThanOrEqual(tarjeta.y + tarjeta.height);
     await page.screenshot({ path: `${DIR}/${ID}-caso-peor-${t.w}x${t.h}.png` });
 
     await page.evaluate(() => window.__debug!.forzarTarjetaFin({ recordPendiente: false, avisoMigracion: false }));

@@ -49,7 +49,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Las acciones quedan fuera de la zona con scroll: con causa y récord a la vez «Repetir» y «Volver» siguen a la vista. */
 .tarjeta-fin:not(.error) { top: auto; bottom: 8px; transform: translateX(-50%); max-height: 50%; padding: 8px 12px; gap: 6px; overflow: hidden; }
 /* Con el récord pendiente la tarjeta lleva una línea más: solo entonces gana altura, para no tapar el coche ni su marcador en el caso normal. */
-.tarjeta-fin.con-record:not(.error) { max-height: 66%; }
+.tarjeta-fin.con-record:not(.error) { max-height: 78%; }
+/* En móviles bajos (360x640) el caso peor no cabía: causa, piezas, puesto y récord pendiente a la vez. Se compacta solo a ese alto. */
+@media (max-height: 700px) {
+  .tarjeta-fin:not(.error) { padding: 6px 10px; gap: 4px; font-size: .82rem; line-height: 1.2; }
+  .tarjeta-fin:not(.error) h2 { font-size: .92rem; }
+  .tarjeta-fin:not(.error) .cifra { font-size: 1.15rem; }
+  .tarjeta-fin:not(.error) .cuerpo-fin { gap: 2px; }
+  .tarjeta-fin:not(.error) .acciones { margin-top: 2px; }
+}
 .tarjeta-fin .cuerpo-fin { display: flex; flex-direction: column; gap: 4px; min-height: 0; overflow-y: auto; }
 .tarjeta-fin:not(.error) > .acciones { flex: none; }
 .tarjeta-fin .cifra { font-size: 1.4rem; font-weight: 800; font-variant-numeric: tabular-nums; }
