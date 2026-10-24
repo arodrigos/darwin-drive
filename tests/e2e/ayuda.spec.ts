@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { simulateCar } from "../../src/sim/race";
 import { STOCK_CAR } from "../../src/sim/genome";
 import { AYUDA, PANTALLAS_AYUDA, type PantallaAyuda } from "../../src/app/ayuda/textos";
+import { tamanoBase } from "./tamano";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "guia-ayuda-1";
@@ -79,7 +80,7 @@ const caja = async (page: Page, id: string) => (await page.getByTestId(id).bound
 
 test("gui-1 y gui-3: cada pantalla tiene su «?» con título y una línea por opción, y cabe", async ({ page }) => {
   test.setTimeout(240_000);
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   for (const p of PANTALLAS_AYUDA) {
     await abrir(page);
     await ir(page, p);
@@ -131,7 +132,7 @@ test("gui-3: el panel de Pista y de Taller en tableta, vertical y horizontal", a
 });
 
 test("gui-1-b: el panel más largo se desplaza por dentro con ✕ y enlace a la vista", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrir(page, { vacio: true, evolucion: "demo-gen-8" });
   await page.getByTestId("acceso-continuar").click();
   await expect(page.getByTestId("evolucion")).toBeVisible();
@@ -149,7 +150,7 @@ test("gui-1-b: el panel más largo se desplaza por dentro con ✕ y enlace a la 
 });
 
 test("gui-4: se cierra con ✕, Esc, tocando fuera y con «atrás»; lo de debajo no recibe el toque", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrir(page);
   await ir(page, "taller");
   const panel = page.getByTestId("ayuda-panel");
@@ -181,7 +182,7 @@ test("gui-4: se cierra con ✕, Esc, tocando fuera y con «atrás»; lo de debaj
 });
 
 test("gui-5: abrir el «?» en Pista a ×8 pausa la carrera y cerrarlo la reanuda con la misma marca final", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrir(page);
   await ir(page, "pista");
   await page.getByTestId("ritmo-x8").click();

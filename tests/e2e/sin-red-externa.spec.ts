@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { tamanoBase } from "./tamano";
 
 // Con el service worker activo: en Chromium `context.on('request')` también ve lo que pide el worker.
 test.use({ serviceWorkers: "allow" });
@@ -19,7 +20,7 @@ test("nom-6 un recorrido completo no hace ninguna petición a otro origen", asyn
     vistas.push(url);
     if (/^https?:/i.test(url) && new URL(url).origin !== origen) externas.push(url);
   });
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await page.goto("/?pruebas=1");
   await page.waitForFunction(() => Boolean(window.__debug) && window.__debug!.pwa.controlado, undefined, { timeout: 60_000 });
   await page.evaluate(() => window.__debug!.cargarEscenario({ vacio: true, evolucion: "demo-gen-8" }));

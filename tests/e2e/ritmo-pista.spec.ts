@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { STOCK_CAR } from "../../src/sim/genome";
 import { simulateCar } from "../../src/sim/race";
 import evolucionDemo from "../../src/debug/escenarios/evolucion-demo-gen-8.json";
+import { tamanoBase } from "./tamano";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "ritmo-pista-1";
@@ -80,7 +81,7 @@ for (const { w, h } of TAMANOS) {
 }
 
 test("rit-1 tocar ×4 y ×8 acelera sin reiniciar y ×2 queda en medio", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrir(page);
   await verCocheDeSerie(page);
   const t0 = (await estado(page)).tiempoSim!;
@@ -149,7 +150,7 @@ for (const { w, h } of [TAMANOS[0], TAMANOS[2]]) {
 }
 
 test("rit-3 «Hasta el final» muestra la banda con barra, termina en la tarjeta y la marca sigue tras recargar", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrir(page, { vacio: true, pista: "rampa" });
   await page.getByTestId("acceso-taller").click();
   await page.getByTestId("probar").click();
@@ -183,7 +184,7 @@ test("rit-3 «Hasta el final» muestra la banda con barra, termina en la tarjeta
 });
 
 test("rit-2 y rit-7 «Hasta el final» y ×1 dan la misma marca, la de Node, con la misma tarjeta", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrir(page);
   await verCocheDeSerie(page);
   const referencia = simulateCar(STOCK_CAR, "cordillera");
@@ -200,7 +201,7 @@ test("rit-2 y rit-7 «Hasta el final» y ×1 dan la misma marca, la de Node, con
 });
 
 test("rit-4 el último ritmo se recuerda con «Repetir» y tras recargar, y «Hasta el final» no", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrir(page);
   await verCocheDeSerie(page);
   await page.getByTestId("ritmo-x8").click();
@@ -235,7 +236,7 @@ test("rit-4 el último ritmo se recuerda con «Repetir» y tras recargar, y «Ha
 });
 
 test("rit-5 y rit-6 las latencias de ritmo, hasta-el-final y repetir se miden y valen ≤ 200 ms", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrir(page);
   await verCocheDeSerie(page);
   await page.getByTestId("ritmo-x4").click();

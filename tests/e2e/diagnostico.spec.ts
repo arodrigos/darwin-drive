@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { tamanoBase } from "./tamano";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "diagnostico-cuesta-12";
@@ -71,7 +72,7 @@ const cruzan = (a: Caja, b: Caja) => a.x < b.x + b.w && b.x < a.x + a.w && a.y <
 const dentro = (c: Caja, w: number, h: number) => c.x >= 0 && c.y >= 0 && c.x + c.w <= w && c.y + c.h <= h;
 
 test("diag-1 el coche de serie se para en La Rampa, la tarjeta dice por qué y la guía devuelve a la misma tarjeta sin guardar otra vez", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrirRampa(page);
   await probarYTerminar(page, "ritmo-final");
   const e = await estado(page);
@@ -153,7 +154,7 @@ for (const ritmo of ["ritmo-final", "ritmo-x1"] as const) {
 }
 
 test("diag-5 la causa queda guardada y el detalle del ranking la cuenta", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrirRampa(page);
   await probarYTerminar(page, "ritmo-final");
   await expect.poll(async () => (await estado(page)).rankings.rampa.length).toBe(1);

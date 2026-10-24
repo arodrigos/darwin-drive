@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { tamanoBase } from "./tamano";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "mosaico-1";
@@ -21,7 +22,7 @@ async function abrir(page: Page, escenario: Record<string, unknown> = { vacio: t
 
 test("mos-1 El Mosaico se elige, se prueba hasta el final y su marca sigue tras recargar", async ({ page }) => {
   test.setTimeout(240_000);
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrir(page);
   await page.getByTestId("acceso-taller").click();
   await expect(page.getByTestId("selector-pista")).toContainText("El Mosaico");

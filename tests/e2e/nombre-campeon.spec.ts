@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { tamanoBase } from "./tamano";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "nombre-campeon-1";
@@ -41,7 +42,7 @@ async function enEvolucion(page: Page) {
 }
 
 test("nom-1 guardar campeón pide nombre, avisa y lo enseñan Garaje y Rankings tras recargar", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await enEvolucion(page);
   await page.getByTestId("guardar-campeon").click();
   const hoja = page.getByTestId("hoja-nombre");
@@ -79,7 +80,7 @@ test("nom-1 guardar campeón pide nombre, avisa y lo enseñan Garaje y Rankings 
 });
 
 test("nom-1 campo vacío guarda el propuesto y «Cancelar» no guarda", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await enEvolucion(page);
   await page.getByTestId("guardar-campeon").click();
   await page.getByTestId("nombre-cancelar").click();
@@ -94,7 +95,7 @@ test("nom-1 campo vacío guarda el propuesto y «Cancelar» no guarda", async ({
 });
 
 test("nom-2 y nom-3 Renombrar cambia Garaje y Rankings, mantiene la fecha y pinta el texto literal", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await enEvolucion(page);
   await page.getByTestId("guardar-campeon").click();
   await page.getByTestId("nombre-input").fill("Rayo Azul");
@@ -128,7 +129,7 @@ test("nom-2 y nom-3 Renombrar cambia Garaje y Rankings, mantiene la fecha y pint
 });
 
 test("nom-3 el aviso de guardado y la hoja pintan un nombre con HTML como texto", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await enEvolucion(page);
   const imgs = await page.locator("img").count();
   await page.getByTestId("guardar-campeon").click();
@@ -140,7 +141,7 @@ test("nom-3 el aviso de guardado y la hoja pintan un nombre con HTML como texto"
 });
 
 test("nom-4 con el teclado a la vista la hoja muestra campo y Guardar; Esc, Cancelar, fuera y atrás cierran sin guardar", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await enEvolucion(page);
   await page.getByTestId("guardar-campeon").click();
   await expect(page.getByTestId("nombre-ayuda")).toHaveText("Pon el nombre que quieras: podrás cambiarlo en el Garaje");
@@ -151,7 +152,7 @@ test("nom-4 con el teclado a la vista la hoja muestra campo y Guardar; Esc, Canc
     expect(c.y + c.height, id).toBeLessThanOrEqual(340);
   }
   await page.screenshot({ path: `${DIR}/${ID}-teclado-360x340.png` });
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await page.getByTestId("nombre-cancelar").click();
   await expect(page.getByTestId("hoja-nombre")).toBeHidden();
 

@@ -95,3 +95,25 @@ jobs:
             playwright-report/
             test-results/
           if-no-files-found: ignore
+
+  # tb-2: el recorrido a 820x1180 y 1180x820, en paralelo para no alargar el e2e normal.
+  e2e-tabletas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run test:e2e:tabletas
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-report-tabletas
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
