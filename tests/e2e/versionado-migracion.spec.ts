@@ -3,6 +3,7 @@ import demoJson from "../../src/debug/escenarios/rankings-demo.json";
 import type { Genome } from "../../src/sim/genome";
 import { simulateCar } from "../../src/sim/race";
 import type { TrackId } from "../../src/sim/tracks";
+import { tamanoBase } from "./tamano";
 
 const demo = demoJson as unknown as Record<TrackId, { carId: string; genome: Genome }[]>;
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
@@ -43,7 +44,7 @@ async function abrirConMigracionFrenada(page: Page) {
 }
 
 test("mig-1/2/3 la banda y los rótulos se ven mientras migra y al acabar cada marca es la que da el núcleo", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrirConMigracionFrenada(page);
   await expect(page.getByTestId("banda-migracion")).toBeVisible();
   await expect(page.getByTestId("banda-migracion")).toContainText("Actualizando marcas a la nueva versión");
@@ -112,7 +113,7 @@ test("mig-6 el nodo del linaje medido en una versión anterior lo dice", async (
 });
 
 test("mig-9 con otra pestaña antigua abierta la migración espera y ofrece recargarla", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await page.goto("/?pruebas=1");
   await page.waitForFunction(() => Boolean(window.__debug));
   await page.evaluate((e) => window.__debug!.cargarEscenario({ vacio: true, ...e }), ESCENARIO);
@@ -128,7 +129,7 @@ test("mig-9 con otra pestaña antigua abierta la migración espera y ofrece reca
 });
 
 test("mig-garaje guardar un coche desde Rankings y reabrir no dispara migración", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await page.goto("/?pruebas=1");
   await page.waitForFunction(() => Boolean(window.__debug));
   await page.evaluate(() => window.__debug!.cargarEscenario({ vacio: true, rankings: "demo" }));

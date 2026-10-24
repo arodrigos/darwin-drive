@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { tamanoBase } from "./tamano";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "fragilidad-26";
@@ -72,7 +73,7 @@ test("fra-11 la tarjeta de un coche destrozado lo explica a los tres tamaños", 
 });
 
 test("fra-9 con 32 coches a ×8 y el dispositivo lento, un toque responde en ≤ 200 ms", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await page.goto("/?pruebas=1");
   await page.waitForFunction(() => Boolean(window.__debug));
   await page.evaluate(() => window.__debug!.cargarEscenario({ vacio: true, evolucion: "demo-gen-8" }));

@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { test, expect, type Page } from "@playwright/test";
+import { tamanoBase } from "./tamano";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "clasificacion-10";
@@ -21,7 +22,7 @@ async function abrir(page: Page, rankings: string) {
 }
 
 test("cla-3 los empates enseñan tiempo, estado e insignia de la clave que decide", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await abrir(page, "demo-empates");
   await expect(page.getByTestId("fila-ranking")).toHaveCount(6);
   // 3000 pasos son 50,0 s: el tiempo sale del paso de la marca, no de la fecha.
@@ -80,7 +81,7 @@ test("cla-7-b / cla-10 una copia con marcas inválidas se importa, queda pendien
   page.on("pageerror", (e) => errores.push(e.message));
   page.on("console", (m) => m.type() === "error" && errores.push(m.text()));
   const copia = readFileSync("tests/fixtures/copia-valores-invalidos.json");
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   await page.goto("/?pruebas=1&migracion=frenada");
   await page.waitForFunction(() => Boolean(window.__debug));
   await page.evaluate(() => window.__debug!.cargarEscenario({ vacio: true }));

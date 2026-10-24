@@ -122,6 +122,7 @@ npm run build && npm run verificar:presupuesto-bundle
 npm run verificar:frontera-nucleo
 npm run verificar:publico    # nada interno en el árbol; con --commits <rango> y --texto <texto> revisa también mensajes y PR
 npm run test:e2e             # Playwright; necesita `npx playwright install chromium` y un `npm run build` previo
+npm run test:e2e:tabletas    # el recorrido a 820x1180 (tableta-vertical) y 1180x820 (tableta-horizontal); es un job aparte del CI
 npm run smoke:traspaso       # construye, arranca y prueba el juego en local (o contra URL_OBJETIVO)
 ```
 
