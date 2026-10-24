@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { tamanoBase } from "./tamano";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "pistas-nuevas-1";
@@ -27,7 +28,7 @@ async function abrir(page: Page, escenario: Record<string, unknown> = { vacio: t
 
 test("pn-1 las tres pistas nuevas se corren hasta el final, aparecen en Rankings y la marca sigue tras recargar", async ({ page }) => {
   test.setTimeout(300_000);
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   for (const p of NUEVAS) {
     await abrir(page, { vacio: true, pista: p.id });
     await page.getByTestId("acceso-taller").click();
@@ -100,7 +101,7 @@ test("pn-5 el carrusel cabe en 120 px, deja ver todo el lienzo y «Probar» en c
 });
 
 test("pn-1 cada pista nueva se puede elegir en el selector y se recuerda", async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
+  await tamanoBase(page);
   for (const p of NUEVAS) {
     await abrir(page);
     await page.getByTestId("acceso-explorar").click();
