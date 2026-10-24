@@ -72,7 +72,7 @@ const cruzan = (a: Caja, b: Caja) => a.x < b.x + b.w && b.x < a.x + a.w && a.y <
 const dentro = (c: Caja, w: number, h: number) => c.x >= 0 && c.y >= 0 && c.x + c.w <= w && c.y + c.h <= h;
 
 test("diag-1 el coche de serie se para en La Rampa, la tarjeta dice por qué y la guía devuelve a la misma tarjeta sin guardar otra vez", async ({ page }) => {
-  await tamanoBase(page);
+  const t = await tamanoBase(page);
   await abrirRampa(page);
   await probarYTerminar(page, "ritmo-final");
   const e = await estado(page);
@@ -83,11 +83,11 @@ test("diag-1 el coche de serie se para en La Rampa, la tarjeta dice por qué y l
   const texto = (await page.getByTestId("fin-causa").textContent()) ?? "";
   expect(texto).toContain(`Cuesta de ${n}°`);
   expect(texto).toContain("(35°)");
-  await page.screenshot({ path: `${DIR}/${ID}-tarjeta-360x640.png` });
+  await page.screenshot({ path: `${DIR}/${ID}-tarjeta-${t.width}x${t.height}.png` });
   // Causa y récord a la vez: las acciones tienen que verse sin desplazar nada.
   for (const id of ["repetir", "volver-fin"]) {
     const c = (await page.getByTestId(id).boundingBox())!;
-    expect(dentro({ x: c.x, y: c.y, w: c.width, h: c.height }, 360, 640)).toBe(true);
+    expect(dentro({ x: c.x, y: c.y, w: c.width, h: c.height }, t.width, t.height)).toBe(true);
   }
   // El aviso de récord no se monta sobre «← Volver» de la cabecera.
   // Sin isVisible() antes: el aviso se va solo y entre las dos llamadas boundingBox() devolvería null.
@@ -102,16 +102,16 @@ test("diag-1 el coche de serie se para en La Rampa, la tarjeta dice por qué y l
   await expect(page.getByTestId("guia")).toBeVisible();
   expect((await estado(page)).guia.seccion).toBe("por-que-se-para");
   await expect(page.getByTestId("guia-titulo")).toBeVisible();
-  await page.screenshot({ path: `${DIR}/${ID}-guia-360x640.png` });
+  await page.screenshot({ path: `${DIR}/${ID}-guia-${t.width}x${t.height}.png` });
 
   await page.getByTestId("guia-volver").click();
   await expect(page.getByTestId("fin-causa")).toHaveText(texto);
   await expect(page.getByTestId("repetir")).toBeVisible();
   const despues = await estado(page);
   expect(despues.marcador).not.toBeNull();
-  expect(dentro(despues.marcador!.caja, 360, 640)).toBe(true);
+  expect(dentro(despues.marcador!.caja, t.width, t.height)).toBe(true);
   expect(despues.rankings.rampa.length).toBe(entradas);
-  await page.screenshot({ path: `${DIR}/${ID}-vuelta-360x640.png` });
+  await page.screenshot({ path: `${DIR}/${ID}-vuelta-${t.width}x${t.height}.png` });
 
   // Lo mismo con el «atrás» del navegador.
   await page.getByTestId("fin-porque").click();
@@ -154,7 +154,7 @@ for (const ritmo of ["ritmo-final", "ritmo-x1"] as const) {
 }
 
 test("diag-5 la causa queda guardada y el detalle del ranking la cuenta", async ({ page }) => {
-  await tamanoBase(page);
+  const t = await tamanoBase(page);
   await abrirRampa(page);
   await probarYTerminar(page, "ritmo-final");
   await expect.poll(async () => (await estado(page)).rankings.rampa.length).toBe(1);
@@ -165,5 +165,5 @@ test("diag-5 la causa queda guardada y el detalle del ranking la cuenta", async 
   const hoja = page.getByTestId("hoja-causa");
   await expect(hoja).toBeVisible();
   await expect(hoja).toContainText("Se paró: Cuesta de");
-  await page.screenshot({ path: `${DIR}/${ID}-ranking-causa-360x640.png` });
+  await page.screenshot({ path: `${DIR}/${ID}-ranking-causa-${t.width}x${t.height}.png` });
 });
