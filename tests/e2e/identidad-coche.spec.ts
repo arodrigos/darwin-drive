@@ -34,8 +34,12 @@ for (const t of TAMANOS) {
     await page.getByTestId("taller-color").click();
     await expect(page.getByTestId("fila-colores").getByRole("button")).toHaveCount(8);
     await page.getByTestId("color-azul").click();
-    await expect(page.getByTestId("color-azul")).toHaveAttribute("aria-pressed", "true");
+    // Elegir cierra la paleta para que el coche recoloreado quede a la vista.
+    await expect(page.getByTestId("fila-colores")).toHaveCount(0);
     expect((await identidad(page))!.color).toBe("azul");
+    await page.getByTestId("taller-color").click();
+    await expect(page.getByTestId("color-azul")).toHaveAttribute("aria-pressed", "true");
+    await page.getByTestId("color-azul").click();
     await expect.poll(() => page.evaluate(() => window.__debug!.latencias().filter((l) => l.evento === "color-coche").length)).toBeGreaterThan(0);
     const ms = await page.evaluate(() => window.__debug!.latencias().filter((l) => l.evento === "color-coche").map((l) => l.ms));
     expect(Math.max(...ms)).toBeLessThanOrEqual(200);
