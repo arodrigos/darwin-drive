@@ -112,6 +112,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .taller-panel .paso-control > span { flex: 1 1 100%; }
 .taller-panel .boton-secundario.paso { flex: 1 1 0; min-width: 64px; }
 .taller-panel .boton-secundario:disabled { opacity: .55; }
+/* «Probar» queda fijo al pie del panel: con un punto elegido el panel crece y, en el móvil, el primario se iba bajo el borde de la pantalla. */
+.taller-panel { padding-bottom: 0; }
+.taller-panel .grupo-prueba { position: sticky; bottom: 0; z-index: 3; margin: 0 -10px; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); background: #101a26; border-top: 2px solid rgba(255,255,255,.25); }
+.taller-panel .grupo-guardado { margin-bottom: calc(10px + env(safe-area-inset-bottom)); }
+.taller-panel .fila-prueba { display: flex; gap: 8px; align-items: stretch; }
+.taller-panel .fila-prueba .selector-pista { flex: 1 1 auto; min-width: 0; }
+.taller-panel .fila-prueba .boton-primario { flex: 0 0 auto; }
 .taller-panel .selector-pista { align-self: stretch; text-align: left; padding: 8px 12px; background: rgba(20,32,46,.8); }
 .taller-panel .fila { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .taller-panel .nota-peso { font-size: .75rem; opacity: .85; line-height: 1.25; }
