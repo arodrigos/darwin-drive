@@ -28,6 +28,7 @@ import { GENE_RANGES, genomeHash, STOCK_CAR, type Genome } from "@/sim/genome";
 import type { TrackId } from "@/sim/tracks";
 import { COLORES_COCHE, PALETA_COCHES, type ColorCoche, type IdentidadCoche } from "@/game/colores-coche";
 import { MuestraColor } from "./MuestraColor";
+import { PanelRendimiento } from "./PanelRendimiento";
 import { TrackPicker, type RankingsView } from "./TrackPicker";
 import { puedeDibujar } from "@/game/lienzo";
 
@@ -71,6 +72,7 @@ export function Taller(props: TallerProps) {
   const [vertice, setVertice] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(!helpSeen);
   const [colores, setColores] = useState(false);
+  const [rendimiento] = useState(() => new URLSearchParams(window.location.search).get("rendimiento") === "1");
   const [confirmarNuevo, setConfirmarNuevo] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -173,6 +175,7 @@ export function Taller(props: TallerProps) {
     <div className="taller" data-testid="taller">
       <div className="taller-lienzo">
         <div className="lienzo" ref={host} data-testid="lienzo" />
+        {rendimiento && <PanelRendimiento />}
         <div className="cabecera">
           <button type="button" className="pastilla" onClick={props.onBack} data-testid="volver">
             ← Volver
