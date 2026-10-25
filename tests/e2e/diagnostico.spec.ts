@@ -44,7 +44,7 @@ async function probarYTerminar(page: Page, ritmo: "ritmo-final" | "ritmo-x1") {
     await page.getByTestId("ritmo-x1").click();
     await page.evaluate(() => window.__debug!.adelantarSimulacion(600));
   }
-  await expect(page.getByTestId("fin-causa")).toBeVisible({ timeout: 30000 });
+  await expect(page.getByTestId("fin-causa")).toBeVisible({ timeout: 90000 });
   // La cámara sube el suelo con un suavizado: se espera a que la caja del marcador se quede quieta.
   let previa: number[] | null = null;
   await expect
@@ -72,17 +72,17 @@ const cruzan = (a: Caja, b: Caja) => a.x < b.x + b.w && b.x < a.x + a.w && a.y <
 const dentro = (c: Caja, w: number, h: number) => c.x >= 0 && c.y >= 0 && c.x + c.w <= w && c.y + c.h <= h;
 
 test("diag-1 el coche de serie se para en La Rampa, la tarjeta dice por qué y la guía devuelve a la misma tarjeta sin guardar otra vez", async ({ page }) => {
+  // El coche de serie recorre ahora ~1,4 km antes de pararse: en un equipo lento la tarjeta tarda más de 30 s.
+  test.setTimeout(120_000);
   const t = await tamanoBase(page);
   await abrirRampa(page);
   await probarYTerminar(page, "ritmo-final");
   const e = await estado(page);
   expect(e.ultimoResultado?.reason).toBe("stall");
-  expect(e.ultimoResultado?.causaParada).toBe("motor");
-  const n = Math.round(e.ultimoResultado!.pendienteParada!);
-  expect(n).toBeGreaterThanOrEqual(33);
+  // Con La Rampa endurecida el coche de serie se atasca en un obstáculo antes de agotar el motor.
+  expect(e.ultimoResultado?.causaParada).toBe("obstaculo");
   const texto = (await page.getByTestId("fin-causa").textContent()) ?? "";
-  expect(texto).toContain(`Cuesta de ${n}°`);
-  expect(texto).toContain("(35°)");
+  expect(texto).toContain("Se topó con un obstáculo que no pudo salvar");
   await page.screenshot({ path: `${DIR}/${ID}-tarjeta-${t.width}x${t.height}.png` });
   // Causa y récord a la vez: las acciones tienen que verse sin desplazar nada.
   for (const id of ["repetir", "volver-fin"]) {
@@ -164,6 +164,6 @@ test("diag-5 la causa queda guardada y el detalle del ranking la cuenta", async 
   await page.getByTestId("fila-ranking").first().click();
   const hoja = page.getByTestId("hoja-causa");
   await expect(hoja).toBeVisible();
-  await expect(hoja).toContainText("Se paró: Cuesta de");
+  await expect(hoja).toContainText("Se paró: Se topó con un obstáculo");
   await page.screenshot({ path: `${DIR}/${ID}-ranking-causa-${t.width}x${t.height}.png` });
 });

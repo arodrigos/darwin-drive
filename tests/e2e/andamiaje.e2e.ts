@@ -136,7 +136,7 @@ test("at-10 selector: diez tarjetas, elegir La Rampa cambia la pista y se recuer
   const hoja = page.getByTestId("hoja-pistas");
   await expect(hoja.locator("button.tarjeta-pista")).toHaveCount(10);
   await expect(hoja.getByText("sin marcas todavía")).toHaveCount(10);
-  await expect(hoja.getByText("Una recta que se empina sin parar.")).toBeVisible();
+  await expect(hoja.getByText("Una recta que se empina sin parar, cada vez más difícil hasta la meta.")).toBeVisible();
   await page.screenshot({ path: `${DIR}/${ID}-selector-hoja-360x640.png` });
 
   await page.getByTestId("pista-rampa").click();
