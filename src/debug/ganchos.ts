@@ -40,6 +40,8 @@ export const runtime = {
   ejecutor: null as "worker" | "en-linea" | null,
   // Taller, garaje e inscripción (los publica App).
   genomaEnTaller: null as Genome | null,
+  /** Nombre y color del coche en el Taller (lo publica App). */
+  identidadTaller: null as { nombre: string; color: string } | null,
   garaje: 0,
   ultimaInscripcion: null as { trackId: TrackId; position: number | null; alreadyAt: number | null; isRecord: boolean } | null,
   // Evolución en curso (la rellena Evolucion).
@@ -111,6 +113,7 @@ export function estado() {
     ultimaInscripcion: runtime.ultimaInscripcion,
     genomaEnPista: runtime.genomaEnPista,
     genomaEnTaller: runtime.genomaEnTaller,
+    identidadTaller: runtime.identidadTaller,
     ultimoResultado: runtime.ultimoResultado,
     // Añadidos al contrato por pista-carrera: la pausa de pestaña y el ejecutor activo se prueban con ellos.
     tiempoSim: runtime.tiempoSim,

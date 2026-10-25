@@ -4,17 +4,17 @@ import { markInput, measureOnNextFrame } from "@/debug/latencias";
 import { VERTEX_COUNT, type Genome } from "@/sim/genome";
 import { gestionarLienzo, type OpcionesGestor } from "./lienzo";
 import { opacidadBase } from "./opacidad";
+import { colorNumerico, COLOR_PREDETERMINADO, type ColorCoche } from "./colores-coche";
 import { moveVertex, toggleWheel, wheelAt } from "./editor";
 
 const HANDLE_DIAMETER = 44;
 // Por debajo de este recorrido un gesto es un toque (poner o quitar rueda), no un arrastre.
 const TAP_SLOP_PX = 8;
-const BODY_COLOUR = 0xe9a23b;
 const SKY = 0x16222f;
 
 export interface WorkshopHandle {
   /** El genoma y la rueda seleccionada que debe pintar. */
-  setState(genome: Genome, selectedSlot: number | null): void;
+  setState(genome: Genome, selectedSlot: number | null, color?: ColorCoche): void;
   destroy(): void;
 }
 
@@ -28,6 +28,7 @@ export interface WorkshopCallbacks {
 class WorkshopScene extends Phaser.Scene {
   genome: Genome | null = null;
   selected: number | null = null;
+  color: ColorCoche = COLOR_PREDETERMINADO;
   private g!: Phaser.GameObjects.Graphics;
   private dirty = true;
   pendingMeasure: string | null = null;
@@ -102,14 +103,27 @@ class WorkshopScene extends Phaser.Scene {
     // Solo el relleno cambia con el peso; el contorno siempre opaco para que la forma se lea.
     const base = opacidadBase(genome.bodyDensity);
     runtime.opacidades = Array.from({ length: VERTEX_COUNT }, () => base);
-    g.fillStyle(BODY_COLOUR, base).fillPoints(pts, true);
-    g.lineStyle(3, 0x1b1b1b, 1).strokePoints(pts, true, true);
+    const colorCuerpo = colorNumerico(this.color);
+    g.fillStyle(colorCuerpo, base).fillPoints(pts, true);
+    // Contorno oscuro de 3 px y trazo interior de 2 px del color, opacos: el color se lee aunque el relleno sea translúcido.
+    g.lineStyle(3, 0x0c0c0c, 1).strokePoints(pts, true, true);
+    const cx = pts.reduce((a, q) => a + q.x, 0) / pts.length;
+    const cy = pts.reduce((a, q) => a + q.y, 0) / pts.length;
+    g.lineStyle(2, colorCuerpo, 1).strokePoints(
+      pts.map((q) => {
+        const d = Math.hypot(q.x - cx, q.y - cy) || 1;
+        const k = Math.max(0, d - 3) / d;
+        return new Phaser.Math.Vector2(cx + (q.x - cx) * k, cy + (q.y - cy) * k);
+      }),
+      true,
+      true,
+    );
     genome.wheels.forEach((w, slot) => {
       if (w.vertex < 0) return;
       const p = pts[w.vertex];
       const r = w.radius * s;
       g.fillStyle(0x222222, 1).fillCircle(p.x, p.y, r);
-      g.fillStyle(BODY_COLOUR, 1).fillCircle(p.x, p.y, Math.max(3, r * 0.4));
+      g.fillStyle(colorCuerpo, 1).fillCircle(p.x, p.y, Math.max(3, r * 0.4));
       if (slot === this.selected) g.lineStyle(4, 0xffd23f, 1).strokeCircle(p.x, p.y, r + 3);
     });
     for (const p of pts) {
@@ -133,6 +147,7 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
         scene = new WorkshopScene("taller");
         scene.genome = vieja.genome;
         scene.selected = vieja.selected;
+        scene.color = vieja.color;
       }
       return new Phaser.Game({
         type: Phaser.AUTO,
@@ -209,8 +224,10 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
   parent.addEventListener("pointercancel", cancel);
 
   return {
-    setState(genome, selectedSlot) {
+    setState(genome, selectedSlot, color = COLOR_PREDETERMINADO) {
       if (scene.genome && scene.genome.bodyDensity !== genome.bodyDensity) scene.pendingMeasure = "peso";
+      if (scene.color !== color) scene.pendingMeasure = "color-coche";
+      scene.color = color;
       scene.genome = genome;
       scene.selected = selectedSlot;
       scene.invalidate();

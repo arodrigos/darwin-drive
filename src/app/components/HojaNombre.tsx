@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { limpiarNombre } from "@/storage/nombres";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
 
 export const AYUDA_NOMBRE = "Pon el nombre que quieras: podrás cambiarlo en el Garaje";
@@ -15,9 +16,12 @@ export function HojaNombre(props: {
   ficha: string;
   onGuardar: (valor: string) => Promise<void>;
   onCerrar: () => void;
+  /** Con él, un nombre vacío no se acepta: la hoja avisa y conserva el anterior (el Taller no tiene un propuesto de repuesto). */
+  exigirTexto?: boolean;
 }) {
   const [valor, setValor] = useState(props.valorInicial);
   const [guardando, setGuardando] = useState(false);
+  const [vacio, setVacio] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const cerrar = useRef(props.onCerrar);
   const previo = useRef<Element | null>(null);
@@ -47,6 +51,10 @@ export function HojaNombre(props: {
   const enviar = async (e: FormEvent) => {
     e.preventDefault();
     if (guardando) return;
+    if (props.exigirTexto && limpiarNombre(valor) === "") {
+      setVacio(true);
+      return;
+    }
     setGuardando(true);
     if (props.modo === "guardar") markInput("guardar-nombre");
     await props.onGuardar(valor);
@@ -75,11 +83,19 @@ export function HojaNombre(props: {
           autoComplete="off"
           enterKeyHint="done"
           value={valor}
-          onChange={(e) => setValor(e.target.value)}
+          onChange={(e) => {
+            setValor(e.target.value);
+            setVacio(false);
+          }}
         />
         <p id="hoja-nombre-ayuda" className="hoja-nombre-ayuda" data-testid="nombre-ayuda">
           {AYUDA_NOMBRE}
         </p>
+        {vacio && (
+          <p className="hoja-nombre-error" role="alert" data-testid="nombre-error">
+            Ponle un nombre de al menos una letra
+          </p>
+        )}
         <div className="acciones">
           <button type="submit" className="pastilla principal" disabled={guardando} data-testid="nombre-guardar">
             Guardar

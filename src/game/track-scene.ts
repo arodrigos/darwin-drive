@@ -1,3 +1,4 @@
+import { colorNumerico, type ColorCoche } from "./colores-coche";
 import Phaser from "phaser";
 import { colocarMarcador, cruzan } from "./colocar-marcador";
 import { createNoise2D } from "simplex-noise";
@@ -34,6 +35,15 @@ const FINISHED_GREY = 0x8a8f94;
 // Radio de acierto de un toque: un dedo no apunta a un coche de 2 m a 20 px/m.
 const PICK_RADIUS_PX = 48;
 
+/** Contorno del color, 3 px hacia dentro: el contorno oscuro y el trazo del color van uno junto al otro. */
+function interior(pts: Vec[], cx: number, cy: number): Vec[] {
+  return pts.map((q) => {
+    const d = Math.hypot(q.x - cx, q.y - cy) || 1;
+    const k = Math.max(0, d - 3) / d;
+    return vec(cx + (q.x - cx) * k, cy + (q.y - cy) * k);
+  });
+}
+
 const farNoise = createNoise2D(() => 0.31);
 
 export interface SceneCar {
@@ -41,6 +51,8 @@ export interface SceneCar {
   genome: Genome;
   /** 0..360, el color con el que se pinta el coche mientras corre. */
   hue: number;
+  /** Color de paleta del coche; si falta se usa el tono. */
+  color?: ColorCoche;
   label?: string;
 }
 
@@ -378,7 +390,7 @@ class TrackScene extends Phaser.Scene {
       const car = cfg.cars.find((c) => c.carId === p.carId) ?? cfg.cars[i];
       if (!p.finished) this.screenCars.push({ carId: p.carId, x: toX(p.x), y: toY(p.y) });
       const done = p.finished;
-      const fill = done ? FINISHED_GREY : hueColour(car.hue, 0.55);
+      const fill = done ? FINISHED_GREY : car.color ? colorNumerico(car.color) : hueColour(car.hue, 0.55);
       const pts = car.genome.body.map((v) => {
         const a = v.angle + p.angle;
         return vec(toX(p.x + Math.cos(a) * v.length), toY(p.y + Math.sin(a) * v.length));
@@ -394,7 +406,12 @@ class TrackScene extends Phaser.Scene {
         const b = pts[(k + 1) % pts.length];
         g.fillStyle(fill, opac[k]).fillTriangle(cx0, cy0, a.x, a.y, b.x, b.y);
       });
-      if (mascara === 255) g.lineStyle(2, CONTORNO_COCHE, 1).strokePoints(pts, true, true);
+      // Con color de paleta: contorno oscuro de 3 px y trazo interior de 2 px del color, opacos los dos.
+      const contorno = car.color && !done ? 3 : 2;
+      if (mascara === 255) {
+        g.lineStyle(contorno, CONTORNO_COCHE, 1).strokePoints(pts, true, true);
+        if (car.color && !done) g.lineStyle(2, fill, 1).strokePoints(interior(pts, cx0, cy0), true, true);
+      }
       else {
         // Con triángulos perdidos solo se contornea lo que queda: el hueco se ve como hueco.
         g.lineStyle(2, CONTORNO_COCHE, 1);
