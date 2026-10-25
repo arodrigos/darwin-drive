@@ -18,16 +18,16 @@ import { hashPista } from "./helpers/hash-pistas";
 // propósito, hay que subir la versión de la pista (las marcas guardadas se
 // vuelven a medir con ella) y actualizar el hash aquí.
 const HASH_REFERENCIA: Record<string, string> = {
-  cordillera: "51aaef07a6253f7e887cde65e8a74efb22af118604a0776c9745d8f04361cd25",
+  cordillera: "1c302aa69abe7bd0d683ef0a14747bd51eba59e92e38f55219aa0166b1919b7e",
   rampa: "05822c7e8b2b85d84de04353a9f5b34e3416d1b047684da1d786d3aae9ac1644",
   dunas: "2f79d0c18042e3a243db71f7b46027162c76d1d1660510f90b4827ab4ab683ac",
-  pedregal: "c654815d9ee104c9acd65b49f2035714f09426cbb21b0dcd675988a1d08c02a1",
-  glaciar: "9e8d93a5d3959900da0de629fb4c11ae09de565fcbb38768cca23ddb66a7c230",
-  trampolines: "b3457c6dd232888562ae751a6fe7ff97dd870da6bb79d10fb2049c80e00a57dd",
-  escalera: "2085a5321044ffb8ebf7727de3d5fdc304a27bef6482eaae2fc5f357f4c098e2",
+  pedregal: "bb326518ba15ec36cb652f0a1c6bad5e3e9e05ee624c330f944ac0f7e99be4fc",
+  glaciar: "d2e30a7a3f0fdca164d57a8082bb9f416776eb17881a51e27925d457e8b52de7",
+  trampolines: "9d6743dc2113570faef21c12b759a6e33d9a5f7e43341103e69e038459bae6c8",
+  escalera: "aca7ecd18998f9c2610183603e7900b729a77ca8a891025ccc6f5d477d0b8cf3",
   acantilado: "e8b2854e1e57882377b9e5751ca1c2a6c26d63443171810142498d9fb7815994",
   recta: "1c98330d057266a2940ebb167e150d3e6e5e5cc14921b750f02dd325a8771043",
-  mosaico: "ab33633940207beca12cfa2701b8430d7fe648aaaf9aea606a4bde4316031de2",
+  mosaico: "56f8962d56c50216ee1ee2d05420b5e5cd5aa572826621432b3609e57148d75e",
 };
 
 const MAX_DY = Math.tan((MAX_SLOPE_DEG * Math.PI) / 180) * VERTEX_SPACING;
