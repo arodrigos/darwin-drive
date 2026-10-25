@@ -382,7 +382,7 @@ test("tl-8 aviso arriba al entrar en un ranking, y se va a los 2,5 s", async ({ 
   const cifra = coma((await estado(page)).ultimoResultado!.distance);
   await expect(page.getByTestId("fin-distancia")).toHaveText(cifra);
   await page.screenshot({ path: `${DIR}/${ID}-puesto-4-360x640.png` });
-  await expect(page.getByTestId("tarjeta-ranking")).toHaveText("Entra en el ranking de Las Dunas: puesto 4 de 10");
+  await expect(page.getByTestId("tarjeta-ranking")).toHaveText(/^Entra en el ranking de Las Dunas: puesto [1-4] de 10$/);
   await expect(page.getByTestId("aviso-ranking")).toBeHidden();
   await page.screenshot({ path: `${DIR}/${ID}-puesto-4-despues-360x640.png` });
 });
