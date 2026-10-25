@@ -415,7 +415,7 @@ export function Taller(props: TallerProps) {
                 />
               </label>
               <label className="control">
-                <span>Inclinación de la suspensión</span>
+                <span>Mueve el deslizador o arrastra el tirador amarillo de la guía</span>
                 <input
                   type="range"
                   data-testid="deslizador-suspension"
