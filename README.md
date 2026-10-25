@@ -105,6 +105,7 @@ La carrocería se rompe por triángulos con los golpes fuertes (`src/sim/rotura.
 - **Identidad del coche**: el nombre y el color son metadatos del coche, fuera de su genoma, así que no cambian su hash. Se guardan en el Garaje y en sus filas de ranking, se ven en la pista de Probar, en el Garaje y en los Rankings, y viajan en la copia de seguridad (una copia antigua sin color vale; un color que no sea de la paleta se descarta).
 - **Nombres**: «Guardar campeón» (Evolución) pide un nombre con uno propuesto; «Renombrar» en el Garaje cambia el nombre en el coche y en sus filas de ranking. Se limpian caracteres de control y se corta a 40 caracteres.
 - **Copia de seguridad**: en el Garaje, «Exportar copia» descarga `darwin-drive-copia-AAAA-MM-DD.json` e «Importar copia» la vuelve a cargar (máximo 5 MB). Se valida entera, se resume lo que trae y se pide confirmación antes de reemplazar; un fichero inválido no cambia nada.
+- **Batalla en curso** (`src/batalla/estado.ts`): el estado de una batalla (jugadores, coches terminados, pista y resultados) se guarda en `dd:v1:batalla` en cada transición y se valida entero al leer; si no es coherente se descarta. Queda fuera de la copia de seguridad: los nombres de los jugadores no salen del dispositivo.
 - **Sin conexión**: un service worker (Serwist) guarda el juego tras la primera visita, solo en el build de producción. Una versión nueva solo se activa al tocar «Recargar» en el aviso «Hay una versión nueva». `/?sw=0` desinstala el worker y vacía su caché.
 
 ## Versiones de pista y migración
