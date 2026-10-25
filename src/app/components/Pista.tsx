@@ -1,5 +1,6 @@
 "use client";
 
+import type { ColorCoche } from "@/game/colores-coche";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
 import { formatTiempo } from "@/sim/clasificacion";
@@ -56,6 +57,8 @@ export interface PistaProps {
   onBack: () => void;
   rankings: RankingsView;
   genome?: Genome;
+  /** Color con el que se pinta el coche probado; sin él, el tono de siempre. */
+  color?: ColorCoche;
   /** Con esta función la marca se inscribe en el ranking de la pista; el resultado es el que enseña la tarjeta. */
   onFinish?: (result: CarResult) => Promise<RankingOutcome | null>;
   /** El último de ×1/×2/×4/×8 con el que se corrió; «Hasta el final» no se recuerda. */
@@ -234,7 +237,7 @@ export function Pista(props: PistaProps) {
       runtime.tiempoSim = 0;
       if (hud.current) hud.current.textContent = formatMeters(0);
       pintarTramo(0);
-      scene.begin({ track: pista, cars: [{ carId, genome: g, hue: STOCK_HUE, label: propio ? "Tu coche" : "Coche de serie" }], flag: marca });
+      scene.begin({ track: pista, cars: [{ carId, genome: g, hue: STOCK_HUE, color: propio ? props.color : undefined, label: propio ? "Tu coche" : "Coche de serie" }], flag: marca });
       setFase({ tipo: "corriendo" });
       setInscripcion(null);
       measureOnNextFrame("probar");

@@ -44,7 +44,8 @@ import {
 } from "@/storage/store";
 import { Evolucion, type Campeon } from "./components/Evolucion";
 import { HojaNombre } from "./components/HojaNombre";
-import { fichaOrigen, nombrePropuesto } from "./nombres";
+import { aleatorioDeApp, fichaOrigen, generarNombre, nombrePropuesto } from "./nombres";
+import { COLOR_PREDETERMINADO, type ColorCoche, type IdentidadCoche } from "@/game/colores-coche";
 import { normalizarNombre } from "@/storage/nombres";
 import { aplicarMarca, detalleDe } from "@/storage/marcas";
 import { Especies } from "./components/Especies";
@@ -100,8 +101,11 @@ export function App() {
   const medicion = useRef<MedicionEnCurso<RankingOutcome> | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
   const [workshopGenome, setWorkshopGenome] = useState<Genome>(STOCK_CAR);
+  // Nombre y color del coche del Taller: metadatos que viajan con él, nunca dentro del genoma.
+  const [identidad, setIdentidad] = useState<IdentidadCoche>(() => ({ nombre: generarNombre(aleatorioDeApp()), color: COLOR_PREDETERMINADO }));
+  const identidadRef = useRef(identidad);
   // El genoma que se manda a la pista; null = el coche de serie de «Ver el coche de serie».
-  const [trial, setTrial] = useState<{ genome: Genome; origin: SavedCar["origin"] } | null>(null);
+  const [trial, setTrial] = useState<{ genome: Genome; origin: SavedCar["origin"]; identidad?: IdentidadCoche } | null>(null);
   // Evolución en curso (la que se guarda tras cada generación) y de dónde sale el coche que la siembra.
   const [evolucion, setEvolucion] = useState<EvolutionState | null>(null);
   const [evolKey, setEvolKey] = useState(0);
@@ -121,6 +125,8 @@ export function App() {
   useEffect(() => {
     metaRef.current = meta;
     genomeRef.current = workshopGenome;
+    identidadRef.current = identidad;
+    runtime.identidadTaller = identidad;
     rankingsRef.current = rankings;
     garageRef.current = garage;
     evolucionRef.current = evolucion;
@@ -355,8 +361,10 @@ export function App() {
   }, []);
 
   const abrirEnTaller = useCallback(
-    (genome: Genome, lineageId?: string) => {
+    (genome: Genome, lineageId?: string, id?: { nombre?: string; color?: ColorCoche }) => {
       editar(genome);
+      // Un coche con nombre o color propio lo conserva en el Taller; si no, sigue la identidad que había.
+      if (id?.nombre || id?.color) setIdentidad((i) => ({ nombre: id.nombre ? normalizarNombre(id.nombre, i.nombre) : i.nombre, color: id.color ?? i.color }));
       origenTaller.current = lineageId ? { lineageId, hash: genomeHash(normalizeGenome(genome)) } : null;
       setScreen("taller");
     },
@@ -550,8 +558,8 @@ export function App() {
     setScreen("taller");
   }, []);
 
-  const probar = useCallback((genome: Genome, origin: SavedCar["origin"], desde: Pantalla) => {
-    setTrial({ genome, origin });
+  const probar = useCallback((genome: Genome, origin: SavedCar["origin"], desde: Pantalla, id?: IdentidadCoche) => {
+    setTrial({ genome, origin, ...(id ? { identidad: id } : {}) });
     setOrigenPista(desde);
     setScreen("pista");
   }, []);
@@ -560,7 +568,7 @@ export function App() {
   const inscribir = useCallback(
     async (result: CarResult): Promise<RankingOutcome | null> => {
       if (!trial) return null;
-      const outcome = await updateRanking({ result, genome: trial.genome, origin: trial.origin });
+      const outcome = await updateRanking({ result, genome: trial.genome, origin: trial.origin, ...(trial.identidad ? { name: trial.identidad.nombre, color: trial.identidad.color } : {}) });
       if (getTrack(result.trackId)) await recordMark(result.carId, result.trackId, result.distance, { trackVersion: result.trackVersion, physicsVersion: result.physicsVersion }, detalleDe(result));
       runtime.ultimaInscripcion = {
         trackId: result.trackId,
@@ -575,7 +583,7 @@ export function App() {
   );
 
   const guardarGenoma = useCallback(
-    async (genome: Genome, origin: SavedCar["origin"], name?: string, lineageId?: string): Promise<string> => {
+    async (genome: Genome, origin: SavedCar["origin"], name?: string, lineageId?: string, color?: ColorCoche): Promise<string> => {
       const id = genomeHash(genome);
       const existente = garage.find((c) => c.id === id);
       let base: Pick<SavedCar, "marks" | "markVersions" | "markDetails"> | undefined = existente;
@@ -596,6 +604,8 @@ export function App() {
       };
       const linaje = existente?.lineageId ?? lineageId;
       if (linaje !== undefined) car.lineageId = linaje;
+      const colorFinal = color ?? existente?.color;
+      if (colorFinal) car.color = colorFinal;
       const r = await saveToGarage(car);
       if (!r.ok) return GARAGE_FULL_MESSAGE;
       await recargar();
@@ -604,7 +614,10 @@ export function App() {
     [garage, rankings, recargar],
   );
 
-  const guardarCoche = useCallback(() => guardarGenoma(genomeRef.current, "diseño"), [guardarGenoma]);
+  const guardarCoche = useCallback(async () => {
+    const id = identidadRef.current;
+    return guardarGenoma(genomeRef.current, "diseño", id.nombre, undefined, id.color);
+  }, [guardarGenoma]);
 
   const abrirRanking = useCallback((id: TrackId) => {
     markInput("abrir-ranking");
@@ -670,6 +683,8 @@ export function App() {
     propuesto: string;
     ficha: string;
     campeon?: Campeon;
+    /** Renombra el coche del Taller (aún sin guardar), no uno del garaje. */
+    taller?: boolean;
   }
   const [hoja, setHoja] = useState<DatosHoja | null>(null);
   const resolverHoja = useRef<((texto: string | null) => void) | null>(null);
@@ -730,9 +745,23 @@ export function App() {
     [abrirCapa, fichaDe],
   );
 
+  const pedirNombreTaller = useCallback(() => {
+    if (resolverHoja.current) return;
+    markInput("hoja-nombre");
+    resolverHoja.current = () => {};
+    setHoja({ modo: "renombrar", carId: "", valorInicial: identidadRef.current.nombre, propuesto: identidadRef.current.nombre, ficha: "Diseñado en el Taller", taller: true });
+    abrirCapa({ tipo: "nombre" });
+  }, [abrirCapa]);
+
   const guardarNombre = useCallback(
     async (valor: string) => {
       if (!hoja) return;
+      if (hoja.taller) {
+        setIdentidad((i) => ({ ...i, nombre: normalizarNombre(valor, i.nombre) }));
+        resolverHoja.current = null;
+        cerrarArriba();
+        return;
+      }
       const nombre = normalizarNombre(valor, hoja.propuesto);
       if (hoja.modo === "guardar" && hoja.campeon) {
         const { aviso, hecho } = guardarCampeonConNombre(hoja.campeon, nombre);
@@ -826,6 +855,7 @@ export function App() {
           key={`${trackId}:${trial ? genomeHash(trial.genome) : "serie"}`}
           trackId={trackId}
           genome={trial?.genome}
+          color={trial?.identidad?.color}
           onFinish={trial ? inscribir : undefined}
           onBack={volverDePista}
           rankings={rankings}
@@ -847,11 +877,11 @@ export function App() {
           onWatch={(entry: RankingEntry) => {
             setPistaRanking(entry.trackId);
             chooseTrack(entry.trackId);
-            probar(entry.genome, entry.origin, "rankings");
+            probar(entry.genome, entry.origin, "rankings", entry.color ? { nombre: entry.name ?? "", color: entry.color } : undefined);
           }}
           onOpenInWorkshop={(entry: RankingEntry) => {
             chooseTrack(entry.trackId);
-            abrirEnTaller(entry.genome, entry.lineageId);
+            abrirEnTaller(entry.genome, entry.lineageId, { nombre: entry.name, color: entry.color });
           }}
           onSaveToGarage={(entry: RankingEntry) => guardarGenoma(entry.genome, entry.origin, entry.name, entry.lineageId)}
           onTaller={abrirTaller}
@@ -865,6 +895,18 @@ export function App() {
         <Taller
           genome={workshopGenome}
           onGenome={editar}
+          identidad={identidad}
+          onColor={(color) => setIdentidad((i) => ({ ...i, color }))}
+          onRenombrar={pedirNombreTaller}
+          onNuevo={() => {
+            editar(STOCK_CAR);
+            origenTaller.current = null;
+            setIdentidad((i) => {
+              let nombre = generarNombre(aleatorioDeApp());
+              while (nombre === i.nombre) nombre = generarNombre(aleatorioDeApp());
+              return { nombre, color: COLOR_PREDETERMINADO };
+            });
+          }}
           trackId={trackId}
           onTrack={chooseTrack}
           rankings={rankings}
@@ -875,7 +917,7 @@ export function App() {
             setMeta(next);
             void saveMeta(next);
           }}
-          onTry={() => probar(genomeRef.current, "diseño", "taller")}
+          onTry={() => probar(genomeRef.current, "diseño", "taller", identidadRef.current)}
           onSave={guardarCoche}
           onEvolve={evolucionarDesdeTaller}
           onBack={() => setScreen("portada")}
@@ -887,11 +929,11 @@ export function App() {
           trackId={trackId}
           onTrack={chooseTrack}
           rankings={rankings}
-          onTry={(car) => probar(car.genome, car.origin, "garaje")}
+          onTry={(car) => probar(car.genome, car.origin, "garaje", car.color ? { nombre: car.name, color: car.color } : undefined)}
           midiendo={midiendo}
           resumenes={resumenes}
           onMeasure={medirCoche}
-          onOpen={(car) => abrirEnTaller(car.genome, car.lineageId)}
+          onOpen={(car) => abrirEnTaller(car.genome, car.lineageId, { nombre: car.name, color: car.color })}
           onDelete={async (car) => {
             await removeFromGarage(car.id);
             await recargar();
@@ -1003,6 +1045,7 @@ export function App() {
               ficha={hoja.ficha}
               onGuardar={guardarNombre}
               onCerrar={cerrarArriba}
+              exigirTexto={hoja.taller}
             />
           )
         ) : c.tipo === "ayuda" ? (

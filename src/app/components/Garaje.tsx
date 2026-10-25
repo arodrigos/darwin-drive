@@ -5,16 +5,18 @@ import { formatMeters } from "@/app/format";
 import { useEffect } from "react";
 import { measureOnNextFrame } from "@/debug/latencias";
 import { opacidadBase } from "@/game/opacidad";
+import { PALETA_COCHES, type ColorCoche } from "@/game/colores-coche";
 import type { Genome } from "@/sim/genome";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import type { SavedCar } from "@/storage/schema";
+import { MuestraColor } from "./MuestraColor";
 import { CopiaSeguridad } from "./CopiaSeguridad";
 import { TrackPicker, type RankingsView } from "./TrackPicker";
 
 export const GARAJE_VACIO = "Tu garaje está vacío. Diseña un coche en el Taller o evoluciona uno y guárdalo aquí.";
 
-export function Silueta({ genome, hue }: { genome: Genome; hue?: number }) {
-  const color = hue === undefined ? "#e9a23b" : `hsl(${hue} 70% 55%)`;
+export function Silueta({ genome, hue, color: colorCoche }: { genome: Genome; hue?: number; color?: ColorCoche }) {
+  const color = colorCoche ? PALETA_COCHES[colorCoche].hex : hue === undefined ? "#e9a23b" : `hsl(${hue} 70% 55%)`;
   const S = 22;
   const pt = (angle: number, length: number) => [Math.cos(angle) * length * S, -Math.sin(angle) * length * S] as const;
   const pts = genome.body.map((v) => pt(v.angle, v.length));
@@ -92,9 +94,12 @@ export function Garaje(props: {
         <ul className="garaje-lista">
           {props.cars.map((car) => (
             <li key={car.id} className="tarjeta-coche" data-testid="tarjeta-coche">
-              <Silueta genome={car.genome} />
+              <Silueta genome={car.genome} color={car.color} />
               <div className="datos">
-                <strong>{car.name}</strong>
+                <strong data-testid="garaje-nombre">
+                  {car.color && <MuestraColor color={car.color} />}
+                  {car.name}
+                </strong>
                 <span className="etiqueta" data-testid="origen">
                   {car.origin}
                 </span>

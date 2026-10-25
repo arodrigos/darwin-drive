@@ -295,3 +295,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .lienzo-aviso p { margin: 0; }
 .lienzo-aviso[data-testid="lienzo-recuperando"] { pointer-events: none; }
 .lienzo-aviso .pastilla { min-width: 44px; }
+
+/* Identidad del coche (nombre y color): metadatos del Taller, con el contrato «.selector» para el control de selección. */
+.muestra-color { display: inline-block; width: 18px; height: 18px; border-radius: 4px; border: 2px solid #0c0c0c; vertical-align: -3px; margin-right: 6px; flex: 0 0 auto; box-sizing: border-box; }
+.nombre-taller { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fila-colores { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border-radius: 12px; background: var(--panel, #16222f); }
+.selector { min-height: 44px; min-width: 44px; border: 2px solid var(--borde-control, #fff); border-radius: 12px; color: #fff; font-weight: 800; }
+.selector[aria-pressed="true"], .selector[aria-checked="true"] { border-width: 5px; border-color: #fff; outline: 2px solid #0c0c0c; }
+.selector-color { text-shadow: 0 0 3px #000, 0 0 3px #000; font-size: 1.2rem; }
+.confirmar-nuevo { position: absolute; top: 64px; left: 8px; right: 8px; z-index: 11; padding: 12px; border-radius: 12px; border: 2px solid #ffd23f; background: var(--panel, #16222f); display: flex; flex-direction: column; gap: 8px; }
+.confirmar-nuevo .acciones { display: flex; gap: 8px; }
+.confirmar-nuevo .acciones > * { flex: 1; }
+.hoja-nombre-error { color: #ffb4a8; font-weight: 700; }
