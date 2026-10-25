@@ -101,7 +101,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .taller-lienzo { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; }
 .taller-lienzo .lienzo { position: absolute; inset: 0; touch-action: none; overflow: hidden; }
 .taller-lienzo .lienzo canvas { display: block; }
-.taller-panel { flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); background: #101a26; border-top: 2px solid rgba(255,255,255,.25); overflow-y: auto; max-height: 55dvh; }
+.taller-panel { flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); background: #101a26; border-top: 2px solid rgba(255,255,255,.25); overflow-y: auto; max-height: 50dvh; }
 .taller-panel { gap: 16px; }
 .taller-panel .grupo-panel { display: flex; flex-direction: column; gap: 8px; }
 .taller-panel .grupo-panel.fila { flex-direction: row; flex-wrap: wrap; }
@@ -319,8 +319,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .confirmar-nuevo .acciones > * { flex: 1; }
 .hoja-nombre-error { color: #ffb4a8; font-weight: 700; }
 
-/* Capa «Ver fuerzas»: el interruptor (contrato .selector) y su leyenda de una línea van sobre el lienzo, para no alargar el panel. */
-.fuerzas-lienzo { position: absolute; left: 8px; right: 8px; bottom: 8px; z-index: 12; display: flex; align-items: center; gap: 8px; pointer-events: none; }
-.fuerzas-lienzo .ver-fuerzas { pointer-events: auto; flex: none; padding: 4px 12px; background: rgba(20,32,46,.92); }
-.leyenda-fuerzas { flex: 1; margin: 0; padding: 4px 8px; border-radius: 10px; background: rgba(0,0,0,.72); font-size: .75rem; }
+/* Capa «Ver fuerzas»: el interruptor (contrato .selector) y su leyenda ocupan una franja propia bajo el lienzo, para no tapar el coche. */
+.taller-lienzo { display: flex; flex-direction: column; }
+.taller-escena { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; }
+.fuerzas-lienzo { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 4px 8px; min-height: 52px; background: #101a26; border-top: 2px solid rgba(255,255,255,.25); }
+.fuerzas-lienzo .ver-fuerzas { flex: none; padding: 4px 12px; background: rgba(20,32,46,.92); }
+.leyenda-fuerzas { flex: 1; margin: 0; padding: 2px 4px; font-size: .75rem; line-height: 1.25; }
+.taller-panel .lectura-suspension { position: sticky; top: 0; z-index: 3; margin: 0 -10px; padding: 6px 10px; background: #101a26; border-bottom: 2px solid #ffd23f; font-weight: 700; font-size: .95rem; }
 .lectura-suspension { font-weight: 700; }
