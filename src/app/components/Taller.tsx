@@ -12,8 +12,11 @@ import {
   ajustarAngulo,
   ajustarLongitud,
   dimensiones,
+  ejeDeInclinacion,
   escalarCoche,
   factorPermitido,
+  inclinacionDeEje,
+  lecturaInclinacion,
   piezaLimitante,
   ponerRueda,
   quitarRueda,
@@ -25,6 +28,7 @@ import {
 } from "@/game/editor";
 import type { WorkshopHandle } from "@/game/workshop-scene";
 import { GENE_RANGES, genomeHash, STOCK_CAR, type Genome } from "@/sim/genome";
+import { estatica } from "@/sim/physics/estatica";
 import type { TrackId } from "@/sim/tracks";
 import { COLORES_COCHE, PALETA_COCHES, type ColorCoche, type IdentidadCoche } from "@/game/colores-coche";
 import { MuestraColor } from "./MuestraColor";
@@ -73,6 +77,7 @@ export function Taller(props: TallerProps) {
   const [showHelp, setShowHelp] = useState(!helpSeen);
   const [colores, setColores] = useState(false);
   const [rendimiento] = useState(() => new URLSearchParams(window.location.search).get("rendimiento") === "1");
+  const [fuerzas, setFuerzas] = useState(false);
   const [confirmarNuevo, setConfirmarNuevo] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -95,7 +100,7 @@ export function Taller(props: TallerProps) {
             latest.current.onHelpSeen();
           },
         }, { alSinLienzo: () => setFailed(true) });
-        handle.current.setState(latest.current.genome, null, latest.current.identidad.color);
+        handle.current.setState(latest.current.genome, null, latest.current.identidad.color, false);
       })
       .catch(() => {
         if (!cancelled) setFailed(true);
@@ -109,17 +114,22 @@ export function Taller(props: TallerProps) {
   }, [failed]);
 
   useEffect(() => {
-    handle.current?.setState(genome, vertice, props.identidad.color);
-  }, [genome, vertice, props.identidad.color]);
+    handle.current?.setState(genome, vertice, props.identidad.color, fuerzas);
+  }, [genome, vertice, props.identidad.color, fuerzas]);
 
   useEffect(() => {
     runtime.dimensiones = dimensiones(genome);
-  }, [genome]);
+    runtime.inclinaciones = genome.wheels.map((w) => inclinacionDeEje(w.axisAngle));
+    const e = estatica(genome);
+    runtime.fuerzasTaller = { visible: fuerzas, centroMasas: e.centroMasas, pares: e.ruedas.map((r) => r.parMax) };
+  }, [genome, fuerzas]);
 
   useEffect(
     () => () => {
       runtime.verticeSeleccionado = null;
       runtime.dimensiones = null;
+      runtime.inclinaciones = [];
+      runtime.fuerzasTaller = null;
     },
     [],
   );
@@ -150,6 +160,7 @@ export function Taller(props: TallerProps) {
     props.onGenome(nuevo);
   };
   const grados = (rad: number) => `${formatDecimal((rad * 180) / Math.PI, 0)}°`;
+  const inclinacion = wheel ? inclinacionDeEje(wheel.axisAngle) : 0;
   const wheels = wheelCount(genome);
   const activos = genome.wheels.map((w, i) => ({ w, i })).filter(({ w }) => w.vertex >= 0);
 
@@ -255,6 +266,25 @@ export function Taller(props: TallerProps) {
             {AYUDA_TALLER}
           </p>
         )}
+        <div className="fuerzas-lienzo">
+          <button
+            type="button"
+            className="selector ver-fuerzas"
+            aria-pressed={fuerzas}
+            data-testid="ver-fuerzas"
+            onClick={() => {
+              markInput("ver-fuerzas");
+              setFuerzas((v) => !v);
+            }}
+          >
+            {fuerzas ? "✓ " : ""}Ver fuerzas
+          </button>
+          {fuerzas && (
+            <p className="leyenda-fuerzas" data-testid="leyenda-fuerzas" role="note">
+              ◐ centro de masas · peso · par · más largo = más fuerza
+            </p>
+          )}
+        </div>
         {wheels === 0 && (
           <p className="aviso-ruedas" data-testid="aviso-sin-ruedas" role="status">
             {SIN_RUEDAS}
@@ -376,16 +406,24 @@ export function Taller(props: TallerProps) {
                 />
               </label>
               <label className="control">
-                <span>Dirección de la suspensión: {Math.round((wheel.axisAngle * 180) / Math.PI)}°</span>
+                <span className="lectura-suspension" data-testid="lectura-suspension">
+                  Inclinación de la suspensión: {lecturaInclinacion(inclinacion)}
+                </span>
                 <input
                   type="range"
                   data-testid="deslizador-suspension"
-                  min={0}
-                  max={359}
+                  aria-label="Inclinación de la suspensión"
+                  min={-90}
+                  max={90}
                   step={1}
-                  value={Math.round((wheel.axisAngle * 180) / Math.PI) % 360}
-                  onChange={(e) => props.onGenome(setWheelAxis(genome, slot, (Number(e.target.value) * Math.PI) / 180))}
+                  value={Math.round(inclinacion)}
+                  onChange={(e) => {
+                    ajustar(setWheelAxis(genome, slot, ejeDeInclinacion(Number(e.target.value))), "inclinar-suspension");
+                  }}
                 />
+                <small className="nota-peso" data-testid="nota-suspension">
+                  La rueda sube y baja por la guía dibujada. Vertical amortigua baches; inclinada hacia atrás cede al chocar de frente.
+                </small>
               </label>
             </>
           )}

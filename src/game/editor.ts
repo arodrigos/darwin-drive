@@ -171,3 +171,29 @@ export function dimensiones(genome: Genome): { largo: number; alto: number } {
   }
   return { largo: Math.max(...xs) - Math.min(...xs), alto: Math.max(...ys) - Math.min(...ys) };
 }
+
+/**
+ * Inclinación de la suspensión respecto a la vertical, en grados de −90 a +90 (positivo = hacia delante).
+ * Un eje y el opuesto (θ y θ+180°) describen la misma guía, así que se muestra el que cae en ese rango.
+ */
+export function inclinacionDeEje(axisAngle: number): number {
+  if (!Number.isFinite(axisAngle)) return 0;
+  let a = wrap(axisAngle);
+  if (a > Math.PI) a -= Math.PI;
+  return 90 - (a * 180) / Math.PI;
+}
+
+/** axisAngle en [0, π] para una inclinación en grados (se acota a ±90). */
+export function ejeDeInclinacion(grados: number): number {
+  if (!Number.isFinite(grados)) return Math.PI / 2;
+  const g = Math.max(-90, Math.min(90, grados));
+  return ((90 - g) * Math.PI) / 180;
+}
+
+/** Lectura en palabras de la inclinación, para que no haya que adivinar qué significa el número. */
+export function lecturaInclinacion(grados: number): string {
+  const r = Math.round(grados);
+  if (Math.abs(r) >= 90) return "tumbada";
+  if (r === 0) return "vertical";
+  return `inclinada ${Math.abs(r)}° hacia ${r > 0 ? "delante" : "atrás"}`;
+}

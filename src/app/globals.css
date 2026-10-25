@@ -318,3 +318,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .confirmar-nuevo .acciones { display: flex; gap: 8px; }
 .confirmar-nuevo .acciones > * { flex: 1; }
 .hoja-nombre-error { color: #ffb4a8; font-weight: 700; }
+
+/* Capa «Ver fuerzas»: el interruptor (contrato .selector) y su leyenda de una línea van sobre el lienzo, para no alargar el panel. */
+.fuerzas-lienzo { position: absolute; left: 8px; right: 8px; bottom: 8px; z-index: 12; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+.fuerzas-lienzo .ver-fuerzas { pointer-events: auto; flex: none; padding: 4px 12px; background: rgba(20,32,46,.92); }
+.leyenda-fuerzas { flex: 1; margin: 0; padding: 4px 8px; border-radius: 10px; background: rgba(0,0,0,.72); font-size: .75rem; }
+.lectura-suspension { font-weight: 700; }
