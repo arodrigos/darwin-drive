@@ -45,6 +45,9 @@ export const runtime = {
   /** Punto elegido en el Taller y caja que ocupa el coche (los publica Taller). */
   verticeSeleccionado: null as number | null,
   dimensiones: null as { largo: number; alto: number } | null,
+  /** Capa «Ver fuerzas» del Taller (centro de masas y par máximo por rueda activa) e inclinación en grados de cada rueda (los publica Taller). */
+  fuerzasTaller: null as { visible: boolean; centroMasas: { x: number; y: number }; pares: number[] } | null,
+  inclinaciones: [] as number[],
   garaje: 0,
   ultimaInscripcion: null as { trackId: TrackId; position: number | null; alreadyAt: number | null; isRecord: boolean } | null,
   // Evolución en curso (la rellena Evolucion).
@@ -119,6 +122,8 @@ export function estado() {
     identidadTaller: runtime.identidadTaller,
     verticeSeleccionado: runtime.verticeSeleccionado,
     dimensiones: runtime.dimensiones,
+    fuerzasTaller: runtime.fuerzasTaller,
+    inclinaciones: runtime.inclinaciones,
     ultimoResultado: runtime.ultimoResultado,
     // Añadidos al contrato por pista-carrera: la pausa de pestaña y el ejecutor activo se prueban con ellos.
     tiempoSim: runtime.tiempoSim,

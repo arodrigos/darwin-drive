@@ -3,17 +3,18 @@ import { Circle, Polygon, Vec2, WheelJoint, type Body, type Fixture, type World 
 import { TORQUE_SLOPE_DEG } from "../constants";
 import { umbralRotura } from "../rotura";
 import { VERTEX_COUNT, type Genome } from "../genome";
+import { GRAVITY, parMaximo } from "./estatica";
 
-export const GRAVITY = 9.81;
+export { GRAVITY };
 export { TORQUE_SLOPE_DEG };
 export const MOTOR_SPEED = 25;
 export const SUSPENSION_HZ = 4;
 export const SUSPENSION_DAMPING = 0.7;
 const SPAWN_CLEARANCE = 0.3;
 
-/** Par máximo de una rueda motriz: masa·g·sen 35°·r repartido entre las ruedas motrices (las de origen, ver `CarParts.motrices`). */
+/** Par máximo de una rueda motriz (las de origen, ver `CarParts.motrices`); la fórmula vive en estatica.ts para que el Taller la dibuje. */
 export function maxMotorTorque(totalMass: number, radius: number, drivenWheels: number): number {
-  return (totalMass * GRAVITY * Math.sin((TORQUE_SLOPE_DEG * Math.PI) / 180) * radius) / Math.max(1, drivenWheels);
+  return parMaximo(totalMass, radius, drivenWheels);
 }
 
 /** Un triángulo del abanico: lo que se rompe y el umbral al que lo hace (ver `umbralRotura`). */
