@@ -89,6 +89,7 @@ for (const t of TABLETAS) {
       return { x: p.x + ((p.x - p.cx) / d) * 60, y: p.y + ((p.y - p.cy) / d) * 60 };
     });
     await tocar(page, 3);
+    await page.getByTestId("poner-rueda").click();
     const g = (await estado(page)).genomaEnTaller!;
     expect(g.body[1].length).toBeGreaterThan(antes.body[1].length);
     expect(g.wheels.map((w) => w.vertex)).toContain(3);

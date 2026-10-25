@@ -42,6 +42,9 @@ export const runtime = {
   genomaEnTaller: null as Genome | null,
   /** Nombre y color del coche en el Taller (lo publica App). */
   identidadTaller: null as { nombre: string; color: string } | null,
+  /** Punto elegido en el Taller y caja que ocupa el coche (los publica Taller). */
+  verticeSeleccionado: null as number | null,
+  dimensiones: null as { largo: number; alto: number } | null,
   garaje: 0,
   ultimaInscripcion: null as { trackId: TrackId; position: number | null; alreadyAt: number | null; isRecord: boolean } | null,
   // Evolución en curso (la rellena Evolucion).
@@ -114,6 +117,8 @@ export function estado() {
     genomaEnPista: runtime.genomaEnPista,
     genomaEnTaller: runtime.genomaEnTaller,
     identidadTaller: runtime.identidadTaller,
+    verticeSeleccionado: runtime.verticeSeleccionado,
+    dimensiones: runtime.dimensiones,
     ultimoResultado: runtime.ultimoResultado,
     // Añadidos al contrato por pista-carrera: la pausa de pestaña y el ejecutor activo se prueban con ellos.
     tiempoSim: runtime.tiempoSim,

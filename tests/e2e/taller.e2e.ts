@@ -88,6 +88,19 @@ async function tocar(page: Page, i: number) {
   await page.mouse.click(p.x, p.y);
 }
 
+/** Tocar elige el punto; la rueda se pone o se quita con el botón del panel «Punto N». */
+async function ponerRueda(page: Page, i: number) {
+  await tocar(page, i);
+  await expect(page.getByTestId("punto-titulo")).toHaveText(`Punto ${i + 1}`);
+  await page.getByTestId("poner-rueda").click();
+}
+
+async function quitarRueda(page: Page, i: number) {
+  await tocar(page, i);
+  await expect(page.getByTestId("punto-titulo")).toHaveText(`Punto ${i + 1}`);
+  await page.getByTestId("quitar-rueda").click();
+}
+
 async function elegirPista(page: Page, id: string) {
   await page.getByTestId("selector-pista").click();
   await page.getByTestId(`pista-${id}`).click();
@@ -127,7 +140,7 @@ test("tl-1 diseñar, elegir pista, probar y entrar en el ranking, y persiste", a
     const d = Math.hypot(p.x - p.cx, p.y - p.cy);
     return { x: p.x + ((p.x - p.cx) / d) * 60, y: p.y + ((p.y - p.cy) / d) * 60 };
   });
-  await tocar(page, 3);
+  await ponerRueda(page, 3);
   const g = (await estado(page)).genomaEnTaller!;
   expect(g.body[1].length).toBeGreaterThan(antes.body[1].length);
   expect(g.wheels.filter((w) => w.vertex >= 0).map((w) => w.vertex)).toContain(3);
@@ -285,9 +298,9 @@ test("tl-4 la ayuda está donde la acción no es obvia", async ({ page }) => {
   await abrir(page);
   await abrirTaller(page);
   const ayuda = page.getByTestId("ayuda-taller");
-  await expect(ayuda).toHaveText("Arrastra los puntos blancos para dar forma a la carrocería. Toca un punto para ponerle o quitarle una rueda. Elige abajo en qué pista lo pruebas.");
+  await expect(ayuda).toHaveText("Toca un punto para elegirlo; arrástralo para darle forma. Con el punto elegido puedes ponerle una rueda. Elige abajo en qué pista lo pruebas.");
   await page.screenshot({ path: `${DIR}/${ID}-ayuda-360x640.png` });
-  await tocar(page, 3);
+  await ponerRueda(page, 3);
   await expect(ayuda).toBeHidden();
   await expect(page.getByTestId("etiqueta-radio")).toHaveText("Radio: 0,5 m");
   await expect.poll(async () => (await meta(page))?.seenHelp).toContain("taller");
@@ -302,13 +315,13 @@ test("tl-4 la ayuda está donde la acción no es obvia", async ({ page }) => {
   // Cada toque se confirma en el contador antes del siguiente: dos clics seguidos en la CI lenta se solapan con el repintado y uno se pierde.
   const conRueda = (await estado(page)).genomaEnTaller!.wheels.filter((r) => r.vertex >= 0);
   for (const [k, w] of conRueda.entries()) {
-    await tocar(page, w.vertex);
+    await quitarRueda(page, w.vertex);
     await expect(page.getByTestId("contador-ruedas")).toHaveText(`Ruedas: ${conRueda.length - k - 1}/4`);
   }
   await expect(page.getByTestId("aviso-sin-ruedas")).toHaveText("Sin ruedas no hay motor: este coche no avanzará.");
   await page.screenshot({ path: `${DIR}/${ID}-sin-ruedas-360x640.png` });
-  await tocar(page, 5);
-  await tocar(page, 7);
+  await ponerRueda(page, 5);
+  await ponerRueda(page, 7);
   await expect(page.getByTestId("aviso-sin-ruedas")).toBeHidden();
   await page.screenshot({ path: `${DIR}/${ID}-radio-360x640.png` });
 });
