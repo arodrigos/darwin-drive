@@ -64,7 +64,7 @@ function lerp(a: number, b: number, t: number): number {
 }
 
 const cordilleraNoise = createNoise2D(mulberry32(1810));
-const CORDILLERA_TECHO = 14;
+const CORDILLERA_TECHO = 26;
 function cordilleraHeight(x: number): number {
   const d = x - FLAT_START;
   if (d <= 0) return 0;
@@ -104,7 +104,7 @@ function rampaHeight(x: number): number {
   return lerp(rampaTabla[i], rampaTabla[i + 1], pos - i);
 }
 
-const DUNAS_TECHO = 7;
+const DUNAS_TECHO = 9;
 function dunasHeight(x: number): number {
   const d = x - FLAT_START;
   if (d <= 0) return 0;
@@ -118,8 +118,8 @@ function dunasHeight(x: number): number {
 
 const pedregalNoise = createNoise2D(mulberry32(77));
 const STONE_CELL = 4;
-// 0,7 + hasta 0,2 de la ondulación de base en 4 m: el conjunto no pasa de 0,9 m.
-const PIEDRA_TECHO = 0.7;
+// 1,1 + hasta 0,2 de la ondulación de base en 4 m: el conjunto no pasa de 1,3 m.
+const PIEDRA_TECHO = 1.5;
 function pedregalHeight(x: number): number {
   const d = x - FLAT_START;
   if (d <= 0) return 0;
@@ -135,7 +135,7 @@ function pedregalHeight(x: number): number {
     if (dist < width / 2) {
       // Altura y forma varían por celda: unas son lomos redondos y otras picos.
       const tamano = 0.85 + 0.15 * ((cellHash(cell, 3) % 1000) / 999);
-      const height = Math.min(PIEDRA_TECHO, (0.12 + 0.78 * c) * tamano * 1.1);
+      const height = Math.min(PIEDRA_TECHO, (0.12 + 0.78 * c) * tamano * 1.5);
       const t = (2 * dist) / width;
       const perfil = cellHash(cell, 4) % 3 === 0 ? 1 - t : 0.5 * (1 + Math.cos(Math.PI * t));
       stone = height * perfil;
@@ -144,18 +144,18 @@ function pedregalHeight(x: number): number {
   return base + stone;
 }
 
-const GLACIAR_TECHO = 5;
+const GLACIAR_TECHO = 16;
 function glaciarHeight(x: number): number {
   const d = x - FLAT_START;
   if (d <= 0) return 0;
   // Lomas largas y suaves: lo difícil del hielo es frenar y arrancar, no la altura.
-  const c = Math.min(1, 1.2 * curvaDificultad(d));
-  const n = (glaciarNoise(d / 90, 2.5) + 0.35 * glaciarNoise(d / 35, 11.5)) / 1.35;
+  const c = curvaDificultad(d);
+  const n = (glaciarNoise(d / 60, 2.5) + 0.35 * glaciarNoise(d / 25, 11.5)) / 1.35;
   return smoothstep(d / 30) * GLACIAR_TECHO * (0.25 + 0.75 * c) * n;
 }
 const glaciarNoise = createNoise2D(mulberry32(3301));
 
-const TRAMPOLIN_TECHO = 0.9;
+const TRAMPOLIN_TECHO = 3.5;
 function trampolinesHeight(x: number): number {
   const d = x - FLAT_START;
   if (d <= 0) return 0;
@@ -169,9 +169,9 @@ function trampolinesSurface(index: number): Superficie {
 
 export const ESCALERA_HUELLA = 6;
 export const ESCALON_MIN = 0.2;
-export const ESCALON_MAX = 1.2;
+export const ESCALON_MAX = 1.3;
 // Los escalones suben de dos en dos y bajan de dos en dos: la altura total no se dispara.
-const ESCALERA_GRUPO = 2;
+const ESCALERA_GRUPO = 4;
 const ESCALERA_ESCALONES = 2000;
 /** Pendiente media de bajada (~6°): sin ella, un coche sin empuje se queda quieto en el primer rellano y no hay nada que medir. */
 const ESCALERA_BAJADA = 0.105;
@@ -179,8 +179,8 @@ const ESCALERA_BAJADA = 0.105;
 const escaleraNiveles: Float64Array = (() => {
   const t = new Float64Array(ESCALERA_ESCALONES + 1);
   for (let n = 0; n < ESCALERA_ESCALONES; n++) {
-    // Lineal y lenta: el escalón de 1,2 m llega a los 1500 m, así que mide la rueda y no el ánimo.
-    const c = Math.min(1, ((n + 1) * ESCALERA_HUELLA) / 1500);
+    // Lineal y lenta: el escalón de 1,3 m llega a los 3500 m, así que mide la rueda y no el ánimo.
+    const c = Math.min(1, ((n + 1) * ESCALERA_HUELLA) / 3500);
     const cc = Math.min(1, c * (0.75 + 0.25 * ((cellHash(n, 6) % 1000) / 999)) * 1.15);
     const subida = ESCALON_MIN + (ESCALON_MAX - ESCALON_MIN) * cc;
     t[n + 1] = t[n] + (Math.floor(n / ESCALERA_GRUPO) % 2 === 0 ? subida : -subida);
@@ -199,7 +199,7 @@ function escaleraHeight(x: number): number {
 
 // Menos agarre que la roca: con fricción plena los mismos coches pasan o no pasan en la escalera
 // que en el Pedregal (Spearman 0,95); con 0,3 el orden cambia de verdad.
-const ESCALERA_SUELO: Superficie = { ...ROCA, friction: 0.3 };
+const ESCALERA_SUELO: Superficie = { ...ROCA, friction: 0.22 };
 
 
 /** Plantillas del Mosaico, una por tramo de 25 m. El orden es el del índice de TIPOS_TRAMO. */
@@ -238,7 +238,7 @@ export function tipoTramo(i: number): number {
   for (let k = MOSAICO_TABLA; k <= n; k++) t = siguienteTipo(k, t);
   return t;
 }
-const MOSAICO_TECHO = 2.4;
+const MOSAICO_TECHO = 8;
 function mosaicoHeight(x: number): number {
   const d = x - FLAT_START;
   if (d <= 0) return 0;
@@ -278,13 +278,13 @@ const rocaSiempre = (): Superficie => ROCA;
 
 export const ACANTILADO_PASO = 14;
 export const ACANTILADO_MIN = 0.5;
-export const ACANTILADO_MAX = 6;
+export const ACANTILADO_MAX = 8;
 const ACANTILADO_ESCALONES = 1000;
 /** Cara de 65°: por debajo de los 70° que admite el terreno, y un escalón de 6 m ocupa ~2,8 m en horizontal. */
 const ACANTILADO_TAN_CARA = Math.tan((65 * Math.PI) / 180);
 /** Caída de cada escalón: 0,5 m al principio y 6 m como techo, con la variedad de cada celda. */
 function acantiladoCaida(n: number): number {
-  const c = Math.min(1, 2 * curvaDificultad((n + 0.5) * ACANTILADO_PASO));
+  const c = Math.min(1, 1.3 * curvaDificultad((n + 0.5) * ACANTILADO_PASO));
   const variedad = 0.8 + 0.2 * ((cellHash(n, 12) % 1000) / 999);
   return Math.min(ACANTILADO_MAX, ACANTILADO_MIN + (ACANTILADO_MAX - ACANTILADO_MIN) * c * variedad);
 }
@@ -315,7 +315,7 @@ function acantiladoSurface(index: number): Superficie {
   // Antes de la salida no hay placas: el suelo bajo el coche al nacer es el de siempre.
   if (index < 0) return ROCA;
   if (index < ACANTILADO_ARRANQUE.length) return ACANTILADO_ARRANQUE[index];
-  return (cellHash(index, 13) % 1000) / 999 < 0.1 + 0.4 * c ? HIELO : ROCA;
+  return (cellHash(index, 13) % 1000) / 999 < 0.1 + 0.7 * c ? HIELO : ROCA;
 }
 
 const RECTA_TECHO = 0.5;
@@ -330,23 +330,23 @@ function rectaHeight(x: number): number {
 export const TRACKS: readonly Track[] = [
   {
     id: "cordillera",
-    version: 4,
+    version: 5,
     name: "La Cordillera",
-    tagline: "Montañas al azar, siempre las mismas, cada vez más altas.",
+    tagline: "Montañas al azar, siempre las mismas, cada vez más difíciles hasta la meta.",
     heightAt: cordilleraHeight,
     surfaceOfSegment: rocaSiempre,
   },
   {
     id: "rampa",
-    version: 3,
+    version: 4,
     name: "La Rampa",
-    tagline: "Una recta que se empina sin parar.",
+    tagline: "Una recta que se empina sin parar, cada vez más difícil hasta la meta.",
     heightAt: rampaHeight,
     surfaceOfSegment: rocaSiempre,
   },
   {
     id: "dunas",
-    version: 3,
+    version: 4,
     name: "Las Dunas",
     tagline: "Olas largas que crecen: con velocidad, se vuela.",
     heightAt: dunasHeight,
@@ -354,7 +354,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "pedregal",
-    version: 3,
+    version: 4,
     name: "El Pedregal",
     tagline: "Llano sembrado de piedras cada vez mayores.",
     heightAt: pedregalHeight,
@@ -362,7 +362,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "glaciar",
-    version: 1,
+    version: 2,
     name: "El Glaciar",
     tagline: "Hielo resbaladizo: arrancar es fácil, frenar no.",
     heightAt: glaciarHeight,
@@ -370,7 +370,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "trampolines",
-    version: 1,
+    version: 2,
     name: "Los Trampolines",
     tagline: "Suelo elástico que te devuelve el golpe.",
     heightAt: trampolinesHeight,
@@ -378,15 +378,15 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "escalera",
-    version: 1,
+    version: 2,
     name: "La Escalera",
-    tagline: "Escalones de 20 cm a más de un metro, cuesta abajo.",
+    tagline: "Escalones de 20 cm a más de un metro, cuesta abajo, hasta la meta.",
     heightAt: escaleraHeight,
     surfaceOfSegment: () => ESCALERA_SUELO,
   },
   {
     id: "acantilado",
-    version: 1,
+    version: 2,
     name: "El Acantilado",
     tagline: "Escalones hacia abajo de medio metro a seis, con placas de hielo.",
     heightAt: acantiladoHeight,
@@ -402,7 +402,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "mosaico",
-    version: 1,
+    version: 2,
     name: "El Mosaico",
     tagline: "Cada 25 metros, un suelo distinto: gana el que sirve para todo.",
     heightAt: mosaicoHeight,

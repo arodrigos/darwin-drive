@@ -43,7 +43,7 @@ test("pn-2: El Glaciar es hielo (0,05) y Los Trampolines rebotan entre 0,5 y 0,8
   assert.ok(new Set(rebotes).size > 50, "cada tramo tiene su rebote");
 });
 
-test("invariante pn-1: en La Escalera cada escalón mide 0,2-1,2 m y la contrahuella no pasa de 70°", () => {
+test("invariante pn-1: en La Escalera cada escalón mide 0,2-1,3 m y la contrahuella no pasa de 70°", () => {
   const t = getTrack("escalera")!;
   const escalones = Math.floor(4900 / ESCALERA_HUELLA);
   for (let n = 1; n < escalones; n++) {
@@ -98,7 +98,7 @@ test("pn-2: Los Trampolines dan un CarResult distinto al de una roca de la misma
   race.dispose();
 });
 
-test("pn-2: 20 genomas en las clásicas dan 80 de 80 CarResult idénticos a los de antes de las superficies", () => {
+test("pn-2: 20 genomas en las clásicas dan 80 de 80 CarResult idénticos al dorado (regenerado al endurecer las pistas: las superficies de roca siguen sin cambiar nada)", () => {
   const dorado = JSON.parse(readFileSync("tests/fixtures/dorado-clasicas.json", "utf8")) as Record<string, unknown[]>;
   const rand = seededRand(2024);
   const genomas = Array.from({ length: 20 }, () => randomGenome(rand));

@@ -18,16 +18,16 @@ import { hashPista } from "./helpers/hash-pistas";
 // propósito, hay que subir la versión de la pista (las marcas guardadas se
 // vuelven a medir con ella) y actualizar el hash aquí.
 const HASH_REFERENCIA: Record<string, string> = {
-  cordillera: "2ad78a4fa822d822e335be5004d4bb473f7da1011027d7575547e1be0f9754cd",
-  rampa: "733cf977942bc9c6e231382b0f9cbe7ecd09e467f57907f4fbb04d558a057a52",
-  dunas: "2d9f02a0acf682fd0d454deaa657b8ebf4479f1f4635aa68021e31f6ce46a97b",
-  pedregal: "11ebba08aefb83656fbfe65069cdc94dccdcc40a9199a06b31415980e24ec21b",
-  glaciar: "cb8fa9cd0e4e5e14a6ec63a295a02318c5746918799f7528a1d8087e7d560451",
-  trampolines: "d8022de2b9efe15754baadaf71882ba7fccbf2088810f4f6d941e6b092ae78f3",
-  escalera: "468cb282f3168c09e1a680d83d1e2e7bb4041cebb51d750c5ecab4946496d53a",
-  acantilado: "750bdce74f7a330fe0091492940fdda90e7938b2de44d53584e8b7dd906c4d16",
+  cordillera: "51aaef07a6253f7e887cde65e8a74efb22af118604a0776c9745d8f04361cd25",
+  rampa: "05822c7e8b2b85d84de04353a9f5b34e3416d1b047684da1d786d3aae9ac1644",
+  dunas: "2f79d0c18042e3a243db71f7b46027162c76d1d1660510f90b4827ab4ab683ac",
+  pedregal: "c654815d9ee104c9acd65b49f2035714f09426cbb21b0dcd675988a1d08c02a1",
+  glaciar: "9e8d93a5d3959900da0de629fb4c11ae09de565fcbb38768cca23ddb66a7c230",
+  trampolines: "b3457c6dd232888562ae751a6fe7ff97dd870da6bb79d10fb2049c80e00a57dd",
+  escalera: "2085a5321044ffb8ebf7727de3d5fdc304a27bef6482eaae2fc5f357f4c098e2",
+  acantilado: "e8b2854e1e57882377b9e5751ca1c2a6c26d63443171810142498d9fb7815994",
   recta: "1c98330d057266a2940ebb167e150d3e6e5e5cc14921b750f02dd325a8771043",
-  mosaico: "acf9b6ceeae467ea28f6e0750f8e3dfc12965577c62a4e15d72fa5e715ec328a",
+  mosaico: "ab33633940207beca12cfa2701b8430d7fe648aaaf9aea606a4bde4316031de2",
 };
 
 const MAX_DY = Math.tan((MAX_SLOPE_DEG * Math.PI) / 180) * VERTEX_SPACING;
@@ -192,7 +192,7 @@ test("at-2 La Cordillera: la rugosidad crece en los primeros 900 m, no se hunde 
   assert.ok(gradoMax(f, 1500, 5000) > 30);
 });
 
-test("at-2 La Rampa: la pendiente no decrece fuera de los respiros y llega a 45° a los 500 m", () => {
+test("at-2 La Rampa: la pendiente no decrece fuera de los respiros y llega a 20° a los 500 m y a 55° cerca de la meta", () => {
   const f = pista("rampa");
   const filas: { x: number; grados: number }[] = [];
   let previo = -1;
@@ -206,7 +206,9 @@ test("at-2 La Rampa: la pendiente no decrece fuera de los respiros y llega a 45�
   }
   console.table(filas);
   const en500 = (Math.atan((f(500.5) - f(500)) / VERTEX_SPACING) * 180) / Math.PI;
-  assert.ok(en500 >= 45, `pendiente a 500 m: ${en500}`);
+  assert.ok(en500 >= 20, `pendiente a 500 m: ${en500}`);
+  const cerca = (Math.atan((f(FLAT_START + 4900.5) - f(FLAT_START + 4900)) / VERTEX_SPACING) * 180) / Math.PI;
+  assert.ok(cerca >= 55, `pendiente a 4900 m: ${cerca}`);
 });
 
 test("at-2 Las Dunas: la amplitud por ventana de 100 m sube en la primera y se mantiene bajo el tope; ≥2 crestas cada 50 m", () => {
@@ -224,9 +226,10 @@ test("at-2 Las Dunas: la amplitud por ventana de 100 m sube en la primera y se m
     filas.push({ ventana: `${a}-${a + 100} m`, amplitud: Number(((mx - mn) / 2).toFixed(2)) });
   }
   console.table(filas);
-  // La curva llega pronto a su techo: la primera ventana es la más pequeña y el resto oscila bajo 7 m.
-  assert.ok(amps[1] > amps[0] * 1.4);
-  for (let i = 1; i < amps.length; i++) assert.ok(amps[i] > 4 && amps[i] <= 7 + 1e-9, `ventana ${i}`);
+  // La curva sigue creciendo hasta los 5 km: las olas crecen ventana a ventana (con holgura por los respiros) y no pasan de 9 m.
+  assert.ok(amps[1] > amps[0] * 1.2);
+  for (let i = 1; i < amps.length; i++) assert.ok(amps[i] > amps[i - 1] * 0.9 && amps[i] <= 9 + 1e-9, `ventana ${i}`);
+  assert.ok(amps[amps.length - 1] > amps[0] * 2.5);
   for (let a = 10; a < 4000; a += 50) assert.ok(crestas(f, a, a + 50) >= 2, `crestas en ${a}`);
 });
 
