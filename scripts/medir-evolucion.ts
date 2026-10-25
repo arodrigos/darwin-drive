@@ -9,9 +9,9 @@ function arg(name: string, def: string): string {
   return i >= 0 && process.argv[i + 1] && !process.argv[i + 1].startsWith("--") ? process.argv[i + 1] : def;
 }
 
-const generaciones = Number(arg("generaciones", "15"));
+const generaciones = Number(process.env.MEDIR_GENERACIONES ?? arg("generaciones", "15"));
 const semillas = arg("semillas", "1,2,3").split(",").map(Number);
-const pistas = arg("pistas", "cordillera,rampa").split(",");
+const pistas = (process.env.MEDIR_PISTA ?? arg("pistas", "cordillera,rampa")).split(",");
 const FACTOR_MEDIANA = 1.5;
 const FACTOR_MEJOR = 1.25;
 const BASE_MINIMA_MEDIANA = 10;

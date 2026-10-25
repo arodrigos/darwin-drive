@@ -69,18 +69,18 @@ Hay diez pistas fijas (`src/sim/tracks.ts`), cada una con su propio ranking de 1
 
 | Pista | Cómo es |
 | --- | --- |
-| La Cordillera | Montañas al azar, siempre las mismas, cada vez más altas. |
-| La Rampa | Una recta que se empina sin parar. |
+| La Cordillera | Montañas al azar, siempre las mismas, cada vez más difíciles hasta la meta. |
+| La Rampa | Una recta que se empina sin parar, cada vez más difícil hasta la meta. |
 | Las Dunas | Olas largas que crecen. |
 | El Pedregal | Llano con piedras cada vez mayores. |
 | El Glaciar | Hielo resbaladizo con lomas suaves. |
 | Los Trampolines | Suelo elástico que rebota más según el tramo. |
-| La Escalera | Escalones de 20 cm a más de un metro. |
-| El Acantilado | Escalones hacia abajo de medio metro a seis, con placas de hielo. |
+| La Escalera | Escalones de 20 cm a más de un metro, hasta la meta. |
+| El Acantilado | Escalones hacia abajo de medio metro a ocho, con placas de hielo. |
 | La Recta | Casi llana hasta la meta; se ordena por tiempo. |
 | El Mosaico | Cada 25 m cambia el tipo de suelo; un rótulo nombra el tramo actual. |
 
-Las cuatro clásicas (Cordillera, Rampa, Dunas y Pedregal) siguen una curva de dificultad común (`src/sim/dificultad.ts`) que se complica pronto, con un respiro cada 250 m. El dibujo distingue las superficies por forma además de por color. El selector de pista es un carrusel horizontal.
+Las nueve pistas que no son La Recta (`PISTAS_ENDURECIDAS`) siguen una curva de dificultad común (`src/sim/dificultad.ts`) que sigue subiendo en diente de sierra hasta los 5 km, donde vale 1: respiro cada 250 m y otro más largo tras cada kilómetro. A la meta no llega cualquier coche: `npm run medir:pistas -- --umbral` lo comprueba contra campeones fijos (`tests/fixtures/campeones-5k.ts`, generado una vez con `npm run generar:campeones`). Al subir la versión de una pista, el juego vuelve a medir sus marcas guardadas y los récords pueden bajar. El dibujo distingue las superficies por forma además de por color. El selector de pista es un carrusel horizontal.
 
 ## Clasificación y desempates
 
@@ -142,7 +142,7 @@ npm run medir:fragilidad
 npm run medir:pistas -- --umbral
 ```
 
-`npm run medir:evolucion` mide la evolución, y los scripts `generar:escenario*` regeneran los escenarios de demostración de `src/debug/escenarios/`.
+`npm run medir:evolucion` mide la evolución (acepta `MEDIR_PISTA` y `MEDIR_GENERACIONES`), y los scripts `generar:escenario*` regeneran los escenarios de demostración de `src/debug/escenarios/`.
 
 ### Modo pruebas
 

@@ -23,6 +23,7 @@
     "generar:escenario-evolucion": "node --import tsx scripts/generar-escenario-evolucion.ts",
     "generar:escenario-especies": "node --import tsx scripts/generar-escenario-especies.ts",
     "smoke:traspaso": "bash scripts/smoke-traspaso.sh",
+    "generar:campeones": "node --import tsx scripts/generar-campeones.ts",
     "generar:escenarios": "node --import tsx scripts/generar-escenarios.ts",
     "generar:escenario-linaje": "node --import tsx scripts/generar-escenario-linaje.ts"
   },

@@ -61,7 +61,7 @@ test("ic-1 @tamanos el icono de causa no tapa el rótulo «fin · N m»", async 
   test.setTimeout(420_000);
   for (const t of TAMANOS) {
     await page.setViewportSize({ width: t.w, height: t.h });
-    await hastaTarjeta(page, { vacio: true, pista: "cordillera" }, async () => {
+    await hastaTarjeta(page, { vacio: true, pista: "dunas" }, async () => {
       await page.getByTestId("acceso-serie").click();
     });
     for (const causa of CAUSAS) {

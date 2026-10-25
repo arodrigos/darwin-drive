@@ -77,7 +77,7 @@
      "origin": "evolución",
      "date": "2026-10-01T10:00:00.000Z",
      "trackId": "cordillera",
-     "trackVersion": 4,
+     "trackVersion": 5,
      "physicsVersion": 4
     },
     {
@@ -152,7 +152,7 @@
      "origin": "evolución",
      "date": "2026-10-01T10:00:00.000Z",
      "trackId": "cordillera",
-     "trackVersion": 4,
+     "trackVersion": 5,
      "physicsVersion": 4
     },
     {
@@ -227,7 +227,7 @@
      "origin": "evolución",
      "date": "2026-10-01T10:00:00.000Z",
      "trackId": "cordillera",
-     "trackVersion": 4,
+     "trackVersion": 5,
      "physicsVersion": 4
     },
     {
@@ -302,7 +302,7 @@
      "origin": "evolución",
      "date": "2026-10-01T10:00:00.000Z",
      "trackId": "cordillera",
-     "trackVersion": 4,
+     "trackVersion": 5,
      "physicsVersion": 4,
      "piezasPerdidas": 9
     },
@@ -378,7 +378,7 @@
      "origin": "evolución",
      "date": "2026-10-01T10:00:00.000Z",
      "trackId": "cordillera",
-     "trackVersion": 4,
+     "trackVersion": 5,
      "physicsVersion": 4,
      "causaParada": "explotó"
     },
@@ -454,7 +454,7 @@
      "origin": "evolución",
      "date": "2026-10-01T10:00:00.000Z",
      "trackId": "cordillera",
-     "trackVersion": 4,
+     "trackVersion": 5,
      "physicsVersion": 4,
      "pendienteParada": 400
     },
@@ -530,7 +530,7 @@
      "origin": "evolución",
      "date": "ayer",
      "trackId": "cordillera",
-     "trackVersion": 4,
+     "trackVersion": 5,
      "physicsVersion": 4
     },
     {
@@ -605,7 +605,7 @@
      "origin": "evolución",
      "date": "2026-10-01T10:00:00.000Z",
      "trackId": "cordillera",
-     "trackVersion": 4,
+     "trackVersion": 5,
      "physicsVersion": 4
     },
     {
@@ -680,7 +680,7 @@
      "origin": "evolución",
      "date": "2026-10-01T10:00:00.000Z",
      "trackId": "cordillera",
-     "trackVersion": 4,
+     "trackVersion": 5,
      "physicsVersion": 4,
      "piezasPerdidas": 1,
      "causaParada": null,
@@ -760,7 +760,7 @@
      "origin": "evolución",
      "date": "2026-10-01T10:00:00.000Z",
      "trackId": "cordillera",
-     "trackVersion": 4,
+     "trackVersion": 5,
      "physicsVersion": 4
     }
    ]
@@ -841,7 +841,7 @@
     "savedAt": "2026-10-02T09:00:00.000Z",
     "markVersions": {
      "cordillera": {
-      "trackVersion": 4,
+      "trackVersion": 5,
       "physicsVersion": 4
      }
     },
