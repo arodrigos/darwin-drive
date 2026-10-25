@@ -50,7 +50,7 @@ export const SECCIONES_GUIA: readonly SeccionGuia[] = [
     id: "taller",
     titulo: "El Taller",
     parrafos: [
-      "En el Taller diseñas el coche con el dedo: arrastra los puntos blancos para dar forma a la carrocería y toca un punto para ponerle o quitarle una rueda.",
+      "En el Taller diseñas el coche con el dedo: toca un punto blanco para elegirlo y arrástralo para dar forma a la carrocería. Con el punto elegido ajustas su ángulo y su longitud con − y +, y le pones o quitas una rueda. «Tamaño −» y «Tamaño +» encogen o agrandan el coche entero un 10 % sin cambiarle la forma.",
       "Cada rueda tiene su radio, su par motor y su suspensión; la carrocería tiene su peso. Un coche pesado agarra más pero necesita más fuerza para moverse.",
       "«Probar» lleva el coche a la pista elegida abajo. Si te gusta, «Guardar» lo deja en el Garaje.",
     ],
@@ -202,8 +202,9 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
     resumen: "Diseña el coche con el dedo y pruébalo.",
     seccionGuia: "taller",
     controles: [
-      { nombre: "Puntos blancos", texto: "Arrástralos para dar forma a la carrocería." },
-      { nombre: "Rueda", texto: "Toca un punto para ponerle o quitarle una rueda." },
+      { nombre: "Puntos blancos", texto: "Toca un punto para elegirlo; arrástralo para darle forma. Con el punto elegido puedes ponerle una rueda." },
+      { nombre: "Punto elegido", texto: "La cuña amarilla marca hasta dónde puede moverse. Ángulo y Longitud con − y + lo ajustan con precisión; «Poner rueda aquí» o «Quitar rueda» cambia su rueda." },
+      { nombre: "Tamaño", texto: "«Tamaño −» y «Tamaño +» cambian el coche entero un 10 %. Si una pieza llega a su límite, el botón se apaga y te dice cuál." },
       { nombre: "Deslizadores", texto: "Radio, par motor, suspensión y peso de la carrocería: más peso = más opaco." },
       { nombre: "Opacidad", texto: "Cuanto más pesa la carrocería, más opaca se ve; en carrera, más opaca donde más carga la rueda. Mira «Peso y opacidad» en la guía." },
       { nombre: "Pista", texto: "Elige dónde se prueba el coche." },
