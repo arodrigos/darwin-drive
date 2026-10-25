@@ -5,8 +5,10 @@ import { formatDecimal } from "@/app/format";
 import { markInput } from "@/debug/latencias";
 import { MAX_WHEELS, setBodyDensity, setWheelAxis, setWheelRadius, wheelCount } from "@/game/editor";
 import type { WorkshopHandle } from "@/game/workshop-scene";
-import { GENE_RANGES, type Genome } from "@/sim/genome";
+import { GENE_RANGES, genomeHash, STOCK_CAR, type Genome } from "@/sim/genome";
 import type { TrackId } from "@/sim/tracks";
+import { COLORES_COCHE, PALETA_COCHES, type ColorCoche, type IdentidadCoche } from "@/game/colores-coche";
+import { MuestraColor } from "./MuestraColor";
 import { TrackPicker, type RankingsView } from "./TrackPicker";
 import { puedeDibujar } from "@/game/lienzo";
 
@@ -19,6 +21,13 @@ const AVISO_MS = 2000;
 export interface TallerProps {
   genome: Genome;
   onGenome: (g: Genome) => void;
+  /** Nombre y color del coche en el Taller: metadatos, fuera del genoma. */
+  identidad: IdentidadCoche;
+  onColor: (c: ColorCoche) => void;
+  /** Abre la hoja de nombre; quien la monta guarda el texto en la identidad. */
+  onRenombrar: () => void;
+  /** Vuelve al coche de serie con otra identidad. */
+  onNuevo: () => void;
   trackId: TrackId;
   onTrack: (id: TrackId) => void;
   rankings: RankingsView;
@@ -42,6 +51,8 @@ export function Taller(props: TallerProps) {
   const [failed, setFailed] = useState(() => !puedeDibujar());
   const [slot, setSlot] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(!helpSeen);
+  const [colores, setColores] = useState(false);
+  const [confirmarNuevo, setConfirmarNuevo] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -62,7 +73,7 @@ export function Taller(props: TallerProps) {
             latest.current.onHelpSeen();
           },
         }, { alSinLienzo: () => setFailed(true) });
-        handle.current.setState(latest.current.genome, null);
+        handle.current.setState(latest.current.genome, null, latest.current.identidad.color);
       })
       .catch(() => {
         if (!cancelled) setFailed(true);
@@ -76,8 +87,8 @@ export function Taller(props: TallerProps) {
   }, [failed]);
 
   useEffect(() => {
-    handle.current?.setState(genome, slot);
-  }, [genome, slot]);
+    handle.current?.setState(genome, slot, props.identidad.color);
+  }, [genome, slot, props.identidad.color]);
 
   const wheel = slot !== null && genome.wheels[slot]?.vertex >= 0 ? genome.wheels[slot] : null;
   const wheels = wheelCount(genome);
@@ -109,7 +120,75 @@ export function Taller(props: TallerProps) {
           <button type="button" className="pastilla" onClick={props.onBack} data-testid="volver">
             ← Volver
           </button>
+          <button
+            type="button"
+            className="pastilla chica"
+            aria-expanded={colores}
+            aria-label={`Color: ${PALETA_COCHES[props.identidad.color].nombre}`}
+            data-testid="taller-color"
+            onClick={() => setColores((v) => !v)}
+          >
+            <MuestraColor color={props.identidad.color} />
+          </button>
+          <button type="button" className="pastilla chica nombre-taller" data-testid="taller-nombre" onClick={props.onRenombrar}>
+            {props.identidad.nombre}
+          </button>
+          <button
+            type="button"
+            className="pastilla chica"
+            data-testid="coche-nuevo"
+            onClick={() => {
+              if (genomeHash(genome) === genomeHash(STOCK_CAR)) props.onNuevo();
+              else setConfirmarNuevo(true);
+            }}
+          >
+            Coche nuevo
+          </button>
+          {colores && (
+            <div className="fila-colores" role="group" aria-label="Color del coche" data-testid="fila-colores">
+              {COLORES_COCHE.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className="selector selector-color"
+                  aria-pressed={props.identidad.color === c}
+                  aria-label={PALETA_COCHES[c].nombre}
+                  data-testid={`color-${c}`}
+                  data-color={c}
+                  style={{ background: PALETA_COCHES[c].hex }}
+                  onClick={() => {
+                    markInput("color-coche");
+                    props.onColor(c);
+                  }}
+                >
+                  {props.identidad.color === c ? "✓" : ""}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
+        {confirmarNuevo && (
+          <div className="confirmar-nuevo" role="alertdialog" aria-label="Coche nuevo" data-testid="confirmar-nuevo">
+            <p>Se perderá el diseño actual si no lo guardas</p>
+            <div className="acciones">
+              <button
+                type="button"
+                className="boton-primario"
+                data-testid="confirmar-nuevo-si"
+                onClick={() => {
+                  setConfirmarNuevo(false);
+                  setSlot(null);
+                  props.onNuevo();
+                }}
+              >
+                Sí, coche nuevo
+              </button>
+              <button type="button" className="boton-secundario" data-testid="confirmar-nuevo-no" onClick={() => setConfirmarNuevo(false)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
         {showHelp && (
           <p className="ayuda-taller" data-testid="ayuda-taller" role="note">
             {AYUDA_TALLER}

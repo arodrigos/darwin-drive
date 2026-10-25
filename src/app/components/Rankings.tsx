@@ -1,5 +1,6 @@
 "use client";
 
+import { MuestraColor } from "./MuestraColor";
 import { textoCausa } from "../ayuda/causas";
 import { useEffect, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
@@ -167,8 +168,11 @@ export function Rankings(props: RankingsProps) {
                   <span className="puesto" data-testid="fila-puesto">
                     {i + 1}
                   </span>
-                  <Silueta genome={e.genome} hue={tonoDe(e.genomeHash)} />
-                  <span className="nombre-fila" data-testid="fila-nombre">{nombreDe(e)}</span>
+                  <Silueta genome={e.genome} hue={tonoDe(e.genomeHash)} color={e.color} />
+                  <span className="nombre-fila" data-testid="fila-nombre">
+                    {e.color && <MuestraColor color={e.color} />}
+                    {nombreDe(e)}
+                  </span>
                   <span className="distancia" data-testid="fila-distancia">
                     {formatMeters(e.distance)}
                   </span>
