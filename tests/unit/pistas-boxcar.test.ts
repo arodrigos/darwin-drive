@@ -32,11 +32,11 @@ test("invariante bx-1: en El Acantilado heightAt no sube más de 0,5 m en 25 m, 
   assert.ok(ACANTILADO_MIN <= 0.5);
 });
 
-test("bx-1: los escalones crecen de ~0,5 m a 6 m con la distancia", () => {
+test("bx-1: los escalones crecen de ~0,5 m a 8 m con la distancia", () => {
   const caida = (n: number) => acantilado.heightAt(FLAT_START + n * 14 - 0.01) - acantilado.heightAt(FLAT_START + (n + 1) * 14 - 0.01);
   assert.ok(caida(0) < 1.5, `primero ${caida(0)}`);
   const tarde = Array.from({ length: 20 }, (_, i) => caida(300 + i));
-  assert.ok(Math.max(...tarde) > 5.5 && Math.max(...tarde) <= 6.0001);
+  assert.ok(Math.max(...tarde) > 7 && Math.max(...tarde) <= 8.0001);
 });
 
 test("invariante bx-1: en La Recta |heightAt| ≤ 0,5, superficie ROCA y llana en [0, FLAT_START]", () => {

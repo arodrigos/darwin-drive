@@ -238,7 +238,7 @@ export function tipoTramo(i: number): number {
   for (let k = MOSAICO_TABLA; k <= n; k++) t = siguienteTipo(k, t);
   return t;
 }
-const MOSAICO_TECHO = 8;
+const MOSAICO_TECHO = 6.5;
 function mosaicoHeight(x: number): number {
   const d = x - FLAT_START;
   if (d <= 0) return 0;
