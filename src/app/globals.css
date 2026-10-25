@@ -98,8 +98,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .pastilla[aria-pressed="true"] { border-color: #ffd23f; }
 
 .taller { position: absolute; inset: 0; display: flex; flex-direction: column; background: #16222f; }
-.taller-lienzo { position: relative; flex: 1 1 auto; min-height: 0; }
-.taller-lienzo .lienzo { position: absolute; inset: 0; touch-action: none; }
+.taller-lienzo { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; }
+.taller-lienzo .lienzo { position: absolute; inset: 0; touch-action: none; overflow: hidden; }
 .taller-lienzo .lienzo canvas { display: block; }
 .taller-panel { flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); background: #101a26; border-top: 2px solid rgba(255,255,255,.25); overflow-y: auto; max-height: 55dvh; }
 .taller-panel { gap: 16px; }

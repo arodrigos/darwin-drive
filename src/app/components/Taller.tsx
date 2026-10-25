@@ -297,6 +297,7 @@ export function Taller(props: TallerProps) {
                   className="boton-secundario paso"
                   aria-label="Ángulo menos"
                   data-testid="angulo-menos"
+                  disabled={ajustarAngulo(genome, vertice, -ANGLE_STEP).body[vertice].angle === genome.body[vertice].angle}
                   onClick={() => ajustar(ajustarAngulo(genome, vertice, -ANGLE_STEP), "ajustar-punto")}
                 >
                   −
@@ -306,6 +307,7 @@ export function Taller(props: TallerProps) {
                   className="boton-secundario paso"
                   aria-label="Ángulo más"
                   data-testid="angulo-mas"
+                  disabled={ajustarAngulo(genome, vertice, ANGLE_STEP).body[vertice].angle === genome.body[vertice].angle}
                   onClick={() => ajustar(ajustarAngulo(genome, vertice, ANGLE_STEP), "ajustar-punto")}
                 >
                   +
@@ -318,6 +320,7 @@ export function Taller(props: TallerProps) {
                   className="boton-secundario paso"
                   aria-label="Longitud menos"
                   data-testid="longitud-menos"
+                  disabled={ajustarLongitud(genome, vertice, -LENGTH_STEP).body[vertice].length === genome.body[vertice].length}
                   onClick={() => ajustar(ajustarLongitud(genome, vertice, -LENGTH_STEP), "ajustar-punto")}
                 >
                   −
@@ -327,6 +330,7 @@ export function Taller(props: TallerProps) {
                   className="boton-secundario paso"
                   aria-label="Longitud más"
                   data-testid="longitud-mas"
+                  disabled={ajustarLongitud(genome, vertice, LENGTH_STEP).body[vertice].length === genome.body[vertice].length}
                   onClick={() => ajustar(ajustarLongitud(genome, vertice, LENGTH_STEP), "ajustar-punto")}
                 >
                   +

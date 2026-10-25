@@ -200,13 +200,16 @@ for (const t of TAMANOS) {
 test("ed-4 ?rendimiento=1 enseña seleccionar-vertice, poner-rueda y tamano", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   await abrirTaller(page, "&rendimiento=1");
+  const lista = page.getByTestId("rend-latencias");
+  const visible = (ev: string) => expect(lista.locator(`li[data-evento="${ev}"]`).first()).toBeVisible();
   await tocarVertice(page, 3);
   await expect(page.getByTestId("punto-titulo")).toHaveText("Punto 4");
+  await visible("seleccionar-vertice");
   await page.getByTestId("poner-rueda").click();
   await expect(page.getByTestId("contador-ruedas")).toHaveText("Ruedas: 3/4");
+  await visible("poner-rueda");
   await page.getByTestId("tamano-mas").click();
-  const lista = page.getByTestId("rend-latencias");
-  for (const ev of ["seleccionar-vertice", "poner-rueda", "tamano"]) await expect(lista.locator(`li[data-evento="${ev}"]`).first()).toBeVisible();
+  await visible("tamano");
   await page.screenshot({ path: `${DIR}/${ID}-rendimiento-360x640.png` });
 });
 
