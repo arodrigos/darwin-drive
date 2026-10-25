@@ -1,3 +1,4 @@
+import { esColorCoche, type ColorCoche } from "@/game/colores-coche";
 import type { EvolutionState, GaParams, GenerationStats, Individual, Op } from "@/evolution/ga";
 import { MAX_LINEAGE_NODES, type LineageNode } from "@/evolution/lineage";
 import { CELL_COUNT, cellIndex, type SpeciesArchive, type SpeciesCell } from "@/evolution/species";
@@ -32,6 +33,8 @@ export interface RankingEntry {
   physicsVersion: number;
   lineageId?: string;
   name?: string;
+  /** Metadato fuera del genoma; un valor fuera de la paleta se descarta al leer. */
+  color?: ColorCoche;
 }
 
 /** Con qué versiones se midió una marca del garaje; sin ella, la marca es anterior al versionado y se vuelve a medir. */
@@ -59,6 +62,7 @@ export interface SavedCar {
   origin: Origin;
   savedAt: string;
   lineageId?: string;
+  color?: ColorCoche;
 }
 
 export type Rankings = Record<TrackId, RankingEntry[]>;
@@ -134,6 +138,7 @@ function rankingEntry(raw: unknown, trackId: TrackId): RankingEntry | null {
     const nombre = limpiarNombre(raw.name);
     if (nombre) entry.name = nombre;
   }
+  if (esColorCoche(raw.color)) entry.color = raw.color;
   return entry;
 }
 
@@ -217,6 +222,7 @@ function savedCar(raw: unknown): SavedCar | null {
   const detalles = markDetails(raw.markDetails, marks);
   if (detalles) car.markDetails = detalles;
   if (isStr(raw.lineageId)) car.lineageId = raw.lineageId;
+  if (esColorCoche(raw.color)) car.color = raw.color;
   return car;
 }
 

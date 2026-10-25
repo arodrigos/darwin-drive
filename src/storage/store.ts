@@ -1,3 +1,4 @@
+import { esColorCoche, type ColorCoche } from "@/game/colores-coche";
 import { del, get, set, update, type UseStore } from "idb-keyval";
 import { abrirBase } from "./base";
 import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
@@ -298,6 +299,7 @@ export async function updateRanking(candidate: {
   origin: Origin;
   lineageId?: string;
   name?: string;
+  color?: ColorCoche;
 }): Promise<RankingOutcome> {
   const { result } = candidate;
   const track = getTrack(result.trackId);
@@ -346,6 +348,7 @@ export async function updateRanking(candidate: {
     if (candidate.lineageId !== undefined) entry.lineageId = candidate.lineageId;
     const nombre = candidate.name === undefined ? "" : limpiarNombre(candidate.name);
     if (nombre) entry.name = nombre;
+    if (esColorCoche(candidate.color)) entry.color = candidate.color;
     const position = list.filter((e) => compararMarcas(e, entry) < 0).length + 1;
     rankings[track.id] = [...list.slice(0, position - 1), entry, ...list.slice(position - 1)].slice(0, RANKING_SIZE);
     outcome = { entered: true, position, alreadyAt: null, isRecord: position === 1, cutoff: null };

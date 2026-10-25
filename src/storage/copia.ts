@@ -1,3 +1,4 @@
+import { esColorCoche } from "@/game/colores-coche";
 import type { EvolutionState } from "@/evolution/ga";
 import { PRUEBAS_LLANA_ID, TRACKS } from "@/sim/tracks";
 import { compararMarcas, type Marca } from "@/sim/clasificacion";
@@ -84,8 +85,11 @@ function conNombresNormalizados(key: string, valor: unknown): unknown {
   const limpiar = (item: unknown, propuesto: string): unknown => {
     if (typeof item !== "object" || item === null || Array.isArray(item)) return item;
     const o = item as Record<string, unknown>;
-    if (typeof o.name !== "string") return item;
-    return { ...o, name: normalizarNombre(o.name, propuesto) };
+    // Un color fuera de la paleta no invalida el coche: se quita y se pinta con el predeterminado.
+    const { color, ...resto } = o;
+    const conColor = esColorCoche(color) ? { ...resto, color } : resto;
+    if (typeof o.name !== "string") return conColor;
+    return { ...conColor, name: normalizarNombre(o.name, propuesto) };
   };
   if (key === KEY_GARAGE && Array.isArray(valor)) {
     return valor.map((c) => limpiar(c, nombrePropuesto(String((c as { id?: unknown } | null)?.id ?? ""))));
