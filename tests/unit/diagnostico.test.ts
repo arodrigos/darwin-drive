@@ -159,8 +159,9 @@ test("diag-3: con y sin muestreo el CarResult es el mismo salvo la causa (20 gen
 test("diag-3: la causa de la pista real La Rampa es la misma en dos ejecuciones", () => {
   const a = simulateCar(STOCK_CAR, "rampa");
   const b = simulateCar(STOCK_CAR, "rampa");
-  assert.equal(a.causaParada, "motor");
-  assert.ok(Math.round(a.pendienteParada!) >= 33);
+  // Con la rampa endurecida el coche de serie se atasca antes de llegar a la cuesta que agota el motor.
+  assert.equal(a.causaParada, "obstaculo");
+  assert.ok(a.pendienteParada !== null && Number.isFinite(a.pendienteParada));
   assert.deepEqual(a, b);
 });
 

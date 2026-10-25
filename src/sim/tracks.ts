@@ -278,7 +278,7 @@ const rocaSiempre = (): Superficie => ROCA;
 
 export const ACANTILADO_PASO = 14;
 export const ACANTILADO_MIN = 0.5;
-export const ACANTILADO_MAX = 8;
+export const ACANTILADO_MAX = 6;
 const ACANTILADO_ESCALONES = 1000;
 /** Cara de 65°: por debajo de los 70° que admite el terreno, y un escalón de 6 m ocupa ~2,8 m en horizontal. */
 const ACANTILADO_TAN_CARA = Math.tan((65 * Math.PI) / 180);
