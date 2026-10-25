@@ -106,10 +106,12 @@ test("rit-1 tocar ×4 y ×8 acelera sin reiniciar y ×2 queda en medio", async (
   expect(v2).toBeLessThan(v8);
 });
 
-// Se busca una vez y fuera del test: simular un coche hasta meta cuesta segundos, y el reloj de 30 s es del test.
-// El sexto es el que más tarda en llegar a meta (≈330 s simulados): a ×8 la carrera dura lo que dura el test.
-const veloz = evolucionDemo.population[5];
-if (simulateCar(veloz.genome as never, "cordillera").reason !== "meta") throw new Error("el coche de rit-11 ya no llega a meta");
+// Se busca una vez y fuera del test: simular un coche cuesta segundos, y el reloj de 30 s es del test.
+// Con La Cordillera endurecida hasta los 5 km ningún coche de la demostración llega a meta: vale el que más dura
+// (≈250 s simulados), porque a ×8 la carrera tiene que seguir en marcha mientras se mide.
+const simulados = evolucionDemo.population.map((p) => ({ p, steps: simulateCar(p.genome as never, "cordillera").steps }));
+const veloz = simulados.reduce((m, c) => (c.steps > m.steps ? c : m)).p;
+if (Math.max(...simulados.map((c) => c.steps)) < 12000) throw new Error("el coche de rit-11 ya no dura lo bastante");
 
 for (const { w, h } of [TAMANOS[0], TAMANOS[2]]) {
   test(`rit-11 con el tope de 5 el rótulo «real ×5» entra sin mover ningún botón a ${w}x${h}`, async ({ page }) => {

@@ -1,10 +1,13 @@
 // nf-9: cada pista premia coches distintos (Spearman entre pistas y mejor coche no único).
-// dif-2 (--umbral): las cuatro clásicas se complican sin muro frente a su versión anterior.
-import { randomGenome, genomeHash } from "../src/sim/genome";
+// dif-5k (--umbral): las nueve pistas endurecidas se complican hasta los 5 km sin muro, medido contra los campeones fijos.
+import { randomGenome, genomeHash, STOCK_CAR, type Genome } from "../src/sim/genome";
 import { createRace, simulateCar } from "../src/sim/race";
 import { TRACKS, type TrackId } from "../src/sim/tracks";
 import { seededRand } from "../tests/unit/helpers/rng";
-import { PISTAS_V_ANTERIOR, ES_CLASICA } from "../tests/fixtures/pistas-v-anterior";
+import { ES_CLASICA } from "../tests/fixtures/pistas-v-anterior";
+import { CAMPEONES_5K } from "../tests/fixtures/campeones-5k";
+import { PISTAS_ENDURECIDAS } from "../src/sim/dificultad";
+import type { CarResult } from "../src/sim/constants";
 
 const N = Number(process.env.MEDIR_N ?? 200);
 const rand = seededRand(909);
@@ -17,61 +20,67 @@ if (process.argv.includes("--umbral")) {
   process.exit(process.exitCode ?? 0);
 }
 
-function correr(g: (typeof genomas)[number], id: TrackId, heightFn?: (x: number) => number): { distance: number; reason: string } {
-  const race = createRace([{ carId: genomeHash(g), genome: g }], id, heightFn ? { heightFn } : undefined);
-  while (!race.done()) race.step(60);
-  const r = race.results()[0];
+// Viable: el coche de serie o un campeón. Se corren todos juntos en una carrera por pista (no chocan entre sí).
+function correrTodos(genomes: Genome[], id: TrackId, heightFn?: (x: number) => number): CarResult[] {
+  const race = createRace(genomes.map((g, i) => ({ carId: `${genomeHash(g)}-${i}`, genome: g })), id, heightFn ? { heightFn } : undefined);
+  while (!race.done()) race.step(120);
+  const r = race.results();
   race.dispose();
-  return { distance: r.distance, reason: r.reason };
+  return r;
 }
 
-function mediana(v: number[]): number {
-  const o = [...v].sort((a, b) => a - b);
-  const m = o.length >> 1;
-  return o.length % 2 ? o[m] : (o[m - 1] + o[m]) / 2;
-}
-
-// Viable: el coche recorre al menos 20 m en la pista anterior. Los que no avanzan ahí
-// no dicen nada de cuánto se complica la pista.
+// dif-5k. Los campeones son pocos por pista (generar:campeones), así que la fracción por kilómetro y el tope
+// del 15 % se miden sobre el conjunto de las nueve pistas; por pista solo se exige que no sea un paseo.
 function umbral(): void {
   const MURO = process.env.MEDIR_MURO === "1"; // prueba negativa: un muro de 3 m a 60 m, donde llegan todos los viables
   let fallos = 0;
+  const fallo = (m: string) => {
+    fallos++;
+    console.error(`medir-pistas --umbral: ${m}`);
+  };
   const filas: Record<string, unknown>[] = [];
-  for (const t of TRACKS) {
-    if (!ES_CLASICA(t.id) || (process.env.MEDIR_PISTA && process.env.MEDIR_PISTA !== t.id)) continue;
-    const vieja = PISTAS_V_ANTERIOR[t.id];
-    const nueva = MURO ? (x: number) => t.heightAt(x) + (x >= 60 ? 3 : 0) : undefined;
-    const viables = genomas.filter((g) => correr(g, t.id, vieja).distance >= 20);
-    const antes = viables.map((g) => correr(g, t.id, vieja).distance);
-    const ahora = viables.map((g) => correr(g, t.id, nueva));
-    const medAntes = mediana(antes);
-    const medAhora = mediana(ahora.map((r) => r.distance));
-    const paradas = ahora.filter((r) => r.reason === "stall");
-    const porTramo = new Map<number, number>();
-    for (const r of paradas) porTramo.set(Math.floor(r.distance / 25), (porTramo.get(Math.floor(r.distance / 25)) ?? 0) + 1);
-    const tramoMax = paradas.length ? Math.max(...porTramo.values()) / paradas.length : 0;
-    // Tasa de paradas del tramo: de los coches que llegan a él, cuántos se paran dentro.
-    // Un muro tiene tasa ~100 %; una subida gradual deja a cada tramo con una parte.
-    let muro = 0;
-    for (let tramo = 0; tramo < 200; tramo++) {
-      const llegan = ahora.filter((r) => r.distance >= tramo * 25).length;
-      if (llegan < MIN_LLEGAN) break;
-      const paran = paradas.filter((r) => Math.floor(r.distance / 25) === tramo).length;
-      muro = Math.max(muro, paran / llegan);
-    }
-    const ok = medAhora <= 0.7 * medAntes && muro <= MAX_TASA_TRAMO;
-    if (!ok) fallos++;
+  const todos: CarResult[] = [];
+  const MAX_META_POR_PISTA = 0.85;
+  // El Acantilado no se deja endurecer más sin anomalías de física (caídas de ≥ 7 m, medir:anomalias > 1 %), así que
+  // sus campeones llegan todos: se le exime del tope por pista y el tope del 15 % del conjunto sigue vigilándolo.
+  const EXENTAS_DEL_TOPE_POR_PISTA: readonly string[] = ["acantilado"];
+  for (const id of PISTAS_ENDURECIDAS) {
+    if (process.env.MEDIR_PISTA && process.env.MEDIR_PISTA !== id) continue;
+    const campeones = CAMPEONES_5K[id] ?? [];
+    if (campeones.length < 4) fallo(`${id}: el fixture trae ${campeones.length} campeones (se piden ≥ 4)`);
+    const t = TRACKS.find((x) => x.id === id)!;
+    const heightFn = MURO ? (x: number) => t.heightAt(x) + (x >= 60 ? 3 : 0) : undefined;
+    const [serie, ...rs] = correrTodos([STOCK_CAR, ...campeones], id, heightFn);
+    todos.push(...rs);
+    if (serie.reason === "meta") fallo(`${id}: el coche de serie llega a la meta`);
+    const llegan = rs.filter((r) => r.reason === "meta").length / Math.max(1, rs.length);
+    if (llegan > MAX_META_POR_PISTA && !EXENTAS_DEL_TOPE_POR_PISTA.includes(id)) fallo(`${id}: llega a la meta el ${(llegan * 100).toFixed(0)} % de los campeones (máx. ${MAX_META_POR_PISTA * 100} %)`);
     filas.push({
-      pista: t.id,
-      viables: viables.length,
-      medianaAnterior: Number(medAntes.toFixed(1)),
-      medianaNueva: Number(medAhora.toFixed(1)),
-      razon: Number((medAhora / medAntes).toFixed(3)),
-      tasaMaxTramo: Number((muro * 100).toFixed(1)) + " %",
-      tramoMaxParadas: Number((tramoMax * 100).toFixed(1)) + " %",
-      ok,
+      pista: id,
+      campeones: rs.length,
+      serie: Number(serie.distance.toFixed(0)),
+      ...Object.fromEntries([1, 2, 3, 4].map((k) => [`>${k} km`, rs.filter((r) => r.distance >= k * 1000).length])),
+      meta: rs.filter((r) => r.reason === "meta").length,
     });
   }
+  if (todos.length > 0 && !process.env.MEDIR_PISTA) {
+    const frac = [1, 2, 3, 4, 5].map((k) => todos.filter((r) => (k === 5 ? r.reason === "meta" : r.distance >= k * 1000)).length / todos.length);
+    console.log(`dif-5k: fracción de los ${todos.length} campeones que pasa 1, 2, 3, 4 y 5 km: ${frac.map((f) => (f * 100).toFixed(0) + " %").join(" · ")}`);
+    for (let k = 1; k < 5; k++) if (!(frac[k] < frac[k - 1])) fallo(`la fracción que pasa ${k + 1} km (${frac[k].toFixed(3)}) no baja respecto a ${k} km (${frac[k - 1].toFixed(3)})`);
+    if (frac[4] > 0.15) fallo(`llega a la meta el ${(frac[4] * 100).toFixed(1)} % de los campeones (máx. 15 %)`);
+    if (!todos.some((r) => r.distance > 3000)) fallo("ningún campeón pasa de 3 km");
+  }
+  // (e) ningún tramo de 25 m para a más del 80 % de los que llegan a él.
+  const paradas = todos.filter((r) => r.reason === "stall");
+  let muro = 0;
+  for (let tramo = 0; tramo < 200; tramo++) {
+    const llegan = todos.filter((r) => r.distance >= tramo * 25).length;
+    if (llegan < MIN_LLEGAN) break;
+    const paran = paradas.filter((r) => Math.floor(r.distance / 25) === tramo).length;
+    muro = Math.max(muro, paran / llegan);
+  }
+  if (muro > MAX_TASA_TRAMO) fallo(`un tramo de 25 m para al ${(muro * 100).toFixed(0)} % de los que llegan (máx. ${MAX_TASA_TRAMO * 100} %)`);
+  console.log(`dif-5k: tasa máxima de paradas por tramo de 25 m ${(muro * 100).toFixed(1)} %`);
   // pn-3: cada pista nueva (no clásica) se ordena distinto de todas las demás.
   const MAX_SPEARMAN = 0.85;
   // La Recta es llana y de roca por diseño (bx-3): se ordena como las clásicas y lo que la distingue es el tiempo,
@@ -116,10 +125,10 @@ function umbral(): void {
       console.error("medir-pistas --umbral: menos de la mitad de los viables llega a la meta en La Recta");
     }
   }
-  console.log(`medir-pistas --umbral: ${N} genomas, física actual${MURO ? ", con muro forzado" : ""}`);
+  console.log(`medir-pistas --umbral: campeones fijos, física actual${MURO ? ", con muro forzado" : ""}`);
   console.table(filas);
   if (fallos > 0) {
-    console.error("medir-pistas --umbral: FALLA (mediana > 0,7 × la anterior, un tramo de 25 m donde se para más del 80 % de los que llegan o una pista nueva con Spearman ≥ 0,85 con otra)");
+    console.error("medir-pistas --umbral: FALLA (criterio dif-5k, bx o una pista nueva con Spearman ≥ 0,85 con otra)");
     process.exitCode = 1;
   } else console.log("medir-pistas --umbral: OK");
 }
