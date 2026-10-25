@@ -266,11 +266,25 @@ export function Taller(props: TallerProps) {
             {AYUDA_TALLER}
           </p>
         )}
-        {fuerzas && (
-          <p className="leyenda-fuerzas" data-testid="leyenda-fuerzas" role="note">
-            ◐ centro de masas · rosa: peso · verde: par de cada rueda · más largo = más fuerza
-          </p>
-        )}
+        <div className="fuerzas-lienzo">
+          <button
+            type="button"
+            className="selector ver-fuerzas"
+            aria-pressed={fuerzas}
+            data-testid="ver-fuerzas"
+            onClick={() => {
+              markInput("ver-fuerzas");
+              setFuerzas((v) => !v);
+            }}
+          >
+            {fuerzas ? "✓ " : ""}Ver fuerzas
+          </button>
+          {fuerzas && (
+            <p className="leyenda-fuerzas" data-testid="leyenda-fuerzas" role="note">
+              ◐ centro de masas · peso · par · más largo = más fuerza
+            </p>
+          )}
+        </div>
         {wheels === 0 && (
           <p className="aviso-ruedas" data-testid="aviso-sin-ruedas" role="status">
             {SIN_RUEDAS}
@@ -413,18 +427,6 @@ export function Taller(props: TallerProps) {
               </label>
             </>
           )}
-          <button
-            type="button"
-            className="selector ver-fuerzas"
-            aria-pressed={fuerzas}
-            data-testid="ver-fuerzas"
-            onClick={() => {
-              markInput("ver-fuerzas");
-              setFuerzas((v) => !v);
-            }}
-          >
-            {fuerzas ? "✓ " : ""}Ver fuerzas
-          </button>
           <div className="paso-control" role="group" aria-label="Tamaño del coche">
             <span data-testid="lectura-tamano">
               Tamaño: Largo {formatDecimal(dim.largo, 1)} m · Alto {formatDecimal(dim.alto, 1)} m
