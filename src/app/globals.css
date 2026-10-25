@@ -9,15 +9,35 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .portada > *:not(.paisaje) { position: relative; z-index: 1; }
 .titulo { margin: 8px 0 0; font-size: 2.2rem; letter-spacing: 0.02em; text-shadow: 0 2px 0 rgba(0,0,0,.35); }
 .subtitulo { margin: 0; font-size: 0.95rem; opacity: .95; text-align: center; text-shadow: 0 1px 0 rgba(0,0,0,.35); }
-.pistas { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; width: min(100%, 760px); }
+/* Sistema mínimo de controles (contrato «Estilos de control»). Cada zona va sobre un panel oscuro opaco: el contraste de texto y borde se mide contra --panel, no contra el degradado del cielo. */
+:root { --panel: #16222f; --primario: #1b5e20; --texto: #ffffff; --borde-control: #ffffff; }
+.boton-primario { min-height: 48px; padding: 10px 16px; border-radius: 12px; border: 2px solid var(--texto); background: var(--primario); color: var(--texto); font-weight: 800; font-size: 1.05rem; }
+.boton-secundario { min-height: 44px; padding: 8px 14px; border-radius: 12px; border: 2px solid var(--borde-control); background: transparent; color: var(--texto); font-weight: 600; }
+.enlace-terciario { min-height: 44px; width: 100%; padding: 8px 4px; border: 0; background: none; color: var(--texto); text-align: left; text-decoration: underline; text-underline-offset: 3px; display: flex; align-items: center; justify-content: space-between; }
+.enlace-terciario::after { content: "›"; font-size: 1.4rem; text-decoration: none; opacity: .8; }
+.zona { width: min(100%, 760px); padding: 12px; border-radius: 14px; background: var(--panel); }
+.zona h2 { margin: 0 0 8px; font-size: 1rem; letter-spacing: .04em; text-transform: uppercase; }
+.zona-acciones { display: flex; flex-direction: column; gap: 8px; }
+.lista-enlaces { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; column-gap: 24px; }
+.lista-enlaces li + li { border-top: 1px solid rgba(255,255,255,.18); }
+/* Entre zonas, al menos 24 px; dentro de una zona, 8 px. */
+.portada { gap: 24px; }
+.portada .titulo, .portada .subtitulo { margin-bottom: -12px; }
+/* A móvil las diez tarjetas son una fila desplazable; en tabletas, una rejilla. */
+.pistas { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; }
+.zona .tarjeta-pista { flex: 0 0 150px; scroll-snap-align: start; border: 0; border-radius: 12px; background: #243447; box-shadow: 0 2px 0 rgba(0,0,0,.4); }
+@media (min-width: 600px) {
+  .pistas { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); overflow: visible; }
+  .zona .tarjeta-pista { flex: none; }
+  .zona-acciones { flex-direction: row; flex-wrap: wrap; }
+  .zona-acciones .boton-primario { flex: 1 1 100%; }
+  .lista-enlaces { grid-template-columns: 1fr 1fr; }
+  .lista-enlaces li:nth-child(2) { border-top: 0; }
+}
 .tarjeta-pista { min-height: 64px; display: flex; flex-direction: column; gap: 2px; padding: 8px; text-align: left; border: 2px solid rgba(255,255,255,.55); border-radius: 10px; background: rgba(20,32,46,.72); }
 .tarjeta-pista .nombre { font-weight: 700; }
 .tarjeta-pista .marca { font-size: .85rem; opacity: .9; }
 .tarjeta-pista svg { width: 100%; height: 34px; }
-.accesos { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; width: min(100%, 760px); }
-.acceso { min-height: 48px; padding: 8px 10px; border-radius: 10px; border: 2px solid #fff; background: #2f7d32; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.acceso:disabled { background: rgba(20,32,46,.6); border-color: rgba(255,255,255,.4); cursor: default; }
-.acceso small { font-weight: 400; font-size: .72rem; opacity: .85; }
 
 .pastilla { min-height: 44px; padding: 8px 14px; border-radius: 22px; border: 2px solid #fff; background: rgba(20,32,46,.8); font-weight: 700; }
 .hoja-fondo { position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,.5); display: flex; align-items: flex-end; justify-content: center; }
