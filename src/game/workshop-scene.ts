@@ -1,33 +1,37 @@
 import Phaser from "phaser";
 import { runtime } from "@/debug/ganchos";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
-import { VERTEX_COUNT, type Genome } from "@/sim/genome";
+import { GENE_RANGES, VERTEX_COUNT, type Genome } from "@/sim/genome";
 import { gestionarLienzo, type OpcionesGestor } from "./lienzo";
 import { opacidadBase } from "./opacidad";
 import { colorNumerico, COLOR_PREDETERMINADO, type ColorCoche } from "./colores-coche";
-import { moveVertex, toggleWheel, wheelAt } from "./editor";
+import { moveVertex } from "./editor";
 
 const HANDLE_DIAMETER = 44;
-// Por debajo de este recorrido un gesto es un toque (poner o quitar rueda), no un arrastre.
+// Por debajo de este recorrido un gesto es un toque (elegir el punto), no un arrastre.
 const TAP_SLOP_PX = 8;
 const SKY = 0x16222f;
 
 export interface WorkshopHandle {
-  /** El genoma y la rueda seleccionada que debe pintar. */
-  setState(genome: Genome, selectedSlot: number | null, color?: ColorCoche): void;
+  /** El genoma, el punto elegido y el color que debe pintar. */
+  setState(genome: Genome, selectedVertex: number | null, color?: ColorCoche): void;
+  /** Marca una acción de los controles del panel para medir su latencia hasta el siguiente frame pintado. */
+  medir(evento: string): void;
   destroy(): void;
 }
 
 export interface WorkshopCallbacks {
   /** Siempre un genoma normalizado: el editor no emite otra cosa. */
-  onGenome(genome: Genome, selectedSlot: number | null): void;
+  onGenome(genome: Genome): void;
+  /** Tocar o empezar a arrastrar un punto lo elige; tocar el vacío lo suelta. */
+  onSelect(vertex: number | null): void;
   /** Primer gesto del jugador (cierra la ayuda inicial). */
   onGesture(): void;
 }
 
 class WorkshopScene extends Phaser.Scene {
   genome: Genome | null = null;
-  selected: number | null = null;
+  selected: number | null = null; // vértice elegido
   color: ColorCoche = COLOR_PREDETERMINADO;
   private g!: Phaser.GameObjects.Graphics;
   private dirty = true;
@@ -79,6 +83,26 @@ class WorkshopScene extends Phaser.Scene {
     return best;
   }
 
+  /** Cuña translúcida con el sector donde puede moverse el punto: de la longitud mínima a la máxima. */
+  private dibujarCuna(i: number): void {
+    const [lo, hi] = GENE_RANGES.angle(i);
+    const [minL, maxL] = GENE_RANGES.length;
+    const PASOS = 12;
+    const pts: Phaser.Math.Vector2[] = [];
+    for (let k = 0; k <= PASOS; k++) {
+      const a = lo + ((hi - lo) * k) / PASOS;
+      const p = this.toScreen(Math.cos(a) * maxL, Math.sin(a) * maxL);
+      pts.push(new Phaser.Math.Vector2(p.px, p.py));
+    }
+    for (let k = PASOS; k >= 0; k--) {
+      const a = lo + ((hi - lo) * k) / PASOS;
+      const p = this.toScreen(Math.cos(a) * minL, Math.sin(a) * minL);
+      pts.push(new Phaser.Math.Vector2(p.px, p.py));
+    }
+    this.g.fillStyle(0xffd23f, 0.2).fillPoints(pts, true);
+    this.g.lineStyle(1.5, 0xffd23f, 0.7).strokePoints(pts, true, true);
+  }
+
   update(): void {
     if (!this.dirty || !this.genome) return;
     this.dirty = false;
@@ -104,6 +128,7 @@ class WorkshopScene extends Phaser.Scene {
     const base = opacidadBase(genome.bodyDensity);
     runtime.opacidades = Array.from({ length: VERTEX_COUNT }, () => base);
     const colorCuerpo = colorNumerico(this.color);
+    if (this.selected !== null) this.dibujarCuna(this.selected);
     g.fillStyle(colorCuerpo, base).fillPoints(pts, true);
     // Contorno oscuro de 3 px y trazo interior de 2 px del color, opacos: el color se lee aunque el relleno sea translúcido.
     g.lineStyle(3, 0x0c0c0c, 1).strokePoints(pts, true, true);
@@ -118,18 +143,20 @@ class WorkshopScene extends Phaser.Scene {
       true,
       true,
     );
-    genome.wheels.forEach((w, slot) => {
+    genome.wheels.forEach((w) => {
       if (w.vertex < 0) return;
       const p = pts[w.vertex];
       const r = w.radius * s;
       g.fillStyle(0x222222, 1).fillCircle(p.x, p.y, r);
       g.fillStyle(colorCuerpo, 1).fillCircle(p.x, p.y, Math.max(3, r * 0.4));
-      if (slot === this.selected) g.lineStyle(4, 0xffd23f, 1).strokeCircle(p.x, p.y, r + 3);
+      if (w.vertex === this.selected) g.lineStyle(4, 0xffd23f, 1).strokeCircle(p.x, p.y, r + 3);
     });
-    for (const p of pts) {
+    pts.forEach((p, i) => {
       g.fillStyle(0xffffff, 1).fillCircle(p.x, p.y, 9);
       g.lineStyle(2, 0x1b1b1b, 1).strokeCircle(p.x, p.y, 9);
-    }
+      // Anillo amarillo grueso: el punto elegido se distingue sin depender del color del coche.
+      if (i === this.selected) g.lineStyle(4, 0xffd23f, 1).strokeCircle(p.x, p.y, 15);
+    });
     if (this.pendingMeasure) {
       measureOnNextFrame(this.pendingMeasure);
       this.pendingMeasure = null;
@@ -174,22 +201,33 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
     const r = parent.getBoundingClientRect();
     return { px: e.clientX - r.left, py: e.clientY - r.top };
   };
-  const apply = (genome: Genome, slot: number | null, event: string | null) => {
+  const apply = (genome: Genome, event: string) => {
     scene.genome = genome;
-    scene.selected = slot;
     scene.invalidate();
-    if (event) scene.pendingMeasure = event;
-    cb.onGenome(genome, slot);
+    scene.pendingMeasure = event;
+    cb.onGenome(genome);
   };
 
   const down = (e: PointerEvent) => {
     if (!scene.genome) return;
     const { px, py } = local(e);
     const index = scene.hit(px, py);
-    if (index < 0) return;
+    if (index < 0) {
+      if (scene.selected !== null) {
+        scene.selected = null;
+        scene.invalidate();
+        cb.onSelect(null);
+      }
+      return;
+    }
     drag = { index, startX: px, startY: py, moved: false };
     parent.setPointerCapture(e.pointerId);
-    markInput("arrastrar-vertice");
+    // Elegir el punto es inmediato (también al empezar a arrastrar): la cuña se ve mientras dura el gesto.
+    markInput("seleccionar-vertice");
+    scene.selected = index;
+    scene.pendingMeasure = "seleccionar-vertice";
+    scene.invalidate();
+    cb.onSelect(index);
     cb.onGesture();
     e.preventDefault();
   };
@@ -200,20 +238,12 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
     drag.moved = true;
     markInput("arrastrar-vertice");
     const m = scene.toMeters(px, py);
-    apply(moveVertex(scene.genome, drag.index, m.x, m.y), scene.selected, "arrastrar-vertice");
+    apply(moveVertex(scene.genome, drag.index, m.x, m.y), "arrastrar-vertice");
   };
   const up = (e: PointerEvent) => {
     if (!drag) return;
-    const tocado = !drag.moved;
-    const index = drag.index;
     drag = null;
     if (parent.hasPointerCapture(e.pointerId)) parent.releasePointerCapture(e.pointerId);
-    if (tocado && scene.genome) {
-      markInput("poner-rueda");
-      const r = toggleWheel(scene.genome, index);
-      const slot = r.slot ?? (wheelAt(r.genome, index) >= 0 ? wheelAt(r.genome, index) : null);
-      apply(r.genome, slot, "poner-rueda");
-    }
   };
   const cancel = () => {
     drag = null;
@@ -224,12 +254,16 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
   parent.addEventListener("pointercancel", cancel);
 
   return {
-    setState(genome, selectedSlot, color = COLOR_PREDETERMINADO) {
+    medir(evento) {
+      scene.pendingMeasure = evento;
+      scene.invalidate();
+    },
+    setState(genome, selectedVertex, color = COLOR_PREDETERMINADO) {
       if (scene.genome && scene.genome.bodyDensity !== genome.bodyDensity) scene.pendingMeasure = "peso";
       if (scene.color !== color) scene.pendingMeasure = "color-coche";
       scene.color = color;
       scene.genome = genome;
-      scene.selected = selectedSlot;
+      scene.selected = selectedVertex;
       scene.invalidate();
     },
     destroy() {

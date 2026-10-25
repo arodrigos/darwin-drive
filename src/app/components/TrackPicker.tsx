@@ -32,8 +32,8 @@ export function TrackMiniature({ track }: { track: Track }) {
   );
 }
 
-export function TrackPicker(props: { value: TrackId; onChange: (id: TrackId) => void; rankings: RankingsView }) {
-  const { value, onChange, rankings } = props;
+export function TrackPicker(props: { value: TrackId; onChange: (id: TrackId) => void; rankings: RankingsView; comoSelector?: boolean }) {
+  const { value, onChange, rankings, comoSelector = false } = props;
   const [open, setOpen] = useState(false);
   const activa = useRef<HTMLButtonElement | null>(null);
   const current = TRACKS.find((t) => t.id === value) ?? TRACKS[0];
@@ -51,7 +51,7 @@ export function TrackPicker(props: { value: TrackId; onChange: (id: TrackId) => 
     <>
       <button
         type="button"
-        className="pastilla"
+        className={comoSelector ? "selector selector-pista" : "pastilla"}
         data-testid="selector-pista"
         onClick={() => {
           markInput("abrir-pista");

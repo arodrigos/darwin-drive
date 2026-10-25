@@ -70,3 +70,9 @@ test("opa-4: la guía y el «?» del Taller explican qué significa más o menos
   assert.ok(JSON.stringify(seccion).includes("más peso = más opaco"));
   assert.ok(JSON.stringify(AYUDA.taller).includes("más peso = más opaco"));
 });
+
+test("ed-5: el «?» y la guía del Taller explican el toque que elige el punto", () => {
+  const frase = "Toca un punto para elegirlo; arrástralo para darle forma. Con el punto elegido puedes ponerle una rueda.";
+  assert.ok(AYUDA.taller.controles.some((c) => c.texto === frase));
+  assert.ok(!JSON.stringify(AYUDA.taller).includes("ponerle o quitarle"));
+});
