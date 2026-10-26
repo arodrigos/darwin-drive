@@ -366,3 +366,25 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .pistas-batalla .tarjeta-pista.selector[aria-pressed="true"] { border-width: 5px; }
 .cabecera-batalla { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-flex; align-items: center; }
 .taller-panel .grupo-batalla { display: flex; flex-direction: column; gap: 8px; }
+
+/* Carrera de la batalla: marcador de chips arriba, flechas de coches fuera de pantalla en el borde izquierdo. */
+.marcador-batalla { position: absolute; left: 8px; right: 64px; top: 56px; z-index: 10; margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.chip-marcador { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 10px; background: rgba(0,0,0,.65); border: 2px solid #fff; font-weight: 700; font-variant-numeric: tabular-nums; font-size: .9rem; }
+.chip-marcador .chip-distancia { font-weight: 800; }
+.flechas-borde { position: absolute; left: 0; top: 150px; z-index: 10; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+.flecha-borde { padding: 4px 10px 4px 6px; border-radius: 0 10px 10px 0; background: rgba(0,0,0,.7); border: 3px solid #fff; border-left-width: 8px; font-weight: 800; font-size: .9rem; font-variant-numeric: tabular-nums; }
+/* Podio: una fila por coche; en móvil se parte en dos líneas para que ninguna cifra se corte. */
+.podio { width: min(100%, 760px); margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.podio-fila { display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 4px 10px; padding: 8px 10px; border-radius: 12px; border: 2px solid var(--borde-control); background: #0f1a26; font-variant-numeric: tabular-nums; }
+.podio-posicion { font-size: 1.4rem; font-weight: 800; }
+.podio-nombre { font-weight: 700; overflow-wrap: anywhere; }
+.podio-nombre small { font-weight: 400; opacity: .85; }
+.podio-distancia { font-weight: 800; }
+.podio-tiempo, .podio-criterio { grid-column: 3 / -1; font-size: .9rem; }
+.podio-fila .enlace-terciario { grid-column: 1 / -1; justify-content: flex-start; }
+.aviso-guardado { margin: 0; width: min(100%, 760px); padding: 8px 12px; border-radius: 10px; border: 2px solid #ffd23f; }
+@media (min-width: 700px) {
+  .podio-fila { grid-template-columns: auto auto 1fr auto auto auto auto; }
+  .podio-tiempo, .podio-criterio { grid-column: auto; }
+  .podio-fila .enlace-terciario { grid-column: auto; }
+}
