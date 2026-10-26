@@ -221,6 +221,8 @@ test("ln-4 un linaje de 300 nodos se dispone rápido, se desplaza y mantiene eti
 });
 
 test("ln-5 un coche evolucionado, retocado a mano y evolucionado de nuevo cuelga del original como «✋ retoque»", async ({ page }) => {
+  // Encadena taller, arrastre y una evolución: con el runner cargado (el e2e tarda el doble) 30 s no alcanzan.
+  test.setTimeout(120_000);
   await page.setViewportSize({ width: 360, height: 640 });
   await abrir(page, { linaje: "demo-5-generaciones" });
   await abrirLinaje(page);
