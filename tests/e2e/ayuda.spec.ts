@@ -219,3 +219,23 @@ test("gui-7: sin dependencias nuevas ni peticiones a otros orígenes al abrir ay
   await expect(page.getByTestId("guia")).toBeVisible();
   expect(externas).toEqual([]);
 });
+
+test("gu-1: el «?» de la batalla abre la guía en «Batalla» y la portada lista «El Taller» y «Batalla»", async ({ page }) => {
+  const t = await tamanoBase(page);
+  await abrir(page);
+  await page.getByTestId("acceso-batalla").click();
+  await page.getByTestId("ayuda-boton").click();
+  await page.getByTestId("ayuda-guia").click();
+  await expect(page.getByTestId("guia")).toBeVisible();
+  await expect.poll(async () => (await estado(page)).guia.seccion).toBe("batalla");
+  const seccion = page.getByTestId("guia-seccion-batalla");
+  await expect(seccion).toContainText("Pasa el dispositivo");
+  await expect(seccion).toContainText("gana el que llega más lejos");
+  await page.screenshot({ path: `${DIR}/${ID}-guia-batalla-${t.width}x${t.height}.png` });
+
+  await abrir(page);
+  await page.getByTestId("acceso-guia").click();
+  await expect(page.getByTestId("guia-ir-taller")).toHaveText("El Taller");
+  await expect(page.getByTestId("guia-ir-batalla")).toHaveText("Batalla");
+  await page.screenshot({ path: `${DIR}/${ID}-guia-portada-${t.width}x${t.height}.png` });
+});

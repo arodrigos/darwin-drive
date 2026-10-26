@@ -7,6 +7,9 @@ import { colocarMarcador, cruzan, type Caja } from "../../src/game/colocar-marca
 const ICONO = { w: 30, h: 28 };
 
 // Entradas con hueco garantizado: el coche ocupa como mucho el 40 % del viewport y el rótulo es una placa pequeña.
+// El rótulo va siempre por encima del coche, así que debajo hay sitio mientras el coche no pegue con el borde
+// inferior: con fy ≤ 0,85 quedan ≥ 60 px libres (el icono pide 32). Pegado al borde puede no haber hueco
+// válido a menos de 1,5 alturas (contraejemplo de la semilla -1253896976) y ya no es el caso que se prueba.
 const entrada = fc
   .record({
     vw: fc.integer({ min: 320, max: 1400 }),
@@ -14,7 +17,7 @@ const entrada = fc
     cw: fc.integer({ min: 24, max: 120 }),
     ch: fc.integer({ min: 20, max: 80 }),
     fx: fc.double({ min: 0, max: 1, noNaN: true }),
-    fy: fc.double({ min: 0, max: 1, noNaN: true }),
+    fy: fc.double({ min: 0, max: 0.85, noNaN: true }),
     ew: fc.integer({ min: 60, max: 130 }),
     eh: fc.integer({ min: 16, max: 30 }),
     ex: fc.integer({ min: -60, max: 60 }),

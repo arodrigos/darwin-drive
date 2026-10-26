@@ -52,9 +52,23 @@ export const SECCIONES_GUIA: readonly SeccionGuia[] = [
     id: "taller",
     titulo: "El Taller",
     parrafos: [
-      "En el Taller diseñas el coche con el dedo: toca un punto blanco para elegirlo y arrástralo para dar forma a la carrocería. Con el punto elegido ajustas su ángulo y su longitud con − y +, y le pones o quitas una rueda. «Tamaño −» y «Tamaño +» encogen o agrandan el coche entero un 10 % sin cambiarle la forma.",
+      "En el Taller diseñas el coche con el dedo: toca un punto blanco para elegirlo y arrástralo para dar forma a la carrocería. Con el punto elegido ajustas su ángulo y su longitud con − y +, y le pones o quitas una rueda con «Poner rueda aquí» o «Quitar rueda». «Tamaño −» y «Tamaño +» encogen o agrandan el coche entero un 10 % sin cambiarle la forma.",
       "Cada rueda tiene su radio, su par motor y su suspensión; la carrocería tiene su peso. Un coche pesado agarra más pero necesita más fuerza para moverse.",
+      "La suspensión es la línea con muelle que sale de cada rueda: por ella sube y baja. «Inclinación de la suspensión» (de −90° a +90°) la gira: 0° es vertical y amortigua baches; inclinada hacia atrás cede al chocar de frente y hacia delante empuja la rueda contra el obstáculo.",
+      "«Ver fuerzas» dibuja el centro de masas (el punto donde se equilibra el coche), la flecha «peso» y, en cada rueda, un arco de par. Si el centro de masas queda muy atrás o muy alto, el coche vuelca antes.",
+      "Cada coche nace con un nombre de dos palabras y un color de la paleta. Toca el nombre para cambiarlo y la muestra de color para elegir otro; «Coche nuevo» empieza de cero con otra identidad.",
       "«Probar» lleva el coche a la pista elegida abajo. Si te gusta, «Guardar» lo deja en el Garaje.",
+    ],
+  },
+  {
+    id: "batalla",
+    titulo: "Batalla",
+    parrafos: [
+      "La batalla es para 2 a 4 jugadores en el mismo dispositivo. En «Configurar» cada uno pone su nombre y elige un color distinto.",
+      "Pasa el dispositivo: cada jugador diseña su coche en el Taller por su turno, empezando del coche de serie. Entre turnos, la pantalla de relevo no enseña ningún coche, así que nadie ve el diseño de los demás hasta la carrera. «Terminar mi coche» cierra tu turno y pide confirmación.",
+      "Cuando todos han terminado, se elige la pista y todos los coches corren a la vez; gana el que llega más lejos. Si dos llegan igual de lejos, desempata el que llegó entero, después el más rápido y, si aún coinciden, es empate.",
+      "Todos los coches entran en el ranking de la pista, como cuando pruebas uno. En el resultado puedes guardar cada coche en el Garaje, con su nombre y su color, y evolucionarlo más tarde.",
+      "La batalla se guarda en el dispositivo en cada paso: si sales o recargas, la portada ofrece «Continuar batalla» (el jugador al que le tocaba rehace su diseño). «Abandonar batalla» la borra entera, con los nombres de los jugadores.",
     ],
   },
   {
@@ -107,6 +121,8 @@ export const SECCIONES_GUIA: readonly SeccionGuia[] = [
     parrafos: [
       "Cada pista tiene su propia mecánica y premia una cosa distinta. Elige pista en el selector del Taller, del Garaje o de la Evolución.",
       "Una marca solo cuenta en la pista donde se consiguió: lo que funciona en una cuesta no tiene por qué funcionar entre piedras.",
+      "Nueve de las diez pistas se complican cada vez más hasta la meta de 5 km, donde son muy difíciles: no cualquier coche llega. La Recta sigue siendo la contrarreloj, casi llana, y se ordena por tiempo.",
+      "Cuando una pista se hace más difícil, el juego vuelve a medir tus marcas guardadas en ella y los récords pueden bajar; ningún coche se borra.",
     ],
   },
   {
@@ -293,7 +309,7 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
   batalla: {
     titulo: "Batalla",
     resumen: "De 2 a 4 jugadores en el mismo dispositivo: cada uno diseña su coche por turnos, sin ver el de los demás.",
-    seccionGuia: "taller",
+    seccionGuia: "batalla",
     controles: [
       { nombre: "Jugadores", texto: "Elige cuántos sois, un nombre y un color distinto para cada uno." },
       { nombre: "Pantalla de relevo", texto: "Pasa el dispositivo al jugador que se nombra y que toque «Soy …, empezar»: no se ve ningún coche." },
