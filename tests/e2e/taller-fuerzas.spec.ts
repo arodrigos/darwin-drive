@@ -186,3 +186,22 @@ test("fu-5 el «?» del Taller explica guía de suspensión, centro de masas, pe
   expect(texto).toContain("cuanto más larga");
   await page.screenshot({ path: `${DIR}/${ID}-ayuda-taller-360x640.png` });
 });
+
+test("fu-3 a 1180x820 el «?» no tapa la lectura de la inclinación", async ({ page }) => {
+  await page.setViewportSize({ width: 1180, height: 820 });
+  await abrirTaller(page);
+  await page.getByTestId("rueda-0").click();
+  await page.getByTestId("deslizador-suspension").fill("30");
+  await expect(page.getByTestId("lectura-suspension")).toContainText("inclinada 30° hacia delante");
+  await lienzoQuieto(page);
+  // Se compara el último trozo de texto de la lectura con el botón: es lo que quedaba debajo del «?».
+  const solape = await page.evaluate(() => {
+    const el = document.querySelector('[data-testid="lectura-suspension"]')!;
+    const rango = document.createRange();
+    rango.selectNodeContents(el);
+    const b = document.querySelector('[data-testid="ayuda-boton"]')!.getBoundingClientRect();
+    return Array.from(rango.getClientRects()).some((r) => r.width > 0 && r.left < b.right && r.right > b.left && r.top < b.bottom && r.bottom > b.top);
+  });
+  expect(solape).toBe(false);
+  await page.screenshot({ path: `${DIR}/${ID}-u09-ayuda-lectura-1180x820.png` });
+});

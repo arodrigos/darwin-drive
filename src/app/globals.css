@@ -388,3 +388,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .podio-tiempo, .podio-criterio { grid-column: auto; }
   .podio-fila .enlace-terciario { grid-column: auto; }
 }
+
+/* En apaisado el panel ocupa la esquina del «?» fijo: la lectura de arriba reserva su sitio para que no tape el texto. */
+@media (min-width: 900px) and (orientation: landscape) {
+  .taller-panel .lectura-suspension { padding-right: 66px; }
+}
