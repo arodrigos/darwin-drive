@@ -2,6 +2,11 @@ import { test, expect, type Page } from "@playwright/test";
 import demoJson from "../../src/debug/escenarios/linaje-demo-5.json";
 import { STOCK_CAR, type Genome } from "../../src/sim/genome";
 
+/** Transform del lienzo del Taller (lo publica la escena con ?pruebas=1): el coche se encuadra a su caja, no a una escala fija. */
+async function encuadre(page: Page) {
+  return page.evaluate(() => (window.__debug!.estado() as unknown as { tallerEncuadre: { escalaPxM: number; origenPx: { x: number; y: number } } }).tallerEncuadre);
+}
+
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "linaje-23";
 
@@ -231,13 +236,14 @@ test("ln-5 un coche evolucionado, retocado a mano y evolucionado de nuevo cuelga
   // Se mueve el vértice 0 hacia el centro.
   const caja = (await page.locator("canvas").boundingBox())!;
   const g = (await estado(page)).genomaEnTaller!;
-  const s = Math.min(caja.width, caja.height) / 7;
+  const enc = (await encuadre(page))!;
+  const s = enc.escalaPxM;
   const v = g.body[0];
-  const x = caja.x + caja.width / 2 + Math.cos(v.angle) * v.length * s;
-  const y = caja.y + caja.height / 2 - Math.sin(v.angle) * v.length * s;
+  const x = caja.x + enc.origenPx.x + Math.cos(v.angle) * v.length * s;
+  const y = caja.y + enc.origenPx.y - Math.sin(v.angle) * v.length * s;
   await page.mouse.move(x, y);
   await page.mouse.down();
-  await page.mouse.move((x + caja.x + caja.width / 2) / 2, (y + caja.y + caja.height / 2) / 2, { steps: 6 });
+  await page.mouse.move((x + caja.x + enc.origenPx.x) / 2, (y + caja.y + enc.origenPx.y) / 2, { steps: 6 });
   await page.mouse.up();
   await expect.poll(async () => (await estado(page)).genomaEnTaller!.body[0].length).not.toBe(g.body[0].length);
 

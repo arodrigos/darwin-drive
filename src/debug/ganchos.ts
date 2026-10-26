@@ -46,6 +46,8 @@ export const runtime = {
   /** Punto elegido en el Taller y caja que ocupa el coche (los publica Taller). */
   verticeSeleccionado: null as number | null,
   dimensiones: null as { largo: number; alto: number } | null,
+  /** Encuadre del lienzo del Taller en px del lienzo (lo publica la escena): escala, origen del genoma, zona útil y caja de lo dibujado. */
+  tallerEncuadre: null as { escalaPxM: number; origenPx: { x: number; y: number }; zonaUtil: { top: number; bottom: number; left: number; right: number }; cajaCochePx: { top: number; bottom: number; left: number; right: number } } | null,
   /** Capa «Ver fuerzas» del Taller (centro de masas y par máximo por rueda activa) e inclinación en grados de cada rueda (los publica Taller). */
   fuerzasTaller: null as { visible: boolean; centroMasas: { x: number; y: number }; pares: number[] } | null,
   inclinaciones: [] as number[],
@@ -130,6 +132,7 @@ export function estado() {
     identidadTaller: runtime.identidadTaller,
     verticeSeleccionado: runtime.verticeSeleccionado,
     dimensiones: runtime.dimensiones,
+    tallerEncuadre: runtime.tallerEncuadre,
     fuerzasTaller: runtime.fuerzasTaller,
     inclinaciones: runtime.inclinaciones,
     fuerzasEnVivo: runtime.fuerzasEnVivo,

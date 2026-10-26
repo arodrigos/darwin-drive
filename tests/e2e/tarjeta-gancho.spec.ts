@@ -44,6 +44,21 @@ async function claves(page: Page): Promise<string> {
   );
 }
 
+// Las escrituras de fin de carrera (marcas, rankings) llegan a IndexedDB un poco después de que la tarjeta se vea:
+// una foto tomada nada más verla puede pillar el almacén a medias. Se espera a dos fotos seguidas iguales.
+async function clavesEstables(page: Page): Promise<string> {
+  let previa = await claves(page);
+  await expect
+    .poll(async () => {
+      const actual = await claves(page);
+      const igual = actual === previa;
+      previa = actual;
+      return igual;
+    }, { timeout: 15_000, intervals: [250] })
+    .toBe(true);
+  return previa;
+}
+
 const migracion = (page: Page) => page.evaluate(() => JSON.stringify(window.__debug!.estado().migracion));
 
 test("gt-1 @tamanos el caso peor de la tarjeta se ve entero y sin cruzarse con el aviso", async ({ page }) => {
@@ -98,7 +113,7 @@ test("gt-1 el aviso con N=1 va en singular y 'destrozado' sigue funcionando", as
 test("gt-2 y gt-3 el ✕ quita el aviso, Repetir limpia todo y lo guardado no cambia", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   await hastaTarjeta(page);
-  const guardadoAntes = await claves(page);
+  const guardadoAntes = await clavesEstables(page);
   const migAntes = await migracion(page);
   await page.evaluate((p) => window.__debug!.forzarTarjetaFin(p), CASO_PEOR);
   await expect(page.getByTestId("aviso-migracion")).toBeVisible();
@@ -114,7 +129,7 @@ test("gt-2 y gt-3 el ✕ quita el aviso, Repetir limpia todo y lo guardado no ca
   await expect(page.getByTestId("fin-record-pendiente")).toHaveCount(0);
   await expect(page.getByTestId("aviso-migracion")).toHaveCount(0);
   expect(await migracion(page)).toBe(migAntes);
-  expect(await claves(page)).toBe(guardadoAntes);
+  expect(await clavesEstables(page)).toBe(guardadoAntes);
 });
 
 test("gt-2 Volver borra lo forzado", async ({ page }) => {

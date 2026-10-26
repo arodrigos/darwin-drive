@@ -1,6 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
 import type { Genome } from "../../src/sim/genome";
 
+/** Transform del lienzo del Taller (lo publica la escena con ?pruebas=1): el coche se encuadra a su caja, no a una escala fija. */
+async function encuadre(page: Page) {
+  return page.evaluate(() => (window.__debug!.estado() as unknown as { tallerEncuadre: { escalaPxM: number; origenPx: { x: number; y: number } } }).tallerEncuadre);
+}
+
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "taller-fuerzas-11";
 const TAMANOS = [
@@ -48,8 +53,9 @@ async function lienzoQuieto(page: Page) {
 /** Píxeles de la página de un punto del coche (metros, y hacia arriba, desde el centro del lienzo). */
 async function pantalla(page: Page, xm: number, ym: number) {
   const caja = (await page.locator("canvas").boundingBox())!;
-  const s = Math.min(caja.width, caja.height) / 7;
-  return { x: caja.x + caja.width / 2 + xm * s, y: caja.y + caja.height / 2 - ym * s, s };
+  const enc = (await encuadre(page))!;
+  const s = enc.escalaPxM;
+  return { x: caja.x + enc.origenPx.x + xm * s, y: caja.y + enc.origenPx.y - ym * s, s };
 }
 
 async function centroRueda(page: Page, slot: number) {
@@ -133,7 +139,9 @@ for (const t of TAMANOS) {
     const p = await pantalla(page, Math.cos(v.angle) * v.length, Math.sin(v.angle) * v.length);
     await page.mouse.move(p.x, p.y);
     await page.mouse.down();
-    await page.mouse.move(p.x + Math.cos(v.angle) * 50, p.y - Math.sin(v.angle) * 50, { steps: 5 });
+    // El desplazamiento va en metros, no en píxeles: el encuadre cambia con el tamaño del lienzo y 50 px llegaban al tope del largo.
+    const d = 0.25 * p.s;
+    await page.mouse.move(p.x + Math.cos(v.angle) * d, p.y - Math.sin(v.angle) * d, { steps: 5 });
     await page.mouse.up();
     await expect
       .poll(async () => {
