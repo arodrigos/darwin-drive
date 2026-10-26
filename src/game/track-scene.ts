@@ -85,6 +85,8 @@ export interface TrackSceneHandle {
   setFuerzas(muestra: FuerzasMuestra | null): void;
   /** Los coches con estrella ★ encima (los favoritos de la generación en curso). */
   setFavorites(ids: string[]): void;
+  /** Dónde cayó cada coche en el último frame pintado: la batalla indica con una flecha los que quedan fuera de pantalla. */
+  vistaCoches(): { carId: string; enPantalla: boolean }[];
   /** Avisa del coche vivo que ha tocado el jugador (el más cercano al dedo, con margen para un dedo). */
   onPick(listener: ((carId: string) => void) | null): void;
   destroy(): void;
@@ -161,6 +163,7 @@ class TrackScene extends Phaser.Scene {
   private favorites = new Set<string>();
   private pickListener: ((carId: string) => void) | null = null;
   private screenCars: { carId: string; x: number; y: number }[] = [];
+  private vista: { carId: string; enPantalla: boolean }[] = [];
   private fuerzasActivas = false;
   private muestraFuerzas: FuerzasMuestra | null = null;
   /** Valores ya suavizados que se pintan: fx, fy en N y par en N·m por rueda. */
@@ -208,6 +211,10 @@ class TrackScene extends Phaser.Scene {
     this.refH = Number.NaN;
     this.skyDirty = true;
     this.destellos = otra.destellos;
+  }
+
+  vistaCoches(): { carId: string; enPantalla: boolean }[] {
+    return this.vista;
   }
 
   onPick(listener: ((carId: string) => void) | null): void {
@@ -430,6 +437,8 @@ class TrackScene extends Phaser.Scene {
     const now = performance.now();
     let used = 0;
     this.screenCars = [];
+    const ancho = this.scale.width;
+    this.vista = poses.map((p) => ({ carId: p.carId, enPantalla: toX(p.x) >= 0 && toX(p.x) <= ancho }));
     poses.forEach((p, i) => {
       const car = cfg.cars.find((c) => c.carId === p.carId) ?? cfg.cars[i];
       if (!p.finished) this.screenCars.push({ carId: p.carId, x: toX(p.x), y: toY(p.y) });
@@ -783,6 +792,7 @@ export function startTrackScene(parent: HTMLElement, track: Track, opciones: Opc
     activarFuerzas: (on) => scene.activarFuerzas(on),
     setFuerzas: (m) => scene.setFuerzas(m),
     setFavorites: (ids) => scene.setFavorites(ids),
+    vistaCoches: () => scene.vistaCoches(),
     onPick: (l) => scene.onPick(l),
     destroy: () => gestor.destruir(),
   };

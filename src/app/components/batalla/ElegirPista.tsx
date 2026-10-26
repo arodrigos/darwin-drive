@@ -6,7 +6,7 @@ import { TRACKS, type TrackId } from "@/sim/tracks";
 import { TrackMiniature } from "../TrackPicker";
 
 /** Aquí todavía no se enseña ningún coche: los diseños solo se leen en la carrera. */
-export function ElegirPista(props: { jugadores: JugadorBatalla[]; pista: TrackId | null; onPista: (id: TrackId) => void; onSalir: () => void; onAbandonar: () => void }) {
+export function ElegirPista(props: { jugadores: JugadorBatalla[]; pista: TrackId | null; onPista: (id: TrackId) => void; onCorrer: () => void; onSalir: () => void; onAbandonar: () => void }) {
   return (
     <div className="batalla-pantalla" data-testid="batalla-elegir-pista">
       <div className="batalla-cabecera">
@@ -41,6 +41,9 @@ export function ElegirPista(props: { jugadores: JugadorBatalla[]; pista: TrackId
         </div>
       </section>
       <div className="batalla-acciones">
+        <button type="button" className="boton-primario" data-testid="a-correr" disabled={props.pista === null} onClick={props.onCorrer}>
+          ¡A correr!
+        </button>
         <button type="button" className="enlace-terciario" data-testid="batalla-salir" onClick={props.onSalir}>
           Salir y continuar luego
         </button>

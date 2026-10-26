@@ -5,18 +5,33 @@ import { runtime } from "@/debug/ganchos";
 import { aleatorioDeApp, generarNombre } from "@/app/nombres";
 import { crearBatalla, transicion, type AccionBatalla, type EstadoBatalla } from "@/batalla/estado";
 import { borrarBatalla, guardarBatalla } from "@/batalla/guardado";
+import { resultadoCrudo } from "@/batalla/carrera";
 import type { ColorCoche, IdentidadCoche } from "@/game/colores-coche";
-import { normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
+import { markInput } from "@/debug/latencias";
+import type { CarResult } from "@/sim/constants";
+import { genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
+import type { RitmoRecordado } from "@/storage/meta";
 import { normalizarNombre } from "@/storage/nombres";
 import { HojaNombre } from "../HojaNombre";
 import { Taller } from "../Taller";
+import { Carrera } from "./Carrera";
 import { Configurar } from "./Configurar";
 import { ElegirPista } from "./ElegirPista";
 import { Relevo } from "./Relevo";
+import { Resultado } from "./Resultado";
 
 /** Coche de serie con un nombre aleatorio y el color del jugador: así empieza cada turno, sin rastro de los anteriores. */
 function identidadInicial(color: ColorCoche): IdentidadCoche {
   return { nombre: generarNombre(aleatorioDeApp()), color };
+}
+
+/** Un coche que acaba de correr, con lo que hace falta para inscribirlo en el ranking o guardarlo en el garaje. */
+export interface CocheCorrido {
+  jugador: number;
+  genome: Genome;
+  nombre: string;
+  color: ColorCoche;
+  result: CarResult;
 }
 
 export interface BatallaProps {
@@ -30,6 +45,12 @@ export interface BatallaProps {
   onSalir: () => void;
   helpSeen: boolean;
   onHelpSeen: () => void;
+  ritmoInicial?: RitmoRecordado;
+  onRitmo?: (r: RitmoRecordado) => void;
+  /** Cada coche entra en el ranking de la pista al correr, por el mismo camino que «Probar». */
+  onInscribir: (coches: CocheCorrido[]) => Promise<void>;
+  /** Lleva coches al garaje (con su nombre y color) y devuelve el aviso. */
+  onGuardar: (coches: Omit<CocheCorrido, "result">[]) => Promise<string>;
 }
 
 export function Batalla(props: BatallaProps) {
@@ -40,6 +61,8 @@ export function Batalla(props: BatallaProps) {
   const [renombrando, setRenombrando] = useState(false);
   const [abandonando, setAbandonando] = useState(false);
   const { onEstado } = props;
+  // Cada carrera (la primera, una revancha) monta una escena nueva.
+  const [carreraKey, setCarreraKey] = useState(0);
   const publicado = useRef<EstadoBatalla | null | undefined>(undefined);
 
   // El estado se guarda en cada cambio: una recarga o un bloqueo de pantalla vuelve al último relevo.
@@ -177,6 +200,11 @@ export function Batalla(props: BatallaProps) {
           jugadores={estado.jugadores}
           pista={estado.pista}
           onPista={(id) => setEstado(aplicar(estado, { tipo: "elegir-pista", pista: id }))}
+          onCorrer={() => {
+            markInput("a-correr");
+            setCarreraKey((k) => k + 1);
+            setEstado(aplicar(estado, { tipo: "correr" }));
+          }}
           onSalir={props.onSalir}
           onAbandonar={() => setAbandonando(true)}
         />
@@ -185,15 +213,50 @@ export function Batalla(props: BatallaProps) {
     );
   }
 
-  // carrera y resultado los monta batalla-carrera; mientras tanto la única salida es abandonar.
+  if (estado.fase === "carrera" && estado.pista) {
+    const alTerminar = (results: CarResult[]) => {
+      if (estado.fase !== "carrera") return;
+      const corridos: CocheCorrido[] = results.map((r) => {
+        const idx = resultadoCrudo(r).jugador;
+        const j = estado.jugadores[idx];
+        return { jugador: idx, genome: j.coche!.genome, nombre: j.coche!.nombre, color: j.color, result: { ...r, carId: genomeHash(j.coche!.genome) } };
+      });
+      // La inscripción no frena el podio: si la migración de marcas está en curso, espera en su cola.
+      void props.onInscribir(corridos);
+      setEstado(aplicar(estado, { tipo: "terminar-carrera", resultados: results.map(resultadoCrudo) }));
+    };
+    return (
+      <Carrera
+        key={carreraKey}
+        trackId={estado.pista}
+        jugadores={estado.jugadores}
+        onTerminada={alTerminar}
+        onSalir={props.onSalir}
+        ritmoInicial={props.ritmoInicial}
+        onRitmo={props.onRitmo}
+      />
+    );
+  }
+
   return (
     <>
-      <div className="batalla-pantalla" data-testid="batalla-pendiente">
-        <p>La carrera de la batalla aún no está disponible en esta versión.</p>
-        <button type="button" className="boton-secundario" data-testid="batalla-abandonar" onClick={() => setAbandonando(true)}>
-          Abandonar batalla
-        </button>
-      </div>
+      <Resultado
+        estado={estado}
+        onGuardar={(jugadores) =>
+          props.onGuardar(
+            jugadores.map((i) => {
+              const j = estado.jugadores[i];
+              return { jugador: i, genome: j.coche!.genome, nombre: j.coche!.nombre, color: j.color };
+            }),
+          )
+        }
+        onRevancha={() => {
+          setCarreraKey((k) => k + 1);
+          setEstado(aplicar(estado, { tipo: "revancha" }));
+        }}
+        onOtraPista={() => setEstado(aplicar(estado, { tipo: "otra-pista" }))}
+        onSalir={() => void abandonar()}
+      />
       {dialogoAbandono}
     </>
   );
