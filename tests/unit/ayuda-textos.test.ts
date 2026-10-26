@@ -76,3 +76,31 @@ test("ed-5: el «?» y la guía del Taller explican el toque que elige el punto"
   assert.ok(AYUDA.taller.controles.some((c) => c.texto === frase));
   assert.ok(!JSON.stringify(AYUDA.taller).includes("ponerle o quitarle"));
 });
+
+test("gu-1: la guía tiene «El Taller» y «Batalla», y el «?» de la batalla abre «Batalla»", () => {
+  const titulos = SECCIONES_GUIA.map((s) => s.titulo);
+  assert.ok(titulos.includes("El Taller"));
+  assert.ok(titulos.includes("Batalla"));
+  assert.equal(AYUDA.batalla.seccionGuia, "batalla");
+  const texto = SECCIONES_GUIA.find((s) => s.id === "batalla")!.parrafos.join(" ");
+  for (const t of ["Pasa el dispositivo", "gana el que llega más lejos", "Terminar mi coche", "Garaje", "ranking", "empate", "Continuar batalla"]) {
+    assert.ok(texto.includes(t), `la sección Batalla no dice «${t}»`);
+  }
+});
+
+test("gu-1: «El Taller» explica suspensión, «Ver fuerzas», nombre y color", () => {
+  const texto = SECCIONES_GUIA.find((s) => s.id === "taller")!.parrafos.join(" ");
+  for (const t of ["Inclinación de la suspensión", "Ver fuerzas", "centro de masas", "Tamaño +", "Poner rueda aquí", "color"]) {
+    assert.ok(texto.includes(t), `El Taller no dice «${t}»`);
+  }
+});
+
+test("gu-2: la sección de pistas cuenta los 5 km, La Recta y la nueva medición", () => {
+  const texto = SECCIONES_GUIA.find((s) => s.id === "pistas")!.parrafos.join(" ");
+  for (const t of ["5 km", "La Recta", "contrarreloj", "vuelve a medir"]) assert.ok(texto.includes(t), `Las pistas no dicen «${t}»`);
+});
+
+test("gu-3: los textos de la guía no nombran infraestructura ni rutas de máquina", () => {
+  const todo = JSON.stringify([SECCIONES_GUIA, AYUDA]);
+  for (const prohibido of ["VPS", "Tailscale", "/home/", "claude-fleet", "runs/"]) assert.ok(!todo.includes(prohibido), prohibido);
+});
