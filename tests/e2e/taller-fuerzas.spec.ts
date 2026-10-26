@@ -139,7 +139,9 @@ for (const t of TAMANOS) {
     const p = await pantalla(page, Math.cos(v.angle) * v.length, Math.sin(v.angle) * v.length);
     await page.mouse.move(p.x, p.y);
     await page.mouse.down();
-    await page.mouse.move(p.x + Math.cos(v.angle) * 50, p.y - Math.sin(v.angle) * 50, { steps: 5 });
+    // El desplazamiento va en metros, no en píxeles: el encuadre cambia con el tamaño del lienzo y 50 px llegaban al tope del largo.
+    const d = 0.25 * p.s;
+    await page.mouse.move(p.x + Math.cos(v.angle) * d, p.y - Math.sin(v.angle) * d, { steps: 5 });
     await page.mouse.up();
     await expect
       .poll(async () => {
