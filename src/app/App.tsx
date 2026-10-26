@@ -62,7 +62,8 @@ import { recargarAntiguas, saludar } from "@/pwa/pestanas";
 import { BotonAyuda, ComoSeJuega, PanelAyuda } from "./components/CapasAyuda";
 import { useCapas } from "./ayuda/capas";
 import { Taller } from "./components/Taller";
-import { Batalla } from "./components/batalla/Batalla";
+import { Batalla, type CocheCorrido } from "./components/batalla/Batalla";
+import { avisoGuardado } from "@/batalla/carrera";
 import { cargarBatalla, guardarBatalla } from "@/batalla/guardado";
 import type { EstadoBatalla } from "@/batalla/estado";
 import { medirEnTodasLasPistas, type MedicionEnCurso } from "./medir-pistas";
@@ -646,6 +647,35 @@ export function App() {
     [garage, rankings, recargar],
   );
 
+  // Cada coche de la batalla entra en el ranking de la pista como si lo hubieras probado a mano.
+  const inscribirBatalla = useCallback(async (coches: CocheCorrido[]) => {
+    for (const c of coches) {
+      await updateRanking({ result: c.result, genome: c.genome, origin: "diseño", name: c.nombre, color: c.color });
+      if (getTrack(c.result.trackId)) await recordMark(c.result.carId, c.result.trackId, c.result.distance, { trackVersion: c.result.trackVersion, physicsVersion: c.result.physicsVersion }, detalleDe(c.result));
+    }
+    await recargar();
+  }, [recargar]);
+
+  const guardarCochesBatalla = useCallback(
+    async (coches: Omit<CocheCorrido, "result">[]): Promise<string> => {
+      let guardados = 0;
+      let yaEstaban = 0;
+      let sinSitio = 0;
+      for (const c of coches) {
+        if (garageRef.current.some((g) => g.id === genomeHash(c.genome))) {
+          yaEstaban++;
+        } else if (garageRef.current.length + guardados >= GARAGE_SIZE) {
+          sinSitio++;
+        } else {
+          await guardarGenoma(c.genome, "diseño", c.nombre, undefined, c.color);
+          guardados++;
+        }
+      }
+      return avisoGuardado(guardados, yaEstaban, sinSitio);
+    },
+    [guardarGenoma],
+  );
+
   const guardarCoche = useCallback(async () => {
     const id = identidadRef.current;
     return guardarGenoma(genomeRef.current, "diseño", id.nombre, undefined, id.color);
@@ -898,6 +928,10 @@ export function App() {
           reiniciado={batallaReiniciada}
           onEstado={setBatalla}
           onSalir={() => setScreen("portada")}
+          ritmoInicial={meta.ritmo}
+          onRitmo={recordarRitmo}
+          onInscribir={inscribirBatalla}
+          onGuardar={guardarCochesBatalla}
           helpSeen={meta.seenHelp.includes("taller")}
           onHelpSeen={() => {
             if (metaRef.current.seenHelp.includes("taller")) return;

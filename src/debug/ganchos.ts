@@ -54,6 +54,8 @@ export const runtime = {
   garaje: 0,
   /** Batalla en curso o guardada (la publica Batalla); null si no hay. */
   batalla: null as EstadoBatalla | null,
+  /** Coches de la carrera de batalla en curso: distancia y si se ven en pantalla (null fuera de ella). */
+  carreraBatalla: null as { carId: string; distancia: number; enPantalla: boolean }[] | null,
   ultimaInscripcion: null as { trackId: TrackId; position: number | null; alreadyAt: number | null; isRecord: boolean } | null,
   // Evolución en curso (la rellena Evolucion).
   generacion: null as number | null,
@@ -122,6 +124,7 @@ export function estado() {
     favoritos: runtime.favoritos,
     rankings: runtime.rankings,
     ultimaInscripcion: runtime.ultimaInscripcion,
+    carreraBatalla: runtime.carreraBatalla,
     genomaEnPista: runtime.genomaEnPista,
     genomaEnTaller: runtime.genomaEnTaller,
     identidadTaller: runtime.identidadTaller,
