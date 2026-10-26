@@ -151,6 +151,8 @@ npm run medir:fragilidad
 npm run medir:pistas -- --umbral
 ```
 
+`medir:pistas --umbral` imprime la tabla por pista (campeones que pasan 1, 2, 3 y 4 km y los que llegan a meta). Los topes de la fracción que baja de 1 a 5 km y del 15 % a meta se miden sobre el conjunto de las nueve pistas, no por pista (con 4-6 campeones por pista no se pueden exigir de forma estable). `MEDIR_PISTA=<id>` mide una sola pista.
+
 `npm run medir:evolucion` mide la evolución (acepta `MEDIR_PISTA` y `MEDIR_GENERACIONES`), y los scripts `generar:escenario*` regeneran los escenarios de demostración de `src/debug/escenarios/`.
 
 ### Modo pruebas
