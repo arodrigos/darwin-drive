@@ -16,6 +16,7 @@ import { createSimRunner } from "@/worker";
 import type { FromWorker, Pace, SimRunner } from "@/worker/protocol";
 import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
+import { aplicarMuestra, publicarFuerzas, reiniciarFuerzasVivo } from "../fuerzas-vivo";
 import { PanelRendimiento } from "./PanelRendimiento";
 import type { RankingsView } from "./TrackPicker";
 import { puedeDibujar } from "@/game/lienzo";
@@ -144,6 +145,8 @@ export function Evolucion(props: EvolucionProps) {
   // El ritmo y la pausa los ejecuta el efecto que posee el ejecutor; los botones los llaman por aquí.
   const ritmoRef = useRef<(p: Pace) => void>(() => {});
   const pausaRef = useRef<(on: boolean) => void>(() => {});
+  const fuerzasRef = useRef<(on: boolean) => void>(() => {});
+  const [fuerzas, setFuerzas] = useState(false);
   const [rotulo, setRotulo] = useState<number | null>(null);
   const [generation, setGeneration] = useState(props.initial.generation);
   const [history, setHistory] = useState(props.initial.history);
@@ -294,6 +297,7 @@ export function Evolucion(props: EvolucionProps) {
       if (m.type === "poses") {
         medirRitmo(m.ritmoReal);
         const lider = m.poses.reduce((a, p) => Math.max(a, p.x), 0);
+        aplicarMuestra(scene, m.fuerzas);
         scene.setPoses(m.simTime, m.poses, m.simTime - ultimaSim > 0.5);
         ultimaSim = m.simTime;
         const vivos = m.poses.filter((p) => !p.finished).length;
@@ -346,6 +350,13 @@ export function Evolucion(props: EvolucionProps) {
     };
     ritmoRef.current = cambiarRitmo;
     pausaRef.current = alternarPausa;
+    reiniciarFuerzasVivo();
+    fuerzasRef.current = (on) => {
+      markInput("fuerzas-carrera");
+      scene?.activarFuerzas(on);
+      publicarFuerzas(on);
+      runner.post({ type: "setFuerzas", raceId, on });
+    };
 
     import("@/game/track-scene")
       .then(({ startTrackScene }) => {
@@ -381,6 +392,8 @@ export function Evolucion(props: EvolucionProps) {
       relanzar.current = () => {};
       ritmoRef.current = () => {};
       pausaRef.current = () => {};
+      fuerzasRef.current = () => {};
+      reiniciarFuerzasVivo();
       runtime.avanzar = null;
       runtime.aplicarLimite = null;
       runtime.ritmo = null;
@@ -507,7 +520,15 @@ export function Evolucion(props: EvolucionProps) {
           <span data-testid="mejor-marca">{mejorMarca === null ? "Mejor: —" : `Mejor: ${formatMeters(mejorMarca)}`}</span>
           <span className="ayuda-chica">Toca un coche para marcarlo como favorito</span>
         </div>
-        <ControlRitmo prefijo="evo-ritmo" activo={paceVista} onElegir={elegirRitmo} ritmoReal={rotulo} etiquetaFinal="Turbo" />
+        <ControlRitmo prefijo="evo-ritmo" activo={paceVista} onElegir={elegirRitmo} ritmoReal={rotulo} etiquetaFinal="Turbo"
+          fuerzas={{
+            activa: fuerzas,
+            onAlternar: () => {
+              fuerzasRef.current(!fuerzas);
+              setFuerzas(!fuerzas);
+            },
+          }}
+        />
         <div className="fila">
           <button type="button" className="pastilla chica" data-testid="pausar" onClick={alternar}>
             {pausada ? "Seguir" : "Pausar"}

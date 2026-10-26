@@ -14,13 +14,15 @@ export interface ControlRitmoProps {
   ritmoReal: number | null;
   /** Texto del último botón (en Pista, «Hasta el final»). */
   etiquetaFinal: string;
+  /** Capa «Fuerzas» (apagada por defecto); sin esta prop la fila no tiene el interruptor. */
+  fuerzas?: { activa: boolean; onAlternar: () => void };
 }
 
 /**
  * La misma fila en Pista y Evolución. La franja de arriba mide siempre 20 px, haya rótulo o no,
  * así que enseñar «real ×N» nunca mueve ni cambia de tamaño ningún botón.
  */
-export function ControlRitmo({ prefijo, activo, onElegir, ritmoReal, etiquetaFinal }: ControlRitmoProps) {
+export function ControlRitmo({ prefijo, activo, onElegir, ritmoReal, etiquetaFinal, fuerzas }: ControlRitmoProps) {
   const sufijo = (p: Pace) => (p === "turbo" ? (prefijo === "ritmo" ? "final" : "turbo") : p);
   return (
     <div className="control-ritmo" data-testid={`${prefijo}-control`}>
@@ -47,6 +49,18 @@ export function ControlRitmo({ prefijo, activo, onElegir, ritmoReal, etiquetaFin
           </button>
         ))}
       </div>
+      {fuerzas && (
+        <div className="fila-fuerzas">
+          <button type="button" className="selector" aria-pressed={fuerzas.activa} data-testid={`${prefijo}-fuerzas`} onClick={fuerzas.onAlternar}>
+            {fuerzas.activa ? "✓ " : ""}Fuerzas
+          </button>
+          {fuerzas.activa && (
+            <p className="leyenda-fuerzas" data-testid={`${prefijo}-leyenda-fuerzas`} role="note">
+              → fuerza de la rueda · ◠ par
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

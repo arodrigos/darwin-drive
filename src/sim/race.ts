@@ -2,13 +2,15 @@ import "./detmath";
 import { CarSim } from "./physics/car-sim";
 import { genomeHash, type Genome } from "./genome";
 import { resolverPista, type TrackId } from "./tracks";
-import { PHYSICS_VERSION, type CarPose, type CarResult } from "./constants";
+import { PHYSICS_VERSION, type CarPose, type CarResult, type FuerzasMuestra } from "./constants";
 
 export * from "./constants";
 
 export interface Race {
   step(n?: number): void;
   poses(): CarPose[];
+  /** Fuerzas de las ruedas de un coche vivo; null si ya terminó o no existe. Solo lectura. */
+  fuerzas(carId: string): FuerzasMuestra | null;
   /** Solo los coches que ya han terminado. */
   results(): CarResult[];
   done(): boolean;
@@ -61,6 +63,7 @@ export function createRace(
       }
     },
     poses: () => sims.map((s) => s.pose()),
+    fuerzas: (carId) => sims.find((s) => s.carId === carId)?.fuerzas() ?? null,
     results: () => sims.flatMap((s) => s.result() ?? []),
     done: isDone,
     simTime: () => steps / 60,
