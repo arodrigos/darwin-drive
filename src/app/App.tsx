@@ -575,6 +575,17 @@ export function App() {
           };
           editar(typeof e.genoma === "string" && demo[e.genoma] ? demo[e.genoma] : normalizeGenome(e.genoma));
         }
+        if (e.batalla !== undefined) {
+          const { batallaDeEscenario } = await import("@/debug/escenarios/batalla");
+          const b = batallaDeEscenario(e.batalla as Parameters<typeof batallaDeEscenario>[0]);
+          await guardarBatalla(b);
+          runtime.batalla = b;
+          setBatalla(b);
+          setBatallaReiniciada(false);
+          setBatallaKey((k) => k + 1);
+          setScreen("batalla");
+          return;
+        }
         setScreen("portada");
       },
     });
