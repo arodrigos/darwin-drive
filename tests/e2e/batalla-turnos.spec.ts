@@ -3,6 +3,11 @@ import type { EstadoBatalla } from "../../src/batalla/estado";
 import type { Genome } from "../../src/sim/genome";
 import { tamanoBase } from "./tamano";
 
+/** Transform del lienzo del Taller (lo publica la escena con ?pruebas=1): el coche se encuadra a su caja, no a una escala fija. */
+async function encuadre(page: Page) {
+  return page.evaluate(() => (window.__debug!.estado() as unknown as { tallerEncuadre: { escalaPxM: number; origenPx: { x: number; y: number } } }).tallerEncuadre);
+}
+
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "batalla-turnos-14";
 test.setTimeout(180_000);
@@ -37,8 +42,9 @@ async function puntoVertice(page: Page, i: number) {
   await lienzoQuieto(page);
   const caja = (await page.locator("canvas").boundingBox())!;
   const v = (await estado(page)).genomaEnTaller!.body[i];
-  const s = Math.min(caja.width, caja.height) / 7;
-  return { x: caja.x + caja.width / 2 + Math.cos(v.angle) * v.length * s, y: caja.y + caja.height / 2 - Math.sin(v.angle) * v.length * s, v };
+  const enc = (await encuadre(page))!;
+  const s = enc.escalaPxM;
+  return { x: caja.x + enc.origenPx.x + Math.cos(v.angle) * v.length * s, y: caja.y + enc.origenPx.y - Math.sin(v.angle) * v.length * s, v };
 }
 
 /** Alarga el punto i con el botón de longitud: el coche de ese jugador deja de ser el de serie. */

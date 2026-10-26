@@ -20,6 +20,65 @@ const MENTA = 0x6df0c2; // par
 const PAR_ARCO_COMPLETO = 600;
 const ETIQUETA = { fontFamily: "system-ui, sans-serif", fontSize: "13px", fontStyle: "bold", stroke: "#0c0c0c", strokeThickness: 3 } as const;
 
+export interface Encuadre {
+  /** Píxeles por metro y píxel del origen del genoma (0,0). */
+  s: number;
+  ox: number;
+  oy: number;
+}
+
+const MARGEN_PX = 16;
+// El tirador de la guía sobresale 22 px de su centro.
+const TIRADOR_PX = HANDLE_DIAMETER / 2;
+
+/** Caja (m) de todo lo que se dibuja: cuerpo, ruedas, guías, cuña del punto elegido y, con fuerzas, la flecha de peso. */
+function cajaMetros(genome: Genome, selected: number | null): { x0: number; x1: number; y0: number; y1: number } {
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  const add = (x: number, y: number, r = 0) => {
+    x0 = Math.min(x0, x - r);
+    x1 = Math.max(x1, x + r);
+    y0 = Math.min(y0, y - r);
+    y1 = Math.max(y1, y + r);
+  };
+  const pos = (i: number) => ({ x: Math.cos(genome.body[i].angle) * genome.body[i].length, y: Math.sin(genome.body[i].angle) * genome.body[i].length });
+  genome.body.forEach((_, i) => {
+    const p = pos(i);
+    add(p.x, p.y);
+  });
+  genome.wheels.forEach((w) => {
+    if (w.vertex < 0) return;
+    const p = pos(w.vertex);
+    // Rueda y guía de ±0,6 m: se cubren con el mayor de los dos radios.
+    add(p.x, p.y, Math.max(w.radius, GUIA_M));
+  });
+  if (selected !== null) {
+    const [lo, hi] = GENE_RANGES.angle(selected);
+    const [minL, maxL] = GENE_RANGES.length;
+    for (let k = 0; k <= 12; k++) {
+      const a = lo + ((hi - lo) * k) / 12;
+      add(Math.cos(a) * maxL, Math.sin(a) * maxL);
+      add(Math.cos(a) * minL, Math.sin(a) * minL);
+    }
+  }
+  return { x0, x1, y0, y1 };
+}
+
+/** Escala y origen que meten la caja del coche en la zona útil (el lienzo menos la cabecera) con margen. */
+export function calcularEncuadre(genome: Genome, selected: number | null, fuerzas: boolean, w: number, h: number, cabecera: number): Encuadre {
+  const c = cajaMetros(genome, selected);
+  // Con fuerzas se reserva sitio abajo para la flecha de peso (hasta 1,6·s + 9 px) y la etiqueta, y a los lados para los arcos de par.
+  const extraAbajo = fuerzas ? 60 : 0;
+  const extraLado = fuerzas ? 14 : 0;
+  const m = MARGEN_PX + TIRADOR_PX * (selected !== null ? 0.5 : 0);
+  const util = { l: m + extraLado, r: w - m - extraLado, t: Math.min(cabecera, h * 0.5) + m, b: h - m - extraAbajo };
+  const ancho = Math.max(1, util.r - util.l);
+  const alto = Math.max(1, util.b - util.t);
+  const s = Math.max(8, Math.min(ancho / Math.max(0.5, c.x1 - c.x0), alto / Math.max(0.5, c.y1 - c.y0), w / 5));
+  const cx = (c.x0 + c.x1) / 2;
+  const cy = (c.y0 + c.y1) / 2;
+  return { s, ox: (util.l + util.r) / 2 - cx * s, oy: (util.t + util.b) / 2 + cy * s };
+}
+
 export interface WorkshopHandle {
   /** El genoma, el punto elegido y el color que debe pintar. */
   setState(genome: Genome, selectedVertex: number | null, color?: ColorCoche, fuerzas?: boolean): void;
@@ -54,26 +113,41 @@ class WorkshopScene extends Phaser.Scene {
     this.etiquetas = [0, 1, 2, 3, 4].map((i) =>
       this.add.text(0, 0, i === 0 ? "peso" : "par", { ...ETIQUETA, color: i === 0 ? "#ff5d73" : "#6df0c2" }).setVisible(false).setDepth(5),
     );
-    this.scale.on("resize", () => (this.dirty = true));
+    this.scale.on("resize", () => this.invalidate());
   }
 
   invalidate(): void {
     this.dirty = true;
+    this.encSucio = true;
   }
 
-  /** Metros → píxeles: el coche más grande cabe siempre, en cualquier lienzo. */
+  /** Transform metros → píxeles. Se recalcula perezosamente para que hit/toMeters nunca usen uno viejo; congelado durante un arrastre. */
+  private enc: Encuadre = { s: 50, ox: 180, oy: 150 };
+  private encSucio = true;
+  congelado = false;
+  /** Alto en px de lo que la cabecera tapa por arriba del lienzo (lo mide startWorkshop). */
+  cabeceraPx = 0;
+
+  get encuadre(): Encuadre {
+    if (this.encSucio && !this.congelado && this.genome) {
+      this.enc = calcularEncuadre(this.genome, this.selected, this.fuerzas, this.scale.width, this.scale.height, this.cabeceraPx);
+      this.encSucio = false;
+    }
+    return this.enc;
+  }
+
   get scale_(): number {
-    return Math.min(this.scale.width, this.scale.height) / 7;
+    return this.encuadre.s;
   }
 
   toScreen(x: number, y: number): { px: number; py: number } {
-    const s = this.scale_;
-    return { px: this.scale.width / 2 + x * s, py: this.scale.height / 2 - y * s };
+    const e = this.encuadre;
+    return { px: e.ox + x * e.s, py: e.oy - y * e.s };
   }
 
   toMeters(px: number, py: number): { x: number; y: number } {
-    const s = this.scale_;
-    return { x: (px - this.scale.width / 2) / s, y: -(py - this.scale.height / 2) / s };
+    const e = this.encuadre;
+    return { x: (px - e.ox) / e.s, y: -(py - e.oy) / e.s };
   }
 
   vertexScreen(genome: Genome, i: number): { px: number; py: number } {
@@ -269,10 +343,31 @@ class WorkshopScene extends Phaser.Scene {
       // Anillo amarillo grueso: el punto elegido se distingue sin depender del color del coche.
       if (i === this.selected) g.lineStyle(4, 0xffd23f, 1).strokeCircle(p.x, p.y, 15);
     });
+    this.publicarEncuadre(genome);
     if (this.pendingMeasure) {
       measureOnNextFrame(this.pendingMeasure);
       this.pendingMeasure = null;
     }
+  }
+
+  /** Gancho de pruebas: el transform y la caja en px de todo lo dibujado, para tocar vértices sin suponer una escala. */
+  private publicarEncuadre(genome: Genome): void {
+    const c = cajaMetros(genome, this.selected);
+    const a = this.toScreen(c.x0, c.y1);
+    const b = this.toScreen(c.x1, c.y0);
+    let bottom = b.py;
+    if (this.fuerzas) {
+      const e = estatica(genome);
+      const cm = this.toScreen(e.centroMasas.x, e.centroMasas.y);
+      bottom = Math.max(bottom, cm.py + 9 + Math.max(28, Math.min(this.scale_ * 1.6, 18 + e.masa * 0.35)));
+    }
+    const enc = this.encuadre;
+    runtime.tallerEncuadre = {
+      escalaPxM: enc.s,
+      origenPx: { x: enc.ox, y: enc.oy },
+      zonaUtil: { top: this.cabeceraPx, bottom: this.scale.height, left: 0, right: this.scale.width },
+      cajaCochePx: { top: a.py, bottom, left: a.px, right: b.px },
+    };
   }
 }
 
@@ -288,6 +383,7 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
         scene.selected = vieja.selected;
         scene.color = vieja.color;
         scene.fuerzas = vieja.fuerzas;
+        scene.cabeceraPx = vieja.cabeceraPx;
       }
       return new Phaser.Game({
         type: Phaser.AUTO,
@@ -304,8 +400,16 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
   );
 
   // Phaser solo reacciona al redimensionado de la ventana; el panel del Taller cambia de alto sin que la ventana se mueva.
+  // La cabecera va encima del lienzo: el coche se encuadra por debajo de ella.
+  const medirCabecera = () => {
+    const cab = parent.closest(".taller")?.querySelector(".cabecera");
+    scene.cabeceraPx = cab ? Math.max(0, cab.getBoundingClientRect().bottom - parent.getBoundingClientRect().top) : 0;
+  };
+  // En modo RESIZE scale.resize() se deshace solo (updateScale relee parentSize, aún viejo): hay que mandar el tamaño del padre con setParentSize.
   const observer = new ResizeObserver(() => {
-    if (parent.clientWidth > 0 && parent.clientHeight > 0) gestor.juego()?.scale.resize(parent.clientWidth, parent.clientHeight);
+    if (parent.clientWidth > 0 && parent.clientHeight > 0) gestor.juego()?.scale.setParentSize(parent.clientWidth, parent.clientHeight);
+    medirCabecera();
+    scene.invalidate();
   });
   observer.observe(parent);
   scene.pendingMeasure = "abrir-pista";
@@ -332,6 +436,7 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
       const t = slot >= 0 ? scene.extremoGuia(scene.genome, scene.selected) : null;
       if (t && Math.hypot(t.px - px, t.py - py) <= HANDLE_DIAMETER / 2) {
         tirador = { vertex: scene.selected, slot };
+        scene.congelado = true;
         parent.setPointerCapture(e.pointerId);
         cb.onGesture();
         e.preventDefault();
@@ -348,6 +453,8 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
       return;
     }
     drag = { index, startX: px, startY: py, moved: false };
+    // Con el encuadre quieto durante el gesto, el punto no se escapa del dedo.
+    scene.congelado = true;
     parent.setPointerCapture(e.pointerId);
     // Elegir el punto es inmediato (también al empezar a arrastrar): la cuña se ve mientras dura el gesto.
     markInput("seleccionar-vertice");
@@ -383,11 +490,15 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
     if (!drag && !tirador) return;
     drag = null;
     tirador = null;
+    scene.congelado = false;
+    scene.invalidate();
     if (parent.hasPointerCapture(e.pointerId)) parent.releasePointerCapture(e.pointerId);
   };
   const cancel = () => {
     drag = null;
     tirador = null;
+    scene.congelado = false;
+    scene.invalidate();
   };
   parent.addEventListener("pointerdown", down);
   parent.addEventListener("pointermove", move);
@@ -415,6 +526,7 @@ export function startWorkshop(parent: HTMLElement, cb: WorkshopCallbacks, opcion
       parent.removeEventListener("pointerup", up);
       parent.removeEventListener("pointercancel", cancel);
       observer.disconnect();
+      runtime.tallerEncuadre = null;
       gestor.destruir();
     },
   };

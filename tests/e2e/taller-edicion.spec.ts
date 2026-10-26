@@ -2,6 +2,11 @@ import { test, expect, type Page } from "@playwright/test";
 import { dimensiones } from "../../src/game/editor";
 import type { Genome } from "../../src/sim/genome";
 
+/** Transform del lienzo del Taller (lo publica la escena con ?pruebas=1): el coche se encuadra a su caja, no a una escala fija. */
+async function encuadre(page: Page) {
+  return page.evaluate(() => (window.__debug!.estado() as unknown as { tallerEncuadre: { escalaPxM: number; origenPx: { x: number; y: number } } }).tallerEncuadre);
+}
+
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "taller-edicion-7";
 const TAMANOS = [
@@ -46,9 +51,10 @@ async function tocarVertice(page: Page, i: number) {
   await lienzoQuieto(page);
   const caja = (await page.locator("canvas").boundingBox())!;
   const g = (await estado(page)).genomaEnTaller!;
-  const s = Math.min(caja.width, caja.height) / 7;
+  const enc = (await encuadre(page))!;
+  const s = enc.escalaPxM;
   const v = g.body[i];
-  await page.mouse.click(caja.x + caja.width / 2 + Math.cos(v.angle) * v.length * s, caja.y + caja.height / 2 - Math.sin(v.angle) * v.length * s);
+  await page.mouse.click(caja.x + enc.origenPx.x + Math.cos(v.angle) * v.length * s, caja.y + enc.origenPx.y - Math.sin(v.angle) * v.length * s);
 }
 
 for (const t of TAMANOS) {
@@ -114,10 +120,11 @@ test("ed-1 tocar el vacío suelta el punto y arrastrar lo mueve", async ({ page 
   await lienzoQuieto(page);
   const caja = (await page.locator("canvas").boundingBox())!;
   const g = (await estado(page)).genomaEnTaller!;
-  const s = Math.min(caja.width, caja.height) / 7;
+  const enc = (await encuadre(page))!;
+  const s = enc.escalaPxM;
   const v = g.body[1];
-  const x = caja.x + caja.width / 2 + Math.cos(v.angle) * v.length * s;
-  const y = caja.y + caja.height / 2 - Math.sin(v.angle) * v.length * s;
+  const x = caja.x + enc.origenPx.x + Math.cos(v.angle) * v.length * s;
+  const y = caja.y + enc.origenPx.y - Math.sin(v.angle) * v.length * s;
   const dx = Math.cos(v.angle) * 60;
   const dy = -Math.sin(v.angle) * 60;
   await page.mouse.move(x, y);
@@ -237,4 +244,66 @@ test("ed-5 el «?» del Taller explica el toque nuevo", async ({ page }) => {
   await page.getByTestId("ayuda-boton").click();
   await expect(page.getByTestId("ayuda-panel")).toContainText("Toca un punto para elegirlo; arrástralo para darle forma. Con el punto elegido puedes ponerle una rueda.");
   await page.screenshot({ path: `${DIR}/${ID}-ayuda-panel-360x640.png` });
+});
+
+/** Caja del coche y lienzo deben coincidir: el canvas de Phaser tiene el alto del contenedor y todo lo dibujado cabe bajo la cabecera. */
+async function comprobarEncuadre(page: Page, etiqueta: string) {
+  await expect
+    .poll(async () => {
+      const c = await page.evaluate(() => {
+        const cv = document.querySelector<HTMLCanvasElement>('[data-testid="lienzo"] canvas')!;
+        const lz = document.querySelector<HTMLElement>('[data-testid="lienzo"]')!;
+        return { canvas: cv.height, lienzo: lz.clientHeight };
+      });
+      return c.canvas === c.lienzo;
+    }, { message: `${etiqueta}: canvas.height === lienzo.clientHeight` })
+    .toBe(true);
+  await lienzoQuieto(page);
+  const info = await page.evaluate(() => {
+    const lz = document.querySelector<HTMLElement>('[data-testid="lienzo"]')!;
+    const cab = document.querySelector(".taller .cabecera")!.getBoundingClientRect();
+    const r = lz.getBoundingClientRect();
+    const e = (window.__debug!.estado() as unknown as { tallerEncuadre: { cajaCochePx: { top: number; bottom: number; left: number; right: number } } }).tallerEncuadre;
+    return { caja: e.cajaCochePx, cabeceraBottom: Math.max(0, cab.bottom - r.top), alto: lz.clientHeight, ancho: lz.clientWidth };
+  });
+  expect(info.caja.top, `${etiqueta}: bajo la cabecera`).toBeGreaterThanOrEqual(info.cabeceraBottom - 1);
+  expect(info.caja.bottom, `${etiqueta}: dentro del lienzo`).toBeLessThanOrEqual(info.alto + 1);
+  expect(info.caja.left, etiqueta).toBeGreaterThanOrEqual(-1);
+  expect(info.caja.right, etiqueta).toBeLessThanOrEqual(info.ancho + 1);
+}
+
+for (const t of TAMANOS) {
+  test(`ed-2 el lienzo encuadra el coche agrandado, con punto elegido y rueda nueva, bajo la cabecera @tamanos ${t.w}x${t.h}`, async ({ page }) => {
+    await page.setViewportSize({ width: t.w, height: t.h });
+    await abrirTaller(page);
+    await tocarVertice(page, 3);
+    await page.getByTestId("poner-rueda").click();
+    await expect(page.getByTestId("contador-ruedas")).toHaveText("Ruedas: 3/4");
+    await lienzoQuieto(page);
+    const p = await (async () => {
+      const enc = (await encuadre(page))!;
+      const caja = (await page.locator("canvas").boundingBox())!;
+      const v = (await estado(page)).genomaEnTaller!.body[1];
+      return { x: caja.x + enc.origenPx.x + Math.cos(v.angle) * v.length * enc.escalaPxM, y: caja.y + enc.origenPx.y - Math.sin(v.angle) * v.length * enc.escalaPxM, dx: Math.cos(v.angle) * 40, dy: -Math.sin(v.angle) * 40 };
+    })();
+    await page.mouse.move(p.x, p.y);
+    await page.mouse.down();
+    await page.mouse.move(p.x + p.dx, p.y + p.dy, { steps: 4 });
+    await page.mouse.up();
+    await page.getByTestId("tamano-mas").click();
+    await page.getByTestId("tamano-mas").click();
+    await comprobarEncuadre(page, "tras Tamaño +");
+    await page.screenshot({ path: `${DIR}/${ID}-u07-encuadre-${t.w}x${t.h}.png` });
+  });
+}
+
+test("ed-2 caso límite: punto a 2,5 m con rueda de 1,2 m y «Ver fuerzas» cabe en el lienzo a 820x1180", async ({ page }) => {
+  await page.setViewportSize({ width: 820, height: 1180 });
+  await abrirTaller(page);
+  await tocarVertice(page, 1);
+  for (let i = 0; i < 12; i++) await page.getByTestId("longitud-mas").click();
+  await page.getByTestId("poner-rueda").click();
+  await page.getByTestId("ver-fuerzas").click();
+  await comprobarEncuadre(page, "límite con fuerzas");
+  await page.screenshot({ path: `${DIR}/${ID}-u09-limite-fuerzas-820x1180.png` });
 });

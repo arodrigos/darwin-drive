@@ -1,5 +1,10 @@
 import { test, expect, type Page } from "@playwright/test";
 
+/** Transform del lienzo del Taller (lo publica la escena con ?pruebas=1): el coche se encuadra a su caja, no a una escala fija. */
+async function encuadre(page: Page) {
+  return page.evaluate(() => (window.__debug!.estado() as unknown as { tallerEncuadre: { escalaPxM: number; origenPx: { x: number; y: number } } }).tallerEncuadre);
+}
+
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
 const ID = process.env.CAPTURAS_PREFIJO ?? "tabletas-1";
 
@@ -34,13 +39,14 @@ async function vertice(page: Page, i: number) {
   // La escena se dibuja sobre el canvas, no sobre su contenedor: las coordenadas salen de su caja real.
   const caja = (await page.locator("canvas").boundingBox())!;
   const g = (await estado(page)).genomaEnTaller!;
-  const s = Math.min(caja.width, caja.height) / 7;
+  const enc = (await encuadre(page))!;
+  const s = enc.escalaPxM;
   const v = g.body[i];
   return {
-    x: caja.x + caja.width / 2 + Math.cos(v.angle) * v.length * s,
-    y: caja.y + caja.height / 2 - Math.sin(v.angle) * v.length * s,
-    cx: caja.x + caja.width / 2,
-    cy: caja.y + caja.height / 2,
+    x: caja.x + enc.origenPx.x + Math.cos(v.angle) * v.length * s,
+    y: caja.y + enc.origenPx.y - Math.sin(v.angle) * v.length * s,
+    cx: caja.x + enc.origenPx.x,
+    cy: caja.y + enc.origenPx.y,
   };
 }
 
