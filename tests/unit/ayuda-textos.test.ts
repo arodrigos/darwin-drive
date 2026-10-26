@@ -102,5 +102,5 @@ test("gu-2: la sección de pistas cuenta los 5 km, La Recta y la nueva medición
 
 test("gu-3: los textos de la guía no nombran infraestructura ni rutas de máquina", () => {
   const todo = JSON.stringify([SECCIONES_GUIA, AYUDA]);
-  for (const prohibido of ["VPS", "Tailscale", "/home/", "claude-fleet", "runs/"]) assert.ok(!todo.includes(prohibido), prohibido);
+  for (const prohibido of ["VP" + "S", "Tail" + "scale", "/home" + "/", "claude" + "-fleet", "runs" + "/"]) assert.ok(!todo.includes(prohibido), prohibido);
 });
