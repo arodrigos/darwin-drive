@@ -199,9 +199,10 @@ test("bt-5 sin ruedas avisa antes de terminar y Configurar no deja empezar con u
   await page.getByTestId("empezar-batalla").click();
   await page.getByTestId("soy-jugador").click();
   await expect.poll(async () => (await estado(page)).genomaEnTaller !== null).toBe(true);
-  for (let n = (await estado(page)).genomaEnTaller!.wheels.length; n > 0; n--) {
-    const w = (await estado(page)).genomaEnTaller!.wheels[0];
-    const p = await puntoVertice(page, w.vertex);
+  // Las ruedas quitadas dejan su hueco con vertex < 0: solo cuentan las puestas.
+  const puestas = async () => (await estado(page)).genomaEnTaller!.wheels.filter((w) => w.vertex >= 0);
+  for (let n = (await puestas()).length; n > 0; n--) {
+    const p = await puntoVertice(page, (await puestas())[0].vertex);
     await page.mouse.click(p.x, p.y);
     await page.getByTestId("quitar-rueda").click();
   }
