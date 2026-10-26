@@ -478,22 +478,24 @@ export function Taller(props: TallerProps) {
             </small>
           </label>
         </section>
-        <section className="grupo-panel" aria-label="Probar" data-testid="grupo-prueba">
+        <section className="grupo-panel grupo-prueba" aria-label="Probar" data-testid="grupo-prueba">
           <span className="etiqueta-grupo">Pista para probar</span>
-          <TrackPicker value={props.trackId} onChange={props.onTrack} rankings={props.rankings} comoSelector />
-          <button
-            type="button"
-            className="boton-primario"
-            data-testid="probar"
-            onClick={() => {
-              markInput("probar");
-              props.onTry();
-            }}
-          >
-            Probar
-          </button>
+          <div className="fila-prueba">
+            <TrackPicker value={props.trackId} onChange={props.onTrack} rankings={props.rankings} comoSelector />
+            <button
+              type="button"
+              className="boton-primario"
+              data-testid="probar"
+              onClick={() => {
+                markInput("probar");
+                props.onTry();
+              }}
+            >
+              Probar
+            </button>
+          </div>
         </section>
-        <section className="grupo-panel fila acciones-taller" aria-label="Guardar" data-testid="grupo-guardado">
+        <section className="grupo-panel fila acciones-taller grupo-guardado" aria-label="Guardar" data-testid="grupo-guardado">
           <button type="button" className="boton-secundario" data-testid="guardar" onClick={guardar}>
             Guardar en el garaje
           </button>

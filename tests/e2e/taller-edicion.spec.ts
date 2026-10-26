@@ -178,6 +178,22 @@ for (const t of TAMANOS) {
     await expect(panel.locator(".boton-primario")).toHaveCount(1);
     await expect(panel.locator(".boton-primario")).toHaveText("Probar");
     await expect(page.getByText("Pista para probar")).toBeVisible();
+    // «Probar» entero en pantalla nada más abrir el Taller y con un punto elegido (el panel crece), sin desplazar nada.
+    const enPantalla = async () => {
+      const c = (await page.getByTestId("probar").boundingBox())!;
+      expect(c.height).toBeGreaterThanOrEqual(47.5);
+      expect(c.y).toBeGreaterThanOrEqual(0);
+      expect(c.y + c.height).toBeLessThanOrEqual(t.h);
+    };
+    await enPantalla();
+    await page.screenshot({ path: `${DIR}/${ID}-panel-abierto-${t.w}x${t.h}.png` });
+    await tocarVertice(page, 3);
+    await expect(page.getByTestId("punto-titulo")).toHaveText("Punto 4");
+    await lienzoQuieto(page);
+    await enPantalla();
+    await page.screenshot({ path: `${DIR}/${ID}-panel-punto-${t.w}x${t.h}.png` });
+    // Los grupos se miden con el panel desplazado al final: ahí el pie fijo de «Probar» está en su sitio natural.
+    await panel.evaluate((e) => e.scrollTo(0, e.scrollHeight));
     const cajas = [];
     for (const id of ["grupo-coche", "grupo-prueba", "grupo-guardado"]) cajas.push((await page.getByTestId(id).boundingBox())!);
     // Entre grupos hay 16 px de separación como mínimo (en vertical, y en el panel desplazable también).
