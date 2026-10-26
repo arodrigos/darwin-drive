@@ -439,6 +439,7 @@ class TrackScene extends Phaser.Scene {
     this.screenCars = [];
     const ancho = this.scale.width;
     this.vista = poses.map((p) => ({ carId: p.carId, enPantalla: toX(p.x) >= 0 && toX(p.x) <= ancho }));
+    const etiquetasPuestas: { x: number; y: number; w: number; h: number }[] = [];
     poses.forEach((p, i) => {
       const car = cfg.cars.find((c) => c.carId === p.carId) ?? cfg.cars[i];
       if (!p.finished) this.screenCars.push({ carId: p.carId, x: toX(p.x), y: toY(p.y) });
@@ -506,6 +507,17 @@ class TrackScene extends Phaser.Scene {
       const label = this.carLabels[used];
       if (label && text) {
         label.setText(text).setPosition(toX(p.x), top).setVisible(true);
+        // Coches que salen juntos (batalla): las etiquetas que se pisan se apilan hacia arriba, una sobre otra, para que se lean todas.
+        const caja = label.getBounds();
+        let sube = 0;
+        for (let guard = 0; guard < 8; guard++) {
+          const y0 = caja.y - sube;
+          const choca = etiquetasPuestas.find((r) => caja.x < r.x + r.w && r.x < caja.x + caja.width && y0 < r.y + r.h && r.y < y0 + caja.height);
+          if (!choca) break;
+          sube = caja.y + caja.height - choca.y + 2;
+        }
+        if (sube > 0) label.setPosition(toX(p.x), top - sube);
+        etiquetasPuestas.push({ x: caja.x, y: caja.y - sube, w: caja.width, h: caja.height });
         if (i === 0 && fin) {
           const b = label.getBounds();
           this.cajaEtiquetaFin = { x: b.x, y: b.y, w: b.width, h: b.height };
