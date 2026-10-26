@@ -63,6 +63,11 @@ function umbral(): void {
       meta: rs.filter((r) => r.reason === "meta").length,
     });
   }
+  // Una línea por pista con lo que se le exige: la tabla de campeones por kilómetro sale al final y esto la hace legible sin releer el script.
+  for (const f of filas) {
+    const exenta = EXENTAS_DEL_TOPE_POR_PISTA.includes(f.pista as string);
+    console.log(`dif-5k: ${f.pista}: ${f.meta}/${f.campeones} a meta; se le exige ${exenta ? "(exenta del tope por pista)" : `≤ ${MAX_META_POR_PISTA * 100} % a meta`}, serie sin llegar; el 15 % y la bajada de 1 a 5 km se miden sobre el conjunto`);
+  }
   if (todos.length > 0 && !process.env.MEDIR_PISTA) {
     const frac = [1, 2, 3, 4, 5].map((k) => todos.filter((r) => (k === 5 ? r.reason === "meta" : r.distance >= k * 1000)).length / todos.length);
     console.log(`dif-5k: fracción de los ${todos.length} campeones que pasa 1, 2, 3, 4 y 5 km: ${frac.map((f) => (f * 100).toFixed(0) + " %").join(" · ")}`);
