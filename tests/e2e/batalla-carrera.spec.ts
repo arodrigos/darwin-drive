@@ -94,6 +94,9 @@ test("bc-1 con cuatro coches la carrera pinta el marcador, y la flecha de borde 
   // El marcador se publica en el siguiente fotograma, no al volver de adelantarSimulacion.
   await expect.poll(async () => (await estado(page)).carreraBatalla!.some((c, i) => c.distancia > antes[i]), { timeout: 15_000 }).toBe(true);
   await page.screenshot({ path: `${DIR}/${ID}-carrera-cuatro-${tam}.png` });
+  // El marcador queda bajo el nombre de la pista y las flechas bajo el marcador: nada se monta sobre nada.
+  const [nombrePista, marcador] = await Promise.all([page.getByTestId("nombre-pista").boundingBox(), page.getByTestId("marcador-batalla").boundingBox()]);
+  expect(marcador!.y, "marcador bajo el nombre de la pista").toBeGreaterThanOrEqual(nombrePista!.y + nombrePista!.height - 1);
   // Con coches al azar alguno se queda atrás: se avanza hasta que haya uno fuera de pantalla.
   for (let k = 0; k < 40 && !(await estado(page)).carreraBatalla!.some((c) => !c.enPantalla); k++) {
     await page.evaluate(() => window.__debug!.adelantarSimulacion(5));
@@ -102,6 +105,8 @@ test("bc-1 con cuatro coches la carrera pinta el marcador, y la flecha de borde 
   if (fuera.length > 0) {
     await expect(page.getByTestId("flechas-borde")).toBeVisible();
     await expect(page.getByTestId("flechas-borde")).toContainText(" m");
+    const [m2, fl] = await Promise.all([page.getByTestId("marcador-batalla").boundingBox(), page.getByTestId("flechas-borde").boundingBox()]);
+    expect(fl!.y, "flechas bajo el marcador").toBeGreaterThanOrEqual(m2!.y + m2!.height - 1);
     await page.screenshot({ path: `${DIR}/${ID}-flecha-borde-${tam}.png` });
   }
 });
