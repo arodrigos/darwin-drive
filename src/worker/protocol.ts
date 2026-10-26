@@ -1,4 +1,4 @@
-import type { CarPose, CarResult } from "../sim/constants";
+import type { CarPose, CarResult, FuerzasMuestra } from "../sim/constants";
 import type { Genome } from "../sim/genome";
 import type { TrackId } from "../sim/tracks";
 
@@ -10,6 +10,8 @@ export const MULTIPLIER: Record<Exclude<Pace, "turbo">, number> = { x1: 1, x2: 2
 export type ToWorker =
   | { type: "startRace"; raceId: string; cars: { carId: string; genome: Genome }[]; trackId: TrackId; pace: Pace }
   | { type: "setPace"; raceId: string; pace: Pace }
+  /** Capa «Fuerzas»: encendida, las poses llevan la muestra del coche líder; apagada no se calcula nada. Vale para las carreras siguientes. */
+  | { type: "setFuerzas"; raceId: string; on: boolean }
   | { type: "pause" | "resume" | "stop"; raceId: string }
   | { type: "advance"; raceId: string; seconds: number }
   /** Solo pruebas: tope de velocidad simulada (en múltiplos de tiempo real) para imitar un dispositivo lento; null lo quita. Vale para todas las carreras. */
@@ -17,7 +19,7 @@ export type ToWorker =
 
 export type FromWorker =
   /** 30 Hz salvo en turbo. `ritmoReal` es el múltiplo de tiempo real que el dispositivo está logrando de verdad. */
-  | { type: "poses"; raceId: string; simTime: number; poses: CarPose[]; ritmoReal?: number }
+  | { type: "poses"; raceId: string; simTime: number; poses: CarPose[]; ritmoReal?: number; fuerzas?: FuerzasMuestra }
   | { type: "carFinished"; raceId: string; result: CarResult }
   | { type: "progress"; raceId: string; finished: number; total: number; leaderX?: number; simTime?: number; ritmoReal?: number }
   | { type: "raceDone"; raceId: string; results: CarResult[] }

@@ -1,7 +1,7 @@
 import "../detmath";
 import { Vec2, World, type Body } from "planck";
 import { DT, ANOMALY_HEIGHT, ANOMALY_SPEED, MAX_STEPS, META_DISTANCE, STALL_MIN_PROGRESS, STALL_STEPS, PHYSICS_VERSION } from "../constants";
-import type { CarPose, CarResult, EndReason } from "../constants";
+import type { CarPose, CarResult, EndReason, FuerzasMuestra } from "../constants";
 import { Fragilidad } from "./rotura-sim";
 import { ALFA_CARGA, BufferParada, clasificarParada, type Diagnostico } from "../diagnostico";
 import { normalizeGenome, type Genome } from "../genome";
@@ -217,6 +217,23 @@ export class CarSim {
     this.world = null;
     this.ground = null;
     this.car = null;
+  }
+
+  /**
+   * Fuerza y par de cada rueda en el último paso. Solo lee el mundo: consultarla no cambia el resultado
+   * (lo prueba un test que compara los CarResult con y sin consulta). Null si el coche ya terminó.
+   */
+  fuerzas(): FuerzasMuestra | null {
+    const car = this.car;
+    if (!car || this.end) return null;
+    return {
+      carId: this.carId,
+      ruedas: car.wheels.map((w) => {
+        if (!w.joint || w.suelta) return { fx: 0, fy: 0, par: 0, parMotor: 0, activa: false };
+        const f = w.joint.getReactionForce(1 / DT);
+        return { fx: f.x, fy: f.y, par: w.joint.getReactionTorque(1 / DT), parMotor: w.joint.getMotorTorque(1 / DT), activa: true };
+      }),
+    };
   }
 
   pose(): CarPose {

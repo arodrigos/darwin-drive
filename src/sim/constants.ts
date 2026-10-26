@@ -38,6 +38,21 @@ export interface CarResult {
   trackVersion: number;
 }
 
+/** Lo que sienten las ruedas de un coche en un instante (solo lectura del mundo; mismo orden que `CarPose.wheels`). */
+export interface FuerzasMuestra {
+  carId: string;
+  ruedas: {
+    /** Fuerza de reacción de la articulación de la rueda, en N (ejes del mundo: x hacia delante, y hacia arriba). */
+    fx: number;
+    fy: number;
+    /** Par de reacción y par del motor, en N·m. */
+    par: number;
+    parMotor: number;
+    /** false si la rueda ya no está unida al coche. */
+    activa: boolean;
+  }[];
+}
+
 export interface CarPose {
   carId: string;
   x: number;

@@ -190,6 +190,7 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
       { nombre: "×4", texto: "Cuatro veces más rápido." },
       { nombre: "×8", texto: "Ocho veces más rápido; si el dispositivo no llega, avisa con «real ×N»." },
       { nombre: "Hasta el final", texto: "Salta al resultado sin esperar la carrera." },
+      { nombre: "Fuerzas", texto: "Enciende, sobre cada rueda del coche que sigue la cámara, una flecha rosa con la fuerza que el suelo le hace (más larga, más fuerza; cambia con cada piedra) y un arco verde con su par. Apagada no gasta nada." },
       { nombre: "Repetir", texto: "Vuelve a correr desde el principio con el mismo ritmo." },
       { nombre: "¿Por qué?", texto: "En la tarjeta de fin, explica por qué se paró el coche." },
       { nombre: "Destello", texto: "Una estrella marca dónde se rompió una pieza; la tarjeta cuenta cuántas perdió. Más en «Fragilidad»." },

@@ -44,6 +44,7 @@ function createWorkerRunner(onSilentFailure: () => void): SimRunner | null {
 export function createSimRunner(opts: RunnerOptions = {}): SimRunner {
   const listeners = new Set<(m: FromWorker) => void>();
   let lastStart: ToWorker | null = null;
+  let lastFuerzas: ToWorker | null = null;
   let failPending = Boolean(opts.failFirstStart);
   let inner: SimRunner;
   let unsubscribe: () => void = () => {};
@@ -56,6 +57,7 @@ export function createSimRunner(opts: RunnerOptions = {}): SimRunner {
   const fallBack = () => {
     inner.terminate();
     attach(createInlineRunner());
+    if (lastFuerzas) inner.post(lastFuerzas);
     if (lastStart) inner.post(lastStart);
   };
 
@@ -74,6 +76,7 @@ export function createSimRunner(opts: RunnerOptions = {}): SimRunner {
         }
         lastStart = msg;
       }
+      if (msg.type === "setFuerzas") lastFuerzas = msg;
       inner.post(msg);
     },
     subscribe(listener) {

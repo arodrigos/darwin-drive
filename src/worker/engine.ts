@@ -30,6 +30,7 @@ export class RaceEngine {
   private lastProgressAt = 0;
   private reported = 0;
   private limite: number | null = null;
+  private fuerzasOn = false;
   private ritmoReal: number | undefined;
   private ventana = { pasos: 0, ms: 0 };
 
@@ -55,6 +56,12 @@ export class RaceEngine {
   private dispatch(msg: ToWorker): void {
     if (msg.type === "limitRate") {
       this.limite = msg.max !== null && msg.max > 0 ? msg.max : null;
+      return;
+    }
+    if (msg.type === "setFuerzas") {
+      this.fuerzasOn = msg.on;
+      // La muestra llega ya, sin esperar al próximo tick: con la carrera en pausa también se ve.
+      if (msg.on && this.race && msg.raceId === this.raceId) this.emitPoses();
       return;
     }
     if (msg.type === "startRace") {
@@ -194,6 +201,16 @@ export class RaceEngine {
 
   private emitPoses(): void {
     this.lastPoseAt = this.reloj();
-    this.emit({ type: "poses", raceId: this.raceId, simTime: this.race!.simTime(), poses: this.race!.poses(), ritmoReal: this.ritmoReal });
+    const race = this.race!;
+    const poses = race.poses();
+    const msg: FromWorker = { type: "poses", raceId: this.raceId, simTime: race.simTime(), poses, ritmoReal: this.ritmoReal };
+    if (this.fuerzasOn) {
+      // La cámara sigue al coche vivo más adelantado: es el único del que se pregunta.
+      const vivos = poses.filter((p) => !p.finished);
+      const lider = vivos.reduce<(typeof poses)[number] | null>((a, p) => (a === null || p.x > a.x ? p : a), null);
+      const muestra = lider ? race.fuerzas(lider.carId) : null;
+      if (muestra) msg.fuerzas = muestra;
+    }
+    this.emit(msg);
   }
 }

@@ -24,6 +24,7 @@ import { ControlRitmo } from "./ControlRitmo";
 import { PanelRendimiento } from "./PanelRendimiento";
 import type { RankingsView } from "./TrackPicker";
 import { puedeDibujar } from "@/game/lienzo";
+import { aplicarMuestra, publicarFuerzas, reiniciarFuerzasVivo } from "../fuerzas-vivo";
 
 const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarlo o a abrirlo en Safari o Chrome.";
 export const MENSAJE_ERROR = "La simulación se ha detenido por un error. Toca Reintentar para volver a empezar esta carrera.";
@@ -110,6 +111,8 @@ export function Pista(props: PistaProps) {
   useEffect(() => {
     alRitmo.current = props.onRitmo;
   });
+  const [fuerzas, setFuerzas] = useState(false);
+  const eligeFuerzas = useRef<(on: boolean) => void>(() => {});
   const pausarPorCapa = useRef<(on: boolean) => void>(() => {});
   const [rendimiento] = useState(() => parametrosPrueba().rendimiento);
   // La pista y el genoma se fijan al abrir: cambiarlos a media carrera sería correr una cosa y pintar otra.
@@ -171,6 +174,7 @@ export function Pista(props: PistaProps) {
         medirRitmo(m.ritmoReal);
         const lider = m.poses.reduce((a, p) => Math.max(a, p.x), 0);
         maxX = Math.max(maxX, lider);
+        aplicarMuestra(scene, m.fuerzas);
         scene.setPoses(m.simTime, m.poses, m.simTime - ultimaSim > 0.5);
         ultimaSim = m.simTime;
         runtime.tiempoSim = m.simTime;
@@ -265,6 +269,13 @@ export function Pista(props: PistaProps) {
       measureOnNextFrame(evento);
     };
 
+    eligeFuerzas.current = (on) => {
+      markInput("fuerzas-carrera");
+      scene?.activarFuerzas(on);
+      publicarFuerzas(on);
+      runner.post({ type: "setFuerzas", raceId, on });
+    };
+    reiniciarFuerzasVivo();
     const unsubscribe = runner.subscribe(alMensaje);
     runtime.pistaEnCarrera = id;
     runtime.genomaEnPista = g;
@@ -350,6 +361,8 @@ export function Pista(props: PistaProps) {
       runtime.marcador = null;
       runtime.etiquetaFin = null;
       runtime.ejecutor = null;
+      eligeFuerzas.current = () => {};
+      reiniciarFuerzasVivo();
     };
   }, [failed]);
 
@@ -409,6 +422,13 @@ export function Pista(props: PistaProps) {
             onElegir={(p) => eligeRitmo.current(p)}
             ritmoReal={rotulo}
             etiquetaFinal="Hasta el final"
+            fuerzas={{
+              activa: fuerzas,
+              onAlternar: () => {
+                eligeFuerzas.current(!fuerzas);
+                setFuerzas(!fuerzas);
+              },
+            }}
           />
         </div>
       )}

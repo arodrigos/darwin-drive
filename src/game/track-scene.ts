@@ -5,7 +5,7 @@ import { createNoise2D } from "simplex-noise";
 import { runtime } from "@/debug/ganchos";
 import { measureOnNextFrame } from "@/debug/latencias";
 import { formatMeters } from "@/app/format";
-import { META_DISTANCE, TORQUE_SLOPE_DEG, type CarPose, type CarResult, type CausaParada } from "@/sim/constants";
+import { META_DISTANCE, TORQUE_SLOPE_DEG, type CarPose, type CarResult, type CausaParada, type FuerzasMuestra } from "@/sim/constants";
 import type { Genome } from "@/sim/genome";
 import { SEGMENT_LENGTH, segmentVertices } from "@/sim/terrain";
 import type { Track } from "@/sim/tracks";
@@ -34,6 +34,16 @@ const ICONOS: Record<CausaParada, string> = { motor: "", agarre: "", vuelco: "�
 const FINISHED_GREY = 0x8a8f94;
 // Radio de acierto de un toque: un dedo no apunta a un coche de 2 m a 20 px/m.
 const PICK_RADIUS_PX = 48;
+// Capa «Fuerzas»: los mismos colores que «Ver fuerzas» del Taller (fuerza en rosa, par en menta).
+const ROSA_FUERZA = 0xff5d73;
+const MENTA_PAR = 0x6df0c2;
+// Escala fija para que dos momentos se comparen a ojo: 1 px por cada 20 N, con tope.
+const N_POR_PX = 20;
+const TOPE_FLECHA_PX = 120;
+// Par que llena el arco entero, como en el Taller.
+const PAR_ARCO_COMPLETO = 600;
+// Constante de tiempo de la media móvil exponencial: las piedras se leen sin que la flecha tiemble.
+const SUAVIZADO_FUERZA_MS = 150;
 
 /** Contorno del color, 3 px hacia dentro: el contorno oscuro y el trazo del color van uno junto al otro. */
 function interior(pts: Vec[], cx: number, cy: number): Vec[] {
@@ -69,6 +79,10 @@ export interface TrackSceneHandle {
   /** Clava la bandera del n.º 1 en esa x (nuevo récord). */
   setFlag(x: number | null): void;
   carFinished(result: CarResult): void;
+  /** Capa «Fuerzas»: enciende o apaga el dibujo de las flechas y los arcos. */
+  activarFuerzas(on: boolean): void;
+  /** Última muestra del coche líder (null si el worker no manda ninguna: capa apagada o coche terminado). */
+  setFuerzas(muestra: FuerzasMuestra | null): void;
   /** Los coches con estrella ★ encima (los favoritos de la generación en curso). */
   setFavorites(ids: string[]): void;
   /** Avisa del coche vivo que ha tocado el jugador (el más cercano al dedo, con margen para un dedo). */
@@ -147,6 +161,27 @@ class TrackScene extends Phaser.Scene {
   private favorites = new Set<string>();
   private pickListener: ((carId: string) => void) | null = null;
   private screenCars: { carId: string; x: number; y: number }[] = [];
+  private fuerzasActivas = false;
+  private muestraFuerzas: FuerzasMuestra | null = null;
+  /** Valores ya suavizados que se pintan: fx, fy en N y par en N·m por rueda. */
+  private suaveFuerzas: { carId: string; ruedas: { fx: number; fy: number; par: number }[] } | null = null;
+  private ultimoFrameFuerzas = 0;
+  private medirFuerzas = false;
+  private etiquetaFuerza!: Phaser.GameObjects.Text;
+  private etiquetaPar!: Phaser.GameObjects.Text;
+
+  activarFuerzas(on: boolean): void {
+    this.fuerzasActivas = on;
+    if (!on) {
+      this.muestraFuerzas = null;
+      this.suaveFuerzas = null;
+    }
+    this.medirFuerzas = true;
+  }
+
+  setFuerzas(muestra: FuerzasMuestra | null): void {
+    this.muestraFuerzas = this.fuerzasActivas ? muestra : null;
+  }
 
   setFavorites(ids: string[]): void {
     this.favorites = new Set(ids);
@@ -161,6 +196,9 @@ class TrackScene extends Phaser.Scene {
     this.recvGap = otra.recvGap;
     this.finishedAt = otra.finishedAt;
     this.parada = otra.parada;
+    this.fuerzasActivas = otra.fuerzasActivas;
+    this.muestraFuerzas = otra.muestraFuerzas;
+    this.suaveFuerzas = otra.suaveFuerzas;
     this.ancla = otra.ancla;
     this.favorites = otra.favorites;
     this.pickListener = otra.pickListener;
@@ -189,6 +227,8 @@ class TrackScene extends Phaser.Scene {
     runtime.cajaCoche = null;
     this.favorites.clear();
     this.screenCars = [];
+    this.muestraFuerzas = null;
+    this.suaveFuerzas = null;
     this.skyDirty = true;
     this.camX = 0;
     this.refH = Number.NaN;
@@ -239,6 +279,9 @@ class TrackScene extends Phaser.Scene {
     const placa = { ...style, fontSize: `${ETIQUETA_PX}px`, fontStyle: "bold", color: TEXTO_PLACA, backgroundColor: PLACA, padding: { x: 6, y: 3 } };
     this.etiquetaCausa = this.add.text(0, 0, "", placa).setOrigin(0.5, 1).setVisible(false);
     this.etiquetaLimite = this.add.text(0, 0, "", placa).setOrigin(0, 0.5).setVisible(false);
+    const etiquetaCapa = { ...style, fontSize: "13px", fontStyle: "bold", stroke: "#0c0c0c", strokeThickness: 3 };
+    this.etiquetaFuerza = this.add.text(0, 0, "fuerza", { ...etiquetaCapa, color: "#ff5d73" }).setVisible(false);
+    this.etiquetaPar = this.add.text(0, 0, "par", { ...etiquetaCapa, color: "#6df0c2" }).setVisible(false);
     this.scale.on("resize", () => (this.skyDirty = true));
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
       if (!this.pickListener) return;
@@ -278,6 +321,7 @@ class TrackScene extends Phaser.Scene {
     this.drawHills(W, H);
     this.drawGround(W, H, toX, toY);
     this.drawCars(poses, cfg, toX, toY);
+    this.drawFuerzas(poses, toX, toY);
     this.drawMarcador(cfg, poses, toX, toY);
     this.drawRuler(W, H, toX);
     this.drawFlag(cfg, toX, toY, W);
@@ -474,6 +518,94 @@ class TrackScene extends Phaser.Scene {
     }
   }
 
+  /**
+   * Flecha de fuerza y arco de par de cada rueda del coche que sigue la cámara. Lo que se pinta es la media
+   * móvil de lo que mide el Worker, no la última muestra: así el ritmo de dibujado no cambia lo que se ve.
+   */
+  private drawFuerzas(poses: CarPose[], toX: (x: number) => number, toY: (h: number) => number): void {
+    const g = this.cars;
+    const m = this.muestraFuerzas;
+    const ahora = performance.now();
+    const dt = Math.min(500, Math.max(0, ahora - this.ultimoFrameFuerzas));
+    this.ultimoFrameFuerzas = ahora;
+    this.etiquetaFuerza.setVisible(false);
+    this.etiquetaPar.setVisible(false);
+    const pose = m ? poses.find((p) => p.carId === m.carId) : undefined;
+    if (!this.fuerzasActivas || !m || !pose || pose.finished) {
+      runtime.fuerzasEnVivo.flechasPx = [];
+      if (this.medirFuerzas && !this.fuerzasActivas) {
+        this.medirFuerzas = false;
+        measureOnNextFrame("fuerzas-carrera");
+      }
+      return;
+    }
+    let suave = this.suaveFuerzas;
+    if (!suave || suave.carId !== m.carId || suave.ruedas.length !== m.ruedas.length) {
+      // Coche nuevo: arranca en su valor real, sin deslizarse desde cero.
+      suave = { carId: m.carId, ruedas: m.ruedas.map((r) => ({ fx: r.fx, fy: r.fy, par: Math.abs(r.parMotor) })) };
+    } else {
+      const k = 1 - Math.exp(-dt / SUAVIZADO_FUERZA_MS);
+      m.ruedas.forEach((r, i) => {
+        const s = suave!.ruedas[i];
+        s.fx += (r.fx - s.fx) * k;
+        s.fy += (r.fy - s.fy) * k;
+        s.par += (Math.abs(r.parMotor) - s.par) * k;
+      });
+    }
+    this.suaveFuerzas = suave;
+    const largos: number[] = [];
+    let primera = true;
+    pose.wheels.forEach((w, i) => {
+      const r = m.ruedas[i];
+      if (!r || !r.activa || w.fuera || w.suelta) {
+        largos.push(0);
+        return;
+      }
+      const s = suave!.ruedas[i];
+      const cx = toX(w.x);
+      const cy = toY(w.y);
+      const len = Math.hypot(s.fx, s.fy) / N_POR_PX;
+      const escala = len > TOPE_FLECHA_PX ? TOPE_FLECHA_PX / len : 1;
+      // En pantalla el eje y baja: la componente vertical se invierte.
+      const dx = (s.fx / N_POR_PX) * escala;
+      const dy = (-s.fy / N_POR_PX) * escala;
+      const largo = Math.hypot(dx, dy);
+      largos.push(largo);
+      if (largo >= 3) {
+        const x2 = cx + dx;
+        const y2 = cy + dy;
+        g.lineStyle(6, 0x0c0c0c, 1).lineBetween(cx, cy, x2, y2);
+        g.lineStyle(4, ROSA_FUERZA, 1).lineBetween(cx, cy, x2, y2);
+        const ang = Math.atan2(dy, dx);
+        const p = (da: number) => ({ x: x2 - Math.cos(ang + da) * 11, y: y2 - Math.sin(ang + da) * 11 });
+        const a = p(0.45);
+        const b = p(-0.45);
+        g.fillStyle(ROSA_FUERZA, 1).fillTriangle(x2, y2, a.x, a.y, b.x, b.y);
+        g.lineStyle(1.5, 0x0c0c0c, 1).strokeTriangle(x2, y2, a.x, a.y, b.x, b.y);
+        if (primera) this.etiquetaFuerza.setPosition(x2 + 6, y2 - 8).setVisible(true);
+      }
+      // Arco de par alrededor de la rueda: gira en el sentido en que rueda, como en el Taller.
+      const radio = w.radius * PX_PER_METER + 9;
+      const inicio = -Math.PI * 0.9;
+      const barrido = Math.max(0.35, Math.min(1.7 * Math.PI, (s.par / PAR_ARCO_COMPLETO) * 1.7 * Math.PI));
+      g.lineStyle(7, 0x0c0c0c, 1).beginPath().arc(cx, cy, radio, inicio, inicio + barrido, false).strokePath();
+      g.lineStyle(4, MENTA_PAR, 1).beginPath().arc(cx, cy, radio, inicio, inicio + barrido, false).strokePath();
+      const fin = inicio + barrido;
+      const px = cx + Math.cos(fin) * radio;
+      const py = cy + Math.sin(fin) * radio;
+      const tx = -Math.sin(fin);
+      const ty = Math.cos(fin);
+      g.fillStyle(MENTA_PAR, 1).fillTriangle(px + tx * 10, py + ty * 10, px - ty * 7, py + tx * 7, px + ty * 7, py - tx * 7);
+      if (primera) this.etiquetaPar.setPosition(cx + Math.cos(inicio) * radio - 26, cy + Math.sin(inicio) * radio - 18).setVisible(true);
+      primera = false;
+    });
+    runtime.fuerzasEnVivo.flechasPx = largos;
+    if (this.medirFuerzas) {
+      this.medirFuerzas = false;
+      measureOnNextFrame("fuerzas-carrera");
+    }
+  }
+
   /** Caja del coche en px CSS: el marcador se dimensiona contra ella y las pruebas comprueban que nada se cruza. */
   private cajaDelCoche(pose: CarPose, genome: Genome, toX: (x: number) => number, toY: (h: number) => number): { x: number; y: number; w: number; h: number } {
     const xs: number[] = [];
@@ -648,6 +780,8 @@ export function startTrackScene(parent: HTMLElement, track: Track, opciones: Opc
     setPoses: (t, p, s) => scene.setPoses(t, p, s),
     setFlag: (x) => scene.setFlag(x),
     carFinished: (r) => scene.carFinished(r),
+    activarFuerzas: (on) => scene.activarFuerzas(on),
+    setFuerzas: (m) => scene.setFuerzas(m),
     setFavorites: (ids) => scene.setFavorites(ids),
     onPick: (l) => scene.onPick(l),
     destroy: () => gestor.destruir(),

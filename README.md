@@ -19,7 +19,7 @@ Desde la portada se llega a todo:
 
 ### La carrera
 
-- El coche corre solo y cuenta metros. Una fila de botones elige el ritmo: ×1, ×2, ×4, ×8 y «Hasta el final», que salta al resultado sin dibujar la carrera (en Evolución, «Turbo» salta de generación en generación). El último ritmo entre ×1 y ×8 se recuerda; «Hasta el final» no. Si el dispositivo no llega al ritmo pedido, aparece «real ×N».
+- El coche corre solo y cuenta metros. Una fila de botones elige el ritmo: ×1, ×2, ×4, ×8 y «Hasta el final», que salta al resultado sin dibujar la carrera (en Evolución, «Turbo» salta de generación en generación). El último ritmo entre ×1 y ×8 se recuerda; «Hasta el final» no. Si el dispositivo no llega al ritmo pedido, aparece «real ×N». Bajo los ritmos, el interruptor «Fuerzas» (apagado por defecto, en Probar y en Evolución) pinta sobre cada rueda del coche que sigue la cámara una flecha de fuerza (1 px por cada 20 N, tope de 120 px, suavizada ~150 ms) y un arco de par, con los colores de «Ver fuerzas» del Taller. El Worker solo calcula la fuerza de reacción de las articulaciones de ese coche, y solo mientras la capa está encendida, así que nunca cambia un resultado.
 - El ritmo y las pausas nunca cambian el resultado. Al ocultar la pestaña o apagar la pantalla, la carrera se pausa y sigue al volver.
 - La carrera acaba al llegar a la meta de 5000 m o a los 15 minutos de simulación. Un coche se da por parado tras 5 s sin avanzar.
 - **Por qué se para**: la tarjeta de fin dice la causa (vuelco, sin apoyo, panza, motor, agarre u obstáculo) y «¿Por qué?» abre la guía. La pista dibuja una cuña con la pendiente real. El motor de todos los coches empuja hasta 35°. La causa se guarda con la marca y se ve también en el detalle del ranking y del Garaje.

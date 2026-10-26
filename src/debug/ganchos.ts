@@ -1,4 +1,4 @@
-import type { CarResult } from "@/sim/constants";
+import type { CarResult, FuerzasMuestra } from "@/sim/constants";
 import type { Genome } from "@/sim/genome";
 import type { TrackId } from "@/sim/tracks";
 import { contadoresLienzo, estadoLienzo, muestraLienzo, perderLienzo } from "@/game/lienzo";
@@ -48,6 +48,8 @@ export const runtime = {
   /** Capa «Ver fuerzas» del Taller (centro de masas y par máximo por rueda activa) e inclinación en grados de cada rueda (los publica Taller). */
   fuerzasTaller: null as { visible: boolean; centroMasas: { x: number; y: number }; pares: number[] } | null,
   inclinaciones: [] as number[],
+  /** Capa «Fuerzas» de la carrera: encendida o no, muestras recibidas del Worker (mensajes con fuerzas), última muestra y largo en px de cada flecha pintada. */
+  fuerzasEnVivo: { activa: false, muestras: 0, ultima: null as FuerzasMuestra | null, flechasPx: [] as number[] },
   garaje: 0,
   ultimaInscripcion: null as { trackId: TrackId; position: number | null; alreadyAt: number | null; isRecord: boolean } | null,
   // Evolución en curso (la rellena Evolucion).
@@ -124,6 +126,7 @@ export function estado() {
     dimensiones: runtime.dimensiones,
     fuerzasTaller: runtime.fuerzasTaller,
     inclinaciones: runtime.inclinaciones,
+    fuerzasEnVivo: runtime.fuerzasEnVivo,
     ultimoResultado: runtime.ultimoResultado,
     // Añadidos al contrato por pista-carrera: la pausa de pestaña y el ejecutor activo se prueban con ellos.
     tiempoSim: runtime.tiempoSim,

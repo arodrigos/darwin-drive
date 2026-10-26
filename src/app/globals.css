@@ -262,6 +262,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .franja-ritmo { height: 20px; align-items: end; }
 .ritmo-real { justify-self: center; font-size: 14px; line-height: 18px; font-weight: 800; white-space: nowrap; color: #ffd23f; text-shadow: 0 1px 2px rgba(0,0,0,.8); }
 .botones-ritmo .pastilla { min-width: 44px; padding-left: 4px; padding-right: 4px; white-space: nowrap; }
+.fila-fuerzas { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.fila-fuerzas .selector { min-height: 44px; min-width: 96px; padding: 6px 12px; }
+.fila-fuerzas .leyenda-fuerzas { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 2px 8px; border-radius: 8px; background: rgba(0,0,0,.55); }
 .pie-pista { position: absolute; left: 0; right: 0; bottom: 0; z-index: 12; display: flex; flex-direction: column; gap: 4px; padding: 0 8px calc(8px + env(safe-area-inset-bottom)); pointer-events: none; }
 .pie-pista > * { pointer-events: auto; }
 .banda-final { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; border-radius: 10px; background: rgba(0,0,0,.65); font-weight: 700; font-size: .9rem; }
