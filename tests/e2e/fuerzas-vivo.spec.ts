@@ -24,6 +24,21 @@ async function probar(page: Page, pista: "pedregal" | "recta") {
   await expect(page.getByTestId("pista")).toBeVisible();
 }
 
+/** Contraste WCAG entre el texto y el fondo propios del botón, encendido o apagado (el fondo es casi opaco). */
+async function contrasteBoton(page: Page, testid: string): Promise<number> {
+  return page.evaluate((id) => {
+    const el = document.querySelector(`[data-testid="${id}"]`)!;
+    const cs = getComputedStyle(el);
+    const rgb = (c: string) => (c.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
+    const lum = (c: number[]) => {
+      const [r, g, b] = c.map((v) => v / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const [a, b] = [lum(rgb(cs.color)), lum(rgb(cs.backgroundColor))].sort((x, y) => y - x);
+    return (a + 0.05) / (b + 0.05);
+  }, testid);
+}
+
 const mayor = (xs: number[]) => xs.reduce((a, b) => Math.max(a, b), 0);
 
 test("fv-1 «Fuerzas» pinta una flecha por rueda que cambia con el terreno y al apagarlo desaparece", async ({ page }) => {
@@ -40,6 +55,8 @@ test("fv-1 «Fuerzas» pinta una flecha por rueda que cambia con el terreno y al
     await boton.click();
     await expect(boton).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByTestId("ritmo-leyenda-fuerzas")).toBeVisible();
+    expect(await contrasteBoton(page, "ritmo-fuerzas"), "interruptor encendido").toBeGreaterThanOrEqual(4.5);
+    await page.screenshot({ path: `${DIR}/${ID}-interruptor-encendido-${t.w}x${t.h}.png` });
     await expect.poll(async () => (await estado(page)).fuerzasEnVivo.muestras).toBeGreaterThan(0);
     await expect.poll(async () => mayor((await estado(page)).fuerzasEnVivo.flechasPx)).toBeGreaterThan(3);
 
@@ -61,6 +78,7 @@ test("fv-1 «Fuerzas» pinta una flecha por rueda que cambia con el terreno y al
 
     await boton.click();
     await expect(boton).toHaveAttribute("aria-pressed", "false");
+    expect(await contrasteBoton(page, "ritmo-fuerzas"), "interruptor apagado").toBeGreaterThanOrEqual(4.5);
     await expect.poll(async () => (await estado(page)).fuerzasEnVivo.flechasPx.length).toBe(0);
     const tras = (await estado(page)).fuerzasEnVivo.muestras;
     await page.waitForTimeout(600);
