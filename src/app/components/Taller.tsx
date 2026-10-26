@@ -230,6 +230,8 @@ export function Taller(props: TallerProps) {
                   onClick={() => {
                     markInput("color-coche");
                     props.onColor(c);
+                    // Se cierra al elegir: abierta tapa el coche en el móvil y el color nuevo no se vería.
+                    setColores(false);
                   }}
                 >
                   {props.identidad.color === c ? "✓" : ""}
