@@ -255,8 +255,9 @@ async function comprobarEncuadre(page: Page, etiqueta: string) {
         const lz = document.querySelector<HTMLElement>('[data-testid="lienzo"]')!;
         return { canvas: cv.height, lienzo: lz.clientHeight };
       });
-      return c.canvas === c.lienzo;
-    }, { message: `${etiqueta}: canvas.height === lienzo.clientHeight` })
+      // El alto del contenedor es fraccionario: clientHeight redondea y Phaser trunca, así que difieren como mucho 1 px.
+      return Math.abs(c.canvas - c.lienzo) <= 1;
+    }, { message: `${etiqueta}: canvas.height ≈ lienzo.clientHeight (±1 px)` })
     .toBe(true);
   await lienzoQuieto(page);
   const info = await page.evaluate(() => {
