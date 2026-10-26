@@ -257,6 +257,7 @@ export function Carrera(props: CarreraProps) {
           {track.name}
         </div>
       </div>
+      <div className="hud-batalla">
       <ol className="marcador-batalla" data-testid="marcador-batalla" aria-label="Marcador en vivo">
         {filas.map((f) => (
           <li key={f.jugador} className="chip-marcador" data-testid={`chip-${f.jugador}`} data-color={jugadores[f.jugador].color}>
@@ -275,6 +276,7 @@ export function Carrera(props: CarreraProps) {
           ))}
         </ul>
       )}
+      </div>
       {error ? (
         <div className="tarjeta-fin error" role="alert" data-testid="error-simulacion">
           <p>{MENSAJE_ERROR_BATALLA}</p>
