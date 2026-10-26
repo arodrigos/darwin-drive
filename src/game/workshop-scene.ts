@@ -142,10 +142,11 @@ class WorkshopScene extends Phaser.Scene {
     const ancho = elegida ? 4 : 2;
     const a = { x: c.px - dx * len, y: c.py - dy * len };
     const b = { x: c.px + dx * len, y: c.py + dy * len };
-    g.lineStyle(ancho, 0x0c0c0c, alpha).lineBetween(a.x, a.y, b.x, b.y);
-    g.lineStyle(ancho - 1, color, alpha);
+    // La elegida lleva un halo oscuro ancho: sobre la rueda (también oscura) el amarillo solo no bastaba para distinguirla.
+    g.lineStyle(elegida ? 10 : ancho, 0x0c0c0c, elegida ? 0.9 : alpha).lineBetween(a.x, a.y, b.x, b.y);
+    g.lineStyle(elegida ? 5 : ancho - 1, color, alpha);
     const DIENTES = 7;
-    const amp = elegida ? 8 : 6;
+    const amp = elegida ? 10 : 6;
     const zig: Phaser.Math.Vector2[] = [new Phaser.Math.Vector2(a.x, a.y)];
     for (let k = 1; k < DIENTES * 2; k++) {
       const t = k / (DIENTES * 2);
@@ -158,9 +159,10 @@ class WorkshopScene extends Phaser.Scene {
     for (const e of [a, b]) g.lineBetween(e.x - nx * 10, e.y - ny * 10, e.x + nx * 10, e.y + ny * 10);
     if (elegida) {
       const t = this.extremoGuia(genome, vertex)!;
-      g.fillStyle(0xffd23f, 0.35).fillCircle(t.px, t.py, HANDLE_DIAMETER / 2);
+      g.fillStyle(0x0c0c0c, 0.55).fillCircle(t.px, t.py, HANDLE_DIAMETER / 2);
+      g.lineStyle(5, 0x0c0c0c, 1).strokeCircle(t.px, t.py, HANDLE_DIAMETER / 2);
       g.lineStyle(3, 0xffd23f, 1).strokeCircle(t.px, t.py, HANDLE_DIAMETER / 2);
-      g.fillStyle(0xffd23f, 1).fillCircle(t.px, t.py, 6);
+      g.fillStyle(0xffd23f, 1).fillCircle(t.px, t.py, 8);
     }
   }
 

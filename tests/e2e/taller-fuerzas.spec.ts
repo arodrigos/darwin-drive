@@ -87,6 +87,8 @@ for (const t of TAMANOS) {
     await page.mouse.move(c.x + Math.cos(rad) * 120, c.y - Math.sin(rad) * 120, { steps: 5 });
     await expect.poll(async () => (await estado(page)).inclinaciones[0]).toBeCloseTo(-20, 0);
     await expect(page.getByTestId("lectura-suspension")).toContainText("inclinada 20° hacia atrás");
+    // La lectura en palabras se ve a la vez que la guía que gira, aunque el panel esté desplazado.
+    await expect(page.getByTestId("lectura-suspension")).toBeInViewport({ ratio: 1 });
     await page.mouse.move(c.x + 120, c.y, { steps: 5 });
     // ±90° son la misma guía tumbada; según de qué lado quede el dedo por un píxel, sale una u otra.
     await expect.poll(async () => Math.abs((await estado(page)).inclinaciones[0])).toBeCloseTo(90, 0);
@@ -110,6 +112,15 @@ for (const t of TAMANOS) {
     await page.getByTestId("ver-fuerzas").click();
     await expect(page.getByTestId("ver-fuerzas")).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByTestId("leyenda-fuerzas")).toBeVisible();
+    // El chip y la leyenda van en su franja, bajo el lienzo: no tapan ni la ayuda ni el coche.
+    await lienzoQuieto(page);
+    const lienzoCaja = (await page.getByTestId("lienzo").boundingBox())!;
+    for (const id of ["ver-fuerzas", "leyenda-fuerzas"]) {
+      const c = (await page.getByTestId(id).boundingBox())!;
+      expect(c.y, id).toBeGreaterThanOrEqual(lienzoCaja.y + lienzoCaja.height - 0.5);
+      expect(c.y + c.height, id).toBeLessThanOrEqual(t.h);
+      expect(c.x + c.width, id).toBeLessThanOrEqual(t.w);
+    }
     const a = (await estado(page)).fuerzasTaller!;
     expect(a.visible).toBe(true);
     expect(a.pares).toHaveLength(2);
@@ -165,6 +176,10 @@ test("fu-3 sin ruedas «Ver fuerzas» enseña centro de masas y peso, sin arcos 
 test("fu-5 el «?» del Taller explica guía de suspensión, centro de masas, peso y par", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   await abrirTaller(page);
+  // La ayuda de la primera vez y el chip «Ver fuerzas» no se montan uno sobre otro.
+  const ayuda = (await page.getByTestId("ayuda-taller").boundingBox())!;
+  const chip = (await page.getByTestId("ver-fuerzas").boundingBox())!;
+  expect(ayuda.y + ayuda.height).toBeLessThanOrEqual(chip.y + 0.5);
   await page.getByTestId("ayuda-boton").click();
   const texto = await page.getByTestId("ayuda-cuerpo").innerText();
   for (const entrada of ["Guía de suspensión", "Centro de masas", "Peso", "Par"]) expect(texto).toContain(entrada);

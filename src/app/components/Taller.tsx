@@ -185,6 +185,7 @@ export function Taller(props: TallerProps) {
   return (
     <div className="taller" data-testid="taller">
       <div className="taller-lienzo">
+        <div className="taller-escena">
         <div className="lienzo" ref={host} data-testid="lienzo" />
         {rendimiento && <PanelRendimiento />}
         <div className="cabecera">
@@ -268,6 +269,18 @@ export function Taller(props: TallerProps) {
             {AYUDA_TALLER}
           </p>
         )}
+        {wheels === 0 && (
+          <p className="aviso-ruedas" data-testid="aviso-sin-ruedas" role="status">
+            {SIN_RUEDAS}
+          </p>
+        )}
+        {toast && (
+          <div className="aviso-arriba" data-testid="aviso-guardado" role="status">
+            {toast}
+          </div>
+        )}
+        </div>
+        {/* Franja propia bajo el lienzo: encima del coche tapaba la ayuda, la etiqueta «peso» y la rueda 1. */}
         <div className="fuerzas-lienzo">
           <button
             type="button"
@@ -287,19 +300,15 @@ export function Taller(props: TallerProps) {
             </p>
           )}
         </div>
-        {wheels === 0 && (
-          <p className="aviso-ruedas" data-testid="aviso-sin-ruedas" role="status">
-            {SIN_RUEDAS}
-          </p>
-        )}
-        {toast && (
-          <div className="aviso-arriba" data-testid="aviso-guardado" role="status">
-            {toast}
-          </div>
-        )}
       </div>
       <div className="taller-panel">
         <section className="grupo-panel" aria-label="Tu coche" data-testid="grupo-coche">
+          {wheel && slot !== null && (
+            // Fija al borde alto del panel: al arrastrar el tirador la lectura sigue a la vista aunque el panel esté desplazado.
+            <p className="lectura-suspension" data-testid="lectura-suspension" role="status">
+              Inclinación de la suspensión: {lecturaInclinacion(inclinacion)}
+            </p>
+          )}
           <div className="fila">
             <span data-testid="contador-ruedas">
               Ruedas: {wheels}/{MAX_WHEELS}
@@ -408,9 +417,7 @@ export function Taller(props: TallerProps) {
                 />
               </label>
               <label className="control">
-                <span className="lectura-suspension" data-testid="lectura-suspension">
-                  Inclinación de la suspensión: {lecturaInclinacion(inclinacion)}
-                </span>
+                <span>Mueve el deslizador o arrastra el tirador amarillo de la guía</span>
                 <input
                   type="range"
                   data-testid="deslizador-suspension"
