@@ -271,9 +271,10 @@ export function Pista(props: PistaProps) {
 
     eligeFuerzas.current = (on) => {
       markInput("fuerzas-carrera");
+      // El Worker calcula la muestra mientras el hilo principal prepara la escena: así llega antes del primer frame.
+      runner.post({ type: "setFuerzas", raceId, on });
       scene?.activarFuerzas(on);
       publicarFuerzas(on);
-      runner.post({ type: "setFuerzas", raceId, on });
     };
     reiniciarFuerzasVivo();
     const unsubscribe = runner.subscribe(alMensaje);
