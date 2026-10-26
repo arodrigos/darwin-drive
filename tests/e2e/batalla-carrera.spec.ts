@@ -91,8 +91,8 @@ test("bc-1 con cuatro coches la carrera pinta el marcador, y la flecha de borde 
   for (const n of ["Ana", "Bea", "Carlos", "Diana"]) await expect(page.getByTestId("marcador-batalla")).toContainText(n);
   const antes = (await estado(page)).carreraBatalla!.map((c) => c.distancia);
   await page.evaluate(() => window.__debug!.adelantarSimulacion(3));
-  const despues = (await estado(page)).carreraBatalla!.map((c) => c.distancia);
-  expect(despues.some((d, i) => d > antes[i])).toBe(true);
+  // El marcador se publica en el siguiente fotograma, no al volver de adelantarSimulacion.
+  await expect.poll(async () => (await estado(page)).carreraBatalla!.some((c, i) => c.distancia > antes[i]), { timeout: 15_000 }).toBe(true);
   await page.screenshot({ path: `${DIR}/${ID}-carrera-cuatro-${tam}.png` });
   // Con coches al azar alguno se queda atrás: se avanza hasta que haya uno fuera de pantalla.
   for (let k = 0; k < 40 && !(await estado(page)).carreraBatalla!.some((c) => !c.enPantalla); k++) {
