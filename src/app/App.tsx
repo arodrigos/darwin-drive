@@ -62,6 +62,9 @@ import { recargarAntiguas, saludar } from "@/pwa/pestanas";
 import { BotonAyuda, ComoSeJuega, PanelAyuda } from "./components/CapasAyuda";
 import { useCapas } from "./ayuda/capas";
 import { Taller } from "./components/Taller";
+import { Batalla } from "./components/batalla/Batalla";
+import { cargarBatalla, guardarBatalla } from "@/batalla/guardado";
+import type { EstadoBatalla } from "@/batalla/estado";
 import { medirEnTodasLasPistas, type MedicionEnCurso } from "./medir-pistas";
 import { resumenMedicion } from "./ranking-text";
 import { GENOMA_DEMO_MOTOR_RAMPA } from "@/debug/genoma-demo-motor";
@@ -69,7 +72,7 @@ import { GENOMA_DEMO_MOTOR_RAMPA } from "@/debug/genoma-demo-motor";
 /** Genoma de pruebas de la rotura: una carrocería irregular que en La Cordillera pierde piezas y aun así avanza. */
 const GENOMA_DEMO_FRAGIL: Genome = {"v":1,"body":[{"angle":0.678465353041328,"length":1.9828049719333647},{"angle":1.16317559758428,"length":1.76544371843338},{"angle":1.7264106655024205,"length":0.7348043262958526},{"angle":2.5218158488767792,"length":1.9281890034675597},{"angle":3.3254861893698675,"length":1.5384865283966063},{"angle":4.616152019909353,"length":0.519283241033554},{"angle":5.16290480437055,"length":0.3325004756450653},{"angle":6.028116714266141,"length":0.8758008599281311}],"bodyDensity":68.3933699131012,"wheels":[{"vertex":4,"radius":1.085308027267456,"density":22.73451805114746,"axisAngle":2.413072745114252},{"vertex":0,"radius":1.1341673851013183,"density":36.10156297683716,"axisAngle":3.283626691111853},{"vertex":-1,"radius":0.6408769607543945,"density":70.26972889900208,"axisAngle":4.094320182721254},{"vertex":-1,"radius":0.6308840632438659,"density":100.65406084060669,"axisAngle":0.9913837700847736}]};
 
-type Pantalla = "portada" | "explorar" | "pista" | "taller" | "garaje" | "rankings" | "evolucion-inicio" | "evolucion" | "linaje" | "especies";
+type Pantalla = "portada" | "explorar" | "pista" | "taller" | "garaje" | "rankings" | "evolucion-inicio" | "evolucion" | "linaje" | "especies" | "batalla";
 
 export const SIN_GUARDADO =
   "Este navegador no deja guardar. Puedes jugar, pero los rankings y el garaje se perderán al cerrar.";
@@ -79,6 +82,13 @@ function publicar(r: Rankings): void {
   for (const id of Object.keys(r) as TrackId[]) {
     runtime.rankings[id] = r[id].map((e) => ({ carId: e.carId, distance: e.distance, origin: e.origin }));
   }
+}
+
+/** Lo que dice el botón de la portada: de quién es el turno, o en qué punto quedó la batalla. */
+function textoContinuarBatalla(e: EstadoBatalla): string {
+  if (e.fase === "relevo" || e.fase === "turno") return `turno de ${e.jugadores[e.activo].nombre}`;
+  if (e.fase === "elegir-pista") return "elegir pista";
+  return e.fase === "carrera" ? "carrera" : "resultado";
 }
 
 function esGenoma(v: unknown): v is Genome {
@@ -101,6 +111,10 @@ export function App() {
   const [resumenes, setResumenes] = useState<Record<string, string>>({});
   const medicion = useRef<MedicionEnCurso<RankingOutcome> | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
+  // Batalla guardada a medias: la portada ofrece continuarla. Una recarga en pleno turno vuelve al relevo.
+  const [batalla, setBatalla] = useState<EstadoBatalla | null>(null);
+  const [batallaReiniciada, setBatallaReiniciada] = useState(false);
+  const [batallaKey, setBatallaKey] = useState(0);
   const [workshopGenome, setWorkshopGenome] = useState<Genome>(STOCK_CAR);
   // Nombre y color del coche del Taller: metadatos que viajan con él, nunca dentro del genoma.
   const [identidad, setIdentidad] = useState<IdentidadCoche>(() => ({ nombre: generarNombre(aleatorioDeApp()), color: COLOR_PREDETERMINADO }));
@@ -172,6 +186,22 @@ export function App() {
     aplicarRankings(r);
     aplicarGaraje(g);
   }, [aplicarRankings, aplicarGaraje]);
+
+  useEffect(() => {
+    let vivo = true;
+    void cargarBatalla().then((e) => {
+      if (!vivo || !e || e.fase === "configurar") return;
+      const reiniciada = e.fase === "turno";
+      const lista: EstadoBatalla = reiniciada ? { ...e, fase: "relevo" } : e;
+      if (reiniciada) void guardarBatalla(lista);
+      runtime.batalla = lista;
+      setBatalla(lista);
+      setBatallaReiniciada(reiniciada);
+    });
+    return () => {
+      vivo = false;
+    };
+  }, []);
 
   const migracion = useMigracion(recargar);
   const iniciarMigracion = migracion.iniciar;
@@ -842,9 +872,38 @@ export function App() {
             evolucion ? { generation: evolucion.generation, trackName: getTrack(evolucion.trackId)?.name ?? evolucion.trackId } : null
           }
           onEspecies={() => setScreen("especies")}
+          onBatalla={() => {
+            markInput("abrir-batalla");
+            setBatallaReiniciada(false);
+            setBatallaKey((k) => k + 1);
+            setBatalla(null);
+            runtime.batalla = null;
+            setScreen("batalla");
+          }}
+          continuarBatalla={batalla ? textoContinuarBatalla(batalla) : null}
+          onContinuarBatalla={() => {
+            setBatallaKey((k) => k + 1);
+            setScreen("batalla");
+          }}
           onContinuar={() => {
             setEvolKey((k) => k + 1);
             setScreen("evolucion");
+          }}
+        />
+      )}
+      {screen === "batalla" && (
+        <Batalla
+          key={batallaKey}
+          inicial={batalla}
+          reiniciado={batallaReiniciada}
+          onEstado={setBatalla}
+          onSalir={() => setScreen("portada")}
+          helpSeen={meta.seenHelp.includes("taller")}
+          onHelpSeen={() => {
+            if (metaRef.current.seenHelp.includes("taller")) return;
+            const next = { ...metaRef.current, seenHelp: [...metaRef.current.seenHelp, "taller"] };
+            setMeta(next);
+            void saveMeta(next);
           }}
         />
       )}

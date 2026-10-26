@@ -6,7 +6,7 @@ import { AYUDA, FICHAS_PISTA, PANTALLAS_AYUDA, SECCIONES_GUIA } from "../../src/
 
 test("gui-6: toda pantalla tiene título, al menos 3 controles y una sección de la guía", () => {
   const ids = new Set(SECCIONES_GUIA.map((s) => s.id));
-  assert.equal(PANTALLAS_AYUDA.length, 10);
+  assert.equal(PANTALLAS_AYUDA.length, 11);
   fc.assert(
     fc.property(fc.constantFrom(...PANTALLAS_AYUDA), (p) => {
       const t = AYUDA[p];

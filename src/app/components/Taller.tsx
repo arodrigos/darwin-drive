@@ -42,7 +42,7 @@ export const AYUDA_TALLER =
 export const SIN_RUEDAS = "Sin ruedas no hay motor: este coche no avanzará.";
 const AVISO_MS = 2000;
 
-export interface TallerProps {
+interface TallerBase {
   genome: Genome;
   onGenome: (g: Genome) => void;
   /** Nombre y color del coche en el Taller: metadatos, fuera del genoma. */
@@ -50,22 +50,45 @@ export interface TallerProps {
   onColor: (c: ColorCoche) => void;
   /** Abre la hoja de nombre; quien la monta guarda el texto en la identidad. */
   onRenombrar: () => void;
+  helpSeen: boolean;
+  onHelpSeen: () => void;
+  onBack: () => void;
+}
+
+interface TallerLibre extends TallerBase {
+  modo?: "libre";
   /** Vuelve al coche de serie con otra identidad. */
   onNuevo: () => void;
   trackId: TrackId;
   onTrack: (id: TrackId) => void;
   rankings: RankingsView;
-  helpSeen: boolean;
-  onHelpSeen: () => void;
   onTry: () => void;
   onEvolve: () => void;
   /** Devuelve el texto del aviso que debe leerse tras guardar. */
   onSave: () => Promise<string>;
-  onBack: () => void;
 }
+
+/** El turno de un jugador de la batalla: sin pista, garaje ni evolución, y con su propio cierre. */
+interface TallerBatalla extends TallerBase {
+  modo: "batalla";
+  batalla: {
+    cabecera: string;
+    /** Colores que ya ha cogido otro jugador: se ven tachados y no se pueden elegir. */
+    coloresOcupados: ColorCoche[];
+    onTerminar: () => void;
+    onAbandonar: () => void;
+  };
+}
+
+export type TallerProps = TallerLibre | TallerBatalla;
+
+export const AVISO_SIN_RUEDAS_BATALLA = "Sin ruedas tu coche no avanzará. ¿Terminar igualmente?";
+export const AVISO_TERMINAR_BATALLA = "¿Has terminado? Los demás no verán tu coche hasta la carrera.";
 
 export function Taller(props: TallerProps) {
   const { genome, helpSeen } = props;
+  const libre = props.modo === "batalla" ? null : props;
+  const batalla = props.modo === "batalla" ? props.batalla : null;
   const host = useRef<HTMLDivElement>(null);
   const handle = useRef<WorkshopHandle | null>(null);
   const latest = useRef(props);
@@ -79,6 +102,7 @@ export function Taller(props: TallerProps) {
   const [rendimiento] = useState(() => new URLSearchParams(window.location.search).get("rendimiento") === "1");
   const [fuerzas, setFuerzas] = useState(false);
   const [confirmarNuevo, setConfirmarNuevo] = useState(false);
+  const [confirmarBatalla, setConfirmarBatalla] = useState<"terminar" | "abandonar" | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -165,7 +189,7 @@ export function Taller(props: TallerProps) {
   const activos = genome.wheels.map((w, i) => ({ w, i })).filter(({ w }) => w.vertex >= 0);
 
   const guardar = useCallback(async () => {
-    const texto = await latest.current.onSave();
+    const texto = await (latest.current.modo === "batalla" ? Promise.resolve("") : latest.current.onSave());
     setToast(texto);
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(null), AVISO_MS);
@@ -189,9 +213,15 @@ export function Taller(props: TallerProps) {
         <div className="lienzo" ref={host} data-testid="lienzo" />
         {rendimiento && <PanelRendimiento />}
         <div className="cabecera">
-          <button type="button" className="pastilla" onClick={props.onBack} data-testid="volver">
-            ← Volver
-          </button>
+          {batalla ? (
+            <span className="pastilla chica cabecera-batalla" data-testid="cabecera-batalla">
+              {batalla.cabecera}
+            </span>
+          ) : (
+            <button type="button" className="pastilla" onClick={props.onBack} data-testid="volver">
+              ← Volver
+            </button>
+          )}
           <button
             type="button"
             className="pastilla chica"
@@ -205,30 +235,36 @@ export function Taller(props: TallerProps) {
           <button type="button" className="pastilla chica nombre-taller" data-testid="taller-nombre" onClick={props.onRenombrar}>
             {props.identidad.nombre}
           </button>
-          <button
-            type="button"
-            className="pastilla chica"
-            data-testid="coche-nuevo"
-            onClick={() => {
-              if (genomeHash(genome) === genomeHash(STOCK_CAR)) props.onNuevo();
-              else setConfirmarNuevo(true);
-            }}
-          >
-            Coche nuevo
-          </button>
+          {libre && (
+            <button
+              type="button"
+              className="pastilla chica"
+              data-testid="coche-nuevo"
+              onClick={() => {
+                if (genomeHash(genome) === genomeHash(STOCK_CAR)) libre.onNuevo();
+                else setConfirmarNuevo(true);
+              }}
+            >
+              Coche nuevo
+            </button>
+          )}
           {colores && (
             <div className="fila-colores" role="group" aria-label="Color del coche" data-testid="fila-colores">
-              {COLORES_COCHE.map((c) => (
+              {COLORES_COCHE.map((c) => {
+                const ocupado = batalla?.coloresOcupados.includes(c) ?? false;
+                return (
                 <button
                   key={c}
                   type="button"
-                  className="selector selector-color"
+                  className={`selector selector-color${ocupado ? " ocupado" : ""}`}
                   aria-pressed={props.identidad.color === c}
-                  aria-label={PALETA_COCHES[c].nombre}
+                  aria-disabled={ocupado || undefined}
+                  aria-label={ocupado ? `${PALETA_COCHES[c].nombre} (ya elegido por otro jugador)` : PALETA_COCHES[c].nombre}
                   data-testid={`color-${c}`}
                   data-color={c}
                   style={{ background: PALETA_COCHES[c].hex }}
                   onClick={() => {
+                    if (ocupado) return;
                     markInput("color-coche");
                     props.onColor(c);
                     // Se cierra al elegir: abierta tapa el coche en el móvil y el color nuevo no se vería.
@@ -237,11 +273,12 @@ export function Taller(props: TallerProps) {
                 >
                   {props.identidad.color === c ? "✓" : ""}
                 </button>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
-        {confirmarNuevo && (
+        {libre && confirmarNuevo && (
           <div className="confirmar-nuevo" role="alertdialog" aria-label="Coche nuevo" data-testid="confirmar-nuevo">
             <p>Se perderá el diseño actual si no lo guardas</p>
             <div className="acciones">
@@ -253,12 +290,41 @@ export function Taller(props: TallerProps) {
                   setConfirmarNuevo(false);
                   setVertice(null);
                   runtime.verticeSeleccionado = null;
-                  props.onNuevo();
+                  libre.onNuevo();
                 }}
               >
                 Sí, coche nuevo
               </button>
               <button type="button" className="boton-secundario" data-testid="confirmar-nuevo-no" onClick={() => setConfirmarNuevo(false)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
+        {batalla && confirmarBatalla && (
+          <div className="confirmar-nuevo" role="alertdialog" aria-label={confirmarBatalla === "terminar" ? "Terminar mi coche" : "Abandonar batalla"} data-testid="confirmar-batalla">
+            <p data-testid="confirmar-batalla-texto">
+              {confirmarBatalla === "abandonar"
+                ? "Se perderá la batalla entera, también los coches de los demás."
+                : wheels === 0
+                  ? AVISO_SIN_RUEDAS_BATALLA
+                  : AVISO_TERMINAR_BATALLA}
+            </p>
+            <div className="acciones">
+              <button
+                type="button"
+                className="boton-primario"
+                data-testid="confirmar-batalla-si"
+                onClick={() => {
+                  const que = confirmarBatalla;
+                  setConfirmarBatalla(null);
+                  if (que === "terminar") batalla.onTerminar();
+                  else batalla.onAbandonar();
+                }}
+              >
+                {confirmarBatalla === "terminar" ? "Sí, he terminado" : "Sí, abandonar"}
+              </button>
+              <button type="button" className="boton-secundario" data-testid="confirmar-batalla-no" onClick={() => setConfirmarBatalla(null)}>
                 Cancelar
               </button>
             </div>
@@ -485,17 +551,28 @@ export function Taller(props: TallerProps) {
             </small>
           </label>
         </section>
+        {batalla ? (
+          <section className="grupo-panel grupo-prueba grupo-batalla" aria-label="Terminar" data-testid="grupo-batalla">
+            <button type="button" className="boton-primario" data-testid="terminar-coche" onClick={() => setConfirmarBatalla("terminar")}>
+              Terminar mi coche
+            </button>
+            <button type="button" className="boton-secundario" data-testid="abandonar-batalla" onClick={() => setConfirmarBatalla("abandonar")}>
+              Abandonar batalla
+            </button>
+          </section>
+        ) : libre ? (
+          <>
         <section className="grupo-panel grupo-prueba" aria-label="Probar" data-testid="grupo-prueba">
           <span className="etiqueta-grupo">Pista para probar</span>
           <div className="fila-prueba">
-            <TrackPicker value={props.trackId} onChange={props.onTrack} rankings={props.rankings} comoSelector />
+            <TrackPicker value={libre.trackId} onChange={libre.onTrack} rankings={libre.rankings} comoSelector />
             <button
               type="button"
               className="boton-primario"
               data-testid="probar"
               onClick={() => {
                 markInput("probar");
-                props.onTry();
+                libre.onTry();
               }}
             >
               Probar
@@ -512,12 +589,14 @@ export function Taller(props: TallerProps) {
             data-testid="evolucionar"
             onClick={() => {
               markInput("evolucionar");
-              props.onEvolve();
+              libre.onEvolve();
             }}
           >
             Evolucionar este coche
           </button>
         </section>
+          </>
+        ) : null}
       </div>
     </div>
   );

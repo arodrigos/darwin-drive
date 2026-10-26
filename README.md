@@ -17,6 +17,10 @@ Desde la portada se llega a todo:
 - **Linaje**: el árbol de los coches (de cuál viene cada uno), con zoom y arrastre, coloreado con las marcas de la pista elegida. Tocar un nodo permite ver, abrir o guardar ese coche.
 - **Especies**: busca variedad en vez de un único ganador (MAP-Elites, `src/evolution/species.ts`). Es una rejilla de 4 × 4 por pista (filas: número de ruedas; columnas: largo de la carrocería) y cada casilla guarda el coche que más lejos llegó con esa forma. Cada búsqueda prueba un lote de coches nuevos; tocar una casilla permite verla correr o evolucionarla.
 
+### Modo batalla
+
+«Batalla» (zona **Jugar** de la portada) es un hot-seat de 2 a 4 jugadores en un solo dispositivo. En «Configurar» cada jugador pone nombre (obligatorio: «Cada jugador necesita un nombre») y elige color; un color ya cogido por otro se ve tachado y no se puede tocar. Después cada uno diseña su coche por turnos en el Taller, que en batalla muestra «Batalla · Ana (1 de 3)» en lugar de «Volver», parte siempre del coche de serie y cambia «Probar» y «Guardar» por «Terminar mi coche» (avisa si no tiene ruedas) y «Abandonar batalla». Entre turnos, la pantalla de relevo no dibuja ningún coche: el diseño de cada jugador queda oculto hasta la carrera. Al terminar el último, se elige la pista. La batalla se guarda en el dispositivo (`dd:v1:batalla`); tras una recarga la portada ofrece «Continuar batalla (turno de …)» y el jugador al que le tocaba rehace su diseño. «Abandonar batalla» pide confirmación y borra el estado. La carrera y el resultado de la batalla llegan en un bloque posterior.
+
 ### La carrera
 
 - El coche corre solo y cuenta metros. Una fila de botones elige el ritmo: ×1, ×2, ×4, ×8 y «Hasta el final», que salta al resultado sin dibujar la carrera (en Evolución, «Turbo» salta de generación en generación). El último ritmo entre ×1 y ×8 se recuerda; «Hasta el final» no. Si el dispositivo no llega al ritmo pedido, aparece «real ×N».

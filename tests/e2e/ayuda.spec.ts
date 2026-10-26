@@ -58,6 +58,8 @@ async function ir(page: Page, p: PantallaAyuda) {
       return click("acceso-linaje");
     case "especies":
       return click("acceso-especies");
+    case "batalla":
+      return click("acceso-batalla");
   }
 }
 
