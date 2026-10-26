@@ -2,7 +2,7 @@ import { TORQUE_SLOPE_DEG } from "@/sim/constants";
 import type { TrackId } from "@/sim/tracks";
 import { textoCausa } from "./causas";
 
-/** Las diez pantallas del juego; cada una tiene su «?». */
+/** Las once pantallas del juego; cada una tiene su «?». */
 export type PantallaAyuda =
   | "portada"
   | "explorar"
@@ -13,7 +13,8 @@ export type PantallaAyuda =
   | "evolucion-inicio"
   | "evolucion"
   | "linaje"
-  | "especies";
+  | "especies"
+  | "batalla";
 
 export const PANTALLAS_AYUDA: readonly PantallaAyuda[] = [
   "portada",
@@ -26,6 +27,7 @@ export const PANTALLAS_AYUDA: readonly PantallaAyuda[] = [
   "evolucion",
   "linaje",
   "especies",
+  "batalla",
 ];
 
 export interface SeccionGuia {
@@ -286,6 +288,18 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
       { nombre: "Casilla", texto: "Toca una para ver su coche." },
       { nombre: "Buscar", texto: "Prueba coches nuevos y rellena casillas." },
       { nombre: "Ver correr y Evolucionar", texto: "Repite la carrera o parte de ese coche." },
+    ],
+  },
+  batalla: {
+    titulo: "Batalla",
+    resumen: "De 2 a 4 jugadores en el mismo dispositivo: cada uno diseña su coche por turnos, sin ver el de los demás.",
+    seccionGuia: "taller",
+    controles: [
+      { nombre: "Jugadores", texto: "Elige cuántos sois, un nombre y un color distinto para cada uno." },
+      { nombre: "Pantalla de relevo", texto: "Pasa el dispositivo al jugador que se nombra y que toque «Soy …, empezar»: no se ve ningún coche." },
+      { nombre: "Terminar mi coche", texto: "Cierra tu turno y pide confirmación. Los demás no verán tu coche hasta la carrera." },
+      { nombre: "Salir y continuar luego", texto: "Guarda la batalla: la portada ofrece «Continuar batalla». Si recargas en pleno turno, ese diseño vuelve a empezar." },
+      { nombre: "Abandonar batalla", texto: "Borra la batalla entera, con los nombres de los jugadores." },
     ],
   },
 };

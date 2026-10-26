@@ -2,9 +2,10 @@ import type { CarResult, FuerzasMuestra } from "@/sim/constants";
 import type { Genome } from "@/sim/genome";
 import type { TrackId } from "@/sim/tracks";
 import { contadoresLienzo, estadoLienzo, muestraLienzo, perderLienzo } from "@/game/lienzo";
+import type { EstadoBatalla } from "@/batalla/estado";
 import { latencias } from "./latencias";
 
-export type Pantalla = "portada" | "explorar" | "evolucion-inicio" | "pista" | "taller" | "evolucion" | "garaje" | "rankings" | "linaje" | "especies";
+export type Pantalla = "portada" | "explorar" | "evolucion-inicio" | "pista" | "taller" | "evolucion" | "garaje" | "rankings" | "linaje" | "especies" | "batalla";
 
 // Estado que la app publica para los ganchos. Se lee, nunca se recalcula aquí.
 export const runtime = {
@@ -51,6 +52,8 @@ export const runtime = {
   /** Capa «Fuerzas» de la carrera: encendida o no, muestras recibidas del Worker (mensajes con fuerzas), última muestra y largo en px de cada flecha pintada. */
   fuerzasEnVivo: { activa: false, muestras: 0, ultima: null as FuerzasMuestra | null, flechasPx: [] as number[] },
   garaje: 0,
+  /** Batalla en curso o guardada (la publica Batalla); null si no hay. */
+  batalla: null as EstadoBatalla | null,
   ultimaInscripcion: null as { trackId: TrackId; position: number | null; alreadyAt: number | null; isRecord: boolean } | null,
   // Evolución en curso (la rellena Evolucion).
   generacion: null as number | null,
@@ -147,6 +150,7 @@ export function estado() {
     hojaNombre: runtime.hojaNombre,
     ejecutor: runtime.ejecutor,
     garaje: runtime.garaje,
+    batalla: runtime.batalla,
     persistente: runtime.persistente,
     disponible: runtime.disponible,
     // Contextos WebGL vivos (creados − liberados), sondas de soporte hechas y qué hace el lienzo ahora.

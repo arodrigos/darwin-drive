@@ -33,7 +33,7 @@ const MAS = [
   { testid: "acceso-guia", texto: "Cómo se juega", accion: "onGuia" },
 ] as const;
 
-export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onRanking: (id: TrackId) => void; onTaller: () => void; onGarage: () => void; onGuia: () => void; onLinaje: () => void; onEvolucion: () => void; onEspecies: () => void; continuar: { generation: number; trackName: string } | null; onContinuar: () => void }) {
+export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onRanking: (id: TrackId) => void; onTaller: () => void; onGarage: () => void; onGuia: () => void; onLinaje: () => void; onEvolucion: () => void; onEspecies: () => void; continuar: { generation: number; trackName: string } | null; onContinuar: () => void; onBatalla: () => void; continuarBatalla: string | null; onContinuarBatalla: () => void }) {
   return (
     <div className="portada" data-testid="portada">
       <Paisaje />
@@ -48,6 +48,14 @@ export function Portada(props: { rankings: RankingsView; onExplore: () => void; 
           <button type="button" className="boton-secundario" data-testid="acceso-evolucion" onClick={props.onEvolucion}>
             Evolución
           </button>
+          <button type="button" className="boton-secundario" data-testid="acceso-batalla" onClick={props.onBatalla}>
+            Batalla
+          </button>
+          {props.continuarBatalla && (
+            <button type="button" className="boton-secundario" data-testid="acceso-continuar-batalla" onClick={props.onContinuarBatalla}>
+              Continuar batalla ({props.continuarBatalla})
+            </button>
+          )}
           {props.continuar && (
             <button type="button" className="boton-secundario" data-testid="acceso-continuar" onClick={props.onContinuar}>
               Continuar evolución (gen {props.continuar.generation} · {props.continuar.trackName})
