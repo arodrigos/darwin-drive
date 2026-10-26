@@ -397,3 +397,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .hud-batalla { top: 104px; }
   .chip-marcador { padding: 2px 8px; font-size: .8rem; }
 }
+
+/* En apaisado el panel ocupa la esquina del «?» fijo: la lectura de arriba reserva su sitio para que no tape el texto. */
+@media (min-width: 900px) and (orientation: landscape) {
+  .taller-panel .lectura-suspension { padding-right: 66px; }
+}
