@@ -156,7 +156,9 @@ test("pc-4 ?rendimiento=1: panel con fps, p95, coches/s y latencias que coincide
       })
       .toBe(true);
     const cajas = await panel.boundingBox();
-    expect(cajas!.x).toBeLessThan(20);
+    // En móvil el panel va a la derecha para no tapar al coche; basta con que quepa entero en la pantalla.
+    expect(cajas!.x).toBeGreaterThanOrEqual(0);
+    expect(cajas!.x + cajas!.width).toBeLessThanOrEqual(t.w);
     expect(cajas!.y + cajas!.height).toBeLessThanOrEqual(t.h);
     await page.screenshot({ path: `${DIR}/${ID}-rendimiento-${t.w}x${t.h}.png` });
   }
