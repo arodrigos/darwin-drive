@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { latencias, onLatencia, type Latencia } from "@/debug/latencias";
 import { runtime } from "@/debug/ganchos";
 import { rendimiento } from "@/debug/rendimiento";
@@ -27,6 +27,7 @@ function medir(deltas: number[]): { fps: number; p95: number } {
 /** Panel plegable de ?rendimiento=1: lo que Adrián mira en su iPad para saber si el juego va fluido. */
 export function PanelRendimiento() {
   const [c, setC] = useState<Cifras>({ fps: 0, p95: 0, coches: 0, latencias: [], camara: null });
+  const panel = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
     const deltas: number[] = [];
@@ -37,8 +38,12 @@ export function PanelRendimiento() {
       ultimo = ahora;
       raf = requestAnimationFrame(bucle);
     });
-    const refrescar = () =>
+    const refrescar = () => {
+      // El pie de la carrera (ritmos, «Fuerzas», barra) cambia de alto; el panel se apoya encima para no taparlo.
+      const pie = panel.current?.parentElement?.querySelector<HTMLElement>(".pie-pista");
+      if (panel.current) panel.current.style.bottom = pie ? `${pie.offsetHeight + 8}px` : "";
       setC({ ...medir(deltas), coches: rendimiento.cochesPorSegundo, latencias: latencias().slice(-10).reverse(), camara: runtime.camara ? { fps: runtime.camara.fpsDibujo, margen: runtime.camara.margenMinPx } : null });
+    };
     const timer = setInterval(refrescar, 500);
     const quitar = onLatencia(refrescar);
     return () => {
@@ -49,7 +54,7 @@ export function PanelRendimiento() {
   }, []);
 
   return (
-    <details className="panel-rendimiento" data-testid="panel-rendimiento" open>
+    <details ref={panel} className="panel-rendimiento" data-testid="panel-rendimiento" open>
       <summary>Rendimiento</summary>
       <dl>
         <dt>fps</dt>
