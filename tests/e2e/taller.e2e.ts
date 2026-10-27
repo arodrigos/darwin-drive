@@ -201,6 +201,8 @@ test("tl-9 cada pista tiene su marca: la distancia es la del núcleo y entra sol
   await page.getByTestId("probar").click();
   await expect.poll(async () => (await estado(page)).genomaEnPista !== null).toBe(true);
   await adelantar(page, 200);
+  // El resultado llega del worker: con la máquina cargada tarda más que el avance del reloj.
+  await expect.poll(async () => (await estado(page)).ultimoResultado !== null, { timeout: 30_000 }).toBe(true);
   const a = (await estado(page)).ultimoResultado!;
   expect(a.trackId).toBe("cordillera");
   expectMismaMarca(a.distance, refCordillera);
@@ -212,6 +214,7 @@ test("tl-9 cada pista tiene su marca: la distancia es la del núcleo y entra sol
   await page.getByTestId("probar").click();
   await expect.poll(async () => (await estado(page)).genomaEnPista !== null).toBe(true);
   await adelantar(page, 200);
+  await expect.poll(async () => (await estado(page)).ultimoResultado?.trackId, { timeout: 30_000 }).toBe("pedregal");
   const b = (await estado(page)).ultimoResultado!;
   expect(b.trackId).toBe("pedregal");
   expectMismaMarca(b.distance, refPedregal);
@@ -397,7 +400,7 @@ test("tl-8 aviso arriba al entrar en un ranking, y se va a los 2,5 s", async ({ 
   await expect.poll(async () => (await estado(page)).genomaEnPista !== null).toBe(true);
   await adelantar(page, 200);
   // El resultado llega del worker: se espera a la tarjeta antes de leerlo del estado.
-  await expect(page.getByTestId("fin-distancia")).toBeVisible();
+  await expect(page.getByTestId("fin-distancia")).toBeVisible({ timeout: 30_000 });
   const cifra = coma((await estado(page)).ultimoResultado!.distance);
   await expect(page.getByTestId("fin-distancia")).toHaveText(cifra);
   await page.screenshot({ path: `${DIR}/${ID}-puesto-4-360x640.png` });

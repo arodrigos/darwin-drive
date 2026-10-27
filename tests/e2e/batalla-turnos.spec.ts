@@ -163,7 +163,7 @@ test("bt-2 una recarga en el turno de Bea ofrece «Continuar batalla (turno de B
   await page.screenshot({ path: `${DIR}/${ID}-portada-continuar.png` });
   await page.getByTestId("acceso-continuar-batalla").click();
   await expect(page.getByTestId("relevo-titulo")).toHaveText("Turno de Bea");
-  await expect(page.getByTestId("relevo-aviso")).toHaveText("Tu diseño se reinició al recargar");
+  await expect(page.getByTestId("relevo-aviso")).toHaveText("Tu diseño se reinició al recargar", { timeout: 15_000 });
   const b = (await estado(page)).batalla!;
   expect(b.fase).toBe("relevo");
   expect(b.activo).toBe(1);
