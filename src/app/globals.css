@@ -84,6 +84,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .tarjeta-fin .acciones { display: flex; gap: 8px; justify-content: center; margin-top: 4px; }
 .tarjeta-fin.error { border-color: #ff9e9e; background: rgba(91,42,42,.96); }
 .panel-rendimiento { position: absolute; left: 8px; bottom: 32px; z-index: 12; min-width: 168px; max-width: 220px; padding: 6px 8px; border-radius: 10px; background: rgba(0,0,0,.72); font-size: .78rem; font-variant-numeric: tabular-nums; }
+/* En móvil el coche queda hacia x = 0,3·ancho: el panel se pega a la derecha para no tapar la columna del coche. */
+@media (max-width: 599px) { .panel-rendimiento { left: auto; right: 8px; min-width: 150px; max-width: min(190px, calc(70vw - 60px)); } }
 .panel-rendimiento summary { cursor: pointer; font-weight: 700; min-height: 24px; }
 .panel-rendimiento dl { display: grid; grid-template-columns: 1fr auto; gap: 1px 8px; margin: 4px 0; }
 .panel-rendimiento dt { opacity: .85; }

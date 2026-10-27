@@ -32,8 +32,8 @@ type Estado = {
 const estado = (page: Page) => page.evaluate(() => window.__debug!.estado() as unknown as Estado);
 const limitar = (page: Page, fps: number | null) => page.evaluate((f) => window.__debug!.limitarFps(f), fps);
 
-async function abrir(page: Page, escenario: Record<string, unknown>) {
-  await page.goto("/?pruebas=1");
+async function abrir(page: Page, escenario: Record<string, unknown>, extra = "") {
+  await page.goto(`/?pruebas=1${extra}`);
   await page.waitForFunction(() => Boolean(window.__debug));
   await page.evaluate((e) => window.__debug!.cargarEscenario(e as never), escenario);
 }
@@ -206,6 +206,19 @@ test("ce-6 el panel de ?rendimiento=1 enseña la línea de la cámara", async ({
       return p && r ? p.y + p.height <= r.y : false;
     })
     .toBe(true);
+  // Con las latencias llenas el panel crece: aun así no puede cruzarse con el coche en ninguna lectura.
+  for (const r of ["ritmo-x2", "ritmo-x4", "ritmo-x8"]) await page.getByTestId(r).click();
+  await limitar(page, 3);
+  for (let i = 0; i < 24; i++) {
+    const p = await page.getByTestId("panel-rendimiento").boundingBox();
+    const coche = (await estado(page)).camara?.cajaLiderPx;
+    expect(p).not.toBeNull();
+    if (p && coche) {
+      const separados = p.x >= coche.right || p.x + p.width <= coche.left || p.y >= coche.bottom || p.y + p.height <= coche.top;
+      expect(separados, `panel ${JSON.stringify(p)} cruza coche ${JSON.stringify(coche)}`).toBe(true);
+    }
+    await page.waitForTimeout(250);
+  }
   const panel = (await page.getByTestId("panel-rendimiento").boundingBox())!;
   await page.screenshot({ path: `${DIR}/${ID}-panel-360x640.png` });
   expect(panel.x).toBeGreaterThanOrEqual(0);
@@ -215,7 +228,7 @@ test("ce-6 el panel de ?rendimiento=1 enseña la línea de la cámara", async ({
 
 test("ce-7 Evolución y Batalla usan la misma cámara a 3 fps en La Rampa", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
-  await abrir(page, escenarioPista("rampa"));
+  await abrir(page, escenarioPista("rampa"), "&rendimiento=1");
   await page.getByTestId("acceso-taller").click();
   await page.getByTestId("evolucionar").click();
   await expect(page.getByTestId("evolucion")).toBeVisible();
@@ -224,6 +237,11 @@ test("ce-7 Evolución y Batalla usan la misma cámara a 3 fps en La Rampa", asyn
   let lecturas = await leer(page, 8_000);
   expect(lecturas.length).toBeGreaterThan(16);
   expect(lecturas.every((c) => c.dentro)).toBe(true);
+  // El panel de Evolución usa el mismo CSS: tampoco puede cubrir al coche.
+  const pe = await page.getByTestId("panel-rendimiento").boundingBox();
+  const ce = (await estado(page)).camara?.cajaLiderPx;
+  expect(pe).not.toBeNull();
+  if (pe && ce) expect(pe.x >= ce.right || pe.x + pe.width <= ce.left || pe.y >= ce.bottom || pe.y + pe.height <= ce.top).toBe(true);
   await page.screenshot({ path: `${DIR}/${ID}-evolucion-360x640.png` });
 
   await abrir(page, { batalla: { jugadores: 2, fase: "carrera", pista: "rampa" } });
