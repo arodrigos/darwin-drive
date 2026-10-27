@@ -38,6 +38,11 @@ test("la carrera ofrece los cinco ritmos y «Hasta el final» llega a la tarjeta
   for (const id of ["ritmo-x1", "ritmo-x2", "ritmo-x4", "ritmo-x8", "ritmo-final"]) {
     await expect(page.getByTestId(id)).toBeVisible();
   }
+  // La cámara no pierde al coche mientras corre: una lectura cada 500 ms durante 3 s.
+  for (let i = 0; i < 6; i++) {
+    expect(await page.evaluate(() => window.__debug!.estado().camara?.dentro)).toBe(true);
+    await page.waitForTimeout(500);
+  }
   for (const id of ["ritmo-x2", "ritmo-x4", "ritmo-x8"]) {
     await page.getByTestId(id).click();
     await expect(page.getByTestId(id)).toHaveAttribute("aria-pressed", "true");

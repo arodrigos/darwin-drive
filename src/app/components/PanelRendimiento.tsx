@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { latencias, onLatencia, type Latencia } from "@/debug/latencias";
+import { runtime } from "@/debug/ganchos";
 import { rendimiento } from "@/debug/rendimiento";
 import { formatDecimal } from "@/app/format";
 
@@ -13,6 +14,7 @@ interface Cifras {
   p95: number;
   coches: number;
   latencias: Latencia[];
+  camara: { fps: number; margen: number } | null;
 }
 
 function medir(deltas: number[]): { fps: number; p95: number } {
@@ -24,7 +26,7 @@ function medir(deltas: number[]): { fps: number; p95: number } {
 
 /** Panel plegable de ?rendimiento=1: lo que Adrián mira en su iPad para saber si el juego va fluido. */
 export function PanelRendimiento() {
-  const [c, setC] = useState<Cifras>({ fps: 0, p95: 0, coches: 0, latencias: [] });
+  const [c, setC] = useState<Cifras>({ fps: 0, p95: 0, coches: 0, latencias: [], camara: null });
 
   useEffect(() => {
     const deltas: number[] = [];
@@ -36,7 +38,7 @@ export function PanelRendimiento() {
       raf = requestAnimationFrame(bucle);
     });
     const refrescar = () =>
-      setC({ ...medir(deltas), coches: rendimiento.cochesPorSegundo, latencias: latencias().slice(-10).reverse() });
+      setC({ ...medir(deltas), coches: rendimiento.cochesPorSegundo, latencias: latencias().slice(-10).reverse(), camara: runtime.camara ? { fps: runtime.camara.fpsDibujo, margen: runtime.camara.margenMinPx } : null });
     const timer = setInterval(refrescar, 500);
     const quitar = onLatencia(refrescar);
     return () => {
@@ -57,6 +59,11 @@ export function PanelRendimiento() {
         <dt>coches/s simulados</dt>
         <dd data-testid="rend-coches">{formatDecimal(c.coches, 1)}</dd>
       </dl>
+      {c.camara && (
+        <p data-testid="rend-camara">
+          cámara · {formatDecimal(c.camara.fps, 0)} fps · margen {formatDecimal(c.camara.margen, 0)} px
+        </p>
+      )}
       <ol className="latencias" data-testid="rend-latencias">
         {c.latencias.map((l) => (
           <li key={`${l.evento}-${l.t}`} className={l.ms <= LIMITE_MS ? "ok" : "lenta"} data-evento={l.evento}>

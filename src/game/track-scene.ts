@@ -1,3 +1,4 @@
+import { ANCLA_CARRERA, pasoCamara, type EstadoCamara } from "./camara";
 import { colorNumerico, type ColorCoche } from "./colores-coche";
 import Phaser from "phaser";
 import { colocarMarcador, cruzan } from "./colocar-marcador";
@@ -21,11 +22,10 @@ const RULER_HEIGHT = 24;
 const MAX_LABELS = 14;
 const FINISH_LABEL_MS = 1500;
 const LEADER_SCREEN_X = 0.3;
-const FOLLOW_Y = 0.1;
-const FOLLOW_Y_PARADO = 0.5;
-// Con la carrera parada por una causa, el suelo sube en pantalla: la tarjeta de fin ocupa la mitad de abajo y el marcador tiene que quedar en la de arriba.
-const ANCLA_CARRERA = 0.6;
-const ANCLA_PARADA = 0.4;
+// El rótulo del coche (texto de 13 px con su relleno) va 22 px sobre el cuerpo o 6 sobre la rueda más alta: entra en la caja que la cámara mantiene a la vista.
+const ROTULO_TEXTO_PX = 21;
+const ROTULO_SOBRE_CUERPO_PX = 22;
+const ROTULO_SOBRE_RUEDA_PX = 6;
 const PLACA = "#111111";
 const TEXTO_PLACA = "#ffffff";
 const ETIQUETA_PX = 16;
@@ -149,6 +149,11 @@ class TrackScene extends Phaser.Scene {
   private skyDirty = true;
   private refH = 0;
   private camX = 0;
+  /** Instante del último fotograma pintado: el dt de la cámara y el tope de fps de pruebas salen de aquí. */
+  private ultimoPintado = Number.NaN;
+  private pintados: number[] = [];
+  private margenes: { t: number; m: number }[] = [];
+  private recortes = 0;
   private prev: CarPose[] = [];
   private curr: CarPose[] = [];
   private recvAt = 0;
@@ -203,6 +208,7 @@ class TrackScene extends Phaser.Scene {
     this.muestraFuerzas = otra.muestraFuerzas;
     this.suaveFuerzas = otra.suaveFuerzas;
     this.ancla = otra.ancla;
+    this.recortes = otra.recortes;
     this.favorites = otra.favorites;
     this.pickListener = otra.pickListener;
     this.camX = otra.camX;
@@ -239,6 +245,11 @@ class TrackScene extends Phaser.Scene {
     this.skyDirty = true;
     this.camX = 0;
     this.refH = Number.NaN;
+    this.ultimoPintado = Number.NaN;
+    this.pintados = [];
+    this.margenes = [];
+    this.recortes = 0;
+    runtime.camara = null;
     this.measurePending = true;
   }
 
@@ -304,10 +315,16 @@ class TrackScene extends Phaser.Scene {
   update(): void {
     const cfg = this.cfg;
     if (!cfg || this.curr.length === 0) return;
+    const ahora = performance.now();
+    // Tope de fps de pruebas: sin repintar, el lienzo conserva el fotograma anterior, como en un equipo que no llega.
+    const limite = runtime.limiteFps;
+    if (limite && !Number.isNaN(this.ultimoPintado) && ahora - this.ultimoPintado < 1000 / limite) return;
+    const dtMs = Number.isNaN(this.ultimoPintado) ? 0 : ahora - this.ultimoPintado;
+    this.ultimoPintado = ahora;
     const W = this.scale.width;
     const H = this.scale.height;
     const widthM = W / PX_PER_METER;
-    const t = Math.min(1, (performance.now() - this.recvAt) / this.recvGap);
+    const t = Math.min(1, (ahora - this.recvAt) / this.recvGap);
     const poses = this.curr.map((p, i) => mixPose(this.prev[i] ?? p, p, t));
 
     // La cámara sigue al líder: el coche vivo más adelantado, o el que más lejos llegó si ya terminaron todos.
@@ -315,11 +332,14 @@ class TrackScene extends Phaser.Scene {
     const leader = (alive.length ? alive : poses).reduce((a, b) => (b.x > a.x ? b : a));
     this.camX = leader.x - widthM * LEADER_SCREEN_X;
     const parado = Boolean(this.parada && leader.finished);
-    // Con el coche parado el suavizado es por fotograma y en un equipo lento tarda segundos en dejar el marcador a la vista: se acorta.
-    const sigue = parado ? FOLLOW_Y_PARADO : FOLLOW_Y;
-    this.refH = Number.isNaN(this.refH) ? leader.y : Math.abs(leader.y - this.refH) < 0.01 && parado ? leader.y : this.refH + (leader.y - this.refH) * sigue;
-    const objetivo = parado ? ANCLA_PARADA : ANCLA_CARRERA;
-    this.ancla = Math.abs(objetivo - this.ancla) < 0.002 ? objetivo : this.ancla + (objetivo - this.ancla) * (parado ? 0.5 : 0.1);
+    const genomaLider = (cfg.cars.find((c) => c.carId === leader.carId) ?? cfg.cars[0]).genome;
+    const { sobreM, bajoM } = this.alturaCaja(leader, genomaLider);
+    const previo: EstadoCamara | null = Number.isNaN(this.refH) ? null : { refH: this.refH, ancla: this.ancla };
+    const paso = pasoCamara(previo, { dtMs, liderY: leader.y, sobreM, bajoM, altoPx: H, pxPorMetro: PX_PER_METER, parado });
+    this.refH = paso.refH;
+    this.ancla = paso.ancla;
+    if (paso.recortada) this.recortes++;
+    this.publicarCamara(ahora, leader, genomaLider, paso.banda, sobreM, bajoM, H);
     const toX = (x: number) => (x - this.camX) * PX_PER_METER;
     const toY = (h: number) => H * this.ancla - (h - this.refH) * PX_PER_METER;
 
@@ -650,6 +670,51 @@ class TrackScene extends Phaser.Scene {
       this.medirFuerzas = false;
       measureOnNextFrame("fuerzas-carrera");
     }
+  }
+
+  /** Lo que sube (con su rótulo) y baja la caja del coche respecto a pose.y, en metros: la misma geometría que cajaDelCoche. */
+  private alturaCaja(pose: CarPose, genome: Genome): { sobreM: number; bajoM: number } {
+    let sobre = (ROTULO_SOBRE_CUERPO_PX + ROTULO_TEXTO_PX) / PX_PER_METER;
+    let bajo = 0;
+    for (const v of genome.body) {
+      const dy = Math.sin(v.angle + pose.angle) * v.length;
+      sobre = Math.max(sobre, dy);
+      bajo = Math.max(bajo, -dy);
+    }
+    for (const w of pose.wheels) {
+      const dy = w.y - pose.y;
+      const r = w.radius;
+      sobre = Math.max(sobre, dy + r + (ROTULO_SOBRE_RUEDA_PX + ROTULO_TEXTO_PX) / PX_PER_METER);
+      bajo = Math.max(bajo, -dy + r);
+    }
+    return { sobreM: sobre, bajoM: bajo };
+  }
+
+  private publicarCamara(ahora: number, leader: CarPose, genome: Genome, banda: { arribaPx: number; abajoPx: number }, sobreM: number, bajoM: number, H: number): void {
+    this.pintados.push(ahora);
+    while (this.pintados.length > 0 && ahora - this.pintados[0] > 1000) this.pintados.shift();
+    const canvas = this.game.canvas.getBoundingClientRect();
+    const escala = this.scale.height > 0 ? canvas.height / this.scale.height : 1;
+    const topLocal = H * this.ancla - (leader.y + sobreM - this.refH) * PX_PER_METER;
+    const bottomLocal = topLocal + (sobreM + bajoM) * PX_PER_METER;
+    const toX = (x: number) => (x - this.camX) * PX_PER_METER;
+    const caja = this.cajaDelCoche(leader, genome, toX, (h) => H * this.ancla - (h - this.refH) * PX_PER_METER);
+    const margen = Math.min(topLocal - banda.arribaPx, banda.abajoPx - bottomLocal);
+    this.margenes.push({ t: ahora, m: margen });
+    while (this.margenes.length > 0 && ahora - this.margenes[0].t > 1000) this.margenes.shift();
+    const margenMinPx = Math.max(0, Math.min(...this.margenes.map((x) => x.m)) * escala);
+    const dentro = margen >= -0.5 && topLocal >= 0 && bottomLocal <= H;
+    runtime.camara = {
+      refH: this.refH,
+      ancla: this.ancla,
+      dtMs: ahora - (this.pintados.length > 1 ? this.pintados[this.pintados.length - 2] : ahora),
+      fpsDibujo: this.pintados.length,
+      zonaUtilPx: { top: canvas.top + banda.arribaPx * escala, bottom: canvas.top + banda.abajoPx * escala },
+      cajaLiderPx: { top: canvas.top + topLocal * escala, bottom: canvas.top + bottomLocal * escala, left: canvas.left + caja.x * escala, right: canvas.left + (caja.x + caja.w) * escala },
+      dentro,
+      recortes: this.recortes,
+      margenMinPx,
+    };
   }
 
   /** Caja del coche en px CSS: el marcador se dimensiona contra ella y las pruebas comprueban que nada se cruza. */
