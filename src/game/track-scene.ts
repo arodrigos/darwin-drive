@@ -539,6 +539,25 @@ class TrackScene extends Phaser.Scene {
     }
   }
 
+  /** Arcos de par mínimos sobre las ruedas del coche en cabeza (el de la muestra del Worker): el primer frame ya enseña la capa y mide la latencia del interruptor. */
+  private dibujarEsqueletoFuerzas(poses: CarPose[], toX: (x: number) => number, toY: (h: number) => number): void {
+    const g = this.cars;
+    const lider = poses.filter((p) => !p.finished).reduce<CarPose | null>((a, p) => (!a || (p.wheels[0]?.x ?? 0) > (a.wheels[0]?.x ?? 0) ? p : a), null);
+    lider?.wheels.forEach((w) => {
+      if (w.fuera || w.suelta) return;
+      const cx = toX(w.x);
+      const cy = toY(w.y);
+      const radio = w.radius * PX_PER_METER + 9;
+      const inicio = -Math.PI * 0.9;
+      g.lineStyle(7, 0x0c0c0c, 1).beginPath().arc(cx, cy, radio, inicio, inicio + 0.35, false).strokePath();
+      g.lineStyle(4, MENTA_PAR, 1).beginPath().arc(cx, cy, radio, inicio, inicio + 0.35, false).strokePath();
+    });
+    if (this.medirFuerzas) {
+      this.medirFuerzas = false;
+      measureOnNextFrame("fuerzas-carrera");
+    }
+  }
+
   /**
    * Flecha de fuerza y arco de par de cada rueda del coche que sigue la cámara. Lo que se pinta es la media
    * móvil de lo que mide el Worker, no la última muestra: así el ritmo de dibujado no cambia lo que se ve.
@@ -552,6 +571,12 @@ class TrackScene extends Phaser.Scene {
     this.etiquetaFuerza.setVisible(false);
     this.etiquetaPar.setVisible(false);
     const pose = m ? poses.find((p) => p.carId === m.carId) : undefined;
+    if (this.fuerzasActivas && !m) {
+      // La primera muestra viaja al Worker y vuelve: mientras, el frame siguiente al clic ya enseña la capa (arcos de par sin valor), para que el interruptor responda dentro de un frame.
+      this.dibujarEsqueletoFuerzas(poses, toX, toY);
+      runtime.fuerzasEnVivo.flechasPx = [];
+      return;
+    }
     if (!this.fuerzasActivas || !m || !pose || pose.finished) {
       runtime.fuerzasEnVivo.flechasPx = [];
       if (this.medirFuerzas && !this.fuerzasActivas) {
