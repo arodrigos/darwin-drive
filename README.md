@@ -4,7 +4,7 @@ Juego web 2D de coches: diseña uno, elige pista y mira hasta dónde llega, o de
 
 ## Cómo jugar
 
-La portada tiene tres zonas con estilos distintos: **Jugar** (el botón relleno «Taller» y, con contorno, «Evolución» y «Continuar evolución»), **Récords por pista** (una tarjeta por pista con su récord; fila desplazable en móvil, rejilla en tableta) y **Más** (lista de enlaces: Garaje, Linaje, Especies, Explorar pista, Ver el coche de serie y Cómo se juega). Los estilos de control (`.boton-primario`, `.boton-secundario`, `.enlace-terciario`) están en `src/app/globals.css`.
+La portada tiene tres zonas con estilos distintos: **Jugar** (el botón relleno «Taller» y, con contorno, «Evolución», «Batalla» y, si hay algo a medias, «Continuar evolución» y «Continuar batalla»), **Récords por pista** (una tarjeta por pista con su récord; fila desplazable en móvil, rejilla en tableta) y **Más** (lista de enlaces: Garaje, Linaje, Especies, Explorar pista, Ver el coche de serie y Cómo se juega). Los estilos de control (`.boton-primario`, `.boton-secundario`, `.enlace-terciario`) están en `src/app/globals.css`.
 
 Desde la portada se llega a todo:
 
