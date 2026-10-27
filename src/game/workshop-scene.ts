@@ -65,15 +65,19 @@ function cajaMetros(genome: Genome, selected: number | null): { x0: number; x1: 
 
 /** Escala y origen que meten la caja del coche en la zona útil (el lienzo menos la cabecera) con margen. */
 export function calcularEncuadre(genome: Genome, selected: number | null, fuerzas: boolean, w: number, h: number, cabecera: number): Encuadre {
-  const c = cajaMetros(genome, selected);
-  // Con fuerzas se reserva sitio abajo para la flecha de peso (hasta 1,6·s + 9 px) y la etiqueta, y a los lados para los arcos de par.
-  const extraAbajo = fuerzas ? 60 : 0;
+  // Con fuerzas la cuña del punto elegido no entra en la caja: encoger el coche para que quepa la deja ilegible en móvil.
+  const c = cajaMetros(genome, fuerzas ? null : selected);
+  // Con fuerzas se reserva un mínimo abajo; la flecha de peso se acorta (dibujarFuerzas) antes que encoger el coche.
+  const extraAbajo = fuerzas ? 34 : 0;
   const extraLado = fuerzas ? 14 : 0;
   const m = MARGEN_PX + TIRADOR_PX * (selected !== null ? 0.5 : 0);
   const util = { l: m + extraLado, r: w - m - extraLado, t: Math.min(cabecera, h * 0.5) + m, b: h - m - extraAbajo };
   const ancho = Math.max(1, util.r - util.l);
   const alto = Math.max(1, util.b - util.t);
-  const s = Math.max(8, Math.min(ancho / Math.max(0.5, c.x1 - c.x0), alto / Math.max(0.5, c.y1 - c.y0), w / 5));
+  const tope = w / 5;
+  // Suelo de escala con fuerzas: el coche nunca baja de ~ un tercio del ancho por metro, aunque se salga un poco de la zona útil.
+  const suelo = fuerzas ? Math.min(tope, w / 11) : 8;
+  const s = Math.max(8, suelo, Math.min(ancho / Math.max(0.5, c.x1 - c.x0), alto / Math.max(0.5, c.y1 - c.y0), tope));
   const cx = (c.x0 + c.x1) / 2;
   const cy = (c.y0 + c.y1) / 2;
   return { s, ox: (util.l + util.r) / 2 - cx * s, oy: (util.t + util.b) / 2 + cy * s };
@@ -258,13 +262,9 @@ class WorkshopScene extends Phaser.Scene {
     const cm = this.toScreen(e.centroMasas.x, e.centroMasas.y);
     const peso = this.etiquetas[0];
     // El largo de la flecha crece con la masa; el máximo cabe en cualquier lienzo.
-    const largo = Math.max(28, Math.min(s * 1.6, 18 + e.masa * 0.35));
+    const largo = this.largoFlecha(e.masa, cm.py);
     this.flecha(cm.px, cm.py + 9, cm.px, cm.py + 9 + largo, ROSA);
     peso.setPosition(cm.px + 10, cm.py + 9 + largo - 8).setVisible(true);
-    g.fillStyle(0xffffff, 1).fillCircle(cm.px, cm.py, 9);
-    g.fillStyle(0x0c0c0c, 1).slice(cm.px, cm.py, 9, 0, Math.PI / 2, false).fillPath();
-    g.fillStyle(0x0c0c0c, 1).slice(cm.px, cm.py, 9, Math.PI, (3 * Math.PI) / 2, false).fillPath();
-    g.lineStyle(2, 0x0c0c0c, 1).strokeCircle(cm.px, cm.py, 9);
     e.ruedas.forEach((r, n) => {
       const c = this.vertexScreen(genome, r.vertex);
       const radio = genome.wheels[r.slot].radius * s + 12;
@@ -280,6 +280,40 @@ class WorkshopScene extends Phaser.Scene {
       g.fillStyle(MENTA, 1).fillTriangle(px + tx * 12, py + ty * 12, px - ty * 8, py + tx * 8, px + ty * 8, py - tx * 8);
       this.etiquetas[n + 1].setPosition(c.px + Math.cos(inicio) * radio - 28, c.py + Math.sin(inicio) * radio - 18).setVisible(true);
     });
+    this.separarEtiquetas(e.ruedas.length);
+  }
+
+  /** Largo de la flecha de peso: crece con la masa y se acorta antes que encoger el coche si no queda sitio abajo. */
+  private largoFlecha(masa: number, cmPy: number): number {
+    const libre = this.scale.height - (cmPy + 9) - 20;
+    return Math.max(14, Math.min(this.scale_ * 1.6, 18 + masa * 0.35, Math.max(28, libre)));
+  }
+
+  /** Centro de masas: va el último de todo el dibujo para que los puntos blancos no lo tapen. */
+  private dibujarCentroMasas(genome: Genome): void {
+    const g = this.g;
+    const cm = this.toScreen(estatica(genome).centroMasas.x, estatica(genome).centroMasas.y);
+    g.fillStyle(0xffd23f, 1).fillCircle(cm.px, cm.py, 13);
+    g.lineStyle(3, 0x0c0c0c, 1).strokeCircle(cm.px, cm.py, 13);
+    g.fillStyle(0xffffff, 1).fillCircle(cm.px, cm.py, 9);
+    g.fillStyle(0x0c0c0c, 1).slice(cm.px, cm.py, 9, 0, Math.PI / 2, false).fillPath();
+    g.fillStyle(0x0c0c0c, 1).slice(cm.px, cm.py, 9, Math.PI, (3 * Math.PI) / 2, false).fillPath();
+    g.lineStyle(2, 0x0c0c0c, 1).strokeCircle(cm.px, cm.py, 9);
+  }
+
+  /** Las etiquetas «par» de ruedas cercanas se pisan: se apilan hacia arriba hasta que no se solapan. */
+  private separarEtiquetas(ruedas: number): void {
+    const ts = this.etiquetas.slice(1, 1 + ruedas).sort((a, b) => a.x - b.x || a.y - b.y);
+    const colocadas: Phaser.GameObjects.Text[] = [];
+    for (const t of ts) {
+      for (let vuelta = 0; vuelta < 8; vuelta++) {
+        const choca = colocadas.find((o) => Math.abs(o.x - t.x) < o.width + 4 && Math.abs(o.y - t.y) < o.height);
+        if (!choca) break;
+        t.y = choca.y - choca.height - 2;
+      }
+      t.y = Math.max(2, t.y);
+      colocadas.push(t);
+    }
   }
 
   update(): void {
@@ -343,6 +377,7 @@ class WorkshopScene extends Phaser.Scene {
       // Anillo amarillo grueso: el punto elegido se distingue sin depender del color del coche.
       if (i === this.selected) g.lineStyle(4, 0xffd23f, 1).strokeCircle(p.x, p.y, 15);
     });
+    if (this.fuerzas) this.dibujarCentroMasas(genome);
     this.publicarEncuadre(genome);
     if (this.pendingMeasure) {
       measureOnNextFrame(this.pendingMeasure);
@@ -352,14 +387,14 @@ class WorkshopScene extends Phaser.Scene {
 
   /** Gancho de pruebas: el transform y la caja en px de todo lo dibujado, para tocar vértices sin suponer una escala. */
   private publicarEncuadre(genome: Genome): void {
-    const c = cajaMetros(genome, this.selected);
+    const c = cajaMetros(genome, this.fuerzas ? null : this.selected);
     const a = this.toScreen(c.x0, c.y1);
     const b = this.toScreen(c.x1, c.y0);
     let bottom = b.py;
     if (this.fuerzas) {
       const e = estatica(genome);
       const cm = this.toScreen(e.centroMasas.x, e.centroMasas.y);
-      bottom = Math.max(bottom, cm.py + 9 + Math.max(28, Math.min(this.scale_ * 1.6, 18 + e.masa * 0.35)));
+      bottom = Math.max(bottom, cm.py + 9 + this.largoFlecha(e.masa, cm.py));
     }
     const enc = this.encuadre;
     runtime.tallerEncuadre = {

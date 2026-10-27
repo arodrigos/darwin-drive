@@ -213,3 +213,22 @@ test("fu-3 a 1180x820 el «?» no tapa la lectura de la inclinación", async ({ 
   expect(solape).toBe(false);
   await page.screenshot({ path: `${DIR}/${ID}-u09-ayuda-lectura-1180x820.png` });
 });
+
+test("fu-3 a 360x640 con el coche agrandado «Ver fuerzas» no encoge el coche y la flecha cabe", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await abrirTaller(page);
+  await page.getByTestId("rueda-0").click();
+  await page.getByTestId("tamano-mas").click();
+  await page.getByTestId("tamano-mas").click();
+  await page.getByTestId("ver-fuerzas").click();
+  await expect(page.getByTestId("leyenda-fuerzas")).toBeVisible();
+  await lienzoQuieto(page);
+  const info = await page.evaluate(() => {
+    const e = (window.__debug!.estado() as unknown as { tallerEncuadre: { escalaPxM: number; cajaCochePx: { bottom: number } } }).tallerEncuadre;
+    return { s: e.escalaPxM, bottom: e.cajaCochePx.bottom, alto: document.querySelector<HTMLElement>('[data-testid="lienzo"]')!.clientHeight };
+  });
+  // Suelo de escala: el coche no baja de ~un tercio del ancho por metro; la flecha de peso se acorta antes.
+  expect(info.s).toBeGreaterThanOrEqual(360 / 11 - 0.5);
+  expect(info.bottom).toBeLessThanOrEqual(info.alto + 1);
+  await page.screenshot({ path: `${DIR}/${ID}-u09-coche-grande-360x640.png` });
+});
