@@ -8,6 +8,8 @@ import { formatDecimal } from "@/app/format";
 
 const MAX_FRAMES = 120;
 const LIMITE_MS = 200;
+// Pocas líneas: con más, el panel crece hacia arriba y acaba sobre el coche en móvil.
+const MAX_LATENCIAS = 3;
 
 interface Cifras {
   fps: number;
@@ -42,7 +44,7 @@ export function PanelRendimiento() {
       // El pie de la carrera (ritmos, «Fuerzas», barra) cambia de alto; el panel se apoya encima para no taparlo.
       const pie = panel.current?.parentElement?.querySelector<HTMLElement>(".pie-pista");
       if (panel.current) panel.current.style.bottom = pie ? `${pie.offsetHeight + 8}px` : "";
-      setC({ ...medir(deltas), coches: rendimiento.cochesPorSegundo, latencias: latencias().slice(-10).reverse(), camara: runtime.camara ? { fps: runtime.camara.fpsDibujo, margen: runtime.camara.margenMinPx } : null });
+      setC({ ...medir(deltas), coches: rendimiento.cochesPorSegundo, latencias: latencias().slice(-MAX_LATENCIAS).reverse(), camara: runtime.camara ? { fps: runtime.camara.fpsDibujo, margen: runtime.camara.margenMinPx } : null });
     };
     const timer = setInterval(refrescar, 500);
     const quitar = onLatencia(refrescar);
