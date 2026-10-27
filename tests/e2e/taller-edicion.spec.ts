@@ -281,11 +281,12 @@ for (const t of TAMANOS) {
     await page.getByTestId("poner-rueda").click();
     await expect(page.getByTestId("contador-ruedas")).toHaveText("Ruedas: 3/4");
     await lienzoQuieto(page);
+    // Se arrastra una distancia en metros, no en píxeles: con la escala del encuadre 40 px topaban el largo máximo y «Tamaño +» quedaba deshabilitado.
     const p = await (async () => {
       const enc = (await encuadre(page))!;
       const caja = (await page.locator("canvas").boundingBox())!;
       const v = (await estado(page)).genomaEnTaller!.body[1];
-      return { x: caja.x + enc.origenPx.x + Math.cos(v.angle) * v.length * enc.escalaPxM, y: caja.y + enc.origenPx.y - Math.sin(v.angle) * v.length * enc.escalaPxM, dx: Math.cos(v.angle) * 40, dy: -Math.sin(v.angle) * 40 };
+      return { x: caja.x + enc.origenPx.x + Math.cos(v.angle) * v.length * enc.escalaPxM, y: caja.y + enc.origenPx.y - Math.sin(v.angle) * v.length * enc.escalaPxM, dx: Math.cos(v.angle) * 0.25 * enc.escalaPxM, dy: -Math.sin(v.angle) * 0.25 * enc.escalaPxM };
     })();
     await page.mouse.move(p.x, p.y);
     await page.mouse.down();
