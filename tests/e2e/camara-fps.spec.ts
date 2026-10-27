@@ -198,7 +198,14 @@ test("ce-6 el panel de ?rendimiento=1 enseña la línea de la cámara", async ({
   const texto = await linea.innerText();
   const m = /(\d+) fps · margen (\d+) px/.exec(texto)!;
   expect(Math.abs(Number(m[1]) - c.fpsDibujo)).toBeLessThanOrEqual(1);
-  // El panel ya se apoyaba sobre el pie de la pista antes de esta línea; aquí solo se exige que la línea quepa entera en la pantalla.
+  // El panel se apoya sobre el pie: ni la línea ni el panel pueden montarse sobre la fila de ritmos.
+  await expect
+    .poll(async () => {
+      const p = await page.getByTestId("panel-rendimiento").boundingBox();
+      const r = await page.getByTestId("ritmo-x1").boundingBox();
+      return p && r ? p.y + p.height <= r.y : false;
+    })
+    .toBe(true);
   const panel = (await page.getByTestId("panel-rendimiento").boundingBox())!;
   await page.screenshot({ path: `${DIR}/${ID}-panel-360x640.png` });
   expect(panel.x).toBeGreaterThanOrEqual(0);
