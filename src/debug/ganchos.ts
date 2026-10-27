@@ -73,6 +73,20 @@ export const runtime = {
   /** Hoja para poner nombre; null si no hay ninguna abierta. */
   hojaNombre: null as { modo: "guardar" | "renombrar"; propuesto: string } | null,
   guia: { abierta: false, seccion: null as string | null, origen: null as string | null },
+  /** Tope de fotogramas pintados por segundo de la escena de carrera (solo pruebas); lo relee cada escena nueva. */
+  limiteFps: null as number | null,
+  /** Encuadre del líder en el último fotograma pintado; null fuera de una pantalla con carrera. Cajas en px CSS del viewport. */
+  camara: null as {
+    refH: number;
+    ancla: number;
+    dtMs: number;
+    fpsDibujo: number;
+    zonaUtilPx: { top: number; bottom: number };
+    cajaLiderPx: { top: number; bottom: number; left: number; right: number } | null;
+    dentro: boolean;
+    recortes: number;
+    margenMinPx: number;
+  } | null,
   /** Tope de velocidad simulada de pruebas; lo reaplican los ejecutores nuevos. */
   limiteRitmo: null as number | null,
   /** La pantalla con carrera lo registra para que el tope llegue a su ejecutor. */
@@ -147,6 +161,7 @@ export function estado() {
     cajaCoche: runtime.cajaCoche,
     marcador: runtime.marcador,
     etiquetaFin: runtime.etiquetaFin,
+    camara: runtime.camara,
     metaX: runtime.metaX,
     ritmo: runtime.ritmo,
     ritmoReal: runtime.ritmoReal,
@@ -182,6 +197,8 @@ export interface Gancho {
   adelantarSimulacion(segundos: number): Promise<void>;
   /** Acota la velocidad simulada a N veces el tiempo real para imitar un dispositivo lento (null lo quita). No cambia ningún CarResult. */
   limitarRitmo(max: number | null): void;
+  /** Hace que la escena de carrera pinte como mucho n fotogramas por segundo (1 a 60), como un equipo lento; null lo quita. No toca el Worker ni el ritmo. */
+  limitarFps(fps: number | null): void;
   /** Con la tarjeta de fin en pantalla, la repinta con esos campos (p. ej. reason «destrozado»), con el récord pendiente y el aviso final de migración si se piden; con reason «stall» y causa rehace el marcador de la pista. No toca lo guardado. */
   forzarTarjetaFin(parcial: Partial<CarResult> & { recordPendiente?: boolean; avisoMigracion?: boolean | number }): void;
   /** Pierde el contexto WebGL de la pantalla actual y, salvo restaurar:false, lo devuelve a los msRestaurar (300 por defecto). */
@@ -224,6 +241,9 @@ export function instalarGanchos(): void {
     limitarRitmo(max) {
       runtime.limiteRitmo = max;
       runtime.aplicarLimite?.(max);
+    },
+    limitarFps(fps) {
+      runtime.limiteFps = fps === null ? null : Math.min(60, Math.max(1, fps));
     },
     forzarTarjetaFin(parcial) {
       const { recordPendiente, avisoMigracion, ...resultado } = parcial;

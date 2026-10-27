@@ -361,6 +361,7 @@ export function Pista(props: PistaProps) {
       runtime.cajaCoche = null;
       runtime.marcador = null;
       runtime.etiquetaFin = null;
+      runtime.camara = null;
       runtime.ejecutor = null;
       eligeFuerzas.current = () => {};
       reiniciarFuerzasVivo();
