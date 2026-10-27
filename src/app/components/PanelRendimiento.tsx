@@ -8,8 +8,7 @@ import { formatDecimal } from "@/app/format";
 
 const MAX_FRAMES = 120;
 const LIMITE_MS = 200;
-// Pocas líneas: con más, el panel crece hacia arriba y acaba sobre el coche en móvil.
-const MAX_LATENCIAS = 3;
+const MAX_LATENCIAS = 10;
 
 interface Cifras {
   fps: number;
