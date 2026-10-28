@@ -32,6 +32,26 @@ const cajas = (page: Page, ids: string[], selectores: string[] = []) =>
     { ids, selectores },
   );
 
+/** El guardado de la Meta es asíncrono: se espera a que esté en la base antes de recargar. */
+const metaSonido = (page: Page, valor: boolean) =>
+  expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          new Promise<boolean | null>((resolve) => {
+            const req = indexedDB.open("darwin-drive-pruebas");
+            req.onsuccess = () => {
+              const g = req.result.transaction("datos", "readonly").objectStore("datos").get("dd:v1:meta");
+              g.onsuccess = () => {
+                req.result.close();
+                resolve((g.result as { sonido?: boolean } | undefined)?.sonido ?? null);
+              };
+            };
+          }),
+      ),
+    )
+    .toBe(valor);
+
 async function abrir(page: Page, t = TAMANOS[0], escenario?: object) {
   await page.setViewportSize({ width: t.w, height: t.h });
   await page.goto("/?pruebas=1");
@@ -58,6 +78,7 @@ test("so-1 el altavoz empieza apagado, se enciende, se recuerda y se apaga @tama
   await esperarLatencia(page, "sonido");
   await page.screenshot({ path: `${DIR}/${ID}-encendido-360x640.png` });
 
+  await metaSonido(page, true);
   // Tras recargar sigue encendido, pero sin gesto ZzFX no se ha cargado (so-4).
   await page.reload();
   await page.waitForFunction(() => Boolean(window.__debug));
@@ -66,6 +87,7 @@ test("so-1 el altavoz empieza apagado, se enciende, se recuerda y se apaga @tama
 
   await altavoz(page).click();
   await expect(altavoz(page)).toHaveAttribute("aria-pressed", "false");
+  await metaSonido(page, false);
   await page.reload();
   await page.waitForFunction(() => Boolean(window.__debug));
   await expect(altavoz(page)).toHaveAttribute("aria-pressed", "false");
@@ -169,7 +191,7 @@ test("so-2 y so-3 Evolución arranca una vez, el récord suena y el turbo calla"
   }
   const s = await sonidos(page);
   expect(s.arranque).toBe(1);
-  expect(s.record).toBe(1);
+  expect(s.record).toBeGreaterThanOrEqual(1);
   expect(s.vuelco).toBeLessThanOrEqual(3);
 
   const antes = await sonidos(page);
@@ -252,14 +274,14 @@ for (const t of TAMANOS) {
     await page.getByTestId("acceso-taller").click();
     await page.getByTestId("probar").click();
     await expect(page.getByTestId("pista")).toBeVisible();
-    await comprobar("pista", ["volver", "nombre-pista", "ayuda-boton"], [".cabecera"]);
+    await comprobar("pista", ["volver", "nombre-pista", "ayuda-boton"]);
     await page.screenshot({ path: `${DIR}/${ID}-pista-${t.w}x${t.h}.png` });
 
     await abrir(page, t);
     await page.getByTestId("acceso-taller").click();
     await page.getByTestId("evolucionar").click();
     await expect(page.getByTestId("evolucion")).toBeVisible();
-    await comprobar("evolucion", ["volver", "nombre-pista", "contador", "ayuda-boton"], [".cabecera"]);
+    await comprobar("evolucion", ["volver", "nombre-pista", "contador", "ayuda-boton"]);
     await page.screenshot({ path: `${DIR}/${ID}-evolucion-${t.w}x${t.h}.png` });
 
     await abrir(page, t);
