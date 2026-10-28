@@ -2,6 +2,7 @@
 
 import { createNoise2D } from "simplex-noise";
 import { TRACKS, type TrackId } from "@/sim/tracks";
+import { BotonSonido } from "./BotonSonido";
 import { TrackMiniature, topMark, type RankingsView } from "./TrackPicker";
 
 const noise = createNoise2D(() => 0.62);
@@ -37,6 +38,7 @@ export function Portada(props: { rankings: RankingsView; onExplore: () => void; 
   return (
     <div className="portada" data-testid="portada">
       <Paisaje />
+      <BotonSonido fijo />
       <h1 className="titulo">Darwin Drive</h1>
       <p className="subtitulo">Diseña un coche, elige pista y mira hasta dónde llega.</p>
       <section className="zona" aria-labelledby="zona-jugar" data-testid="zona-jugar">

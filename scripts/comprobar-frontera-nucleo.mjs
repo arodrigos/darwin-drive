@@ -5,9 +5,11 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
-const RAICES = ["src/sim", "src/evolution"];
+// FRONTERA_RAICES solo lo usa la prueba del propio script, para comprobar que se pone en rojo con un fixture.
+const RAICES = process.env.FRONTERA_RAICES ? process.env.FRONTERA_RAICES.split(",") : ["src/sim", "src/evolution"];
 const PROHIBIDO = [
   { nombre: "import de phaser/react/next", re: /from\s+["'](phaser|react|react-dom|next)(\/[^"']*)?["']|require\(["'](phaser|react|next)/ },
+  { nombre: "import de audio (zzfx o src/audio)", re: /from\s+["'](zzfx|@\/audio)(\/[^"']*)?["']|import\(["']zzfx["']\)|from\s+["'](\.\.?\/)+audio(\/[^"']*)?["']/ },
   { nombre: "global de navegador", re: /\b(window|document|navigator|localStorage|indexedDB)\b\s*[.[]/ },
 ];
 

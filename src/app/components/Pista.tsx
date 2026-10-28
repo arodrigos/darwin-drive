@@ -23,6 +23,8 @@ import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
 import { PanelRendimiento } from "./PanelRendimiento";
 import type { RankingsView } from "./TrackPicker";
+import { sonar } from "@/audio/sonido";
+import { BotonSonido } from "./BotonSonido";
 import { puedeDibujar } from "@/game/lienzo";
 import { aplicarMuestra, publicarFuerzas, reiniciarFuerzasVivo } from "../fuerzas-vivo";
 
@@ -189,6 +191,7 @@ export function Pista(props: PistaProps) {
         if (runtime.cochesVivos > 0) esperas = esperas.filter((e) => (m.simTime >= e.hasta ? (e.resolver(), false) : true));
       } else if (m.type === "carFinished") {
         scene.carFinished(m.result);
+        if (m.result.causaParada === "vuelco") sonar("vuelco", { ritmo: pace });
       } else if (m.type === "raceDone") {
         // La tarjeta enseña el resultado del ejecutor tal cual, sin recalcular nada aquí.
         const result = m.results[0];
@@ -202,6 +205,8 @@ export function Pista(props: PistaProps) {
         if (inscribir) {
           void inscribir(result).then((outcome) => {
             if (cancelled || !outcome) return;
+            // La carrera ya acabó: el ritmo con el que se corrió no silencia el récord.
+            if (outcome.isRecord) sonar("record", { ritmo: "x1" });
             setInscripcion({ outcome, distance: result.distance });
             // Un nuevo n.º 1 clava su bandera en la x donde acabó el coche.
             if (outcome.isRecord) scene?.setFlag(result.distance);
@@ -244,6 +249,7 @@ export function Pista(props: PistaProps) {
       scene.begin({ track: pista, cars: [{ carId, genome: g, hue: STOCK_HUE, color: propio ? props.color : undefined, label: propio ? "Tu coche" : "Coche de serie" }], flag: marca });
       setFase({ tipo: "corriendo" });
       setInscripcion(null);
+      sonar("arranque", { ritmo: pace });
       measureOnNextFrame("probar");
       runner.post({ type: "startRace", raceId, cars: [{ carId, genome: g }], trackId: id, pace });
       measureOnNextFrame("repetir");
@@ -394,6 +400,7 @@ export function Pista(props: PistaProps) {
         <div className="nombre-pista" data-testid="nombre-pista">
           {track.name}
         </div>
+        <BotonSonido />
       </div>
       <div className="hud-distancia" ref={hud} data-testid="hud-distancia" aria-live="off">
         0,0 m

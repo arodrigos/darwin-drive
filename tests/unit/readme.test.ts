@@ -19,6 +19,7 @@ const TITULOS_EXIGIDOS = [
   "Versiones de pista y migración",
   "Pruebas",
   "Modo pruebas",
+  "Sonido",
 ];
 
 const RAIZ = process.cwd();

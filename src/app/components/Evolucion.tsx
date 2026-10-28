@@ -19,6 +19,8 @@ import { ControlRitmo } from "./ControlRitmo";
 import { aplicarMuestra, publicarFuerzas, reiniciarFuerzasVivo } from "../fuerzas-vivo";
 import { PanelRendimiento } from "./PanelRendimiento";
 import type { RankingsView } from "./TrackPicker";
+import { sonar } from "@/audio/sonido";
+import { BotonSonido } from "./BotonSonido";
 import { puedeDibujar } from "@/game/lienzo";
 
 const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarlo o a abrirlo en Safari o Chrome.";
@@ -138,6 +140,7 @@ export function Evolucion(props: EvolucionProps) {
   const stateRef = useRef(props.initial);
   const latest = useRef(props);
   const pace = useRef<Pace>("x1");
+  const arranqueSonado = useRef(false);
   const pausa = useRef(false);
   const pendiente = useRef<string | null>(null);
   const contador = useRef<HTMLDivElement>(null);
@@ -243,6 +246,11 @@ export function Evolucion(props: EvolucionProps) {
         pace: pace.current,
       });
       if (pausa.current) runner.post({ type: "pause", raceId });
+      // Solo la primera generación de la pantalla: una por generación sería una ráfaga continua.
+      if (!arranqueSonado.current) {
+        arranqueSonado.current = true;
+        sonar("arranque", { ritmo: pace.current });
+      }
     };
     relanzar.current = lanzar;
 
@@ -274,6 +282,7 @@ export function Evolucion(props: EvolucionProps) {
       if (outcome && nuevoCampeon) {
         const texto = avisoRanking(outcome, track.name, nuevoCampeon.result.distance);
         if (texto) mostrar(setAvisoRank, texto, AVISO_RANKING_MS);
+        if (outcome.isRecord) sonar("record", { ritmo: pace.current });
       }
       lanzar();
       liberar();
@@ -304,6 +313,7 @@ export function Evolucion(props: EvolucionProps) {
         esperas = esperas.filter((e) => (m.simTime >= e.hasta ? (e.resolver(), false) : true));
       } else if (m.type === "carFinished") {
         scene.carFinished(m.result);
+        if (m.result.causaParada === "vuelco") sonar("vuelco", { ritmo: pace.current, generacion: stateRef.current.generation });
       } else if (m.type === "progress") {
         setProgreso({ finished: m.finished, total: m.total });
       } else if (m.type === "raceDone") {
@@ -457,6 +467,7 @@ export function Evolucion(props: EvolucionProps) {
           <div className="nombre-pista" data-testid="nombre-pista">
             {track.name}
           </div>
+          <BotonSonido />
         </div>
         <div className="hud-distancia contador-gen" ref={contador} data-testid="contador" aria-live="off" />
         {turbo && (

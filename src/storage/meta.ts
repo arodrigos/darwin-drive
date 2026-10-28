@@ -13,9 +13,11 @@ export interface Meta {
   persistRequested: boolean;
   lastTrack: TrackId;
   ritmo: RitmoRecordado;
+  /** Sonido encendido; la primera vez está apagado. */
+  sonido: boolean;
 }
 
-export const DEFAULT_META: Meta = { seenHelp: [], persistRequested: false, lastTrack: DEFAULT_TRACK_ID, ritmo: "x1" };
+export const DEFAULT_META: Meta = { seenHelp: [], persistRequested: false, lastTrack: DEFAULT_TRACK_ID, ritmo: "x1", sonido: false };
 
 export function esRitmoRecordado(v: unknown): v is RitmoRecordado {
   return typeof v === "string" && (RITMOS_RECORDADOS as readonly string[]).includes(v);
@@ -31,7 +33,8 @@ export function validateMeta(raw: unknown): Meta | null {
   if (!track) return null;
   // Una Meta anterior no trae ritmo y un valor desconocido («turbo», uno futuro) no la invalida: solo se ignora.
   const ritmo = esRitmoRecordado(r.ritmo) ? r.ritmo : "x1";
-  return { seenHelp: r.seenHelp.slice(0, 50), persistRequested: r.persistRequested, lastTrack: track.id, ritmo };
+  // Igual que ritmo: si falta o no es booleano, vale false y la Meta sigue siendo válida.
+  return { seenHelp: r.seenHelp.slice(0, 50), persistRequested: r.persistRequested, lastTrack: track.id, ritmo, sonido: r.sonido === true };
 }
 
 // Sin IndexedDB (modo privado antiguo, políticas del navegador) el juego sigue

@@ -24,6 +24,8 @@ import type { FromWorker, SimRunner } from "@/worker/protocol";
 import { Silueta } from "./Garaje";
 import { nuevaSemilla } from "./InicioEvolucion";
 import type { RankingsView } from "./TrackPicker";
+import { sonar } from "@/audio/sonido";
+import { BotonSonido } from "./BotonSonido";
 import { TrackPicker } from "./TrackPicker";
 
 export const AYUDA_ESPECIES =
@@ -157,6 +159,7 @@ export function Especies(props: EspeciesProps) {
           terminar();
           setEnCurso(null);
           setNovedades(cambiadas);
+          if (cambiadas.length > 0) sonar("especie", { ritmo: "x1" });
           setAviso(
             cambiadas.length === 0
               ? "Ninguna especie ha mejorado en este lote"
@@ -212,6 +215,7 @@ export function Especies(props: EspeciesProps) {
         </button>
         <h2>Especies</h2>
         <TrackPicker value={trackId} onChange={props.onTrack} rankings={props.rankings} />
+        <BotonSonido />
       </div>
       <p className="ayuda-especies" data-testid="ayuda-especies">
         {AYUDA_ESPECIES}
