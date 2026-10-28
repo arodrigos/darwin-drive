@@ -201,7 +201,7 @@ export function Carrera(props: CarreraProps) {
           track: pista,
           // El color no es el único canal: cada coche lleva su nombre encima.
           cars: js.map((j, i) => ({ carId: idCocheBatalla(i), genome: j.coche!.genome, hue: 28, color: j.color, label: j.nombre })),
-          flag: null,
+          fantasma: null,
         });
         runner.post({ type: "startRace", raceId, cars, trackId: id, pace });
         // La medida llega hasta el primer frame con los coches pintados, no hasta que se encola la carrera.

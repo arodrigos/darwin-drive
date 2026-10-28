@@ -67,18 +67,35 @@ export interface SceneCar {
   label?: string;
 }
 
+/** El coche del récord: corre en el Worker a la par, y la escena lo pinta semitransparente. */
+export interface FantasmaEscena {
+  carId: string;
+  genome: Genome;
+  color?: ColorCoche;
+  hue: number;
+  /** Distancia de la marca, para el rótulo «récord · N m». */
+  distancia: number;
+  nombre?: string;
+}
+
 export interface SceneConfig {
   track: Track;
   cars: SceneCar[];
-  /** Marca del n.º 1 de la pista: se clava una bandera en su x. */
-  flag: number | null;
+  fantasma: FantasmaEscena | null;
 }
+
+/** Opacidad del fantasma: lo bastante pálido para no confundirlo con un coche vivo y lo bastante firme para seguirlo. */
+export const ALPHA_FANTASMA = 0.4;
 
 export interface TrackSceneHandle {
   begin(cfg: SceneConfig): void;
   setPoses(simTime: number, poses: CarPose[], snap: boolean): void;
-  /** Clava la bandera del n.º 1 en esa x (nuevo récord). */
-  setFlag(x: number | null): void;
+  /** Pose del coche del récord en el mismo paso que `setPoses`; null si no hay. */
+  setFantasma(pose: CarPose | null, simTime: number): void;
+  /** El fantasma ha terminado; si su resultado no cuadra con la marca guardada (`fiel` false) desaparece. */
+  fantasmaFin(result: CarResult, fiel: boolean): void;
+  /** Avisa una sola vez por carrera de que un coche vivo ha pasado al fantasma. */
+  onAdelanta(listener: (() => void) | null): void;
   carFinished(result: CarResult): void;
   /** Capa «Fuerzas»: enciende o apaga el dibujo de las flechas y los arcos. */
   activarFuerzas(on: boolean): void;
@@ -145,7 +162,17 @@ export class TrackScene extends Phaser.Scene {
   private carLabels: Phaser.GameObjects.Text[] = [];
   /** Caja local (px del lienzo) del rótulo «fin · N m» del primer coche en este frame; null si no se ve. */
   private cajaEtiquetaFin: { x: number; y: number; w: number; h: number } | null = null;
-  private flagLabel!: Phaser.GameObjects.Text;
+  private etiquetaFantasma!: Phaser.GameObjects.Text;
+  private etiquetaBorde!: Phaser.GameObjects.Text;
+  private fantasmaG!: Phaser.GameObjects.Graphics;
+  private fantasmaPrev: CarPose | null = null;
+  private fantasmaCurr: CarPose | null = null;
+  private fantasmaSimTime: number | null = null;
+  private fantasmaOculto = false;
+  private fantasmaFiel: boolean | null = null;
+  private fantasmaResultado: CarResult | null = null;
+  private adelantado = false;
+  private alAdelantar: (() => void) | null = null;
   private destellos: { x: number; y: number; at: number }[] = [];
   private skyDirty = true;
   private refH = 0;
@@ -251,8 +278,10 @@ export class TrackScene extends Phaser.Scene {
     runtime.etiquetaFin = null;
     runtime.cajaCoche = null;
     // Sin esto el último fotograma de la carrera anterior se vería al abrir la siguiente hasta que llegue la primera pose.
-    for (const g of [this.sky, this.hills, this.ground, this.cars, this.marca, this.ruler]) g?.clear();
-    const textos = [...this.rulerLabels, ...this.carLabels, this.flagLabel, this.etiquetaCausa, this.etiquetaLimite, this.etiquetaFuerza, this.etiquetaPar];
+    this.reiniciarFantasma();
+    this.alAdelantar = null;
+    for (const g of [this.sky, this.hills, this.ground, this.fantasmaG, this.cars, this.marca, this.ruler]) g?.clear();
+    const textos = [...this.rulerLabels, ...this.carLabels, this.etiquetaFantasma, this.etiquetaBorde, this.etiquetaCausa, this.etiquetaLimite, this.etiquetaFuerza, this.etiquetaPar];
     for (const t of textos) t?.setVisible(false);
     this.skyDirty = true;
   }
@@ -261,8 +290,21 @@ export class TrackScene extends Phaser.Scene {
     this.pickListener = listener;
   }
 
+  /** El fantasma es de una sola carrera: la siguiente empieza sin él hasta que llegue su primera pose. */
+  private reiniciarFantasma(): void {
+    this.fantasmaPrev = null;
+    this.fantasmaCurr = null;
+    this.fantasmaSimTime = null;
+    this.fantasmaOculto = false;
+    this.fantasmaFiel = null;
+    this.fantasmaResultado = null;
+    this.adelantado = false;
+    runtime.fantasma = null;
+  }
+
   begin(cfg: SceneConfig): void {
     this.cfg = cfg;
+    this.reiniciarFantasma();
     this.segments.clear();
     this.prev = [];
     this.curr = [];
@@ -297,8 +339,22 @@ export class TrackScene extends Phaser.Scene {
     this.recvAt = now;
   }
 
-  setFlag(x: number | null): void {
-    if (this.cfg) this.cfg = { ...this.cfg, flag: x };
+  setFantasma(pose: CarPose | null, simTime: number): void {
+    if (!this.cfg?.fantasma || !pose) return;
+    this.fantasmaPrev = this.fantasmaCurr ?? pose;
+    this.fantasmaCurr = pose;
+    this.fantasmaSimTime = simTime;
+  }
+
+  fantasmaFin(result: CarResult, fiel: boolean): void {
+    this.fantasmaResultado = result;
+    this.fantasmaFiel = fiel;
+    // Una carrera que no es la de la marca no se enseña como si lo fuera.
+    if (!fiel) this.fantasmaOculto = true;
+  }
+
+  onAdelanta(listener: (() => void) | null): void {
+    this.alAdelantar = listener;
   }
 
   carFinished(result: CarResult): void {
@@ -317,6 +373,7 @@ export class TrackScene extends Phaser.Scene {
     this.sky = this.add.graphics();
     this.hills = this.add.graphics();
     this.ground = this.add.graphics();
+    this.fantasmaG = this.add.graphics().setAlpha(ALPHA_FANTASMA);
     this.cars = this.add.graphics();
     this.marca = this.add.graphics();
     this.ruler = this.add.graphics();
@@ -327,7 +384,9 @@ export class TrackScene extends Phaser.Scene {
         this.add.text(0, 0, "", { ...style, fontSize: "13px", fontStyle: "bold", backgroundColor: "rgba(0,0,0,.55)", padding: { x: 4, y: 2 } }).setOrigin(0.5, 1).setVisible(false),
       );
     }
-    this.flagLabel = this.add.text(0, 0, "", { ...style, fontStyle: "bold", backgroundColor: "rgba(0,0,0,.55)", padding: { x: 4, y: 2 } }).setOrigin(0, 1).setVisible(false);
+    const rotuloFantasma = { ...style, fontStyle: "bold", backgroundColor: "rgba(0,0,0,.55)", padding: { x: 4, y: 2 } };
+    this.etiquetaFantasma = this.add.text(0, 0, "", rotuloFantasma).setOrigin(0.5, 1).setAlpha(0.8).setVisible(false);
+    this.etiquetaBorde = this.add.text(0, 0, "", rotuloFantasma).setVisible(false);
     const placa = { ...style, fontSize: `${ETIQUETA_PX}px`, fontStyle: "bold", color: TEXTO_PLACA, backgroundColor: PLACA, padding: { x: 6, y: 3 } };
     this.etiquetaCausa = this.add.text(0, 0, "", placa).setOrigin(0.5, 1).setVisible(false);
     this.etiquetaLimite = this.add.text(0, 0, "", placa).setOrigin(0, 0.5).setVisible(false);
@@ -385,7 +444,7 @@ export class TrackScene extends Phaser.Scene {
     this.drawFuerzas(poses, toX, toY);
     this.drawMarcador(cfg, poses, toX, toY);
     this.drawRuler(W, H, toX);
-    this.drawFlag(cfg, toX, toY, W);
+    this.drawFantasma(cfg, poses, leader.x, t, toX, toY, W);
     this.drawMeta(cfg, toX, toY, W);
 
     if (this.measurePending) {
@@ -886,21 +945,70 @@ export class TrackScene extends Phaser.Scene {
     this.cars.lineStyle(2, 0x111111, 1).strokeRect(x + 2, y - ALTO, COLS * LADO, FILAS * LADO);
   }
 
-  private drawFlag(cfg: SceneConfig, toX: (x: number) => number, toY: (h: number) => number, W: number): void {
-    if (cfg.flag === null) {
-      this.flagLabel.setVisible(false);
+  private drawFantasma(cfg: SceneConfig, poses: CarPose[], liderX: number, t: number, toX: (x: number) => number, toY: (h: number) => number, W: number): void {
+    const f = cfg.fantasma;
+    const g = this.fantasmaG;
+    g.clear();
+    const curr = this.fantasmaCurr;
+    if (!f || !curr || this.fantasmaOculto) {
+      this.etiquetaFantasma.setVisible(false);
+      this.etiquetaBorde.setVisible(false);
+      this.publicarFantasma(false, curr?.x ?? null);
       return;
     }
-    const x = toX(cfg.flag);
-    if (x < -120 || x > W + 10) {
-      this.flagLabel.setVisible(false);
-      return;
+    const p = mixPose(this.fantasmaPrev ?? curr, curr, t);
+    // Se avisa con el primer coche vivo que pasa la x del fantasma, una vez la carrera está en marcha (a la salida los dos están en 0).
+    if (!this.adelantado && p.x > 1 && poses.some((c) => !c.finished && c.x > p.x)) {
+      this.adelantado = true;
+      this.alAdelantar?.();
     }
-    const y = toY(cfg.track.heightAt(cfg.flag));
-    this.cars.lineStyle(4, 0xffffff, 1).lineBetween(x, y, x, y - 90);
-    this.cars.fillStyle(0xffd23f, 1).fillTriangle(x, y - 90, x + 34, y - 78, x, y - 66);
-    this.flagLabel.setText(`n.º 1 · ${formatMeters(cfg.flag)}`).setPosition(x + 4, y - 94).setVisible(true);
+    const fill = f.color ? colorNumerico(f.color) : hueColour(f.hue, 0.55);
+    const pts = f.genome.body.map((v) => {
+      const a = v.angle + p.angle;
+      return vec(toX(p.x + Math.cos(a) * v.length), toY(p.y + Math.sin(a) * v.length));
+    });
+    const cx0 = toX(p.x);
+    const cy0 = toY(p.y);
+    const mascara = p.piezas ?? 255;
+    pts.forEach((a, k) => {
+      if ((mascara & (1 << k)) === 0) return;
+      const b = pts[(k + 1) % pts.length];
+      g.fillStyle(fill, 1).fillTriangle(cx0, cy0, a.x, a.y, b.x, b.y);
+    });
+    if (mascara === 255) g.lineStyle(2, CONTORNO_COCHE, 1).strokePoints(pts, true, true);
+    for (const w of p.wheels) {
+      if (w.fuera) continue;
+      const r = w.radius * PX_PER_METER;
+      g.fillStyle(0x222222, 1).fillCircle(toX(w.x), toY(w.y), r);
+      g.fillStyle(fill, 1).fillCircle(toX(w.x), toY(w.y), Math.max(2, r * 0.4));
+    }
+    const top = Math.min(toY(p.y) - 22, ...p.wheels.map((w) => toY(w.y) - w.radius * PX_PER_METER - 6));
+    const enPantalla = cx0 >= 0 && cx0 <= W;
+    // El rótulo sube sobre el del coche probado: si el fantasma va pegado a él, los dos se leen.
+    this.etiquetaFantasma.setText(`récord · ${formatMeters(f.distancia)}`).setPosition(cx0, top - 26).setVisible(enPantalla);
+    const dif = Math.abs(p.x - liderX);
+    if (enPantalla) {
+      this.etiquetaBorde.setVisible(false);
+    } else if (cx0 < 0) {
+      this.etiquetaBorde.setText(`◂ récord ${formatMeters(dif)}`).setOrigin(0, 0.5).setPosition(6, this.scale.height * 0.3).setVisible(true);
+    } else {
+      this.etiquetaBorde.setText(`récord ${formatMeters(dif)} ▸`).setOrigin(1, 0.5).setPosition(W - 6, this.scale.height * 0.3).setVisible(true);
+    }
+    this.publicarFantasma(true, p.x);
   }
+
+  private publicarFantasma(visible: boolean, x: number | null): void {
+    runtime.fantasma = {
+      visible,
+      alpha: this.fantasmaG.alpha,
+      x,
+      simTime: this.fantasmaSimTime,
+      fiel: this.fantasmaFiel,
+      resultado: this.fantasmaResultado,
+      adelantado: this.adelantado,
+    };
+  }
+
 }
 
 /** Crea el Game de carrera (una vez por sesión, más una por cada recuperación de contexto) con su escena. */
@@ -936,7 +1044,9 @@ export function startTrackScene(parent: HTMLElement, _track: Track, opciones: Op
   return {
     begin: (cfg) => vigente() && escena().begin(cfg),
     setPoses: (t, p, s) => vigente() && escena().setPoses(t, p, s),
-    setFlag: (x) => vigente() && escena().setFlag(x),
+    setFantasma: (pose, t) => vigente() && escena().setFantasma(pose, t),
+    fantasmaFin: (r, fiel) => vigente() && escena().fantasmaFin(r, fiel),
+    onAdelanta: (l) => vigente() && escena().onAdelanta(l),
     carFinished: (r) => vigente() && escena().carFinished(r),
     activarFuerzas: (on) => vigente() && escena().activarFuerzas(on),
     setFuerzas: (m) => vigente() && escena().setFuerzas(m),

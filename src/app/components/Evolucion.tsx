@@ -18,9 +18,11 @@ import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
 import { aplicarMuestra, publicarFuerzas, reiniciarFuerzasVivo } from "../fuerzas-vivo";
 import { PanelRendimiento } from "./PanelRendimiento";
-import type { RankingsView } from "./TrackPicker";
 import { sonar } from "@/audio/sonido";
 import { BotonSonido } from "./BotonSonido";
+import { marcaFantasma, resultadoFiel } from "@/app/repeticion";
+import type { RankingEntry } from "@/storage/schema";
+import type { TrackId } from "@/sim/tracks";
 import { puedeDibujar } from "@/game/lienzo";
 
 const SIN_LIENZO = "Tu navegador no puede dibujar el juego. Prueba a actualizarlo o a abrirlo en Safari o Chrome.";
@@ -30,6 +32,7 @@ export const AVISO_FAVORITO = "Favorito: tendrá hijos seguro";
 export const AVISO_ESTANCADA = "Estancada: subo la mutación para buscar ideas nuevas";
 const AVISO_MS = 2000;
 const AVISO_RANKING_MS = 2500;
+const AVISO_ADELANTA_MS = 1500;
 const ESTANCAMIENTO_AVISO = 5;
 
 export interface Campeon {
@@ -40,7 +43,9 @@ export interface Campeon {
 
 export interface EvolucionProps {
   initial: EvolutionState;
-  rankings: RankingsView;
+  rankings: Record<TrackId, RankingEntry[]>;
+  /** Hay una migración de marcas en curso: ninguna marca pendiente corre como fantasma. */
+  migrando?: boolean;
   /** Guarda el estado y el linaje; inscribe al campeón en el ranking de la pista y devuelve el resultado. */
   onGeneracion: (state: EvolutionState, lineageAdded: LineageNode[], campeon: Campeon | null) => Promise<RankingOutcome | null>;
   /** Pide el nombre y lleva al campeón al garaje; devuelve el texto del aviso, o null si se canceló. */
@@ -159,6 +164,7 @@ export function Evolucion(props: EvolucionProps) {
   const [error, setError] = useState(false);
   const [avisoGen, setAvisoGen] = useState<string | null>(null);
   const [avisoRank, setAvisoRank] = useState<string | null>(null);
+  const [avisoAdelanta, setAvisoAdelanta] = useState<string | null>(null);
   const [avisoFav, setAvisoFav] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -207,6 +213,7 @@ export function Evolucion(props: EvolucionProps) {
       if (contador.current) contador.current.textContent = `Gen ${stateRef.current.generation} · ${vivos} vivos · ${track.name}`;
     };
 
+    let marca: RankingEntry | undefined;
     const lanzar = () => {
       if (!scene) return;
       const st = stateRef.current;
@@ -226,7 +233,8 @@ export function Evolucion(props: EvolucionProps) {
       runtime.distanciaLider = 0;
       runtime.tiempoSim = 0;
       pintarContador(total);
-      const marca = latest.current.rankings[st.trackId][0]?.distance ?? null;
+      // El n.º 1 de ahora, no el de cuando se abrió la pantalla: tras un récord nuevo corre contra él.
+      marca = marcaFantasma(latest.current.rankings[st.trackId], track, Boolean(latest.current.migrando));
       scene.begin({
         track,
         cars: st.population.map((p) => ({
@@ -235,8 +243,9 @@ export function Evolucion(props: EvolucionProps) {
           hue: p.hue,
           label: p.generation === 0 ? "✋ tu coche" : undefined,
         })),
-        flag: marca,
+        fantasma: marca ? { carId: `fantasma-${marca.genomeHash}`, genome: marca.genome, color: marca.color, hue: 205, distancia: marca.distance } : null,
       });
+      scene.onAdelanta(() => mostrar(setAvisoAdelanta, "¡Adelanta al récord!", AVISO_ADELANTA_MS));
       scene.setFavorites(st.favorites);
       runner.post({
         type: "startRace",
@@ -244,6 +253,7 @@ export function Evolucion(props: EvolucionProps) {
         cars: st.population.map((p) => ({ carId: p.id, genome: p.genome })),
         trackId: st.trackId,
         pace: pace.current,
+        ...(marca ? { fantasma: { carId: `fantasma-${marca.genomeHash}`, genome: marca.genome } } : {}),
       });
       if (pausa.current) runner.post({ type: "pause", raceId });
       // Solo la primera generación de la pantalla: una por generación sería una ráfaga continua.
@@ -300,6 +310,7 @@ export function Evolucion(props: EvolucionProps) {
       if (m.raceId !== raceId || !scene) return;
       if (m.type === "poses") {
         medirRitmo(m.ritmoReal);
+        scene.setFantasma(m.fantasma ?? null, m.simTime);
         const lider = m.poses.reduce((a, p) => Math.max(a, p.x), 0);
         aplicarMuestra(scene, m.fuerzas);
         scene.setPoses(m.simTime, m.poses, m.simTime - ultimaSim > 0.5);
@@ -311,6 +322,8 @@ export function Evolucion(props: EvolucionProps) {
         registrarPoses(m.simTime, vivos);
         pintarContador(vivos);
         esperas = esperas.filter((e) => (m.simTime >= e.hasta ? (e.resolver(), false) : true));
+      } else if (m.type === "fantasmaFin") {
+        if (marca) scene.fantasmaFin(m.result, resultadoFiel(m.result, marca));
       } else if (m.type === "carFinished") {
         scene.carFinished(m.result);
         if (m.result.causaParada === "vuelco") sonar("vuelco", { ritmo: pace.current, generacion: stateRef.current.generation });
@@ -489,6 +502,11 @@ export function Evolucion(props: EvolucionProps) {
         {avisoRank && (
           <div className="aviso-arriba" role="status" data-testid="aviso-ranking">
             {avisoRank}
+          </div>
+        )}
+        {avisoAdelanta && (
+          <div className="aviso-arriba" role="status" data-testid="aviso-adelanta">
+            {avisoAdelanta}
           </div>
         )}
         {avisoFav && (

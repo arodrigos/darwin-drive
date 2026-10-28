@@ -8,7 +8,7 @@ export type Pace = "x1" | "x2" | "x4" | "x8" | "turbo";
 export const MULTIPLIER: Record<Exclude<Pace, "turbo">, number> = { x1: 1, x2: 2, x4: 4, x8: 8 };
 
 export type ToWorker =
-  | { type: "startRace"; raceId: string; cars: { carId: string; genome: Genome }[]; trackId: TrackId; pace: Pace }
+  | { type: "startRace"; raceId: string; cars: { carId: string; genome: Genome }[]; trackId: TrackId; pace: Pace; fantasma?: { carId: string; genome: Genome } }
   | { type: "setPace"; raceId: string; pace: Pace }
   /** Capa «Fuerzas»: encendida, las poses llevan la muestra del coche líder; apagada no se calcula nada. Vale para las carreras siguientes. */
   | { type: "setFuerzas"; raceId: string; on: boolean }
@@ -19,10 +19,12 @@ export type ToWorker =
 
 export type FromWorker =
   /** 30 Hz salvo en turbo. `ritmoReal` es el múltiplo de tiempo real que el dispositivo está logrando de verdad. */
-  | { type: "poses"; raceId: string; simTime: number; poses: CarPose[]; ritmoReal?: number; fuerzas?: FuerzasMuestra }
+  | { type: "poses"; raceId: string; simTime: number; poses: CarPose[]; ritmoReal?: number; fuerzas?: FuerzasMuestra; fantasma?: CarPose }
   | { type: "carFinished"; raceId: string; result: CarResult }
   | { type: "progress"; raceId: string; finished: number; total: number; leaderX?: number; simTime?: number; ritmoReal?: number }
   | { type: "raceDone"; raceId: string; results: CarResult[] }
+  /** El coche del récord ha terminado, una sola vez; nunca entra en `results`, `carFinished` ni `progress`. */
+  | { type: "fantasmaFin"; raceId: string; result: CarResult }
   | { type: "error"; raceId: string; message: string };
 
 /** Mismo contrato para el Worker real y para la alternativa en línea. */

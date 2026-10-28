@@ -11,7 +11,19 @@ import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import type { SavedCar } from "@/storage/schema";
 import { MuestraColor } from "./MuestraColor";
 import { CopiaSeguridad } from "./CopiaSeguridad";
+import { mejorMarcaGaraje, type MarcaComparable } from "@/app/repeticion";
 import { TrackPicker, type RankingsView } from "./TrackPicker";
+
+/** Un coche sin marcas válidas (o con la migración en curso) no ofrece repetición: no hay nada fiable que reproducir. */
+function BotonRepeticion({ car, migrando, onReplay }: { car: SavedCar; migrando: boolean; onReplay: (car: SavedCar, trackId: TrackId, marca: MarcaComparable) => void }) {
+  const mejor = mejorMarcaGaraje(car, migrando);
+  if (!mejor) return null;
+  return (
+    <button type="button" className="pastilla chica" onClick={() => onReplay(car, mejor.trackId, mejor.marca)} data-testid="garaje-repeticion">
+      Ver repetición · {getTrack(mejor.trackId)?.name} · {formatMeters(mejor.marca.distance)}
+    </button>
+  );
+}
 
 export const GARAJE_VACIO = "Tu garaje está vacío. Diseña un coche en el Taller o evoluciona uno y guárdalo aquí.";
 
@@ -53,6 +65,10 @@ export function Garaje(props: {
   onTrack: (id: TrackId) => void;
   rankings: RankingsView;
   onTry: (car: SavedCar) => void;
+  /** «Ver repetición» de la mejor marca válida del coche. */
+  onReplay: (car: SavedCar, trackId: TrackId, marca: MarcaComparable) => void;
+  /** Hay una migración de marcas en curso: ninguna repetición hasta que acabe. */
+  migrando?: boolean;
   /** Medición en curso (una sola a la vez) y el resumen de la última de cada coche. */
   midiendo: { carId: string; n: number; total: number } | null;
   resumenes: Record<string, string>;
@@ -126,6 +142,7 @@ export function Garaje(props: {
                   <button type="button" className="pastilla chica" onClick={() => props.onTry(car)} data-testid="garaje-probar">
                     Probar en {getTrack(props.trackId)?.name}
                   </button>
+                  <BotonRepeticion car={car} migrando={props.migrando ?? false} onReplay={props.onReplay} />
                   <button type="button" className="pastilla chica" disabled={midiendoAhora} onClick={() => props.onMeasure(car)} data-testid="garaje-medir">
                     Medir en todas las pistas
                   </button>
