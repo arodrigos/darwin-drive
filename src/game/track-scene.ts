@@ -904,7 +904,7 @@ export class TrackScene extends Phaser.Scene {
 }
 
 /** Crea el Game de carrera (una vez por sesión, más una por cada recuperación de contexto) con su escena. */
-export function crearJuegoCarrera(parent: HTMLElement, anterior: TrackScene | null): { game: Phaser.Game; escena: TrackScene } {
+export function crearJuegoCarrera(parent: HTMLElement, anterior: TrackScene | null, tam: { w: number; h: number } | null = null): { game: Phaser.Game; escena: TrackScene } {
   const escena = new TrackScene("pista");
   if (anterior) escena.traspasar(anterior);
   const game = new Phaser.Game({
@@ -913,7 +913,7 @@ export function crearJuegoCarrera(parent: HTMLElement, anterior: TrackScene | nu
     // preserveDrawingBuffer deja leer el lienzo en las pruebas de pantalla.
     render: { preserveDrawingBuffer: true },
     // El tamaño lo da el motor con scale.resize al mover el lienzo a cada pantalla.
-    scale: { mode: Phaser.Scale.NONE, width: parent.clientWidth || 360, height: parent.clientHeight || 640 },
+    scale: { mode: Phaser.Scale.NONE, width: tam?.w || parent.clientWidth || 360, height: tam?.h || parent.clientHeight || 640 },
     scene: escena,
   });
   return { game, escena };

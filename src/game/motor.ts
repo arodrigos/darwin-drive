@@ -37,6 +37,7 @@ export interface JuegoMin {
   canvas: Node | null | undefined;
   scale: { resize(ancho: number, alto: number): unknown };
   loop: { sleep(): void; wake(): void; started?: boolean; running?: boolean };
+  events?: { once(evento: string, fn: () => void): unknown };
 }
 
 export interface Contenedor {
@@ -140,8 +141,11 @@ export function crearMotor<E extends EscenaMotor>(deps: DepsMotor<E>): Motor<E> 
     const nuevo = deps.crearJuego(reconstruccion, juego?.escena ?? null);
     juego = nuevo;
     cuenta.juegosCreados++;
-    if (dueno) montar(dueno);
-    else {
+    if (dueno) {
+      montar(dueno);
+      // El arranque de Phaser vuelve a fijar el tamaño del config: se reaplica el del hueco cuando el juego ya está listo.
+      nuevo.game.events?.once("ready", ajustar);
+    } else {
       colocar(nuevo, deps.oculto());
       dormir();
     }
@@ -265,7 +269,7 @@ export function crearMotor<E extends EscenaMotor>(deps: DepsMotor<E>): Motor<E> 
 
 // --- Motor real: un Phaser.Game y un Worker para toda la sesión -----------------------------------
 
-type FabricaJuego = (parent: HTMLElement, anterior: EscenaReal | null) => JuegoMotor<EscenaReal>;
+type FabricaJuego = (parent: HTMLElement, anterior: EscenaReal | null, tam: { w: number; h: number } | null) => JuegoMotor<EscenaReal>;
 type EscenaReal = import("./track-scene").TrackScene;
 
 // track-scene.ts se registra aquí al cargarse: el motor no lo importa de forma estática para no arrastrar Phaser a la Portada.
@@ -290,7 +294,10 @@ function motorReal(): Motor<EscenaReal> {
   real ??= crearMotor<EscenaReal>({
     crearJuego: (reconstruccion, anterior) => {
       if (!fabrica) throw new Error("el motor no está preparado");
-      return fabrica(contenedorOculto(), reconstruccion ? anterior : null);
+      // Al rehacer el juego con una pantalla delante, nace ya con el tamaño de su hueco.
+      const hueco = real?.parentActual() as HTMLElement | undefined;
+      const tam = reconstruccion && hueco && hueco.clientWidth > 0 ? { w: hueco.clientWidth, h: hueco.clientHeight } : null;
+      return fabrica(contenedorOculto(), reconstruccion ? anterior : null, tam);
     },
     iniciar: (construir) => {
       if (gestorHecho) return;
