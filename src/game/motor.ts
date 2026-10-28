@@ -273,14 +273,9 @@ let fabrica: FabricaJuego | null = null;
 let ocultoReal: HTMLElement | null = null;
 
 function contenedorOculto(): HTMLElement {
-  if (ocultoReal && ocultoReal.isConnected) return ocultoReal;
-  const div = document.createElement("div");
-  div.setAttribute("aria-hidden", "true");
-  // Fuera de la vista pero con tamaño: con display:none el lienzo mediría 0x0.
-  div.style.cssText = "position:fixed;left:-10000px;top:0;width:360px;height:640px;overflow:hidden;pointer-events:none";
-  document.body.appendChild(div);
-  ocultoReal = div;
-  return div;
+  // Fuera del documento: el lienzo sin dueño conserva su contexto WebGL pero no cuenta como un <canvas> de la página.
+  ocultoReal ??= document.createElement("div");
+  return ocultoReal;
 }
 
 function opcionesPruebaReal(): { worker: boolean } {

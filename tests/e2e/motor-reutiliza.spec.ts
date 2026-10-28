@@ -83,8 +83,10 @@ test("mp-2 cinco idas y vueltas a Probar y dos a Evolución dejan un juego, un W
     await page.getByTestId("evolucionar").click();
     await expect(page.getByTestId("evolucion")).toBeVisible();
     await page.waitForTimeout(1000);
+    // Evolución no vuelve al Taller sino a la portada.
     await page.getByTestId("volver").click();
-    await expect(page.getByTestId("taller")).toBeVisible();
+    await expect(page.getByTestId("portada")).toBeVisible();
+    await alTaller(page);
   }
   expect(await motor(page)).toMatchObject({ dueno: null, escenasActivas: 0, juegosVivos: 1 });
   await probar(page);
@@ -129,7 +131,8 @@ test("mp-5 la escena reutilizada no arrastra la capa Fuerzas, los favoritos ni l
   const fuerzas = page.getByTestId("evo-ritmo-fuerzas");
   if (await fuerzas.isVisible()) await fuerzas.click();
   await page.getByTestId("volver").click();
-  await expect(page.getByTestId("taller")).toBeVisible();
+  await expect(page.getByTestId("portada")).toBeVisible();
+  await alTaller(page);
   await probar(page);
   const e = await estado(page);
   expect(e.favoritos).toBeNull();

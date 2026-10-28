@@ -9,6 +9,8 @@ async function abrir(page: Page, query: string) {
   await page.setViewportSize(MOVIL);
   await page.goto(`/?pruebas=1${query}`);
   await page.waitForFunction(() => Boolean(window.__debug));
+  // El precalentado corre en segundo plano al abrir el juego: la primera carrera ya no paga el Game ni el Worker.
+  await page.waitForFunction(() => window.__debug!.motor().listo, undefined, { timeout: 15_000 });
   await page.getByTestId("acceso-serie").click();
   await expect(page.getByTestId("pista")).toBeVisible();
 }
