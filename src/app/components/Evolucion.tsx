@@ -469,20 +469,25 @@ export function Evolucion(props: EvolucionProps) {
           </div>
         )}
         {rendimiento && <PanelRendimiento />}
-        <div className="avisos-evolucion">
+        <div className="avisos-bajo-cabecera">
         {avisoGen && (
           <div className="aviso-arriba" role="status" data-testid="aviso-generacion">
             {avisoGen}
           </div>
         )}
         {avisoRank && (
-          <div className="aviso-arriba segundo" role="status" data-testid="aviso-ranking">
+          <div className="aviso-arriba" role="status" data-testid="aviso-ranking">
             {avisoRank}
           </div>
         )}
         {avisoFav && (
-          <div className="aviso-arriba tercero" role="status" data-testid="aviso-favorito">
+          <div className="aviso-arriba" role="status" data-testid="aviso-favorito">
             {avisoFav}
+          </div>
+        )}
+        {toast && (
+          <div className="aviso-arriba" role="status" data-testid="aviso-guardado">
+            {toast}
           </div>
         )}
         </div>
@@ -490,11 +495,6 @@ export function Evolucion(props: EvolucionProps) {
           <p className="aviso-ruedas" role="status" data-testid="aviso-estancada">
             {AVISO_ESTANCADA}
           </p>
-        )}
-        {toast && (
-          <div className="aviso-arriba segundo" role="status" data-testid="aviso-guardado">
-            {toast}
-          </div>
         )}
         {error && (
           <div className="tarjeta-fin error" role="alert" data-testid="error-simulacion">

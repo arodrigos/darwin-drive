@@ -273,8 +273,10 @@ export function Especies(props: EspeciesProps) {
         </p>
       )}
       {aviso && (
-        <div className="aviso-arriba" role="status" data-testid="aviso-especies">
-          {aviso}
+        <div className="avisos-bajo-cabecera">
+          <div className="aviso-arriba" role="status" data-testid="aviso-especies">
+            {aviso}
+          </div>
         </div>
       )}
       {celda && abierta !== null && (
