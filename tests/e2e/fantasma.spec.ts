@@ -106,3 +106,46 @@ test("fa-6 una marca de otra versión de la pista no se puede repetir y lo dice"
   await expect(page.getByTestId("ayuda-repeticion")).toBeVisible();
   await page.screenshot({ path: `${DIR}/${ID}-repeticion-no-disponible-360x640.png` });
 });
+
+test("fa-7 la hoja del Garaje ofrece Ver repetición de su mejor marca y la reproduce", async ({ page }) => {
+  for (const t of TAMANOS) {
+    await page.setViewportSize({ width: t.w, height: t.h });
+    const r = simulateCar(STOCK_CAR, "cordillera");
+    const coche = {
+      id: genomeHash(STOCK_CAR),
+      name: "Serie",
+      genome: STOCK_CAR,
+      marks: { cordillera: r.distance },
+      markVersions: { cordillera: { trackVersion: track.version, physicsVersion: PHYSICS_VERSION } },
+      markDetails: { cordillera: { bestStep: r.bestStep, piezasPerdidas: r.piezasPerdidas, causaParada: r.causaParada } },
+      origin: "diseño",
+      savedAt: new Date().toISOString(),
+    };
+    await page.goto("/?pruebas=1");
+    await page.waitForFunction(() => Boolean(window.__debug));
+    await page.evaluate((c) => window.__debug!.cargarEscenario({ vacio: true, garaje: [c] }), coche);
+    await page.reload();
+    await page.waitForFunction(() => Boolean(window.__debug));
+    await page.getByTestId("acceso-garaje").click();
+    await expect(page.getByTestId("garaje-repeticion").first()).toBeVisible();
+    await page.screenshot({ path: `${DIR}/${ID}-garaje-repeticion-${t.w}x${t.h}.png` });
+    await page.getByTestId("garaje-repeticion").first().click();
+    await expect(page.getByTestId("pista")).toBeVisible();
+    await adelantar(page, 400);
+    await expect(page.getByTestId("fin-fiel")).toBeVisible();
+  }
+});
+
+test("fa-4 en Evolución el coche del récord corre entre la población", async ({ page }) => {
+  test.setTimeout(120_000);
+  for (const t of TAMANOS) {
+    await page.setViewportSize({ width: t.w, height: t.h });
+    await abrir(page, marca());
+    await page.getByTestId("acceso-taller").click();
+    await page.getByTestId("evolucionar").click();
+    await expect(page.getByTestId("evolucion")).toBeVisible();
+    await expect.poll(async () => (await estado(page)).fantasma?.visible, { timeout: 30_000 }).toBe(true);
+    expect((await estado(page)).fantasma!.alpha).toBeLessThan(1);
+    await page.screenshot({ path: `${DIR}/${ID}-evolucion-fantasma-${t.w}x${t.h}.png` });
+  }
+});
