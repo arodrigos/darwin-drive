@@ -356,7 +356,10 @@ class TrackScene extends Phaser.Scene {
 
     if (this.measurePending) {
       this.measurePending = false;
+      // Cada pantalla marca su evento de entrada; el que no tenga marca no mide nada.
+      // Se mide aquí, con el coche ya dibujado, para que trabajoMs sea el trabajo real del juego.
       measureOnNextFrame("abrir-pista");
+      measureOnNextFrame("evolucionar");
     }
   }
 

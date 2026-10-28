@@ -194,7 +194,6 @@ export function Evolucion(props: EvolucionProps) {
     let intento = 0;
     let ultimaSim = 0;
     let esperas: { hasta: number; resolver: () => void }[] = [];
-    let primera = true;
 
     const liberar = () => {
       const pendientes = esperas;
@@ -236,10 +235,6 @@ export function Evolucion(props: EvolucionProps) {
         flag: marca,
       });
       scene.setFavorites(st.favorites);
-      if (primera) {
-        primera = false;
-        measureOnNextFrame("evolucionar");
-      }
       runner.post({
         type: "startRace",
         raceId,

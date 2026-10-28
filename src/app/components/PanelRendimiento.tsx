@@ -73,7 +73,7 @@ export function PanelRendimiento() {
       <ol className="latencias" data-testid="rend-latencias">
         {c.latencias.map((l) => (
           <li key={`${l.evento}-${l.t}`} className={l.ms <= LIMITE_MS ? "ok" : "lenta"} data-evento={l.evento}>
-            {l.evento} · {formatDecimal(l.ms, 0)} ms
+            {l.evento} · {formatDecimal(l.ms, 0)} ms · trabajo {formatDecimal(l.trabajoMs, 0)} ms {l.ms <= LIMITE_MS ? "✓" : "✗"}
           </li>
         ))}
       </ol>

@@ -149,7 +149,7 @@ test("pc-4 ?rendimiento=1: panel con fps, p95, coches/s y latencias que coincide
     await expect
       .poll(async () => {
         const esperado = await page.evaluate(() =>
-          window.__debug!.latencias().slice(-10).reverse().map((l) => `${l.evento} · ${Math.round(l.ms)} ms`),
+          window.__debug!.latencias().slice(-10).reverse().map((l) => `${l.evento} · ${Math.round(l.ms)} ms · trabajo ${Math.round(l.trabajoMs)} ms ${l.ms <= 200 ? "✓" : "✗"}`),
         );
         const visto = await page.$$eval("[data-testid=rend-latencias] li", (l) => l.map((x) => x.textContent!.replace(".", ",")));
         return esperado.length > 0 && JSON.stringify(esperado).replace(/\./g, ",") === JSON.stringify(visto);

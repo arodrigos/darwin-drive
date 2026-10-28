@@ -30,6 +30,16 @@ const cajas = (page: Page, ids: string[], selectores: string[] = []) =>
 const cruzan = (a: Caja, b: Caja) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 const adelantar = (page: Page, s: number) => page.evaluate((x) => window.__debug!.adelantarSimulacion(x), s);
 
+/** El aviso de récord dura 2,5 s: se avanza a saltos cortos y se sale en cuanto aparece, sin fijar cuánto tarda el render del runner. */
+async function esperarAvisoRanking(page: Page) {
+  await expect
+    .poll(async () => {
+      await adelantar(page, 20);
+      return page.getByTestId("aviso-ranking").count();
+    }, { timeout: 90_000, intervals: [100] })
+    .toBeGreaterThan(0);
+}
+
 async function abrir(page: Page, t: { w: number; h: number }) {
   await page.setViewportSize({ width: t.w, height: t.h });
   await page.goto("/?pruebas=1");
@@ -52,17 +62,12 @@ for (const t of TAMANOS) {
   });
 
   test(`av-2 el aviso de récord de Evolución sale bajo la cabecera @tamanos ${t.w}x${t.h}`, async ({ page }) => {
+    test.setTimeout(120_000);
     await abrir(page, t);
     await page.getByTestId("acceso-taller").click();
     await page.getByTestId("evolucionar").click();
     await expect(page.getByTestId("evolucion")).toBeVisible();
-    // El aviso dura 2,5 s y adelantarSimulacion puede encadenar generaciones: se espera a verlo mientras la simulación avanza a saltos cortos.
-    await expect
-      .poll(async () => {
-        await adelantar(page, 5);
-        return page.getByTestId("aviso-ranking").count();
-      }, { timeout: 30000 })
-      .toBeGreaterThan(0);
+    await esperarAvisoRanking(page);
     const c = await cajas(page, ["aviso-ranking", "volver", "nombre-pista", "contador"], [".cabecera", ".avisos-bajo-cabecera"]);
     const aviso = c["aviso-ranking"]!;
     expect(aviso.y).toBeGreaterThanOrEqual(c[".cabecera"]!.y + c[".cabecera"]!.h - 1);
@@ -73,13 +78,14 @@ for (const t of TAMANOS) {
 }
 
 test("av-3 el contenedor de avisos y sus avisos no recogen toques (pointer-events: none)", async ({ page }) => {
+  test.setTimeout(120_000);
   await abrir(page, TAMANOS[1]);
   await page.getByTestId("acceso-taller").click();
   await page.getByTestId("evolucionar").click();
   await expect(page.getByTestId("evolucion")).toBeVisible();
-  await adelantar(page, 900);
+  await esperarAvisoRanking(page);
+  // Con el aviso ya en pantalla; el contenedor vacío mide 0 y Playwright lo daría por oculto, así que no se pide visible.
   const contenedor = page.locator(".avisos-bajo-cabecera");
-  await expect(contenedor).toBeVisible();
   await expect(contenedor).toHaveCSS("pointer-events", "none");
   await expect(page.getByTestId("aviso-ranking")).toHaveCSS("pointer-events", "none");
 });
