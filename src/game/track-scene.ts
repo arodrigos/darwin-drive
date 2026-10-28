@@ -10,7 +10,8 @@ import { META_DISTANCE, TORQUE_SLOPE_DEG, type CarPose, type CarResult, type Cau
 import type { Genome } from "@/sim/genome";
 import { SEGMENT_LENGTH, segmentVertices } from "@/sim/terrain";
 import type { Track } from "@/sim/tracks";
-import { gestionarLienzo, type OpcionesGestor } from "./lienzo";
+import type { OpcionesGestor } from "./lienzo";
+import { fijarAlSinLienzo, motorCarrera, registrarFabrica } from "./motor";
 import { CONTORNO_COCHE, opacidadesCoche } from "./opacidad";
 import { cssColor, PALETTES } from "./palette";
 import { ASPECTO } from "./superficies";
@@ -132,7 +133,7 @@ function mixPose(a: CarPose, b: CarPose, t: number): CarPose {
   };
 }
 
-class TrackScene extends Phaser.Scene {
+export class TrackScene extends Phaser.Scene {
   private cfg: SceneConfig | null = null;
   private segments = new Map<number, { x: number; y: number }[]>();
   private sky!: Phaser.GameObjects.Graphics;
@@ -221,6 +222,39 @@ class TrackScene extends Phaser.Scene {
 
   vistaCoches(): { carId: string; enPantalla: boolean }[] {
     return this.vista;
+  }
+
+  activa(): boolean {
+    return this.cfg !== null;
+  }
+
+  /** El motor compartido la deja como recién creada al soltarla: ni toques, ni fuerzas, ni destellos de la pantalla anterior. */
+  soltar(): void {
+    this.cfg = null;
+    this.pickListener = null;
+    this.fuerzasActivas = false;
+    this.muestraFuerzas = null;
+    this.suaveFuerzas = null;
+    this.destellos = [];
+    this.segments.clear();
+    this.prev = [];
+    this.curr = [];
+    this.finishedAt.clear();
+    this.parada = null;
+    this.favorites.clear();
+    this.screenCars = [];
+    this.vista = [];
+    this.measurePending = false;
+    this.cajaEtiquetaFin = null;
+    runtime.camara = null;
+    runtime.marcador = null;
+    runtime.etiquetaFin = null;
+    runtime.cajaCoche = null;
+    // Sin esto el último fotograma de la carrera anterior se vería al abrir la siguiente hasta que llegue la primera pose.
+    for (const g of [this.sky, this.hills, this.ground, this.cars, this.marca, this.ruler]) g?.clear();
+    const textos = [...this.rulerLabels, ...this.carLabels, this.flagLabel, this.etiquetaCausa, this.etiquetaLimite, this.etiquetaFuerza, this.etiquetaPar];
+    for (const t of textos) t?.setVisible(false);
+    this.skyDirty = true;
   }
 
   onPick(listener: ((carId: string) => void) | null): void {
@@ -373,6 +407,8 @@ class TrackScene extends Phaser.Scene {
   private drawSky(W: number, H: number): void {
     this.skyDirty = false;
     const pal = PALETTES[this.cfg!.track.id];
+    // El Game es el mismo para todas las pistas: el color de fondo va en la cámara, no en la configuración del juego.
+    this.cameras.main.setBackgroundColor(cssColor(pal.skyTop));
     this.sky.clear();
     const bands = 24;
     for (let i = 0; i < bands; i++) {
@@ -867,38 +903,49 @@ class TrackScene extends Phaser.Scene {
   }
 }
 
-export function startTrackScene(parent: HTMLElement, track: Track, opciones: OpcionesGestor = {}): TrackSceneHandle {
-  let scene = new TrackScene("pista");
-  const gestor = gestionarLienzo(
+/** Crea el Game de carrera (una vez por sesión, más una por cada recuperación de contexto) con su escena. */
+export function crearJuegoCarrera(parent: HTMLElement, anterior: TrackScene | null, tam: { w: number; h: number } | null = null): { game: Phaser.Game; escena: TrackScene } {
+  const escena = new TrackScene("pista");
+  if (anterior) escena.traspasar(anterior);
+  const game = new Phaser.Game({
+    type: Phaser.AUTO,
     parent,
-    (reconstruccion) => {
-      if (reconstruccion) {
-        const vieja = scene;
-        scene = new TrackScene("pista");
-        scene.traspasar(vieja);
-      }
-      return new Phaser.Game({
-        type: Phaser.AUTO,
-        parent,
-        backgroundColor: cssColor(PALETTES[track.id].skyTop),
-        // preserveDrawingBuffer deja leer el lienzo en las pruebas de pantalla.
-        render: { preserveDrawingBuffer: true },
-        scale: { mode: Phaser.Scale.RESIZE, width: parent.clientWidth || 360, height: parent.clientHeight || 640 },
-        scene,
-      });
-    },
-    opciones,
-  );
+    // preserveDrawingBuffer deja leer el lienzo en las pruebas de pantalla.
+    render: { preserveDrawingBuffer: true },
+    // El tamaño lo da el motor con scale.resize al mover el lienzo a cada pantalla.
+    scale: { mode: Phaser.Scale.NONE, width: tam?.w || parent.clientWidth || 360, height: tam?.h || parent.clientHeight || 640 },
+    scene: escena,
+  });
+  return { game, escena };
+}
+
+registrarFabrica(crearJuegoCarrera);
+
+export interface OpcionesEscena extends OpcionesGestor {
+  /** Quién toma el motor, para __debug.motor(): 'pista', 'evolucion' o 'batalla'. */
+  pantalla?: string;
+}
+
+export function startTrackScene(parent: HTMLElement, _track: Track, opciones: OpcionesEscena = {}): TrackSceneHandle {
+  const motor = motorCarrera();
+  const adq = motor.adquirir(opciones.pantalla ?? "pista", parent);
+  fijarAlSinLienzo(opciones.alSinLienzo ?? null);
+  // Si otra pantalla toma el motor sin que esta lo suelte, esta deja de recibir nada.
+  const vigente = () => !adq.soltado;
+  const escena = () => motor.escena();
   return {
-    begin: (cfg) => scene.begin(cfg),
-    setPoses: (t, p, s) => scene.setPoses(t, p, s),
-    setFlag: (x) => scene.setFlag(x),
-    carFinished: (r) => scene.carFinished(r),
-    activarFuerzas: (on) => scene.activarFuerzas(on),
-    setFuerzas: (m) => scene.setFuerzas(m),
-    setFavorites: (ids) => scene.setFavorites(ids),
-    vistaCoches: () => scene.vistaCoches(),
-    onPick: (l) => scene.onPick(l),
-    destroy: () => gestor.destruir(),
+    begin: (cfg) => vigente() && escena().begin(cfg),
+    setPoses: (t, p, s) => vigente() && escena().setPoses(t, p, s),
+    setFlag: (x) => vigente() && escena().setFlag(x),
+    carFinished: (r) => vigente() && escena().carFinished(r),
+    activarFuerzas: (on) => vigente() && escena().activarFuerzas(on),
+    setFuerzas: (m) => vigente() && escena().setFuerzas(m),
+    setFavorites: (ids) => vigente() && escena().setFavorites(ids),
+    vistaCoches: () => (vigente() ? escena().vistaCoches() : []),
+    onPick: (l) => vigente() && escena().onPick(l),
+    destroy: () => {
+      if (vigente()) fijarAlSinLienzo(null);
+      motor.soltar(adq);
+    },
   };
 }

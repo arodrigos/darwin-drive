@@ -156,10 +156,12 @@ const gestores = new Set<
  * La escena solo lee poses, así que rehacerla no toca la simulación.
  */
 export function gestionarLienzo(
-  parent: HTMLElement,
+  parentOrigen: HTMLElement | (() => HTMLElement),
   crear: (reconstruccion: boolean) => Phaser.Game,
   opciones: OpcionesGestor = {},
 ): Gestor {
+  // El motor compartido cambia de pantalla: el aviso sale sobre el contenedor de quien lo tenga ahora.
+  const parentActual = () => (typeof parentOrigen === "function" ? parentOrigen() : parentOrigen);
   let juego: Phaser.Game | null = null;
   let soltar: (() => void) | null = null;
   let estado: EstadoLienzo = "ok";
@@ -180,6 +182,7 @@ export function gestionarLienzo(
 
   const mostrar = (id: string, texto: string, boton: boolean) => {
     quitarAviso();
+    const parent = parentActual();
     if (getComputedStyle(parent).position === "static")
       parent.style.position = "relative";
     const div = document.createElement("div");
@@ -327,11 +330,20 @@ export function gestionarLienzo(
   return gestor;
 }
 
+// El juego compartido del motor sigue registrado aunque espere fuera del documento: el gestor
+// «de la pantalla» es el último cuyo lienzo está a la vista, no simplemente el último creado.
+function gestorVisible() {
+  const todos = [...gestores];
+  return (
+    todos.reverse().find((g) => g.canvas()?.isConnected) ?? todos[todos.length - 1]
+  );
+}
+
 /** Gancho de pruebas: pierde el contexto de la pantalla actual. */
 export async function perderLienzo(
   op: { restaurar?: boolean; msRestaurar?: number } = {},
 ): Promise<void> {
-  const actual = [...gestores].pop();
+  const actual = gestorVisible();
   await actual?.perder(op.restaurar !== false, op.msRestaurar ?? 300);
 }
 
@@ -341,6 +353,6 @@ export function muestraLienzo(): {
   alto: number;
   fraccionNegra: number;
 } {
-  const canvas = [...gestores].pop()?.canvas();
+  const canvas = gestorVisible()?.canvas();
   return canvas ? muestrear(canvas) : { ancho: 0, alto: 0, fraccionNegra: 1 };
 }

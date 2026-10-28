@@ -17,7 +17,7 @@ import type { RitmoRecordado } from "@/storage/meta";
 import { textoCausa } from "@/app/ayuda/causas";
 import { RANKING_SIZE } from "@/storage/schema";
 import type { RankingOutcome } from "@/storage/store";
-import { createSimRunner } from "@/worker";
+import { simCompartido } from "@/game/motor";
 import type { FromWorker, Pace, SimRunner } from "@/worker/protocol";
 import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
@@ -123,7 +123,7 @@ export function Pista(props: PistaProps) {
     const { trackId: id, genome: g, marca, propio } = fijo.current;
     const pista = resolverPista(id)!;
     const prueba = parametrosPrueba();
-    const runner: SimRunner = createSimRunner({ worker: prueba.worker, failFirstStart: prueba.fallo });
+    const runner: SimRunner = simCompartido({ worker: prueba.worker, failFirstStart: prueba.fallo });
     let scene: TrackSceneHandle | null = null;
     let cancelled = false;
     // Último resultado de la tarjeta, con lo forzado encima: la escena rehace el marcador a partir de él.
@@ -327,7 +327,7 @@ export function Pista(props: PistaProps) {
     import("@/game/track-scene")
       .then(({ startTrackScene }) => {
         if (cancelled || !host.current) return;
-        scene = startTrackScene(host.current, pista, { alSinLienzo: () => setFailed(true) });
+        scene = startTrackScene(host.current, pista, { pantalla: "pista", alSinLienzo: () => setFailed(true) });
         lanzar();
       })
       .catch(() => {
