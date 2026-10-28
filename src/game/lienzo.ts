@@ -156,10 +156,12 @@ const gestores = new Set<
  * La escena solo lee poses, así que rehacerla no toca la simulación.
  */
 export function gestionarLienzo(
-  parent: HTMLElement,
+  parentOrigen: HTMLElement | (() => HTMLElement),
   crear: (reconstruccion: boolean) => Phaser.Game,
   opciones: OpcionesGestor = {},
 ): Gestor {
+  // El motor compartido cambia de pantalla: el aviso sale sobre el contenedor de quien lo tenga ahora.
+  const parentActual = () => (typeof parentOrigen === "function" ? parentOrigen() : parentOrigen);
   let juego: Phaser.Game | null = null;
   let soltar: (() => void) | null = null;
   let estado: EstadoLienzo = "ok";
@@ -180,6 +182,7 @@ export function gestionarLienzo(
 
   const mostrar = (id: string, texto: string, boton: boolean) => {
     quitarAviso();
+    const parent = parentActual();
     if (getComputedStyle(parent).position === "static")
       parent.style.position = "relative";
     const div = document.createElement("div");

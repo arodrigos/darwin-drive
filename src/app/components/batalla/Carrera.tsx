@@ -196,7 +196,7 @@ export function Carrera(props: CarreraProps) {
     import("@/game/track-scene")
       .then(({ startTrackScene }) => {
         if (cancelled || !host.current) return;
-        scene = startTrackScene(host.current, pista, { alSinLienzo: () => setFailed(true) });
+        scene = startTrackScene(host.current, pista, { pantalla: "batalla", alSinLienzo: () => setFailed(true) });
         scene.begin({
           track: pista,
           // El color no es el único canal: cada coche lleva su nombre encima.

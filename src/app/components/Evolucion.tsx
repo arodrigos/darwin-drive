@@ -12,7 +12,7 @@ import type { TrackSceneHandle } from "@/game/track-scene";
 import type { CarResult } from "@/sim/constants";
 import { getTrack } from "@/sim/tracks";
 import type { RankingOutcome } from "@/storage/store";
-import { createSimRunner } from "@/worker";
+import { simCompartido } from "@/game/motor";
 import type { FromWorker, Pace, SimRunner } from "@/worker/protocol";
 import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
@@ -187,7 +187,7 @@ export function Evolucion(props: EvolucionProps) {
   useEffect(() => {
     if (failed) return;
     const prueba = parametrosPrueba();
-    const runner: SimRunner = createSimRunner({ worker: prueba.worker });
+    const runner: SimRunner = simCompartido({ worker: prueba.worker });
     let scene: TrackSceneHandle | null = null;
     let cancelled = false;
     let raceId = "";
@@ -356,7 +356,7 @@ export function Evolucion(props: EvolucionProps) {
     import("@/game/track-scene")
       .then(({ startTrackScene }) => {
         if (cancelled || !host.current) return;
-        scene = startTrackScene(host.current, track, { alSinLienzo: () => setFailed(true) });
+        scene = startTrackScene(host.current, track, { pantalla: "evolucion", alSinLienzo: () => setFailed(true) });
         scene.onPick((carId) => {
           markInput("favorito");
           const antes = stateRef.current;

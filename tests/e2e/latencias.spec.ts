@@ -13,20 +13,16 @@ async function abrir(page: Page, query: string) {
   await expect(page.getByTestId("pista")).toBeVisible();
 }
 
-// Este bloque solo añade la cifra: abrir-pista aún paga el Game y el Worker nuevos (cientos de ms en el CI),
-// y la vara de 200 ms de trabajoMs la fija motor-pista, que es quien lo arregla.
-const SIN_VARA = { maxTrabajo: 10_000, maxPintado: null };
-
 test("ml-1 abrir-pista trae trabajoMs > 0 y ≤ ms", async ({ page }) => {
   await abrir(page, "");
-  const m = await esperarLatencia(page, "abrir-pista", SIN_VARA);
+  const m = await esperarLatencia(page, "abrir-pista");
   expect(m.trabajoMs).toBeGreaterThan(0);
   expect(m.trabajoMs).toBeLessThanOrEqual(m.ms);
 });
 
 test("ml-2 el panel enseña las dos cifras y el veredicto de la última medida", async ({ page }) => {
   await abrir(page, "&rendimiento=1");
-  await esperarLatencia(page, "abrir-pista", SIN_VARA);
+  await esperarLatencia(page, "abrir-pista");
   await page.getByTestId("ritmo-x4").click();
   const linea = page.locator("[data-testid=rend-latencias] li[data-evento=abrir-pista]").first();
   await expect(linea).toBeVisible();

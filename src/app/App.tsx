@@ -8,6 +8,7 @@ import { DEFAULT_PARAMS, seedPopulation, type EvolutionState, type GaParams } fr
 import type { SpeciesArchive, SpeciesCell } from "@/evolution/species";
 import { mergeLineage, originOf, pruneLineage, type LineageNode } from "@/evolution/lineage";
 import { createSimRunner } from "@/worker";
+import { precalentarCuandoLibre } from "@/game/motor";
 import { MAX_STEPS, PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { GENE_RANGES, genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
 import { DEFAULT_TRACK_ID, getTrack, PRUEBAS_LLANA_ID, TRACKS, type TrackId } from "@/sim/tracks";
@@ -202,6 +203,11 @@ export function App() {
     return () => {
       vivo = false;
     };
+  }, []);
+
+  // Con la Portada ya pintada, el Game de carrera y su Worker se preparan en segundo plano: «Probar» y «Evolucionar» no los esperan.
+  useEffect(() => {
+    precalentarCuandoLibre();
   }, []);
 
   const migracion = useMigracion(recargar);
