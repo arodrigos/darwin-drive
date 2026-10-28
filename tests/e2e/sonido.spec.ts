@@ -212,6 +212,8 @@ test("so-4 antes de un gesto ZzFX no está cargado aunque la Meta diga encendido
   await metaSonido(page, true);
   await page.reload();
   await page.waitForFunction(() => Boolean(window.__debug));
+  // La Meta se lee de forma asíncrona: se espera a que el altavoz la refleje antes de mirar el estado.
+  await expect(altavoz(page)).toHaveAttribute("aria-pressed", "true");
   expect(await sonidos(page)).toMatchObject({ encendido: true, cargado: false });
   // Tocar cualquier sitio de la página es el gesto que lo carga.
   await page.getByTestId("paisaje").click({ force: true });
