@@ -20,6 +20,9 @@ const VENTANA_RITMO_MS = 500;
  */
 export class RaceEngine {
   private race: Race | null = null;
+  /** El coche del récord corre en su propia Race, a la par, para no tocar el resultado de nadie. */
+  private fantasma: Race | null = null;
+  private fantasmaAvisado = false;
   private raceId = "";
   private total = 0;
   private pace: Pace = "x1";
@@ -75,6 +78,8 @@ export class RaceEngine {
       this.reported = 0;
       this.reiniciarVentana();
       this.race = createRace(msg.cars, msg.trackId);
+      this.fantasma = msg.fantasma ? createRace([msg.fantasma], msg.trackId) : null;
+      this.fantasmaAvisado = false;
       this.emitPoses();
       return;
     }
@@ -117,6 +122,16 @@ export class RaceEngine {
   private release(): void {
     this.race?.dispose();
     this.race = null;
+    this.fantasma?.dispose();
+    this.fantasma = null;
+  }
+
+  /** Avanza la carrera principal y, los mismos pasos, el fantasma: los dos llevan siempre la misma cuenta. */
+  private paso(race: Race, n: number): void {
+    const antes = race.simTime();
+    race.step(n);
+    const dados = Math.round((race.simTime() - antes) / DT);
+    if (this.fantasma && dados > 0 && !this.fantasma.done()) this.fantasma.step(dados);
   }
 
   /** Avanza sin reloj los segundos simulados indicados (o hasta el final) y publica el estado resultante. */
@@ -125,7 +140,7 @@ export class RaceEngine {
     let steps = Math.max(0, Math.round(seconds / DT));
     while (steps > 0 && !race.done()) {
       const n = Math.min(steps, 60);
-      race.step(n);
+      this.paso(race, n);
       steps -= n;
     }
     this.flush(true);
@@ -140,14 +155,14 @@ export class RaceEngine {
       const elapsed = this.lastTick === null ? 0 : Math.min(inicio - this.lastTick, MAX_ELAPSED_MS);
       this.lastTick = inicio;
       if (this.pace === "turbo") {
-        while (!race.done() && this.reloj() - inicio < budgetMs) race.step(4);
+        while (!race.done() && this.reloj() - inicio < budgetMs) this.paso(race, 4);
       } else {
         const mult = Math.min(MULTIPLIER[this.pace], this.limite ?? Infinity);
         this.owedSteps += (elapsed / 1000) * (1 / DT) * mult;
         const antes = race.simTime();
         // Paso a paso y mirando el reloj: un coste alto por paso no puede dejar la interfaz sin hilo.
         while (this.owedSteps >= 1 && !race.done() && this.reloj() - inicio < budgetMs) {
-          race.step(1);
+          this.paso(race, 1);
           this.owedSteps -= 1;
         }
         const tope = (TICK_REF_MS / 1000) * (1 / DT) * mult;
@@ -175,6 +190,7 @@ export class RaceEngine {
     for (; this.reported < results.length; this.reported++) {
       this.emit({ type: "carFinished", raceId: this.raceId, result: results[this.reported] });
     }
+    this.avisarFantasma();
     const now = this.reloj();
     if (race.done()) {
       this.emitPoses();
@@ -192,6 +208,15 @@ export class RaceEngine {
     }
   }
 
+  private avisarFantasma(): void {
+    const f = this.fantasma;
+    if (!f || this.fantasmaAvisado || !f.done()) return;
+    const result = f.results()[0];
+    if (!result) return;
+    this.fantasmaAvisado = true;
+    this.emit({ type: "fantasmaFin", raceId: this.raceId, result });
+  }
+
   /** En turbo no hay poses: el contador de la pantalla sigue al líder por aquí. */
   private progreso(finished: number): FromWorker {
     const race = this.race!;
@@ -204,6 +229,8 @@ export class RaceEngine {
     const race = this.race!;
     const poses = race.poses();
     const msg: FromWorker = { type: "poses", raceId: this.raceId, simTime: race.simTime(), poses, ritmoReal: this.ritmoReal };
+    const pf = this.fantasma?.poses()[0];
+    if (pf) msg.fantasma = pf;
     if (this.fuerzasOn) {
       // La cámara sigue al coche vivo más adelantado: es el único del que se pregunta.
       const vivos = poses.filter((p) => !p.finished);

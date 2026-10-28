@@ -40,6 +40,8 @@ export const runtime = {
   /** Bandera de meta (5000 m): x en px CSS de su asta si está en pantalla en el último frame, null si no. */
   metaX: null as number | null,
   ejecutor: null as "worker" | "en-linea" | null,
+  /** El coche del récord en la carrera en pantalla (lo publica la escena); null si la pista no tiene fantasma. */
+  fantasma: null as { visible: boolean; alpha: number; x: number | null; simTime: number | null; fiel: boolean | null; resultado: CarResult | null; adelantado: boolean } | null,
   // Taller, garaje e inscripción (los publica App).
   genomaEnTaller: null as Genome | null,
   /** Nombre y color del coche en el Taller (lo publica App). */
@@ -171,6 +173,7 @@ export function estado() {
     guia: runtime.guia,
     hojaNombre: runtime.hojaNombre,
     ejecutor: runtime.ejecutor,
+    fantasma: runtime.fantasma,
     garaje: runtime.garaje,
     batalla: runtime.batalla,
     persistente: runtime.persistente,

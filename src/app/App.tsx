@@ -56,6 +56,7 @@ import { InicioEvolucion, nuevaSemilla, type Siembra } from "./components/Inicio
 import { Linaje } from "./components/Linaje";
 import { Pista } from "./components/Pista";
 import { Portada } from "./components/Portada";
+import type { MarcaComparable } from "./repeticion";
 import { Rankings as PantallaRankings } from "./components/Rankings";
 import { AvisoMigracion, BandaMigracion, EsperaPestanas } from "./components/BandaMigracion";
 import { useMigracion } from "./useMigracion";
@@ -122,7 +123,7 @@ export function App() {
   const [identidad, setIdentidad] = useState<IdentidadCoche>(() => ({ nombre: generarNombre(aleatorioDeApp()), color: COLOR_PREDETERMINADO }));
   const identidadRef = useRef(identidad);
   // El genoma que se manda a la pista; null = el coche de serie de «Ver el coche de serie».
-  const [trial, setTrial] = useState<{ genome: Genome; origin: SavedCar["origin"]; identidad?: IdentidadCoche } | null>(null);
+  const [trial, setTrial] = useState<{ genome: Genome; origin: SavedCar["origin"]; identidad?: IdentidadCoche; repeticion?: MarcaComparable } | null>(null);
   // Evolución en curso (la que se guarda tras cada generación) y de dónde sale el coche que la siembra.
   const [evolucion, setEvolucion] = useState<EvolutionState | null>(null);
   const [evolKey, setEvolKey] = useState(0);
@@ -608,8 +609,8 @@ export function App() {
     setScreen("taller");
   }, []);
 
-  const probar = useCallback((genome: Genome, origin: SavedCar["origin"], desde: Pantalla, id?: IdentidadCoche) => {
-    setTrial({ genome, origin, ...(id ? { identidad: id } : {}) });
+  const probar = useCallback((genome: Genome, origin: SavedCar["origin"], desde: Pantalla, id?: IdentidadCoche, repeticion?: MarcaComparable) => {
+    setTrial({ genome, origin, ...(id ? { identidad: id } : {}), ...(repeticion ? { repeticion } : {}) });
     setOrigenPista(desde);
     setScreen("pista");
   }, []);
@@ -964,11 +965,12 @@ export function App() {
       {screen === "pista" && (
         <Pista
           // Una carrera nueva (otra pista u otro coche) monta una escena nueva.
-          key={`${trackId}:${trial ? genomeHash(trial.genome) : "serie"}`}
+          key={`${trackId}:${trial ? genomeHash(trial.genome) : "serie"}:${trial?.repeticion ? "rep" : ""}`}
           trackId={trackId}
           genome={trial?.genome}
           color={trial?.identidad?.color}
-          onFinish={trial ? inscribir : undefined}
+          onFinish={trial && !trial.repeticion ? inscribir : undefined}
+          repeticion={trial?.repeticion}
           onBack={volverDePista}
           rankings={rankings}
           ritmoInicial={meta.ritmo}
@@ -990,6 +992,11 @@ export function App() {
             setPistaRanking(entry.trackId);
             chooseTrack(entry.trackId);
             probar(entry.genome, entry.origin, "rankings", entry.color ? { nombre: entry.name ?? "", color: entry.color } : undefined);
+          }}
+          onReplay={(entry: RankingEntry) => {
+            setPistaRanking(entry.trackId);
+            chooseTrack(entry.trackId);
+            probar(entry.genome, entry.origin, "rankings", entry.color ? { nombre: entry.name ?? "", color: entry.color } : undefined, { distance: entry.distance, bestStep: entry.bestStep, causaParada: entry.causaParada ?? null });
           }}
           onOpenInWorkshop={(entry: RankingEntry) => {
             chooseTrack(entry.trackId);
@@ -1042,6 +1049,11 @@ export function App() {
           onTrack={chooseTrack}
           rankings={rankings}
           onTry={(car) => probar(car.genome, car.origin, "garaje", car.color ? { nombre: car.name, color: car.color } : undefined)}
+          migrando={migracion.estado.enCurso}
+          onReplay={(car, pista, marca) => {
+            chooseTrack(pista);
+            probar(car.genome, car.origin, "garaje", car.color ? { nombre: car.name, color: car.color } : undefined, marca);
+          }}
           midiendo={midiendo}
           resumenes={resumenes}
           onMeasure={medirCoche}
@@ -1079,6 +1091,7 @@ export function App() {
           key={evolKey}
           initial={evolucion}
           rankings={rankings}
+          migrando={migracion.estado.enCurso}
           onGeneracion={onGeneracion}
           onGuardarCampeon={pedirNombreCampeon}
           onBack={() => setScreen("portada")}

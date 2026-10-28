@@ -22,7 +22,8 @@ import type { FromWorker, Pace, SimRunner } from "@/worker/protocol";
 import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
 import { PanelRendimiento } from "./PanelRendimiento";
-import type { RankingsView } from "./TrackPicker";
+import { marcaFantasma, resultadoFiel, type MarcaComparable } from "@/app/repeticion";
+import type { RankingEntry } from "@/storage/schema";
 import { puedeDibujar } from "@/game/lienzo";
 import { aplicarMuestra, publicarFuerzas, reiniciarFuerzasVivo } from "../fuerzas-vivo";
 
@@ -31,6 +32,8 @@ export const MENSAJE_ERROR = "La simulación se ha detenido por un error. Toca R
 const MOTIVO: Record<EndReason, string> = { meta: "¡Meta!", stall: "se atascó", timeout: "se acabó el tiempo", anomaly: "descalificado", destrozado: "se rompió en pedazos" };
 const STOCK_HUE = 28;
 const AVISO_RANKING_MS = 2500;
+const AVISO_ADELANTA_MS = 1500;
+const TONO_FANTASMA = 205;
 // La barra de «Hasta el final» se llena hasta los 5 km de la meta.
 const OBJETIVO_BARRA_M = 5000;
 
@@ -51,12 +54,14 @@ function parametrosPrueba(): { worker: boolean; fallo: boolean; rendimiento: boo
   };
 }
 
-type Fase = { tipo: "corriendo" } | { tipo: "fin"; result: CarResult } | { tipo: "error" };
+type Fase = { tipo: "corriendo" } | { tipo: "fin"; result: CarResult; fiel?: boolean } | { tipo: "error" };
 
 export interface PistaProps {
   trackId: TrackId;
   onBack: () => void;
-  rankings: RankingsView;
+  rankings: Record<TrackId, RankingEntry[]>;
+  /** Modo repetición: corre el genoma de esta marca, sin fantasma y sin inscribir, y la tarjeta dice si coincide con ella. */
+  repeticion?: MarcaComparable;
   genome?: Genome;
   /** Color con el que se pinta el coche probado; sin él, el tono de siempre. */
   color?: ColorCoche;
@@ -88,6 +93,13 @@ export function Pista(props: PistaProps) {
   const [fase, setFase] = useState<Fase>({ tipo: "corriendo" });
   const [inscripcion, setInscripcion] = useState<{ outcome: RankingOutcome; distance: number } | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
+  const [adelanta, setAdelanta] = useState(false);
+  const adelantaTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Se leen en cada lanzar(): tras un récord nuevo, «Repetir» ya corre contra él.
+  const vivo = useRef({ rankings: props.rankings, migrando: Boolean(props.migrando) });
+  useEffect(() => {
+    vivo.current = { rankings: props.rankings, migrando: Boolean(props.migrando) };
+  });
   const onTarjeta = props.onTarjeta;
   const hayTarjeta = fase.tipo === "fin";
   useEffect(() => {
@@ -116,11 +128,11 @@ export function Pista(props: PistaProps) {
   const pausarPorCapa = useRef<(on: boolean) => void>(() => {});
   const [rendimiento] = useState(() => parametrosPrueba().rendimiento);
   // La pista y el genoma se fijan al abrir: cambiarlos a media carrera sería correr una cosa y pintar otra.
-  const fijo = useRef({ trackId, genome, propio: Boolean(props.genome), marca: props.rankings[trackId]?.[0]?.distance ?? null });
+  const fijo = useRef({ trackId, genome, propio: Boolean(props.genome) });
 
   useEffect(() => {
     if (failed) return;
-    const { trackId: id, genome: g, marca, propio } = fijo.current;
+    const { trackId: id, genome: g, propio } = fijo.current;
     const pista = resolverPista(id)!;
     const prueba = parametrosPrueba();
     const runner: SimRunner = simCompartido({ worker: prueba.worker, failFirstStart: prueba.fallo });
@@ -140,6 +152,9 @@ export function Pista(props: PistaProps) {
     let pausaPorCapa = false;
     let esperas: { hasta: number; resolver: () => void }[] = [];
     const carId = genomeHash(g);
+    const marcaRepeticion = props.repeticion ?? null;
+    const entradaFantasma = () => (marcaRepeticion ? undefined : marcaFantasma(vivo.current.rankings[id], pista, vivo.current.migrando));
+    let comparable: MarcaComparable | null = marcaRepeticion;
     // Solo El Mosaico cambia de suelo cada tramo; en las demás pistas el rótulo ni se monta.
     const pintarTramo = (x: number) => {
       if (tramo.current) tramo.current.textContent = rotuloTramo(x);
@@ -170,8 +185,11 @@ export function Pista(props: PistaProps) {
           pintarTramo(maxX);
           setAvance(maxX);
         }
+      } else if (m.type === "fantasmaFin") {
+        if (comparable) scene.fantasmaFin(m.result, resultadoFiel(m.result, comparable));
       } else if (m.type === "poses") {
         medirRitmo(m.ritmoReal);
+        scene.setFantasma(m.fantasma ?? null, m.simTime);
         const lider = m.poses.reduce((a, p) => Math.max(a, p.x), 0);
         maxX = Math.max(maxX, lider);
         aplicarMuestra(scene, m.fuerzas);
@@ -196,15 +214,13 @@ export function Pista(props: PistaProps) {
         runtime.ultimoResultado = result;
         runtime.cochesVivos = 0;
         if (hud.current) hud.current.textContent = formatMeters(result.distance);
-        setFase({ tipo: "fin", result });
+        setFase({ tipo: "fin", result, ...(marcaRepeticion ? { fiel: resultadoFiel(result, marcaRepeticion) } : {}) });
         liberar();
         const inscribir = alTerminar.current;
         if (inscribir) {
           void inscribir(result).then((outcome) => {
             if (cancelled || !outcome) return;
             setInscripcion({ outcome, distance: result.distance });
-            // Un nuevo n.º 1 clava su bandera en la x donde acabó el coche.
-            if (outcome.isRecord) scene?.setFlag(result.distance);
             const texto = avisoRanking(outcome, pista.name, result.distance);
             if (texto) {
               setAviso(texto);
@@ -241,11 +257,25 @@ export function Pista(props: PistaProps) {
       runtime.tiempoSim = 0;
       if (hud.current) hud.current.textContent = formatMeters(0);
       pintarTramo(0);
-      scene.begin({ track: pista, cars: [{ carId, genome: g, hue: STOCK_HUE, color: propio ? props.color : undefined, label: propio ? "Tu coche" : "Coche de serie" }], flag: marca });
+      const entrada = entradaFantasma();
+      comparable = marcaRepeticion ?? entrada ?? null;
+      const etiqueta = marcaRepeticion ? "Repetición del récord" : propio ? "Tu coche" : "Coche de serie";
+      const fantasma = entrada ? { carId: `fantasma-${entrada.genomeHash}`, genome: entrada.genome } : null;
+      scene.begin({
+        track: pista,
+        cars: [{ carId, genome: g, hue: STOCK_HUE, color: propio ? props.color : undefined, label: etiqueta }],
+        fantasma: fantasma && entrada ? { ...fantasma, color: entrada.color, hue: TONO_FANTASMA, distancia: entrada.distance } : null,
+      });
+      setAdelanta(false);
+      scene.onAdelanta(() => {
+        setAdelanta(true);
+        if (adelantaTimer.current) clearTimeout(adelantaTimer.current);
+        adelantaTimer.current = setTimeout(() => setAdelanta(false), AVISO_ADELANTA_MS);
+      });
       setFase({ tipo: "corriendo" });
       setInscripcion(null);
       measureOnNextFrame("probar");
-      runner.post({ type: "startRace", raceId, cars: [{ carId, genome: g }], trackId: id, pace });
+      runner.post({ type: "startRace", raceId, cars: [{ carId, genome: g }], trackId: id, pace, ...(fantasma ? { fantasma } : {}) });
       measureOnNextFrame("repetir");
     };
     iniciar.current = lanzar;
@@ -337,6 +367,7 @@ export function Pista(props: PistaProps) {
     return () => {
       cancelled = true;
       if (avisoTimer.current) clearTimeout(avisoTimer.current);
+      if (adelantaTimer.current) clearTimeout(adelantaTimer.current);
       document.removeEventListener("visibilitychange", alCambiarVisibilidad);
       pausarPorCapa.current = () => {};
       runtime.pausada = false;
@@ -358,6 +389,7 @@ export function Pista(props: PistaProps) {
       runtime.cochesVivos = 0;
       runtime.tiempoSim = null;
       runtime.cargas = null;
+      runtime.fantasma = null;
       runtime.cajaCoche = null;
       runtime.marcador = null;
       runtime.etiquetaFin = null;
@@ -405,11 +437,18 @@ export function Pista(props: PistaProps) {
       )}
       {rendimiento && <PanelRendimiento />}
       {/* Con la tarjeta de fin en pantalla el aviso sobra (la tarjeta lleva la misma línea) y tapaba el marcador de la parada. */}
-      {aviso && fase.tipo !== "fin" && (
+      {((aviso && fase.tipo !== "fin") || adelanta) && (
         <div className="avisos-bajo-cabecera">
-          <div className="aviso-arriba" role="status" data-testid="aviso-ranking">
-            {aviso}
-          </div>
+          {aviso && fase.tipo !== "fin" && (
+            <div className="aviso-arriba" role="status" data-testid="aviso-ranking">
+              {aviso}
+            </div>
+          )}
+          {adelanta && (
+            <div className="aviso-arriba" role="status" data-testid="aviso-adelanta">
+              ¡Adelanta al récord!
+            </div>
+          )}
         </div>
       )}
       {fase.tipo === "corriendo" && (
@@ -443,6 +482,13 @@ export function Pista(props: PistaProps) {
           <p className="cifra" data-testid="fin-marca">
             <span data-testid="fin-distancia">{formatMeters(fase.result.distance)}</span> en <span data-testid="fin-tiempo">{formatTiempo(fase.result.bestStep)}</span>
           </p>
+          {props.repeticion && fase.fiel !== undefined && (
+            <p data-testid={fase.fiel ? "fin-fiel" : "fin-no-fiel"}>
+              {fase.fiel
+                ? `Repetición fiel: ${formatMeters(fase.result.distance)} en ${formatTiempo(fase.result.bestStep)}, igual que la marca guardada`
+                : "Esta repetición no coincide con la marca guardada"}
+            </p>
+          )}
           <p data-testid="fin-motivo">{fase.result.reason === "meta" ? MOTIVO.meta : `Motivo: ${MOTIVO[fase.result.reason]}`}</p>
           {(fase.result.reason === "stall" || fase.result.reason === "destrozado") && (
             <>
