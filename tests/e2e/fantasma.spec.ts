@@ -85,7 +85,8 @@ test("fa-1/fa-6/fa-7 Ver repetición reproduce la marca con su fantasma y compru
     await page.screenshot({ path: `${DIR}/${ID}-boton-repeticion-${t.w}x${t.h}.png` });
     await page.getByTestId("ver-repeticion").click();
     await expect(page.getByTestId("pista")).toBeVisible();
-    await expect.poll(async () => (await estado(page)).fantasma?.visible).toBe(true);
+    // En la repetición el coche de la pista ES el récord: no hay un segundo coche fantasma.
+    expect((await estado(page)).fantasma?.visible ?? false).toBe(false);
     const antes = (await estado(page)).rankings;
     await adelantar(page, 400);
     await expect(page.getByTestId("fin-fiel")).toBeVisible();
