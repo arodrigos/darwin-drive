@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { PHYSICS_VERSION } from "../../src/sim/constants";
 import { STOCK_CAR, genomeHash } from "../../src/sim/genome";
+import { simulateCar } from "../../src/sim/race";
 import { getTrack } from "../../src/sim/tracks";
 
 const DIR = process.env.CAPTURAS_DIR ?? "test-results/capturas";
@@ -18,6 +19,7 @@ type Estado = {
   pistaEnCarrera: string | null;
   tiempoSim: number | null;
   ejecutor: string | null;
+  fantasma: { visible: boolean; alpha: number } | null;
   ultimoResultado: { distance: number; steps: number; trackId: string; reason: string } | null;
 };
 
@@ -164,13 +166,18 @@ test("pc-4 ?rendimiento=1: panel con fps, p95, coches/s y latencias que coincide
   }
 });
 
-test("pc-5 eventos: bandera del n.º 1 y etiqueta de fin sobre el coche", async ({ page }) => {
+test("pc-5 eventos: fantasma del n.º 1 y etiqueta de fin sobre el coche", async ({ page }) => {
   const track = getTrack("cordillera")!;
+  const marca = simulateCar(STOCK_CAR, "cordillera");
   const entrada = {
     carId: genomeHash(STOCK_CAR),
     genome: STOCK_CAR,
     genomeHash: genomeHash(STOCK_CAR),
-    distance: 30,
+    // Medida de verdad: sin su tiempo la marca está pendiente y no puede correr de fantasma.
+    distance: marca.distance,
+    bestStep: marca.bestStep,
+    piezasPerdidas: marca.piezasPerdidas,
+    causaParada: marca.causaParada,
     origin: "diseño",
     date: new Date().toISOString(),
     trackId: "cordillera",
@@ -181,29 +188,20 @@ test("pc-5 eventos: bandera del n.º 1 y etiqueta de fin sobre el coche", async 
     await page.setViewportSize({ width: t.w, height: t.h });
     await abrir(page);
     await page.evaluate((e) => window.__debug!.cargarEscenario({ rankings: { cordillera: [e] } }), entrada);
-    await expect(page.getByTestId("tarjeta-cordillera")).toContainText("n.º 1: 30,0 m");
+    await expect(page.getByTestId("tarjeta-cordillera")).toContainText(`n.º 1: ${coma(marca.distance)}`);
     await verCocheDeSerie(page);
-    // Se acerca al n.º 1 sin pasarlo: la bandera está a la vista.
+    // Se acerca al n.º 1 sin pasarlo: el fantasma está a la vista.
     await expect
       .poll(async () => {
         await adelantar(page, 0.5);
         return (await estado(page)).distanciaLider ?? 0;
       })
       .toBeGreaterThan(18);
-    await page.screenshot({ path: `${DIR}/${ID}-bandera-${t.w}x${t.h}.png` });
-    const amarillos = await page.evaluate(() => {
-      const c = document.querySelector("canvas") as HTMLCanvasElement;
-      const copia = document.createElement("canvas");
-      copia.width = c.width;
-      copia.height = c.height;
-      const ctx = copia.getContext("2d")!;
-      ctx.drawImage(c, 0, 0);
-      const d = ctx.getImageData(0, 0, c.width, c.height).data;
-      let n = 0;
-      for (let i = 0; i < d.length; i += 4) if (d[i] > 240 && d[i + 1] > 195 && d[i + 1] < 225 && d[i + 2] < 90) n++;
-      return n;
-    });
-    expect(amarillos).toBeGreaterThan(50);
+    await page.screenshot({ path: `${DIR}/${ID}-fantasma-${t.w}x${t.h}.png` });
+    // La bandera la sustituyó el fantasma del récord (bloque fantasma): el n.º 1 se ve como un coche translúcido.
+    const f = (await estado(page)).fantasma;
+    expect(f?.visible).toBe(true);
+    expect(f?.alpha).toBeLessThan(1);
     await adelantar(page, 200);
     await page.screenshot({ path: `${DIR}/${ID}-etiqueta-fin-${t.w}x${t.h}.png` });
   }

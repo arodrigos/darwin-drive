@@ -8,6 +8,7 @@ import { markInput, measureOnNextFrame } from "@/debug/latencias";
 import { PHYSICS_VERSION } from "@/sim/constants";
 import { claveTexto, formatTiempo } from "@/sim/clasificacion";
 import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
+import { repeticionDisponible } from "@/app/repeticion";
 import { entradaPendiente, RANKING_SIZE, type RankingEntry, type Rankings as RankingsData } from "@/storage/schema";
 import { Silueta } from "./Garaje";
 
@@ -56,6 +57,8 @@ export interface RankingsProps {
   initialTrack: TrackId;
   onBack: () => void;
   onWatch: (entry: RankingEntry) => void;
+  /** «Ver repetición»: corre el genoma de la marca sin inscribir nada y comprueba que coincide con ella. */
+  onReplay: (entry: RankingEntry) => void;
   onOpenInWorkshop: (entry: RankingEntry) => void;
   /** Devuelve el texto del aviso que debe leerse tras guardar. */
   onSaveToGarage: (entry: RankingEntry) => Promise<string>;
@@ -244,6 +247,21 @@ export function Rankings(props: RankingsProps) {
             <button type="button" className="pastilla principal" onClick={() => props.onWatch(fila)} data-testid="ver-correr">
               Ver correr
             </button>
+            <button
+              type="button"
+              className="pastilla"
+              disabled={!repeticionDisponible(fila, track, props.migracion?.enCurso ?? false)}
+              onClick={() => props.onReplay(fila)}
+              aria-describedby={repeticionDisponible(fila, track, props.migracion?.enCurso ?? false) ? undefined : "ayuda-repeticion"}
+              data-testid="ver-repeticion"
+            >
+              Ver repetición
+            </button>
+            {!repeticionDisponible(fila, track, props.migracion?.enCurso ?? false) && (
+              <p className="nota-migracion" id="ayuda-repeticion" data-testid="ayuda-repeticion">
+                Esta marca se está volviendo a medir; la repetición estará cuando termine
+              </p>
+            )}
             <button type="button" className="pastilla" onClick={() => props.onOpenInWorkshop(fila)} data-testid="abrir-taller">
               Abrir en el taller
             </button>
