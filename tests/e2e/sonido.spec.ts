@@ -209,6 +209,7 @@ test("so-4 antes de un gesto ZzFX no está cargado aunque la Meta diga encendido
   await abrir(page);
   await altavoz(page).click();
   await expect.poll(async () => (await sonidos(page)).cargado).toBe(true);
+  await metaSonido(page, true);
   await page.reload();
   await page.waitForFunction(() => Boolean(window.__debug));
   expect(await sonidos(page)).toMatchObject({ encendido: true, cargado: false });
