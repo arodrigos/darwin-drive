@@ -158,6 +158,8 @@ npm run medir:pistas -- --umbral
 
 `npm run medir:evolucion` mide la evolución (acepta `MEDIR_PISTA` y `MEDIR_GENERACIONES`), y los scripts `generar:escenario*` regeneran los escenarios de demostración de `src/debug/escenarios/`.
 
+Cada medida de `__debug.latencias()` (y cada línea del panel de `?rendimiento=1`) trae dos cifras: `trabajoMs`, desde la entrada hasta el final del JS que aplica el efecto (en la carrera, el `update()` que dibuja los coches), y `ms`, hasta el fotograma siguiente, que es lo que percibe el jugador. En el CI, donde el dibujo es por software, se juzga `trabajoMs` (≤ 200 ms); `ms` se valida en el dispositivo, donde el panel marca ✓ si baja de 200 ms y ✗ si no. `tests/e2e/latencias.spec.ts` lo cubre.
+
 ### Modo pruebas
 
 Con `?pruebas=1`, `__debug.limitarFps(n)` (de 1 a 60; `null` lo quita) hace que la carrera pinte como mucho n fotogramas por segundo, como un equipo lento, sin tocar el Worker ni el ritmo, y `estado().camara` da el encuadre del líder (`dentro`, `cajaLiderPx`, `zonaUtilPx`, `fpsDibujo`, `margenMinPx`). Lo cubre `tests/e2e/camara-fps.spec.ts`.
