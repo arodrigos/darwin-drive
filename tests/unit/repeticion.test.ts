@@ -50,13 +50,13 @@ test("fa-7 property: resultadoFiel exige distancia, tiempo y causa idénticos", 
       fc.double({ min: 0, max: 100, noNaN: true }),
       fc.integer({ min: 0, max: 5000 }),
       fc.integer({ min: -2, max: 2 }),
-      fc.constantFrom("stall" as const, null),
+      fc.constantFrom("obstaculo" as const, null),
       (distance, bestStep, dStep, causa) => {
         const marca = { distance, bestStep, causaParada: causa };
         const r = { distance, bestStep: bestStep + dStep, causaParada: causa } as CarResult;
         assert.equal(resultadoFiel(r, marca), dStep === 0);
         assert.equal(resultadoFiel({ ...r, bestStep, distance: distance + 1e-3 }, marca), false);
-        assert.equal(resultadoFiel({ ...r, bestStep, causaParada: causa === null ? "stall" : null }, marca), false);
+        assert.equal(resultadoFiel({ ...r, bestStep, causaParada: causa === null ? "obstaculo" : null }, marca), false);
       },
     ),
   );
