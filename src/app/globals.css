@@ -146,7 +146,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .tarjeta-coche .etiqueta { align-self: flex-start; padding: 0 8px; border-radius: 8px; background: #2f7d32; font-size: .78rem; font-weight: 700; }
 .acciones-coche { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
 
-.aviso-ranking { position: absolute; top: 108px; left: 50%; transform: translateX(-50%); z-index: 30; max-width: 92%; padding: 8px 14px; border-radius: 12px; background: rgba(16,26,38,.95); border: 2px solid #ffd23f; font-weight: 700; text-align: center; pointer-events: none; }
 .tarjeta-fin .resultado-ranking { font-weight: 700; color: #ffd23f; }
 
 .rankings { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px; overflow-y: auto; background: #16222f; }
@@ -188,8 +187,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hoja-fila .acciones { display: flex; flex-wrap: wrap; gap: 6px; }
 .progreso-medicion, .resumen-medicion { font-size: .85rem; font-weight: 700; color: #ffd23f; }
 /* Los avisos de la evolución se apilan en columna: uno largo no tapa al siguiente. */
-.avisos-evolucion { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 30; max-width: 92%; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
-.avisos-evolucion .aviso-arriba { position: static; transform: none; max-width: 100%; }
+/* Contenedor común de avisos: justo debajo de la cabecera y del marcador (108px), nunca encima de «← Volver» ni del nombre de la pista. */
+.avisos-bajo-cabecera { position: absolute; top: 108px; left: 50%; transform: translateX(-50%); z-index: 30; width: max-content; max-width: 92%; display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
+.avisos-bajo-cabecera .aviso-arriba { position: static; transform: none; max-width: 100%; }
+/* En Especies la cabecera es de flujo normal: el contenedor ocupa 0 de alto y los avisos se apoyan debajo sin mover la rejilla. */
+.especies .avisos-bajo-cabecera { position: relative; top: auto; left: auto; transform: none; flex: none; align-self: stretch; width: auto; max-width: none; height: 0; }
 .contador-gen { font-size: 1rem; }
 .evolucion { position: absolute; inset: 0; display: flex; flex-direction: column; background: #101a26; }
 .evolucion-pista { position: relative; flex: 1 1 auto; min-height: 0; }
