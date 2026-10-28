@@ -330,11 +330,20 @@ export function gestionarLienzo(
   return gestor;
 }
 
+// El juego compartido del motor sigue registrado aunque espere fuera del documento: el gestor
+// «de la pantalla» es el último cuyo lienzo está a la vista, no simplemente el último creado.
+function gestorVisible() {
+  const todos = [...gestores];
+  return (
+    todos.reverse().find((g) => g.canvas()?.isConnected) ?? todos[todos.length - 1]
+  );
+}
+
 /** Gancho de pruebas: pierde el contexto de la pantalla actual. */
 export async function perderLienzo(
   op: { restaurar?: boolean; msRestaurar?: number } = {},
 ): Promise<void> {
-  const actual = [...gestores].pop();
+  const actual = gestorVisible();
   await actual?.perder(op.restaurar !== false, op.msRestaurar ?? 300);
 }
 
@@ -344,6 +353,6 @@ export function muestraLienzo(): {
   alto: number;
   fraccionNegra: number;
 } {
-  const canvas = [...gestores].pop()?.canvas();
+  const canvas = gestorVisible()?.canvas();
   return canvas ? muestrear(canvas) : { ancho: 0, alto: 0, fraccionNegra: 1 };
 }
