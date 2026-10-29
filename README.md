@@ -180,3 +180,4 @@ Con `?pruebas=1` en la URL se expone `window.__debug` y todo el guardado va a un
 
 - 2026-10-29 · Ritmo base más rápido: ×1 va a 3 veces el tiempo real.
 - 2026-10-29 · Refinamiento de Darwin (P1-P5 y ritmo base más rápido, cada uno se añade aquí al entregarse). Docs: el README cuenta las 10 latencias del panel de rendimiento, que también sale en el Taller.
+- 2026-10-29 · Primera «Probar» rápida: la escena se calienta en tiempo ocioso tras medir abrir-pista y las latencias del panel `?rendimiento=1` se cierran con el fotograma ya pintado.
