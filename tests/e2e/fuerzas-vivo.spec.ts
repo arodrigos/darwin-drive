@@ -42,6 +42,8 @@ async function contrasteBoton(page: Page, testid: string): Promise<number> {
 const mayor = (xs: number[]) => xs.reduce((a, b) => Math.max(a, b), 0);
 
 test("fv-1 «Fuerzas» pinta una flecha por rueda que cambia con el terreno y al apagarlo desaparece", async ({ page }) => {
+  // Tres tamaños de pantalla en un solo test: 30 s no daban margen en el runner de Actions.
+  test.setTimeout(120_000);
   for (const t of TAMANOS) {
     await page.setViewportSize({ width: t.w, height: t.h });
     await probar(page, "pedregal");
