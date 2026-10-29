@@ -15,23 +15,14 @@ async function abrir(page: Page, query = "") {
 }
 
 test("probar-2 el precalentamiento arranca después de cerrar abrir-pista", async ({ page }) => {
-  test.setTimeout(90_000);
+  // La escena se calienta una sola vez por juego: la marca se compara con la primera apertura.
   await abrir(page);
-  for (let i = 0; i < 3; i++) {
-    const m = await esperarLatencia(page, "abrir-pista", { maxPintado: null });
-    const orden = await page.evaluate(
-      (fin) => {
-        const calentar = performance.getEntriesByName("dd:precalentar:inicio").at(-1);
-        return calentar ? calentar.startTime >= fin : null;
-      },
-      m.t,
-    );
-    // Si el calentamiento aún no corrió (tiempo ocioso), no hay nada que comparar; si corrió, nunca antes de la medida.
-    expect(orden === null || orden, "precalentar posterior a abrir-pista").toBe(true);
-    await page.getByTestId("volver").click();
-    await page.getByTestId("acceso-serie").click();
-    await expect(page.getByTestId("pista")).toBeVisible();
-  }
+  const m = await esperarLatencia(page, "abrir-pista", { maxPintado: null });
+  await expect
+    .poll(() => page.evaluate(() => performance.getEntriesByName("dd:precalentar:inicio").length), { message: "marca de precalentar" })
+    .toBeGreaterThan(0);
+  const inicio = await page.evaluate(() => performance.getEntriesByName("dd:precalentar:inicio")[0].startTime);
+  expect(inicio).toBeGreaterThanOrEqual(m.t);
 });
 
 test("probar-1 la primera «Probar» mide hasta el fotograma pintado y no pierde contra las siguientes", async ({ page }) => {
@@ -53,10 +44,18 @@ test("probar-1 la primera «Probar» mide hasta el fotograma pintado y no pierde
   expect(veces[0]).toBeLessThanOrEqual(veces[1] * 1.25 + 120);
 });
 
-test("probar-3 con pocos fps la línea «probar» del panel sale lenta y con ✗", async ({ page }) => {
+test("probar-3 con el hilo ocupado la línea «probar» del panel sale lenta y con ✗", async ({ page }) => {
   test.setTimeout(90_000);
   await abrir(page, "&rendimiento=1");
-  await page.evaluate(() => window.__debug!.limitarFps(3));
+  // Un fotograma de 260 ms de hilo ocupado imita un equipo lento: limitarFps no retrasa el primer dibujo.
+  await page.evaluate(() => {
+    const ocupar = () => {
+      const fin = performance.now() + 260;
+      while (performance.now() < fin);
+      requestAnimationFrame(ocupar);
+    };
+    requestAnimationFrame(ocupar);
+  });
   await page.getByTestId("volver").click();
   await page.getByTestId("acceso-taller").click();
   await page.getByTestId("probar").click();
