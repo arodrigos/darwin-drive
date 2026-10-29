@@ -57,6 +57,9 @@ for (const t of TAMANOS) {
     const aviso = c["aviso-especies"]!;
     const cab = c[".garaje-cabecera"]!;
     expect(aviso.y).toBeGreaterThanOrEqual(cab.y + cab.h - 1);
+    // Sin desplazar: el aviso entero cabe en la pantalla, también a 360x640.
+    expect(aviso.y + aviso.h).toBeLessThanOrEqual(t.h);
+    expect(aviso.y - (cab.y + cab.h)).toBeLessThan(40);
     for (const otra of [c.volver, c[".garaje-cabecera h2"]]) expect(cruzan(aviso, otra!)).toBe(false);
     await page.screenshot({ path: `${DIR}/${ID}-especies-${t.w}x${t.h}.png` });
   });
