@@ -63,9 +63,8 @@ for (const { w, h } of TAMANOS) {
     await alTaller(page);
     await page.getByTestId("evolucionar").click();
     await expect(page.getByTestId("evolucion")).toBeVisible();
-    // En las tabletas el primer fotograma de 16 coches pintado por software (CI) queda en 200-207 ms de trabajo:
-    // se deja un margen del 50 % y la vara de 200 ms se valida en dispositivo con el panel ?rendimiento=1.
-    await esperarLatencia(page, "evolucionar", w === 360 ? undefined : { maxTrabajo: 300 });
+    // La vara es la del criterio (200 ms de trabajo) en los tres tamaños: el guardado ya no está en el camino.
+    await esperarLatencia(page, "evolucionar");
     expect((await motor(page)).dueno).toBe("evolucion");
     await page.screenshot({ path: `${DIR}/${ID}-evolucionar-${w}x${h}.png` });
   });
