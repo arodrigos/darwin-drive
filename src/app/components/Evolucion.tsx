@@ -1,5 +1,6 @@
 "use client";
 
+import { poseSalida } from "@/game/pose-salida";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { formatMeters } from "@/app/format";
 import { avisoRanking } from "@/app/ranking-text";
@@ -245,6 +246,7 @@ export function Evolucion(props: EvolucionProps) {
         })),
         fantasma: marca ? { carId: `fantasma-${marca.genomeHash}`, genome: marca.genome, color: marca.color, hue: 205, distancia: marca.distance } : null,
       });
+      scene.setPoses(0, poseSalida(st.population.map((p) => ({ carId: p.id, genome: p.genome })), st.trackId), true);
       scene.onAdelanta(() => mostrar(setAvisoAdelanta, "¡Adelanta al récord!", AVISO_ADELANTA_MS));
       scene.setFavorites(st.favorites);
       runner.post({
