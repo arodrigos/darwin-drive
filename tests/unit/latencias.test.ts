@@ -6,12 +6,18 @@ import { latencias, markInput, measureOnNextFrame, reiniciarLatencias } from "..
 // Reloj y requestAnimationFrame simulados: el fotograma solo llega cuando la prueba lo dice.
 let ahora = 0;
 let cola: (() => void)[] = [];
+let timers: (() => void)[] = [];
 const g = globalThis as unknown as { requestAnimationFrame: (cb: () => void) => number };
 
 beforeEach(() => {
   reiniciarLatencias();
   ahora = 0;
   cola = [];
+  timers = [];
+  mock.method(globalThis, "setTimeout", ((fn: () => void) => {
+    timers.push(fn);
+    return timers.length;
+  }) as unknown as typeof setTimeout);
   mock.method(performance, "now", () => ahora);
   g.requestAnimationFrame = (cb) => {
     cola.push(cb);
@@ -23,6 +29,10 @@ function fotograma(): void {
   const pendientes = cola;
   cola = [];
   pendientes.forEach((cb) => cb());
+  // La medida se cierra en un setTimeout lanzado desde el rAF: con el fotograma ya pintado.
+  const t = timers;
+  timers = [];
+  t.forEach((cb) => cb());
 }
 
 test("ml-1: una medida trae trabajoMs al llamar y ms al fotograma siguiente", () => {
