@@ -188,6 +188,8 @@ export class TrackScene extends Phaser.Scene {
   private recvGap = 33;
   private finishedAt = new Map<string, { at: number; text: string }>();
   private measurePending = false;
+  // 0: sin calentar, 1: dibujado el fotograma de calentamiento, 2: retirado. Ver calentar().
+  private calentada: 0 | 1 | 2 = 0;
   private marca!: Phaser.GameObjects.Graphics;
   private etiquetaCausa!: Phaser.GameObjects.Text;
   private etiquetaLimite!: Phaser.GameObjects.Text;
@@ -303,6 +305,9 @@ export class TrackScene extends Phaser.Scene {
   }
 
   begin(cfg: SceneConfig): void {
+    // Si la pantalla llega con el fotograma de calentamiento aún a medias, no se ve nada suyo.
+    this.retirarCalentamiento();
+    this.calentada = 2;
     this.cfg = cfg;
     this.reiniciarFantasma();
     this.segments.clear();
@@ -405,9 +410,40 @@ export class TrackScene extends Phaser.Scene {
     });
   }
 
+  /**
+   * El primer dibujo de cada tipo de forma y de texto compila sus shaders y sube sus texturas, y en un
+   * dispositivo lento eso pesaba más de 100 ms en la primera «Probar». Con el juego precalentado y sin
+   * dueño se pinta un fotograma sencillo con todas esas piezas y al siguiente se retira.
+   */
+  private calentar(): void {
+    if (this.calentada === 2) return;
+    if (this.calentada === 1) {
+      this.retirarCalentamiento();
+      return;
+    }
+    this.calentada = 1;
+    for (const g of [this.sky, this.hills, this.ground, this.cars, this.marca, this.ruler]) {
+      g.fillStyle(0xffffff, 1).fillRect(0, 0, 4, 4).fillCircle(8, 8, 3).fillTriangle(0, 0, 6, 0, 0, 6);
+      g.lineStyle(2, 0xffffff, 1).lineBetween(0, 0, 10, 10).strokeRect(2, 2, 6, 6);
+    }
+    this.fantasmaG.fillStyle(0xffffff, 1).fillRect(0, 0, 4, 4);
+    for (const t of [this.rulerLabels[0], this.carLabels[0], this.etiquetaFantasma]) t?.setText("0 m").setVisible(true);
+  }
+
+  private retirarCalentamiento(): void {
+    if (this.calentada !== 1) return;
+    this.calentada = 2;
+    for (const g of [this.sky, this.hills, this.ground, this.fantasmaG, this.cars, this.marca, this.ruler]) g?.clear();
+    for (const t of [this.rulerLabels[0], this.carLabels[0], this.etiquetaFantasma]) t?.setVisible(false);
+  }
+
   update(): void {
     const cfg = this.cfg;
-    if (!cfg || this.curr.length === 0) return;
+    if (!cfg) {
+      this.calentar();
+      return;
+    }
+    if (this.curr.length === 0) return;
     const ahora = performance.now();
     // Tope de fps de pruebas: sin repintar, el lienzo conserva el fotograma anterior, como en un equipo que no llega.
     const limite = runtime.limiteFps;

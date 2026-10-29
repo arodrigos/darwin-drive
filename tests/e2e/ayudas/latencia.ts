@@ -15,12 +15,17 @@ export interface MedidaLatencia {
 export async function esperarLatencia(
   page: Page,
   evento: string,
-  op: { maxTrabajo?: number; maxPintado?: number | null } = {},
+  op: { maxTrabajo?: number; maxPintado?: number | null; despuesDe?: number } = {},
 ): Promise<MedidaLatencia> {
   const maxTrabajo = op.maxTrabajo ?? 200;
   const maxPintado = op.maxPintado === undefined ? (page.viewportSize()?.width === 360 ? 200 : null) : op.maxPintado;
+  // despuesDe: marca de performance.now() del clic; descarta medidas del mismo evento de una pantalla anterior.
+  const desde = op.despuesDe ?? -1;
   const leer = () =>
-    page.evaluate((e) => window.__debug!.latencias().filter((l) => l.evento === e).at(-1) ?? null, evento);
+    page.evaluate(
+      ([e, d]) => window.__debug!.latencias().filter((l) => l.evento === e && l.t > (d as number)).at(-1) ?? null,
+      [evento, desde] as const,
+    );
   await expect.poll(async () => (await leer()) !== null, { message: `medida ${evento}` }).toBe(true);
   const medida = (await leer())!;
   expect(medida.trabajoMs, `${evento}: trabajoMs`).toBeLessThanOrEqual(maxTrabajo);
