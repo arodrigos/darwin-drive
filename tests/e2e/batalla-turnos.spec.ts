@@ -23,6 +23,29 @@ async function abrir(page: Page) {
   await page.waitForFunction(() => Boolean(window.__debug));
 }
 
+/** La batalla se guarda de forma asíncrona: recargar antes de que esté en IndexedDB deja el relevo anterior y el aviso no sale. */
+async function batallaGuardadaEnTurno(page: Page, activo: number) {
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          new Promise<string | null>((resolve) => {
+            const req = indexedDB.open("darwin-drive-pruebas");
+            req.onsuccess = () => {
+              const g = req.result.transaction("datos", "readonly").objectStore("datos").get("dd:v1:batalla");
+              g.onsuccess = () => {
+                req.result.close();
+                const b = g.result as { fase?: string; activo?: number } | undefined;
+                resolve(b ? `${b.fase}:${b.activo}` : null);
+              };
+            };
+          }),
+      ),
+      { timeout: 15_000 },
+    )
+    .toBe(`turno:${activo}`);
+}
+
 /** Espera a que el lienzo deje de cambiar de tamaño antes de calcular coordenadas sobre él. */
 async function lienzoQuieto(page: Page) {
   let previa = "";
@@ -157,6 +180,7 @@ test("bt-2 una recarga en el turno de Bea ofrece «Continuar batalla (turno de B
   await page.getByTestId("soy-jugador").click();
   await expect(page.getByTestId("cabecera-batalla")).toHaveText("Batalla · Bea (2 de 2)");
   const antes = (await estado(page)).batalla!.jugadores[0].coche;
+  await batallaGuardadaEnTurno(page, 1);
   await page.reload();
   await page.waitForFunction(() => Boolean(window.__debug));
   await expect(page.getByTestId("acceso-continuar-batalla")).toContainText("Continuar batalla (turno de Bea)");
