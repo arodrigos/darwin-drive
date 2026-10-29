@@ -217,6 +217,14 @@ export function Especies(props: EspeciesProps) {
         <TrackPicker value={trackId} onChange={props.onTrack} rankings={props.rankings} />
         <BotonSonido />
       </div>
+      {/* Va pegado a la cabecera en el marcado: con alto 0, el aviso se apoya justo debajo de ella y no al pie de la rejilla. */}
+      {aviso && (
+        <div className="avisos-bajo-cabecera">
+          <div className="aviso-arriba" role="status" data-testid="aviso-especies">
+            {aviso}
+          </div>
+        </div>
+      )}
       <p className="ayuda-especies" data-testid="ayuda-especies">
         {AYUDA_ESPECIES}
       </p>
@@ -275,13 +283,6 @@ export function Especies(props: EspeciesProps) {
             Reintentar
           </button>
         </p>
-      )}
-      {aviso && (
-        <div className="avisos-bajo-cabecera">
-          <div className="aviso-arriba" role="status" data-testid="aviso-especies">
-            {aviso}
-          </div>
-        </div>
       )}
       {celda && abierta !== null && (
         <div className="hoja-fila" data-testid="hoja-especie">
