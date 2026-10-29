@@ -49,6 +49,14 @@ async function abrir(page: Page, entrada: unknown) {
   await page.waitForFunction(() => Boolean(window.__debug));
 }
 
+// «Ver repetición» tiene que dejar una medida nueva de abrir-pista (fa-8): se cuenta antes y se espera a que suba.
+const medidasAbrirPista = (page: Page) => page.evaluate(() => window.__debug!.latencias().filter((l) => l.evento === "abrir-pista").length);
+async function esperarMedidaNueva(page: Page, antes: number) {
+  await expect.poll(() => medidasAbrirPista(page), { message: "medida abrir-pista tras Ver repetición" }).toBeGreaterThan(antes);
+  const m = await page.evaluate(() => window.__debug!.latencias().filter((l) => l.evento === "abrir-pista").at(-1)!);
+  expect(m.trabajoMs, "abrir-pista: trabajoMs").toBeLessThanOrEqual(200);
+}
+
 test("fa-2/fa-4/fa-5/fa-8/fa-9 el fantasma del n.º 1 corre a la par, no cuenta y avisa al adelantarlo", async ({ page }) => {
   for (const t of TAMANOS) {
     await page.setViewportSize({ width: t.w, height: t.h });
@@ -83,7 +91,9 @@ test("fa-1/fa-6/fa-7 Ver repetición reproduce la marca con su fantasma y compru
     await page.getByTestId("tarjeta-cordillera").click();
     await page.getByTestId("fila-ranking").first().click();
     await page.screenshot({ path: `${DIR}/${ID}-boton-repeticion-${t.w}x${t.h}.png` });
+    const medidasAntes = await medidasAbrirPista(page);
     await page.getByTestId("ver-repeticion").click();
+    await esperarMedidaNueva(page, medidasAntes);
     await expect(page.getByTestId("pista")).toBeVisible();
     // En la repetición el coche de la pista ES el récord: no hay un segundo coche fantasma.
     expect((await estado(page)).fantasma?.visible ?? false).toBe(false);
@@ -129,7 +139,9 @@ test("fa-7 la hoja del Garaje ofrece Ver repetición de su mejor marca y la repr
     await page.getByTestId("acceso-garaje").click();
     await expect(page.getByTestId("garaje-repeticion").first()).toBeVisible();
     await page.screenshot({ path: `${DIR}/${ID}-garaje-repeticion-${t.w}x${t.h}.png` });
+    const medidasAntesGaraje = await medidasAbrirPista(page);
     await page.getByTestId("garaje-repeticion").first().click();
+    await esperarMedidaNueva(page, medidasAntesGaraje);
     await expect(page.getByTestId("pista")).toBeVisible();
     await adelantar(page, 400);
     await expect(page.getByTestId("fin-fiel")).toBeVisible();
