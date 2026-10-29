@@ -1,7 +1,7 @@
 import { test, mock, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import fc from "fast-check";
-import { latencias, markInput, measureOnNextFrame, reiniciarLatencias } from "../../src/debug/latencias";
+import { despuesDeMedir, latencias, markInput, measureOnNextFrame, reiniciarLatencias } from "../../src/debug/latencias";
 
 // Reloj y requestAnimationFrame simulados: el fotograma solo llega cuando la prueba lo dice.
 let ahora = 0;
@@ -89,4 +89,15 @@ test("una marca se consume: medir dos veces el mismo evento solo da una medida",
   measureOnNextFrame("x");
   fotograma();
   assert.equal(latencias().length, 1);
+});
+
+test("ml-despues: despuesDeMedir espera a que la medida esté cerrada", () => {
+  markInput("a");
+  measureOnNextFrame("a");
+  let corrio = false;
+  despuesDeMedir("a", () => (corrio = true));
+  assert.equal(corrio, false);
+  fotograma();
+  assert.equal(latencias().length, 1);
+  assert.equal(corrio, true);
 });
