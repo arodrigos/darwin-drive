@@ -4,7 +4,7 @@ import Phaser from "phaser";
 import { colocarMarcador, cruzan } from "./colocar-marcador";
 import { createNoise2D } from "simplex-noise";
 import { runtime } from "@/debug/ganchos";
-import { measureOnNextFrame } from "@/debug/latencias";
+import { despuesDeMedir, measureOnNextFrame } from "@/debug/latencias";
 import { formatMeters } from "@/app/format";
 import { META_DISTANCE, TORQUE_SLOPE_DEG, type CarPose, type CarResult, type CausaParada, type FuerzasMuestra } from "@/sim/constants";
 import type { Genome } from "@/sim/genome";
@@ -188,6 +188,10 @@ export class TrackScene extends Phaser.Scene {
   private recvGap = 33;
   private finishedAt = new Map<string, { at: number; text: string }>();
   private measurePending = false;
+  private calentamiento!: Phaser.GameObjects.Graphics;
+  private textoCalentamiento!: Phaser.GameObjects.Text;
+  private calentada = false;
+  private calentando = false;
   private marca!: Phaser.GameObjects.Graphics;
   private etiquetaCausa!: Phaser.GameObjects.Text;
   private etiquetaLimite!: Phaser.GameObjects.Text;
@@ -280,6 +284,8 @@ export class TrackScene extends Phaser.Scene {
     // Sin esto el último fotograma de la carrera anterior se vería al abrir la siguiente hasta que llegue la primera pose.
     this.reiniciarFantasma();
     this.alAdelantar = null;
+    this.calentando = true;
+    this.retirarCalentamiento();
     for (const g of [this.sky, this.hills, this.ground, this.fantasmaG, this.cars, this.marca, this.ruler]) g?.clear();
     const textos = [...this.rulerLabels, ...this.carLabels, this.etiquetaFantasma, this.etiquetaBorde, this.etiquetaCausa, this.etiquetaLimite, this.etiquetaFuerza, this.etiquetaPar];
     for (const t of textos) t?.setVisible(false);
@@ -369,12 +375,47 @@ export class TrackScene extends Phaser.Scene {
     }
   }
 
+  /**
+   * El primer dibujo de cada tipo de forma y de texto compila sus shaders y sube sus texturas (#117). Se paga
+   * en tiempo ocioso, con la pista ya abierta y medida, pintando una vez esas piezas casi invisibles y
+   * retirándolas en el fotograma siguiente. Solo una vez por escena.
+   */
+  private programarCalentamiento(): void {
+    if (this.calentada || !this.cfg) return;
+    this.calentada = true;
+    performance.mark("dd:precalentar:inicio");
+    const lanzar = () => {
+      if (!this.cfg || !this.calentamiento?.scene) return;
+      this.calentando = true;
+      const g = this.calentamiento;
+      g.fillStyle(0xffffff, 1).fillRect(0, 0, 4, 4).fillCircle(8, 8, 3).fillTriangle(0, 0, 6, 0, 0, 6);
+      g.lineStyle(2, 0xffffff, 1).lineBetween(0, 0, 10, 10).strokeRect(2, 2, 6, 6);
+      // Un texto propio con los dos estilos de etiqueta: los de la carrera están en uso y se verían parpadear.
+      this.textoCalentamiento.setText("0 m").setVisible(true);
+      this.time.delayedCall(50, () => this.retirarCalentamiento());
+    };
+    if (typeof requestIdleCallback === "function") requestIdleCallback(lanzar, { timeout: 1000 });
+    else setTimeout(lanzar, 0);
+  }
+
+  private retirarCalentamiento(): void {
+    if (!this.calentando) return;
+    this.calentando = false;
+    this.calentamiento?.clear();
+    this.textoCalentamiento?.setVisible(false);
+  }
+
   create(): void {
     this.sky = this.add.graphics();
     this.hills = this.add.graphics();
     this.ground = this.add.graphics();
     this.fantasmaG = this.add.graphics().setAlpha(ALPHA_FANTASMA);
     this.cars = this.add.graphics();
+    this.calentamiento = this.add.graphics().setAlpha(0.01);
+    this.textoCalentamiento = this.add
+      .text(0, 0, "", { fontFamily: "system-ui, sans-serif", fontSize: "13px", fontStyle: "bold", color: "#ffffff", backgroundColor: "rgba(0,0,0,.55)", padding: { x: 4, y: 2 } })
+      .setAlpha(0.01)
+      .setVisible(false);
     this.marca = this.add.graphics();
     this.ruler = this.add.graphics();
     const style = { fontFamily: "system-ui, sans-serif", fontSize: "12px", color: "#ffffff" };
@@ -454,6 +495,10 @@ export class TrackScene extends Phaser.Scene {
       // Se mide aquí, con el coche ya dibujado, para que trabajoMs sea el trabajo real del juego.
       measureOnNextFrame("abrir-pista");
       measureOnNextFrame("evolucionar");
+      // «Probar» cierra aquí, en el primer fotograma que pinta las poses de la carrera.
+      measureOnNextFrame("probar");
+      // El calentamiento espera a que abrir-pista esté medida: así no le pasa su coste (#126).
+      despuesDeMedir("abrir-pista", () => this.programarCalentamiento());
     }
   }
 

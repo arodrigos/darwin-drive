@@ -1,17 +1,23 @@
 import { test, mock, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import fc from "fast-check";
-import { latencias, markInput, measureOnNextFrame, reiniciarLatencias } from "../../src/debug/latencias";
+import { despuesDeMedir, latencias, markInput, measureOnNextFrame, reiniciarLatencias } from "../../src/debug/latencias";
 
 // Reloj y requestAnimationFrame simulados: el fotograma solo llega cuando la prueba lo dice.
 let ahora = 0;
 let cola: (() => void)[] = [];
+let timers: (() => void)[] = [];
 const g = globalThis as unknown as { requestAnimationFrame: (cb: () => void) => number };
 
 beforeEach(() => {
   reiniciarLatencias();
   ahora = 0;
   cola = [];
+  timers = [];
+  mock.method(globalThis, "setTimeout", ((fn: () => void) => {
+    timers.push(fn);
+    return timers.length;
+  }) as unknown as typeof setTimeout);
   mock.method(performance, "now", () => ahora);
   g.requestAnimationFrame = (cb) => {
     cola.push(cb);
@@ -23,6 +29,10 @@ function fotograma(): void {
   const pendientes = cola;
   cola = [];
   pendientes.forEach((cb) => cb());
+  // La medida se cierra en un setTimeout lanzado desde el rAF: con el fotograma ya pintado.
+  const t = timers;
+  timers = [];
+  t.forEach((cb) => cb());
 }
 
 test("ml-1: una medida trae trabajoMs al llamar y ms al fotograma siguiente", () => {
@@ -79,4 +89,15 @@ test("una marca se consume: medir dos veces el mismo evento solo da una medida",
   measureOnNextFrame("x");
   fotograma();
   assert.equal(latencias().length, 1);
+});
+
+test("ml-despues: despuesDeMedir espera a que la medida esté cerrada", () => {
+  markInput("a");
+  measureOnNextFrame("a");
+  let corrio = false;
+  despuesDeMedir("a", () => (corrio = true));
+  assert.equal(corrio, false);
+  fotograma();
+  assert.equal(latencias().length, 1);
+  assert.equal(corrio, true);
 });

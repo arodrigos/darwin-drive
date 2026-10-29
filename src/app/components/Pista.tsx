@@ -283,7 +283,6 @@ export function Pista(props: PistaProps) {
       setFase({ tipo: "corriendo" });
       setInscripcion(null);
       sonar("arranque", { ritmo: pace });
-      measureOnNextFrame("probar");
       runner.post({ type: "startRace", raceId, cars: [{ carId, genome: g }], trackId: id, pace, ...(fantasma ? { fantasma } : {}) });
       measureOnNextFrame("repetir");
     };
