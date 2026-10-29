@@ -5,7 +5,7 @@ import type { TrackId } from "../sim/tracks";
 export type Pace = "x1" | "x2" | "x4" | "x8" | "turbo";
 
 /** Múltiplo de tiempo real de cada ritmo con reloj; vive aquí para que la interfaz no importe el motor (y con él la física). */
-export const MULTIPLIER: Record<Exclude<Pace, "turbo">, number> = { x1: 1, x2: 2, x4: 4, x8: 8 };
+export const MULTIPLIER: Record<Exclude<Pace, "turbo">, number> = { x1: 3, x2: 6, x4: 12, x8: 24 };
 
 export type ToWorker =
   | { type: "startRace"; raceId: string; cars: { carId: string; genome: Genome }[]; trackId: TrackId; pace: Pace; fantasma?: { carId: string; genome: Genome } }

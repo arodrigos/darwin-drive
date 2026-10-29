@@ -111,7 +111,7 @@ test("rit-11 (propiedad): con cualquier coste por paso, un tick no pasa de 8 ms 
   );
 });
 
-test("rit-11: con el tope de 5 y ×8 el motor informa un ritmo real de ≈5, y sin tope vuelve a 8", () => {
+test("rit-11: con el tope de 5 y ×8 el motor informa un ritmo real de ≈5, y sin tope vuelve a 24", () => {
   const { engine, tick, mensajes } = motor(STOCK_CAR, "cordillera", 0.01);
   engine.handle({ type: "setPace", raceId: "r", pace: "x8" });
   engine.handle({ type: "limitRate", max: 5 });
@@ -121,7 +121,7 @@ test("rit-11: con el tope de 5 y ×8 el motor informa un ritmo real de ≈5, y s
   engine.handle({ type: "limitRate", max: null });
   for (let i = 0; i < 90; i++) tick();
   const libre = (mensajes.filter((m) => m.type === "poses").at(-1) as Extract<FromWorker, { type: "poses" }>).ritmoReal;
-  assert.ok(libre !== undefined && Math.abs(libre - 8) < 1, `ritmoReal ${libre}`);
+  assert.ok(libre !== undefined && Math.abs(libre - 24) < 3, `ritmoReal ${libre}`);
 });
 
 test("rit-13: al reanudar la deuda empieza a cero: una pausa larga no se recupera de golpe", () => {
@@ -135,18 +135,27 @@ test("rit-13: al reanudar la deuda empieza a cero: una pausa larga no se recuper
 });
 
 test("rit-11: el aviso «real ×N» sale tras 2 s seguidos por debajo del 90 % y se va en cuanto se recupera", () => {
-  let a = actualizarAviso(SIN_AVISO, "x8", 5.2, 0);
+  let a = actualizarAviso(SIN_AVISO, "x8", 15.6, 0);
   assert.equal(a.rotulo, null);
-  a = actualizarAviso(a, "x8", 4.9, ESPERA_AVISO_MS - 1);
+  a = actualizarAviso(a, "x8", 14.7, ESPERA_AVISO_MS - 1);
   assert.equal(a.rotulo, null);
-  a = actualizarAviso(a, "x8", 5.1, ESPERA_AVISO_MS);
-  assert.equal(a.rotulo, 5);
-  a = actualizarAviso(a, "x8", 7.3, ESPERA_AVISO_MS + 100);
+  a = actualizarAviso(a, "x8", 15.3, ESPERA_AVISO_MS);
+  assert.equal(a.rotulo, 5.1);
+  a = actualizarAviso(a, "x8", 23, ESPERA_AVISO_MS + 100);
   assert.deepEqual(a, SIN_AVISO);
   // Un tropiezo suelto reinicia la cuenta.
   a = actualizarAviso(SIN_AVISO, "x4", 1, 0);
-  a = actualizarAviso(a, "x4", 4, 1500);
+  a = actualizarAviso(a, "x4", 12, 1500);
   a = actualizarAviso(a, "x4", 1, 2500);
   assert.equal(a.rotulo, null);
   assert.deepEqual(actualizarAviso({ desde: 0, rotulo: 3 }, "turbo", 1, 9000), SIN_AVISO);
+});
+
+test("ritmo-1: ×1 son 3 veces el tiempo real y la escala se desplaza entera", () => {
+  assert.deepEqual(MULTIPLIER, { x1: 3, x2: 6, x4: 12, x8: 24 });
+});
+
+test("ritmo-3: el rótulo «real ×N» va en unidades de la base ×1, con una cifra decimal", () => {
+  const a = actualizarAviso({ desde: 0, rotulo: null }, "x1", 1, ESPERA_AVISO_MS);
+  assert.equal(a.rotulo, 0.3);
 });

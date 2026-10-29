@@ -8,7 +8,7 @@ export const ESPERA_AVISO_MS = 2000;
 export interface AvisoRitmo {
   /** Instante en que empezó a ir por debajo del umbral, o null si va bien. */
   desde: number | null;
-  /** N de «real ×N» mientras haya que enseñarlo. */
+  /** N de «real ×N» (en unidades de la base ×1, una cifra decimal) mientras haya que enseñarlo. */
   rotulo: number | null;
 }
 
@@ -24,7 +24,8 @@ export function actualizarAviso(prev: AvisoRitmo, pace: Pace, ritmoReal: number 
   if (pace === "turbo" || ritmoReal === undefined) return pace === "turbo" ? SIN_AVISO : prev;
   if (ritmoReal >= MULTIPLIER[pace] * UMBRAL_RITMO) return SIN_AVISO;
   const desde = prev.desde ?? ahora;
-  const n = Math.max(1, Math.round(ritmoReal));
+  // Relativo a la base: ×1 ya son 3 veces el tiempo real, y el jugador lee la misma escala que los botones.
+  const n = Math.max(0.1, Math.round((ritmoReal / MULTIPLIER.x1) * 10) / 10);
   if (ahora - desde >= ESPERA_AVISO_MS) return { desde, rotulo: n };
   return { desde, rotulo: prev.rotulo };
 }

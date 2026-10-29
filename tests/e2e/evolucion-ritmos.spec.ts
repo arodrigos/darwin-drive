@@ -50,7 +50,7 @@ test("rit-10 Evolución tiene ×1 ×2 ×4 ×8 y Turbo, y cambiar de ritmo da las
   for (const p of poblacion) expect(distancias[p.carId], p.carId).toBe(simulateCar(p.genome, pista).distance);
 });
 
-test("rit-11 con 32 coches a ×8 y el tope de 5, «real ×5» no corta Turbo ni mueve la fila", async ({ page }) => {
+test("rit-11 con 32 coches a ×8 y el tope de 5, «real ×1,7» no corta Turbo ni mueve la fila", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   await page.goto("/?pruebas=1");
   await page.waitForFunction(() => Boolean(window.__debug));
@@ -63,7 +63,7 @@ test("rit-11 con 32 coches a ×8 y el tope de 5, «real ×5» no corta Turbo ni 
   const antes: unknown[] = [];
   for (const id of BOTONES) antes.push(await page.getByTestId(id).boundingBox());
   await page.evaluate(() => window.__debug!.limitarRitmo(5));
-  await expect(page.getByTestId("ritmo-real")).toHaveText("real ×5", { timeout: 10_000 });
+  await expect(page.getByTestId("ritmo-real")).toHaveText("real ×1,7", { timeout: 10_000 });
   const durante: unknown[] = [];
   for (const id of BOTONES) durante.push(await page.getByTestId(id).boundingBox());
   expect(durante).toEqual(antes);

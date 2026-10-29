@@ -29,7 +29,7 @@ export function ControlRitmo({ prefijo, activo, onElegir, ritmoReal, etiquetaFin
       <div className="franja-ritmo" aria-hidden={ritmoReal === null}>
         {ritmoReal !== null && (
           <span className="ritmo-real" role="status" data-testid="ritmo-real" style={{ gridColumn: ORDEN.indexOf(activo) + 1 }}>
-            real ×{ritmoReal}
+            real ×{String(ritmoReal).replace(".", ",")}
           </span>
         )}
       </div>

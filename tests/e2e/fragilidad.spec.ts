@@ -83,7 +83,7 @@ test("fra-9 con 32 coches a ×8 y el dispositivo lento, un toque responde en ≤
   await expect(page.getByTestId("evolucion")).toBeVisible();
   await page.getByTestId("evo-ritmo-x8").click();
   await page.evaluate(() => window.__debug!.limitarRitmo(5));
-  await expect(page.getByTestId("ritmo-real")).toHaveText("real ×5", { timeout: 10_000 });
+  await expect(page.getByTestId("ritmo-real")).toHaveText("real ×1,7", { timeout: 10_000 });
   const ids = ["evo-ritmo-x4", "evo-ritmo-x8", "evo-ritmo-x2", "evo-ritmo-x8", "evo-ritmo-x4"];
   for (const id of ids) await page.getByTestId(id).click();
   await page.screenshot({ path: `${DIR}/${ID}-32-coches-x8-360x640.png` });
