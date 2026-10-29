@@ -293,9 +293,10 @@ export function App() {
         ...garageRef.current.flatMap((c) => (c.lineageId ? [c.lineageId] : [])),
       ];
       lineageRef.current = pruneLineage(mergeLineage(lineageRef.current, added), protegidos);
+      // El estado en memoria se aplica antes de escribir en disco: la pantalla no espera a IndexedDB.
+      aplicarEvolucion(state);
       await save(KEY_EVOLUTION, state);
       await save(KEY_LINEAGE, lineageRef.current);
-      aplicarEvolucion(state);
     },
     [aplicarEvolucion],
   );
@@ -303,7 +304,9 @@ export function App() {
   const lanzarEvolucion = useCallback(
     async (params: GaParams, id: TrackId, from: Parameters<typeof seedPopulation>[2]) => {
       const { state, lineageAdded } = seedPopulation(params, id, from);
-      await guardarEvolucion(state, lineageAdded);
+      // «Evolucionar» no espera al guardado (cientos de ms en equipos lentos): abre la pantalla y persiste detrás.
+      // Las escrituras de IndexedDB se ordenan por llegada, así que las de la primera generación van antes que las siguientes.
+      void guardarEvolucion(state, lineageAdded);
       setEvolKey((k) => k + 1);
       setScreen("evolucion");
     },
