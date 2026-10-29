@@ -311,6 +311,8 @@ function motorReal(): Motor<EscenaReal> {
     },
     preparar: async () => {
       await import("./track-scene");
+      const { calentarPoseSalida } = await import("./pose-salida");
+      calentarPoseSalida();
     },
     crearRunner: (op) => createSimRunner({ worker: op.worker }),
     opcionesRunner: opcionesPruebaReal,

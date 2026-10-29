@@ -18,6 +18,7 @@ import { textoCausa } from "@/app/ayuda/causas";
 import { RANKING_SIZE } from "@/storage/schema";
 import type { RankingOutcome } from "@/storage/store";
 import { simCompartido } from "@/game/motor";
+import { poseSalida } from "@/game/pose-salida";
 import type { FromWorker, Pace, SimRunner } from "@/worker/protocol";
 import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
@@ -271,6 +272,8 @@ export function Pista(props: PistaProps) {
         cars: [{ carId, genome: g, hue: STOCK_HUE, color: propio ? props.color : undefined, label: etiqueta }],
         fantasma: fantasma && entrada ? { ...fantasma, color: entrada.color, hue: TONO_FANTASMA, distancia: entrada.distance } : null,
       });
+      // El coche queda dibujado en el primer fotograma; la pose t=0 del Worker es la misma.
+      scene.setPoses(0, poseSalida([{ carId, genome: g }], id), true);
       setAdelanta(false);
       scene.onAdelanta(() => {
         setAdelanta(true);
