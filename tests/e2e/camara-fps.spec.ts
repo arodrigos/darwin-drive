@@ -195,9 +195,13 @@ test("ce-6 el panel de ?rendimiento=1 enseña la línea de la cámara", async ({
   await expect(linea).toHaveText(/^cámara · [2-4] fps · margen \d+ px$/, { timeout: 10_000 });
   const c = (await estado(page)).camara!;
   expect(c.margenMinPx).toBeGreaterThanOrEqual(0);
-  const texto = await linea.innerText();
-  const m = /(\d+) fps · margen (\d+) px/.exec(texto)!;
-  expect(Math.abs(Number(m[1]) - c.fpsDibujo)).toBeLessThanOrEqual(1);
+  // El panel se repinta cada cierto tiempo y los fps a 3 cuadros bailan: se compara con polling, no con dos lecturas sueltas.
+  await expect
+    .poll(async () => {
+      const m = /(\d+) fps/.exec(await linea.innerText());
+      return m ? Math.abs(Number(m[1]) - ((await estado(page)).camara?.fpsDibujo ?? 99)) : 99;
+    }, { timeout: 10_000 })
+    .toBeLessThanOrEqual(1);
   // El panel se apoya sobre el pie: ni la línea ni el panel pueden montarse sobre la fila de ritmos.
   await expect
     .poll(async () => {
