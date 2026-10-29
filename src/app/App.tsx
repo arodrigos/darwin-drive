@@ -1002,6 +1002,7 @@ export function App() {
             probar(entry.genome, entry.origin, "rankings", entry.color ? { nombre: entry.name ?? "", color: entry.color } : undefined);
           }}
           onReplay={(entry: RankingEntry) => {
+            markInput("abrir-pista");
             setPistaRanking(entry.trackId);
             chooseTrack(entry.trackId);
             probar(entry.genome, entry.origin, "rankings", entry.color ? { nombre: entry.name ?? "", color: entry.color } : undefined, { distance: entry.distance, bestStep: entry.bestStep, causaParada: entry.causaParada ?? null });
@@ -1059,6 +1060,7 @@ export function App() {
           onTry={(car) => probar(car.genome, car.origin, "garaje", car.color ? { nombre: car.name, color: car.color } : undefined)}
           migrando={migracion.estado.enCurso}
           onReplay={(car, pista, marca) => {
+            markInput("abrir-pista");
             chooseTrack(pista);
             probar(car.genome, car.origin, "garaje", car.color ? { nombre: car.name, color: car.color } : undefined, marca);
           }}
