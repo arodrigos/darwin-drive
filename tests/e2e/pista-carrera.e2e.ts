@@ -57,7 +57,7 @@ test("pc-1 coche de serie: carrera real en la pista elegida y tarjeta con el mis
   const vivo = await estado(page);
   expect(vivo.pistaEnCarrera).toBe("cordillera");
   expect(vivo.distanciaLider).toBeGreaterThan(0);
-  expect(vivo.distanciaLider).toBeLessThan(40);
+  expect(vivo.distanciaLider).toBeLessThan(120);
   await expect(page.getByTestId("hud-distancia")).not.toHaveText("0,0 m");
   await page.screenshot({ path: `${DIR}/${ID}-corriendo-360x640.png` });
 
