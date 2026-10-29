@@ -572,6 +572,8 @@ export function Taller(props: TallerProps) {
               data-testid="probar"
               onClick={() => {
                 markInput("probar");
+                // La pista con el coche dibujado es la medida de abrir-pista: la escena la cierra en su primer update().
+                markInput("abrir-pista");
                 libre.onTry();
               }}
             >

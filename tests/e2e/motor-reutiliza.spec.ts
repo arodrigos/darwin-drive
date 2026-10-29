@@ -48,8 +48,10 @@ for (const { w, h } of TAMANOS) {
   test(`mp-1 @tamanos «Probar» no espera: abrir-pista ≤ 200 ms de trabajo, la primera vez, a ${w}x${h}`, async ({ page }) => {
     await abrir(page, w, h);
     await alTaller(page);
+    const antes = await page.evaluate(() => performance.now());
     await probar(page);
-    const m = await esperarLatencia(page, "abrir-pista");
+    // Solo vale la medida tomada al tocar «Probar», no la de abrir el Taller.
+    const m = await esperarLatencia(page, "abrir-pista", { despuesDe: antes });
     // mp-8: contando el pintado, en tableta ya no tarda segundos.
     if (w !== 360) expect(m.ms).toBeLessThanOrEqual(500);
     const e = await motor(page);
