@@ -90,10 +90,14 @@ test("rit-1 tocar ×4 y ×8 acelera sin reiniciar y ×2 queda en medio", async (
   // Cota baja holgada: en tableta horizontal el canvas grande se pinta por software y el equipo no siempre llega a 3.
   expect(v1).toBeGreaterThan(1.5);
   expect(v1).toBeLessThan(3.8);
+  // ×2 se mide antes de ×4 y ×8: el coche de serie para en ~30 s simulados y a ×24 la carrera ya habría acabado.
+  await page.getByTestId("ritmo-x2").click();
+  const v2 = await velocidad(page, 1200);
+  expect(v2).toBeGreaterThan(v1 * 1.3);
   await page.getByTestId("ritmo-x4").click();
   await expect(page.getByTestId("ritmo-x4")).toHaveAttribute("aria-pressed", "true");
   const v4 = await velocidad(page, 1200);
-  expect(v4).toBeGreaterThan(v1 * 1.5);
+  expect(v4).toBeGreaterThan(v2);
   await page.getByTestId("ritmo-x8").click();
   const v8 = await velocidad(page, 1200);
   // Si el dispositivo no llega, el juego lo dice con «real ×N» en vez de callar.
@@ -104,9 +108,6 @@ test("rit-1 tocar ×4 y ×8 acelera sin reiniciar y ×2 queda en medio", async (
   const antes = (await estado(page)).ritmo;
   await page.getByTestId("ritmo-x8").click();
   expect((await estado(page)).ritmo).toBe(antes);
-  await page.getByTestId("ritmo-x2").click();
-  const v2 = await velocidad(page, 1200);
-  expect(v2).toBeGreaterThan(v1 * 1.3);
   expect(v2).toBeLessThan(v8);
 });
 
