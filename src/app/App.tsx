@@ -8,6 +8,7 @@ import { DEFAULT_PARAMS, seedPopulation, type EvolutionState, type GaParams } fr
 import type { SpeciesArchive, SpeciesCell } from "@/evolution/species";
 import { mergeLineage, originOf, pruneLineage, type LineageNode } from "@/evolution/lineage";
 import { createSimRunner } from "@/worker";
+import { iniciarSonido } from "@/audio/sonido";
 import { precalentarCuandoLibre } from "@/game/motor";
 import { MAX_STEPS, PHYSICS_VERSION, type CarResult } from "@/sim/constants";
 import { GENE_RANGES, genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
@@ -422,6 +423,13 @@ export function App() {
     let llanaDePruebas = false;
     loadMeta().then(({ meta: loaded, warning: w, available }) => {
       setMeta(loaded);
+      // El audio no se toca hasta el primer gesto; aquí solo se aplica el ajuste y se engancha el guardado.
+      iniciarSonido(loaded.sonido, (sonido) => {
+        const next = { ...metaRef.current, sonido };
+        metaRef.current = next;
+        setMeta(next);
+        void saveMeta(next);
+      });
       if (!llanaDePruebas) {
         setTrackId(loaded.lastTrack);
         runtime.pistaSeleccionada = loaded.lastTrack;

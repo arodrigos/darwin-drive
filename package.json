@@ -39,7 +39,8 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "serwist": "9.5.13",
-    "simplex-noise": "^4.0.3"
+    "simplex-noise": "^4.0.3",
+    "zzfx": "1.4.0"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

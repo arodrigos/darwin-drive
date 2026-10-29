@@ -4,6 +4,7 @@ import type { TrackId } from "@/sim/tracks";
 import { contadoresLienzo, estadoLienzo, muestraLienzo, perderLienzo } from "@/game/lienzo";
 import type { EstadoBatalla } from "@/batalla/estado";
 import { estadoMotor, type EstadoMotor } from "@/game/motor";
+import { sonidos } from "@/audio/sonido";
 import { latencias } from "./latencias";
 
 export type Pantalla = "portada" | "explorar" | "evolucion-inicio" | "pista" | "taller" | "evolucion" | "garaje" | "rankings" | "linaje" | "especies" | "batalla";
@@ -199,6 +200,8 @@ export interface Gancho {
   estado: typeof estado;
   /** Contadores del motor de carrera compartido (juegos, Workers, suscripciones y dueño). */
   motor(): EstadoMotor;
+  /** Sonidos que han sonado de verdad desde que se cargó la página, el estado del audio y la sesión fijada. */
+  sonidos: typeof sonidos;
   cargarEscenario(e: Escenario): Promise<void>;
   adelantarSimulacion(segundos: number): Promise<void>;
   /** Acota la velocidad simulada a N veces el tiempo real para imitar un dispositivo lento (null lo quita). No cambia ningún CarResult. */
@@ -234,6 +237,7 @@ export function instalarGanchos(): void {
     latencias,
     estado,
     motor: estadoMotor,
+    sonidos,
     async cargarEscenario(e) {
       const desconocidas = Object.keys(e).filter((k) => !ESCENARIOS_SOPORTADOS.has(k));
       if (desconocidas.length > 0) {

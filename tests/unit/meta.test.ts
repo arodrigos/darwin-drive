@@ -28,7 +28,7 @@ test("invariante: validateMeta nunca lanza y solo devuelve pistas del catálogo"
 
 test("rit-4: una Meta anterior sin ritmo se carga entera y empieza en ×1", () => {
   const antigua = { seenHelp: ["taller"], persistRequested: true, lastTrack: "rampa" };
-  assert.deepEqual(validateMeta(antigua), { ...antigua, ritmo: "x1" });
+  assert.deepEqual(validateMeta(antigua), { ...antigua, ritmo: "x1", sonido: false });
 });
 
 test("rit-4: x2/x4/x8 se recuerdan; «turbo» o un ritmo desconocido se ignoran sin descartar la Meta", () => {

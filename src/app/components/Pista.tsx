@@ -22,6 +22,8 @@ import type { FromWorker, Pace, SimRunner } from "@/worker/protocol";
 import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
 import { PanelRendimiento } from "./PanelRendimiento";
+import { sonar } from "@/audio/sonido";
+import { BotonSonido } from "./BotonSonido";
 import { marcaFantasma, resultadoFiel, type MarcaComparable } from "@/app/repeticion";
 import type { RankingEntry } from "@/storage/schema";
 import { puedeDibujar } from "@/game/lienzo";
@@ -207,6 +209,7 @@ export function Pista(props: PistaProps) {
         if (runtime.cochesVivos > 0) esperas = esperas.filter((e) => (m.simTime >= e.hasta ? (e.resolver(), false) : true));
       } else if (m.type === "carFinished") {
         scene.carFinished(m.result);
+        if (m.result.causaParada === "vuelco") sonar("vuelco", { ritmo: pace });
       } else if (m.type === "raceDone") {
         // La tarjeta enseña el resultado del ejecutor tal cual, sin recalcular nada aquí.
         const result = m.results[0];
@@ -220,6 +223,8 @@ export function Pista(props: PistaProps) {
         if (inscribir) {
           void inscribir(result).then((outcome) => {
             if (cancelled || !outcome) return;
+            // La carrera ya acabó: el ritmo con el que se corrió no silencia el récord.
+            if (outcome.isRecord) sonar("record", { ritmo: "x1" });
             setInscripcion({ outcome, distance: result.distance });
             const texto = avisoRanking(outcome, pista.name, result.distance);
             if (texto) {
@@ -274,6 +279,7 @@ export function Pista(props: PistaProps) {
       });
       setFase({ tipo: "corriendo" });
       setInscripcion(null);
+      sonar("arranque", { ritmo: pace });
       measureOnNextFrame("probar");
       runner.post({ type: "startRace", raceId, cars: [{ carId, genome: g }], trackId: id, pace, ...(fantasma ? { fantasma } : {}) });
       measureOnNextFrame("repetir");
@@ -426,6 +432,7 @@ export function Pista(props: PistaProps) {
         <div className="nombre-pista" data-testid="nombre-pista">
           {track.name}
         </div>
+        <BotonSonido />
       </div>
       <div className="hud-distancia" ref={hud} data-testid="hud-distancia" aria-live="off">
         0,0 m

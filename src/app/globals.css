@@ -406,3 +406,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (min-width: 900px) and (orientation: landscape) {
   .taller-panel .lectura-suspension { padding-right: 66px; }
 }
+
+/* Altavoz: 44x44 como mínimo y pegado al extremo derecho de la cabecera, a la izquierda del «?» fijo. */
+.boton-sonido { min-width: 44px; min-height: 44px; padding: 0; display: inline-flex; align-items: center; justify-content: center; margin-left: auto; flex: 0 0 auto; }
+.boton-sonido-fijo { position: fixed; top: calc(8px + env(safe-area-inset-top)); right: 60px; z-index: 15; margin-left: 0; }
+/* En Evolución el altavoz no puede saltar a una segunda fila: caería sobre el contador de generación. */
+.evolucion-pista .cabecera { flex-wrap: nowrap; }
+.evolucion-pista .cabecera .nombre-pista { flex: 1 1 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
