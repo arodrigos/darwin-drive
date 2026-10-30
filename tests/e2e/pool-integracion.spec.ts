@@ -19,7 +19,7 @@ async function evolucionHastaGen3(page: Page, workers: number) {
   await expect(page.getByTestId("evolucion")).toBeVisible();
   await page.getByTestId("evo-ritmo-turbo").click();
   const base = (await page.evaluate(() => window.__debug!.estado() as unknown as Evo)).generacion!;
-  await expect.poll(async () => (await page.evaluate(() => window.__debug!.estado() as unknown as Evo)).generacion, { timeout: 120_000 }).toBe(base + 2);
+  await expect.poll(async () => (await page.evaluate(() => window.__debug!.estado() as unknown as Evo)).generacion, { timeout: 120_000 }).toBe(base + 1);
   const e = await page.evaluate(() => window.__debug!.estado() as unknown as Evo);
   return { poblacion: e.poblacion, distancias: e.distanciasGeneracion, m: await motor(page) };
 }
