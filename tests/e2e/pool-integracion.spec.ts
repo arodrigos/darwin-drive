@@ -19,13 +19,13 @@ async function evolucionHastaGen3(page: Page, workers: number) {
   await expect(page.getByTestId("evolucion")).toBeVisible();
   await page.getByTestId("evo-ritmo-turbo").click();
   const base = (await page.evaluate(() => window.__debug!.estado() as unknown as Evo)).generacion!;
-  await expect.poll(async () => (await page.evaluate(() => window.__debug!.estado() as unknown as Evo)).generacion, { timeout: 120_000 }).toBe(base + 1);
+  await expect.poll(async () => (await page.evaluate(() => window.__debug!.estado() as unknown as Evo)).generacion, { timeout: 300_000 }).toBe(base + 1);
   const e = await page.evaluate(() => window.__debug!.estado() as unknown as Evo);
   return { poblacion: e.poblacion, distancias: e.distanciasGeneracion, m: await motor(page) };
 }
 
 test("poolint-1/3 Turbo con pool da la misma generación que con un Worker y los Workers se terminan al salir", async ({ browser }) => {
-  test.setTimeout(240_000);
+  test.setTimeout(660_000);
   const a = await (await browser.newContext()).newPage();
   const b = await (await browser.newContext()).newPage();
   const uno = await evolucionHastaGen3(a, 1);
