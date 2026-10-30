@@ -1,5 +1,6 @@
 import type Phaser from "phaser";
 import { createSimRunner } from "@/worker";
+import { crearPoolRunner, tamPool } from "@/worker/pool";
 import type { SimRunner, ToWorker } from "@/worker/protocol";
 import { gestionarLienzo, puedeDibujar } from "./lienzo";
 
@@ -22,6 +23,10 @@ export interface EstadoMotor {
   oyentesWorker: number;
   /** TrackScene con cfg distinto de null (0 o 1). */
   escenasActivas: number;
+  /** Workers de pool creados en la sesión (Turbo, lotes de Especies); aparte de `workersCreados`. */
+  workersPool: number;
+  /** Workers de pool aún sin terminar. */
+  workersPoolVivos: number;
 }
 
 /** Lo que el motor necesita de una escena; TrackScene lo cumple. */
@@ -83,6 +88,8 @@ export interface Motor<E extends EscenaMotor> {
   soltar(adq: Adquisicion): void;
   escena(): E;
   sim(op: { worker: boolean; failFirstStart?: boolean }): SimRunner;
+  /** Pool de `n` runners propios, ajeno al compartido; `terminate` los termina todos y los descuenta de `workersPoolVivos`. */
+  pool(op: { worker: boolean }, n: number): SimRunner;
   /** Rehace el Game como al recuperar un contexto perdido. */
   perderContexto(): void;
   /** El gestor del lienzo la llama en cada creación del Game. */
@@ -92,7 +99,7 @@ export interface Motor<E extends EscenaMotor> {
 }
 
 export function crearMotor<E extends EscenaMotor>(deps: DepsMotor<E>): Motor<E> {
-  const cuenta = { juegosCreados: 0, adquisiciones: 0, workersCreados: 0, oyentesWorker: 0 };
+  const cuenta = { juegosCreados: 0, adquisiciones: 0, workersCreados: 0, oyentesWorker: 0, workersPool: 0, workersPoolVivos: 0 };
   let juego: JuegoMotor<E> | null = null;
   let runner: SimRunner | null = null;
   let claveRunner = "";
@@ -216,6 +223,27 @@ export function crearMotor<E extends EscenaMotor>(deps: DepsMotor<E>): Motor<E> 
     };
   };
 
+  const pool = (op: { worker: boolean }, n: number): SimRunner => {
+    const tam = Math.max(1, Math.floor(n));
+    const p = crearPoolRunner(() => deps.crearRunner(op), tam);
+    cuenta.workersPool += tam;
+    cuenta.workersPoolVivos += tam;
+    let vivo = true;
+    return {
+      get kind() {
+        return p.kind;
+      },
+      post: (m) => p.post(m),
+      subscribe: (l) => p.subscribe(l),
+      terminate() {
+        if (!vivo) return;
+        vivo = false;
+        cuenta.workersPoolVivos -= tam;
+        p.terminate();
+      },
+    };
+  };
+
   return {
     precalentar() {
       if (!deps.puedeDibujar()) return Promise.resolve();
@@ -241,6 +269,8 @@ export function crearMotor<E extends EscenaMotor>(deps: DepsMotor<E>): Motor<E> 
         workersCreados: cuenta.workersCreados,
         oyentesWorker: cuenta.oyentesWorker,
         escenasActivas: juego?.escena.activa() ? 1 : 0,
+        workersPool: cuenta.workersPool,
+        workersPoolVivos: cuenta.workersPoolVivos,
       };
     },
     adquirir(pantalla, parent) {
@@ -259,6 +289,7 @@ export function crearMotor<E extends EscenaMotor>(deps: DepsMotor<E>): Motor<E> 
       return juego.escena;
     },
     sim,
+    pool,
     perderContexto() {
       construir(true);
     },
@@ -351,11 +382,28 @@ export function precalentarMotor(): Promise<void> {
 export function estadoMotor(): EstadoMotor {
   return real
     ? real.estado()
-    : { listo: false, juegosCreados: 0, juegosVivos: 0, adquisiciones: 0, dueno: null, workersCreados: 0, oyentesWorker: 0, escenasActivas: 0 };
+    : { listo: false, juegosCreados: 0, juegosVivos: 0, adquisiciones: 0, dueno: null, workersCreados: 0, oyentesWorker: 0, escenasActivas: 0, workersPool: 0, workersPoolVivos: 0 };
 }
 
 export function simCompartido(op: { worker: boolean; failFirstStart?: boolean }): SimRunner {
   return motorReal().sim(op);
+}
+
+/** `?workers=N` solo vale con `?pruebas=1`: fuerza el tamaño del pool para comparar 1 contra N. */
+function workersForzados(): number | undefined {
+  const q = new URLSearchParams(window.location.search);
+  const n = q.get("pruebas") === "1" ? Number(q.get("workers")) : NaN;
+  return Number.isFinite(n) && q.get("workers") !== "" ? n : undefined;
+}
+
+/**
+ * Pool para repartir una carrera turbo de `coches` coches, o null si repartir no compensa (un solo runner: se usa el compartido).
+ * Sin Worker real (?worker=0) tampoco hay pool: en línea repartir solo añadiría trabajo al hilo principal.
+ */
+export function simPool(op: { worker: boolean }, coches: number): SimRunner | null {
+  if (!op.worker || typeof Worker === "undefined") return null;
+  const n = tamPool(typeof navigator === "undefined" ? undefined : navigator.hardwareConcurrency, coches, workersForzados());
+  return n < 2 ? null : motorReal().pool(op, n);
 }
 
 /** Pone el precalentado en segundo plano cuando la Portada ya está pintada. */
