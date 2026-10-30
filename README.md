@@ -181,6 +181,7 @@ Con `?pruebas=1` en la URL se expone `window.__debug` y todo el guardado va a un
 
 ## Changelog de cambios relevantes
 
+- 2026-10-30 · Pool de runners (`src/worker/pool.ts`): `crearPoolRunner` reparte una carrera turbo entre varios `SimRunner` y da los mismos resultados, en el mismo orden, que uno solo; `tamPool` fija su tamaño (1 a 4). Aún sin conectar al motor.
 - 2026-10-30 · Compartir un coche como código: «Compartir» en cada coche del Garaje e «Importar coche» (`src/app/compartir.ts`, `src/app/components/HojaCodigo.tsx`).
 - 2026-10-30 · Medallas por pista, parte pura: umbrales calibrados de bronce, plata, oro y autor (`src/app/medallas.ts`); aún sin interfaz.
 - 2026-10-30 · Formato DD1 para compartir coches (`src/app/codigo-coche.ts`): `codificarCoche` y `decodificarCoche` convierten diseño, nombre y color en un texto `DD1.…` (deflate + base64url, ≤ 4096 caracteres) y rechazan con motivo lo que no es fiable. Todavía sin interfaz.
