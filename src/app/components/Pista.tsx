@@ -114,8 +114,9 @@ export function Pista(props: PistaProps) {
   });
   const onTarjeta = props.onTarjeta;
   const hayTarjeta = fase.tipo === "fin";
+  // La pista de pruebas no tiene ranking (undefined), de ahí el ?? [].
   // Se deriva de la marca en cada pintado: no se guarda nada y una subida de versión de pista la recalcula sola.
-  const medallaFin = fase.tipo === "fin" && !props.repeticion ? medallasDeFin(track.id, track.version, fase.result, props.rankings[track.id]) : null;
+  const medallaFin = fase.tipo === "fin" && !props.repeticion ? medallasDeFin(track.id, track.version, fase.result, props.rankings[track.id] ?? []) : null;
   useEffect(() => {
     if (!hayTarjeta) return;
     onTarjeta?.(true);
