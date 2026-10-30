@@ -165,7 +165,7 @@ npm run medir:pistas -- --umbral
 
 `medir:pistas --umbral` imprime la tabla por pista (campeones que pasan 1, 2, 3 y 4 km y los que llegan a meta). Los topes de la fracción que baja de 1 a 5 km y del 15 % a meta se miden sobre el conjunto de las nueve pistas, no por pista (con 4-6 campeones por pista no se pueden exigir de forma estable). `MEDIR_PISTA=<id>` mide una sola pista.
 
-Medallas por pista (`src/app/medallas.ts`): bronce, plata, oro y autor con umbrales fijos por pista y versión de pista, en metros o, en La Recta y El Acantilado, en segundos hasta la meta. Se derivan siempre de la marca, no se guardan. `npm run medir:pistas -- --medallas` (una pista por tanda con `MEDIR_PISTA=<id>`; son minutos por pista) regenera `tests/fixtures/medallas-calibracion.json`, y al subir la versión de una pista hay que recalibrar y añadir su fila a `UMBRALES`: un test del CI lo exige.
+Medallas por pista (`src/app/medallas.ts`): bronce, plata, oro y autor con umbrales fijos por pista y versión de pista, en metros o, en La Recta y El Acantilado, en segundos hasta la meta. Se derivan siempre de la marca, no se guardan. La tarjeta de fin dice la medalla de la carrera, cuánto falta para la siguiente y, si la mejor del ranking es mayor, «Tu mejor»; la portada enseña la mejor medalla de cada pista y «Medallas: X de 40» (cada medalla cuenta también las inferiores). La ayuda «?» las explica. `npm run medir:pistas -- --medallas` (una pista por tanda con `MEDIR_PISTA=<id>`; son minutos por pista) regenera `tests/fixtures/medallas-calibracion.json`, y al subir la versión de una pista hay que recalibrar y añadir su fila a `UMBRALES`: un test del CI lo exige.
 
 `npm run medir:evolucion` mide la evolución (acepta `MEDIR_PISTA` y `MEDIR_GENERACIONES`), y los scripts `generar:escenario*` regeneran los escenarios de demostración de `src/debug/escenarios/`.
 
@@ -184,6 +184,7 @@ Con `?pruebas=1` en la URL se expone `window.__debug` y todo el guardado va a un
 - 2026-10-30 · Pool de runners (`src/worker/pool.ts`): `crearPoolRunner` reparte una carrera turbo entre varios `SimRunner` y da los mismos resultados, en el mismo orden, que uno solo; `tamPool` fija su tamaño (1 a 4). Aún sin conectar al motor.
 - 2026-10-30 · Compartir un coche como código: «Compartir» en cada coche del Garaje e «Importar coche» (`src/app/compartir.ts`, `src/app/components/HojaCodigo.tsx`).
 - 2026-10-30 · Medallas por pista, parte pura: umbrales calibrados de bronce, plata, oro y autor (`src/app/medallas.ts`); aún sin interfaz.
+- 2026-10-30 · Medallas en la interfaz: la tarjeta de fin, la portada con su recuento y la ayuda «?».
 - 2026-10-30 · Formato DD1 para compartir coches (`src/app/codigo-coche.ts`): `codificarCoche` y `decodificarCoche` convierten diseño, nombre y color en un texto `DD1.…` (deflate + base64url, ≤ 4096 caracteres) y rechazan con motivo lo que no es fiable. Todavía sin interfaz.
 - 2026-10-29 · Ritmo base más rápido: ×1 va a 3 veces el tiempo real.
 - 2026-10-29 · Refinamiento de Darwin (P1-P5 y ritmo base más rápido, cada uno se añade aquí al entregarse). Docs: el README cuenta las 10 latencias del panel de rendimiento, que también sale en el Taller.

@@ -415,3 +415,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .evolucion-pista .cabecera .nombre-pista { flex: 1 1 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .aviso-garaje { margin: 0; padding: 8px 12px; border-radius: 10px; border: 2px solid #7ee08a; background: rgba(16,26,38,.97); font-weight: 700; }
 .hoja-codigo-campo { font-family: ui-monospace, monospace; font-size: .9rem; resize: vertical; word-break: break-all; }
+
+/* Medallas (P3): círculo de color + nombre; el nombre lleva el significado, el color solo acompaña. */
+.insignia { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.medalla { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,.8); flex: none; }
+.medalla-bronce { background: #b87333; }
+.medalla-plata { background: #c0c8d0; }
+.medalla-oro { background: #ffd23f; }
+.medalla-autor { background: #4ee0b0; }
+.recuento-medallas { margin: 0 0 8px; font-size: .9rem; }
+.tarjeta-pista .medalla-pista { font-size: .85rem; }
