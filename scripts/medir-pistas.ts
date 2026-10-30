@@ -5,6 +5,8 @@ import { createRace, simulateCar } from "../src/sim/race";
 import { TRACKS, type TrackId } from "../src/sim/tracks";
 import { seededRand } from "../tests/unit/helpers/rng";
 import { ES_CLASICA } from "../tests/fixtures/pistas-v-anterior";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { DT } from "../src/sim/race";
 import { CAMPEONES_5K } from "../tests/fixtures/campeones-5k";
 import { PISTAS_ENDURECIDAS } from "../src/sim/dificultad";
 import type { CarResult } from "../src/sim/constants";
@@ -15,9 +17,57 @@ const genomas = Array.from({ length: N }, () => randomGenome(rand));
 const MIN_LLEGAN = 10;
 const MAX_TASA_TRAMO = Number(process.env.MEDIR_TASA_MAX ?? 0.8);
 
+if (process.argv.includes("--medallas")) {
+  medallas();
+  process.exit(process.exitCode ?? 0);
+}
+
 if (process.argv.includes("--umbral")) {
   umbral();
   process.exit(process.exitCode ?? 0);
+}
+
+// med-2. Mide por pista el campeón de referencia y el percentil 90 de los N genomas aleatorios de la semilla fija.
+// Escribe .tmp/medallas/<pista>.json (una pista por tanda: cada una son minutos) y, con las diez, tests/fixtures/medallas-calibracion.json.
+// Las pistas de distancia usan el mejor de CAMPEONES_5K; Las de tiempo toman el más rápido entre campeones y aleatorios.
+//   MEDIR_PISTA=cordillera npm run medir:pistas -- --medallas
+function medallas(): void {
+  // Pistas donde llegar a la meta es lo normal (bx-3, y El Acantilado, donde más del 10 % de los aleatorios hace los 5 km):
+  // la distancia ya no distingue, así que la medalla es el tiempo hasta la meta.
+  const EN_TIEMPO: readonly string[] = ["recta", "acantilado"];
+  const dir = ".tmp/medallas";
+  mkdirSync(dir, { recursive: true });
+  const percentil90 = (v: number[]) => [...v].sort((a, b) => a - b)[Math.floor(0.9 * (v.length - 1))];
+  for (const t of TRACKS) {
+    if (process.env.MEDIR_PISTA && process.env.MEDIR_PISTA !== t.id) continue;
+    const resultados = genomas.map((g) => simulateCar(g, t.id));
+    if (EN_TIEMPO.includes(t.id)) {
+      // Menos es mejor: «p90» es el tiempo que solo bate el 10 % más rápido; los que no llegan cuentan como peores.
+      // El de referencia sale de los campeones (si los hay) y los aleatorios, pero el p90 es solo de los aleatorios.
+      const tiempoDe = (r: CarResult) => (r.reason === "meta" ? r.bestStep * DT : Infinity);
+      const tiempos = resultados.map(tiempoDe);
+      const candidatos = [
+        ...(CAMPEONES_5K[t.id] ?? []).map((g) => ({ g, tiempo: tiempoDe(simulateCar(g, t.id)) })),
+        ...genomas.map((g, i) => ({ g, tiempo: tiempos[i] })),
+      ];
+      const referencia = candidatos.reduce((m, c) => (c.tiempo < m.tiempo ? c : m));
+      const p90 = [...tiempos].sort((a, b) => a - b)[Math.floor(0.1 * (tiempos.length - 1))];
+      writeFileSync(`${dir}/${t.id}.json`, JSON.stringify({ trackId: t.id, version: t.version, tipo: "tiempo", semilla: 909, n: N, p90, autor: referencia.tiempo, campeon: referencia.g }));
+      console.log(`medallas: ${t.id}: p90 ${p90.toFixed(2)} s, autor ${referencia.tiempo.toFixed(2)} s`);
+      continue;
+    }
+    const campeones = (CAMPEONES_5K[t.id] ?? []).map((g) => ({ g, r: simulateCar(g, t.id) }));
+    campeones.sort((a, b) => b.r.distance - a.r.distance);
+    const p90 = percentil90(resultados.map((r) => r.distance));
+    writeFileSync(`${dir}/${t.id}.json`, JSON.stringify({ trackId: t.id, version: t.version, tipo: "distancia", semilla: 909, n: N, p90, autor: campeones[0].r.distance, campeon: campeones[0].g }));
+    console.log(`medallas: ${t.id}: p90 ${p90.toFixed(0)} m, autor ${campeones[0].r.distance.toFixed(0)} m (${campeones[0].r.reason})`);
+  }
+  const ids = TRACKS.map((t) => t.id);
+  if (ids.every((id) => existsSync(`${dir}/${id}.json`))) {
+    const todo = ids.map((id) => JSON.parse(readFileSync(`${dir}/${id}.json`, "utf8")));
+    writeFileSync("tests/fixtures/medallas-calibracion.json", JSON.stringify(todo, null, 1) + "\n");
+    console.log("medallas: fixture ensamblado en tests/fixtures/medallas-calibracion.json");
+  }
 }
 
 // Viable: el coche de serie o un campeón. Se corren todos juntos en una carrera por pista (no chocan entre sí).

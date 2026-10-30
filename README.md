@@ -164,6 +164,8 @@ npm run medir:pistas -- --umbral
 
 `medir:pistas --umbral` imprime la tabla por pista (campeones que pasan 1, 2, 3 y 4 km y los que llegan a meta). Los topes de la fracción que baja de 1 a 5 km y del 15 % a meta se miden sobre el conjunto de las nueve pistas, no por pista (con 4-6 campeones por pista no se pueden exigir de forma estable). `MEDIR_PISTA=<id>` mide una sola pista.
 
+Medallas por pista (`src/app/medallas.ts`): bronce, plata, oro y autor con umbrales fijos por pista y versión de pista, en metros o, en La Recta y El Acantilado, en segundos hasta la meta. Se derivan siempre de la marca, no se guardan. `npm run medir:pistas -- --medallas` (una pista por tanda con `MEDIR_PISTA=<id>`; son minutos por pista) regenera `tests/fixtures/medallas-calibracion.json`, y al subir la versión de una pista hay que recalibrar y añadir su fila a `UMBRALES`: un test del CI lo exige.
+
 `npm run medir:evolucion` mide la evolución (acepta `MEDIR_PISTA` y `MEDIR_GENERACIONES`), y los scripts `generar:escenario*` regeneran los escenarios de demostración de `src/debug/escenarios/`.
 
 Cada medida de `__debug.latencias()` (y cada línea del panel de `?rendimiento=1`) trae dos cifras: `trabajoMs`, desde la entrada hasta el final del JS que aplica el efecto (en la carrera, el `update()` que dibuja los coches), y `ms`, hasta el fotograma siguiente, que es lo que percibe el jugador. En el CI, donde el dibujo es por software, se juzga `trabajoMs` (≤ 200 ms); `ms` se valida en el dispositivo, donde el panel marca ✓ si baja de 200 ms y ✗ si no. `tests/e2e/latencias.spec.ts` lo cubre.
@@ -178,6 +180,7 @@ Con `?pruebas=1` en la URL se expone `window.__debug` y todo el guardado va a un
 
 ## Changelog de cambios relevantes
 
+- 2026-10-30 · Medallas por pista, parte pura: umbrales calibrados de bronce, plata, oro y autor (`src/app/medallas.ts`); aún sin interfaz.
 - 2026-10-30 · Formato DD1 para compartir coches (`src/app/codigo-coche.ts`): `codificarCoche` y `decodificarCoche` convierten diseño, nombre y color en un texto `DD1.…` (deflate + base64url, ≤ 4096 caracteres) y rechazan con motivo lo que no es fiable. Todavía sin interfaz.
 - 2026-10-29 · Ritmo base más rápido: ×1 va a 3 veces el tiempo real.
 - 2026-10-29 · Refinamiento de Darwin (P1-P5 y ritmo base más rápido, cada uno se añade aquí al entregarse). Docs: el README cuenta las 10 latencias del panel de rendimiento, que también sale en el Taller.
