@@ -13,7 +13,7 @@ const NOMBRES = ["Ana", "Bea", "Carlos", "Diana"];
 const COLORES: ColorCoche[] = ["naranja", "azul", "verde", "purpura"];
 
 /** Semilla fija: dos cargas del escenario dan los mismos coches y, por tanto, la misma carrera. */
-function mulberry32(semilla: number): () => number {
+export function mulberry32(semilla: number): () => number {
   let a = semilla;
   return () => {
     a = (a + 0x6d2b79f5) | 0;

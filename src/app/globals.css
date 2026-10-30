@@ -413,3 +413,5 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* En Evolución el altavoz no puede saltar a una segunda fila: caería sobre el contador de generación. */
 .evolucion-pista .cabecera { flex-wrap: nowrap; }
 .evolucion-pista .cabecera .nombre-pista { flex: 1 1 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aviso-garaje { margin: 0; padding: 8px 12px; border-radius: 10px; border: 2px solid #7ee08a; background: rgba(16,26,38,.97); font-weight: 700; }
+.hoja-codigo-campo { font-family: ui-monospace, monospace; font-size: .9rem; resize: vertical; word-break: break-all; }

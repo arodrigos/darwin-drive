@@ -2,8 +2,12 @@
 
 import { textoCausa } from "../ayuda/causas";
 import { formatMeters } from "@/app/format";
-import { useEffect } from "react";
-import { measureOnNextFrame } from "@/debug/latencias";
+import { useEffect, useState } from "react";
+import { markInput, measureOnNextFrame } from "@/debug/latencias";
+import { codificarCoche, type CocheCompartible } from "@/app/codigo-coche";
+import { compartirTexto } from "@/app/compartir";
+import { COLOR_PREDETERMINADO } from "@/game/colores-coche";
+import { AVISO_CODIGO_COMPARTIDO, AVISO_CODIGO_COPIADO, HojaCopiaManual, HojaImportar, type ResultadoImportar } from "./HojaCodigo";
 import { opacidadBase } from "@/game/opacidad";
 import { PALETA_COCHES, type ColorCoche } from "@/game/colores-coche";
 import type { Genome } from "@/sim/genome";
@@ -82,6 +86,8 @@ export function Garaje(props: {
   onTaller: () => void;
   onBack: () => void;
   almacenDisponible: boolean;
+  /** Añade al garaje el coche de un código ya validado; dice si entró y qué contarle a quien lo importó. */
+  onImportarCoche: (coche: CocheCompartible & { hash: string }) => Promise<ResultadoImportar>;
   /** Tras reemplazar el guardado con una copia: la app vuelve a leerlo todo. */
   onImportada: () => Promise<void>;
 }) {
@@ -90,6 +96,39 @@ export function Garaje(props: {
   useEffect(() => {
     if (midiendoAhora) measureOnNextFrame("medir-pistas");
   }, [midiendoAhora]);
+  const [hoja, setHoja] = useState<{ tipo: "importar" } | { tipo: "manual"; codigo: string } | null>(null);
+  const [aviso, setAviso] = useState<{ texto: string; evento: string } | null>(null);
+  // El aviso ya está pintado cuando este efecto corre; así «compartir» e «importar» miden hasta verlo.
+  useEffect(() => {
+    if (!aviso) return;
+    measureOnNextFrame(aviso.evento);
+    const t = window.setTimeout(() => setAviso(null), 6000);
+    return () => window.clearTimeout(t);
+  }, [aviso]);
+
+  const compartir = async (car: SavedCar) => {
+    markInput("compartir");
+    const codigo = await codificarCoche({ genome: car.genome, nombre: car.name, color: PALETA_COCHES[car.color ?? COLOR_PREDETERMINADO].hex });
+    const r = await compartirTexto(codigo);
+    if (r === "cancelado") return;
+    if (r === "manual") setHoja({ tipo: "manual", codigo });
+    else setAviso({ texto: r === "copiado" ? AVISO_CODIGO_COPIADO : AVISO_CODIGO_COMPARTIDO, evento: "compartir" });
+  };
+
+  const importar = async (coche: CocheCompartible & { hash: string }): Promise<ResultadoImportar> => {
+    const r = await props.onImportarCoche(coche);
+    if (r.ok) {
+      setHoja(null);
+      setAviso({ texto: r.texto, evento: "importar" });
+    }
+    return r;
+  };
+
+  const botonImportar = (
+    <button type="button" className="pastilla" onClick={() => setHoja({ tipo: "importar" })} data-testid="garaje-importar">
+      Importar coche
+    </button>
+  );
   return (
     <div className="garaje" data-testid="garaje">
       <div className="garaje-cabecera">
@@ -98,13 +137,20 @@ export function Garaje(props: {
         </button>
         <h2>Garaje</h2>
         <TrackPicker value={props.trackId} onChange={props.onTrack} rankings={props.rankings} />
+        {props.cars.length > 0 && botonImportar}
       </div>
+      {aviso && (
+        <p className="aviso-garaje" role="status" data-testid="aviso-garaje" onClick={() => setAviso(null)}>
+          {aviso.texto}
+        </p>
+      )}
       {props.cars.length === 0 ? (
         <div className="garaje-vacio" data-testid="garaje-vacio">
           <p>{GARAJE_VACIO}</p>
           <button type="button" className="pastilla principal" onClick={props.onTaller} data-testid="ir-taller">
             Ir al Taller
           </button>
+          {botonImportar}
         </div>
       ) : (
         <ul className="garaje-lista">
@@ -152,6 +198,9 @@ export function Garaje(props: {
                   <button type="button" className="pastilla chica" onClick={() => props.onEvolve(car)} data-testid="garaje-evolucionar">
                     Evolucionar
                   </button>
+                  <button type="button" className="pastilla chica" onClick={() => void compartir(car)} data-testid="garaje-compartir">
+                    Compartir
+                  </button>
                   <button type="button" className="pastilla chica" onClick={() => props.onRenombrar(car)} data-testid="garaje-renombrar">
                     Renombrar
                   </button>
@@ -164,6 +213,8 @@ export function Garaje(props: {
           ))}
         </ul>
       )}
+      {hoja?.tipo === "importar" && <HojaImportar onImportar={importar} onCerrar={() => setHoja(null)} />}
+      {hoja?.tipo === "manual" && <HojaCopiaManual codigo={hoja.codigo} onCerrar={() => setHoja(null)} />}
       <CopiaSeguridad almacenDisponible={props.almacenDisponible} onImportada={props.onImportada} />
     </div>
   );

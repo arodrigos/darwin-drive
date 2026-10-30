@@ -11,7 +11,7 @@ import { createSimRunner } from "@/worker";
 import { iniciarSonido } from "@/audio/sonido";
 import { precalentarCuandoLibre } from "@/game/motor";
 import { MAX_STEPS, PHYSICS_VERSION, type CarResult } from "@/sim/constants";
-import { GENE_RANGES, genomeHash, normalizeGenome, STOCK_CAR, type Genome } from "@/sim/genome";
+import { GENE_RANGES, genomeHash, normalizeGenome, randomGenome, STOCK_CAR, type Genome } from "@/sim/genome";
 import { DEFAULT_TRACK_ID, getTrack, PRUEBAS_LLANA_ID, TRACKS, type TrackId } from "@/sim/tracks";
 import { DEFAULT_META, loadMeta, META_KEY, saveMeta, type Meta, type RitmoRecordado } from "@/storage/meta";
 import {
@@ -46,8 +46,10 @@ import {
 } from "@/storage/store";
 import { Evolucion, type Campeon } from "./components/Evolucion";
 import { HojaNombre } from "./components/HojaNombre";
+import type { ResultadoImportar } from "./components/HojaCodigo";
+import type { CocheCompartible } from "@/app/codigo-coche";
 import { aleatorioDeApp, fichaOrigen, generarNombre, nombrePropuesto } from "./nombres";
-import { COLOR_PREDETERMINADO, type ColorCoche, type IdentidadCoche } from "@/game/colores-coche";
+import { COLOR_PREDETERMINADO, colorMasCercano, type ColorCoche, type IdentidadCoche } from "@/game/colores-coche";
 import { normalizarNombre } from "@/storage/nombres";
 import { aplicarMarca, detalleDe } from "@/storage/marcas";
 import { Especies } from "./components/Especies";
@@ -531,8 +533,18 @@ export function App() {
           await save(KEY_RANKINGS, validos);
           aplicarRankings(validos);
         }
-        if (e.garaje === "demo-version-anterior" || Array.isArray(e.garaje)) {
-          const origen = e.garaje === "demo-version-anterior" ? await (await import("@/debug/escenarios/version-anterior")).garajeVersionAnterior() : (e.garaje as unknown[]);
+        if (e.garaje === "demo-version-anterior" || Array.isArray(e.garaje) || typeof e.garaje === "number") {
+          // Un número son N coches aleatorios con semilla fija: dos cargas dan el mismo garaje.
+          const aleatorios = async (n: number) => {
+            const rand = (await import("@/debug/escenarios/batalla")).mulberry32(20261029);
+            return Array.from({ length: n }, () => randomGenome(rand));
+          };
+          const origen =
+            e.garaje === "demo-version-anterior"
+              ? await (await import("@/debug/escenarios/version-anterior")).garajeVersionAnterior()
+              : typeof e.garaje === "number"
+                ? await aleatorios(Math.min(e.garaje, GARAGE_SIZE))
+                : (e.garaje as unknown[]);
           const coches = origen.map((item, i) =>
             esGenoma(item)
               ? {
@@ -674,6 +686,20 @@ export function App() {
       return runtime.disponible ? GUARDADO_OK : "Guardado, pero solo hasta que cierres la pestaña.";
     },
     [garage, rankings, recargar],
+  );
+
+  // El garaje identifica un coche por el hash de su genoma (marcas, rankings y batalla cuelgan de él): el mismo diseño
+  // importado dos veces es el mismo coche, así que no se duplica y se avisa en vez de pisar su nombre y sus marcas.
+  const importarCoche = useCallback(
+    async (coche: CocheCompartible & { hash: string }): Promise<ResultadoImportar> => {
+      const ya = garageRef.current.find((c) => c.id === coche.hash);
+      if (ya) return { ok: false, texto: `Ya tienes este coche en el garaje: «${ya.name}»` };
+      if (garageRef.current.length >= GARAGE_SIZE) return { ok: false, texto: "El garaje está lleno: borra un coche para importar otro" };
+      const r = await guardarGenoma(coche.genome, "diseño", coche.nombre, undefined, colorMasCercano(coche.color));
+      if (r === GARAGE_FULL_MESSAGE) return { ok: false, texto: "El garaje está lleno: borra un coche para importar otro" };
+      return { ok: true, texto: `Coche importado: ${coche.nombre}` };
+    },
+    [guardarGenoma],
   );
 
   // Cada coche de la batalla entra en el ranking de la pista como si lo hubieras probado a mano.
@@ -1085,6 +1111,7 @@ export function App() {
           onBack={() => setScreen("portada")}
           almacenDisponible={runtime.disponible}
           onImportada={releerTodo}
+          onImportarCoche={importarCoche}
         />
       )}
       {screen === "evolucion-inicio" && (
