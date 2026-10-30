@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { runtime } from "@/debug/ganchos";
 import { migrar, type EstadoMigracion, type Medir } from "@/storage/migracion";
 import { pestanasAntiguas } from "@/pwa/pestanas";
+import { simPool } from "@/game/motor";
 import { createSimRunner } from "@/worker";
 import type { CarResult } from "@/sim/constants";
 import type { SimRunner } from "@/worker/protocol";
@@ -68,7 +69,8 @@ export function useMigracion(alAvanzar: () => Promise<void>) {
     corriendo.current?.abort();
     const control = new AbortController();
     corriendo.current = control;
-    const runner = createSimRunner();
+    // atajo: la cola mide de uno en uno, así que el pool solo se crea si se fuerza con ?workers=N; medir en paralelo es otro bloque.
+    const runner = simPool({ worker: true }, 1) ?? createSimRunner();
     let ultimo = -1;
     try {
       const resumen = await migrar({

@@ -19,6 +19,7 @@ import {
 } from "@/evolution/species";
 import type { CarResult } from "@/sim/constants";
 import { getTrack, type TrackId } from "@/sim/tracks";
+import { simPool } from "@/game/motor";
 import { createSimRunner } from "@/worker";
 import type { FromWorker, SimRunner } from "@/worker/protocol";
 import { Silueta } from "./Garaje";
@@ -125,7 +126,9 @@ export function Especies(props: EspeciesProps) {
     const plan = planBatch(base);
     const cars: BatchCar[] = plan.cars;
     const raceId = `especies-${base.trackId}-${base.batch + 1}-${++lote.current}`;
-    const r = createSimRunner({ worker: parametrosPrueba().worker });
+    const worker = parametrosPrueba().worker;
+    // El lote entero va en Turbo: se reparte en un pool que se termina con `terminar()` al acabar o al salir.
+    const r = simPool({ worker }, cars.length) ?? createSimRunner({ worker });
     runner.current = r;
     let simActual = 0;
     let esperas: { hasta: number; resolver: () => void }[] = [];
