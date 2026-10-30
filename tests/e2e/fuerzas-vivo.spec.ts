@@ -42,6 +42,8 @@ async function contrasteBoton(page: Page, testid: string): Promise<number> {
 const mayor = (xs: number[]) => xs.reduce((a, b) => Math.max(a, b), 0);
 
 test("fv-1 «Fuerzas» pinta una flecha por rueda que cambia con el terreno y al apagarlo desaparece", async ({ page }) => {
+  // Tres tamaños de pantalla en un solo test: 30 s no daban margen en el runner de Actions.
+  test.setTimeout(120_000);
   for (const t of TAMANOS) {
     await page.setViewportSize({ width: t.w, height: t.h });
     await probar(page, "pedregal");
@@ -62,10 +64,11 @@ test("fv-1 «Fuerzas» pinta una flecha por rueda que cambia con el terreno y al
 
     // Varios momentos del recorrido: el terreno cambia la fuerza, así que el largo de la flecha no es siempre el mismo.
     const largos: number[] = [];
-    // El coche de serie se atasca hacia los 25 s simulados: 5 trozos de 4 s se quedan dentro de la carrera.
+    // El coche de serie se atasca hacia los 25 s simulados. A ×1 (3 veces el tiempo real) la espera de 300 ms ya
+    // suma casi 1 s simulado: 5 trozos de 2 s se quedan dentro de la carrera.
     for (let k = 0; k < 5; k++) {
-      await page.evaluate(() => window.__debug!.adelantarSimulacion(4));
-      await page.waitForTimeout(700);
+      await page.evaluate(() => window.__debug!.adelantarSimulacion(2));
+      await page.waitForTimeout(300);
       largos.push(mayor((await estado(page)).fuerzasEnVivo.flechasPx));
       if (k === 0) await page.screenshot({ path: `${DIR}/${ID}-llano-${t.w}x${t.h}.png` });
       if (k === 3) await page.screenshot({ path: `${DIR}/${ID}-piedra-${t.w}x${t.h}.png` });

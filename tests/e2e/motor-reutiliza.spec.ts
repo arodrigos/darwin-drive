@@ -96,8 +96,8 @@ test("mp-2 cinco idas y vueltas a Probar y dos a Evolución dejan un juego, un W
   const antes = (await estado(page)).tiempoSim!;
   await page.waitForTimeout(3000);
   const despues = (await estado(page)).tiempoSim!;
-  expect(despues - antes).toBeGreaterThan(2.55);
-  expect(despues - antes).toBeLessThan(3.45);
+  expect(despues - antes).toBeGreaterThan(7.65);
+  expect(despues - antes).toBeLessThan(10.35);
   const e = await motor(page);
   expect(e).toMatchObject({ juegosCreados: 1, juegosVivos: 1, workersCreados: 1, oyentesWorker: 1, escenasActivas: 1, dueno: "pista", adquisiciones: 8 });
   expect((await estado(page)).cochesVivos).toBe(1);

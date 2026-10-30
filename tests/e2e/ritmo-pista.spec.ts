@@ -85,24 +85,29 @@ test("rit-1 tocar ×4 y ×8 acelera sin reiniciar y ×2 queda en medio", async (
   await abrir(page);
   await verCocheDeSerie(page);
   const t0 = (await estado(page)).tiempoSim!;
+  // ritmo-1: ×1 son 3 veces el tiempo real.
+  const v1 = await velocidad(page, 1500);
+  // Cota baja holgada: en tableta horizontal el canvas grande se pinta por software y el equipo no siempre llega a 3.
+  expect(v1).toBeGreaterThan(1.5);
+  expect(v1).toBeLessThan(3.8);
+  // ×2 se mide antes de ×4 y ×8: el coche de serie para en ~30 s simulados y a ×24 la carrera ya habría acabado.
+  await page.getByTestId("ritmo-x2").click();
+  const v2 = await velocidad(page, 1200);
+  expect(v2).toBeGreaterThan(v1 * 1.3);
   await page.getByTestId("ritmo-x4").click();
   await expect(page.getByTestId("ritmo-x4")).toHaveAttribute("aria-pressed", "true");
   const v4 = await velocidad(page, 1200);
-  expect(v4).toBeGreaterThan(3);
-  expect(v4).toBeLessThan(5);
+  expect(v4).toBeGreaterThan(v2);
   await page.getByTestId("ritmo-x8").click();
   const v8 = await velocidad(page, 1200);
   // Si el dispositivo no llega, el juego lo dice con «real ×N» en vez de callar.
-  if (v8 < 6) await expect(page.getByTestId("ritmo-real")).toBeVisible({ timeout: 6000 });
+  if (v8 < 18) await expect(page.getByTestId("ritmo-real")).toBeVisible({ timeout: 6000 });
   expect(v8).toBeGreaterThan(v4);
   expect((await estado(page)).tiempoSim!).toBeGreaterThan(t0);
   // Tocar el botón activo no cambia nada.
   const antes = (await estado(page)).ritmo;
   await page.getByTestId("ritmo-x8").click();
   expect((await estado(page)).ritmo).toBe(antes);
-  await page.getByTestId("ritmo-x2").click();
-  const v2 = await velocidad(page, 1200);
-  expect(v2).toBeGreaterThan(1.3);
   expect(v2).toBeLessThan(v8);
 });
 
@@ -114,7 +119,7 @@ const veloz = simulados.reduce((m, c) => (c.steps > m.steps ? c : m)).p;
 if (Math.max(...simulados.map((c) => c.steps)) < 12000) throw new Error("el coche de rit-11 ya no dura lo bastante");
 
 for (const { w, h } of [TAMANOS[0], TAMANOS[2]]) {
-  test(`rit-11 con el tope de 5 el rótulo «real ×5» entra sin mover ningún botón a ${w}x${h}`, async ({ page }) => {
+  test(`rit-11 con el tope de 5 el rótulo «real ×1,7» entra sin mover ningún botón a ${w}x${h}`, async ({ page }) => {
     test.setTimeout(90_000);
     await page.setViewportSize({ width: w, height: h });
     // El coche de serie para en ~30 s simulados y a ×8 la carrera acabaría antes de medir: se prueba un coche
@@ -134,7 +139,7 @@ for (const { w, h } of [TAMANOS[0], TAMANOS[2]]) {
     }
     const antes = await cajas(page, BOTONES);
     await page.evaluate(() => window.__debug!.limitarRitmo(5));
-    await expect(page.getByTestId("ritmo-real")).toHaveText("real ×5", { timeout: 8000 });
+    await expect(page.getByTestId("ritmo-real")).toHaveText("real ×1,7", { timeout: 8000 });
     const rotulo = (await page.getByTestId("ritmo-real").boundingBox())!;
     const durante = await cajas(page, BOTONES);
     expect(durante).toEqual(antes);

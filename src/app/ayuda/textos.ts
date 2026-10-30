@@ -84,7 +84,7 @@ export const SECCIONES_GUIA: readonly SeccionGuia[] = [
     id: "probar-ritmos",
     titulo: "Probar un coche y la velocidad",
     parrafos: [
-      "En la pista el coche corre solo. La fila de abajo cambia el ritmo: ×1 es tiempo real, ×2, ×4 y ×8 van más deprisa y «Hasta el final» salta al resultado sin esperar.",
+      "En la pista el coche corre solo. La fila de abajo cambia el ritmo: ×1 ya es 3 veces el tiempo real; ×2, ×4 y ×8 van más deprisa y «Hasta el final» salta al resultado sin esperar.",
       "El ritmo nunca cambia el resultado: el mismo coche llega a la misma distancia a cualquier velocidad. Si tu dispositivo no puede con ×8, un «real ×N» te dice la velocidad que consigue de verdad.",
       "Si apagas la pantalla o cambias de app, la carrera se pausa y sigue al volver.",
       "«Repetir» vuelve a correr con el mismo coche y el mismo ritmo.",
@@ -203,7 +203,7 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
     resumen: `El coche corre solo y mientras tanto cuenta metros. ${PAUSA_SEGUNDO_PLANO}.`,
     seccionGuia: "probar-ritmos",
     controles: [
-      { nombre: "×1", texto: "Tiempo real." },
+      { nombre: "×1", texto: "Tres veces el tiempo real." },
       { nombre: "×2", texto: "El doble de rápido." },
       { nombre: "×4", texto: "Cuatro veces más rápido." },
       { nombre: "×8", texto: "Ocho veces más rápido; si el dispositivo no llega, avisa con «real ×N»." },

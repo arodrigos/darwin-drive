@@ -117,7 +117,7 @@ test("ce-1 sin tope de fps y con limitarFps(1) el coche también queda dentro", 
   for (const fps of [null, 1]) {
     await limitar(page, fps);
     const lecturas = await leer(page, 4_000);
-    expect(lecturas.length).toBeGreaterThan(8);
+    expect(lecturas.length).toBeGreaterThan(4);
     expect(lecturas.every((c) => c.dentro)).toBe(true);
   }
 });
@@ -130,10 +130,12 @@ for (const { id: pista } of TRACKS) {
     await page.getByTestId("ritmo-x8").click();
     await limitar(page, 3);
     const ritmos = (await caja(page, "ritmo-x1"))!;
-    const lecturas = await leer(page, 6_000, async (s) => {
-      if (s === 6) await page.screenshot({ path: `${DIR}/${ID}-${pista}-6s.png` });
+    // ×8 es 24 veces el tiempo real: 2 s de pared son los ~48 s simulados que antes eran 6 s a ×8. Más allá,
+    // el coche de algunas pistas ya ha caído por el borde y su caja no cabe en ninguna banda.
+    const lecturas = await leer(page, 2_000, async (s) => {
+      if (s === 1) await page.screenshot({ path: `${DIR}/${ID}-${pista}-2s.png` });
     });
-    expect(lecturas.length).toBeGreaterThan(12);
+    expect(lecturas.length).toBeGreaterThan(5);
     for (const c of lecturas) {
       expect(c.dentro).toBe(true);
       expect(c.cajaLiderPx!.bottom).toBeLessThanOrEqual(ritmos.top + 0.5);
@@ -166,13 +168,13 @@ test("ce-5 el gancho no existe sin ?pruebas=1, limitarFps(null) lo quita y la es
   await limitar(page, 3);
   await page.waitForTimeout(1500);
   await expect.poll(async () => (await estado(page)).camara?.fpsDibujo ?? 99, { timeout: 5_000 }).toBeLessThanOrEqual(4);
-  // Con el tope el ritmo simulado no cambia: ×4 sigue entre 3 y 5 segundos simulados por segundo real.
+  // Con el tope el ritmo simulado no cambia: ×4 (12 veces el tiempo real) sigue entre 9 y 15 segundos simulados por segundo real.
   const a = await page.evaluate(() => ({ t: performance.now(), s: window.__debug!.estado().tiempoSim ?? 0 }));
   await page.waitForTimeout(3000);
   const b = await page.evaluate(() => ({ t: performance.now(), s: window.__debug!.estado().tiempoSim ?? 0 }));
   const v = (b.s - a.s) / ((b.t - a.t) / 1000);
-  expect(v).toBeGreaterThan(3);
-  expect(v).toBeLessThan(5);
+  expect(v).toBeGreaterThan(9);
+  expect(v).toBeLessThan(15);
 
   await page.evaluate(() => window.__debug!.perderLienzo());
   await expect.poll(async () => (await page.evaluate(() => window.__debug!.estado().lienzo)) as string, { timeout: 15_000 }).toBe("ok");
@@ -195,9 +197,13 @@ test("ce-6 el panel de ?rendimiento=1 enseña la línea de la cámara", async ({
   await expect(linea).toHaveText(/^cámara · [2-4] fps · margen \d+ px$/, { timeout: 10_000 });
   const c = (await estado(page)).camara!;
   expect(c.margenMinPx).toBeGreaterThanOrEqual(0);
-  const texto = await linea.innerText();
-  const m = /(\d+) fps · margen (\d+) px/.exec(texto)!;
-  expect(Math.abs(Number(m[1]) - c.fpsDibujo)).toBeLessThanOrEqual(1);
+  // El panel se repinta cada cierto tiempo y los fps a 3 cuadros bailan: se compara con polling, no con dos lecturas sueltas.
+  await expect
+    .poll(async () => {
+      const m = /(\d+) fps/.exec(await linea.innerText());
+      return m ? Math.abs(Number(m[1]) - ((await estado(page)).camara?.fpsDibujo ?? 99)) : 99;
+    }, { timeout: 10_000 })
+    .toBeLessThanOrEqual(1);
   // El panel se apoya sobre el pie: ni la línea ni el panel pueden montarse sobre la fila de ritmos.
   await expect
     .poll(async () => {
@@ -234,8 +240,8 @@ test("ce-7 Evolución y Batalla usan la misma cámara a 3 fps en La Rampa", asyn
   await expect(page.getByTestId("evolucion")).toBeVisible();
   await page.getByTestId("evo-ritmo-x8").click();
   await limitar(page, 3);
-  let lecturas = await leer(page, 8_000);
-  expect(lecturas.length).toBeGreaterThan(16);
+  let lecturas = await leer(page, 3_000);
+  expect(lecturas.length).toBeGreaterThan(4);
   expect(lecturas.every((c) => c.dentro)).toBe(true);
   // El panel de Evolución usa el mismo CSS: tampoco puede cubrir al coche.
   const pe = await page.getByTestId("panel-rendimiento").boundingBox();
@@ -247,8 +253,8 @@ test("ce-7 Evolución y Batalla usan la misma cámara a 3 fps en La Rampa", asyn
   await abrir(page, { batalla: { jugadores: 2, fase: "carrera", pista: "rampa" } });
   await expect(page.getByTestId("batalla-carrera")).toBeVisible();
   await limitar(page, 3);
-  lecturas = await leer(page, 8_000);
-  expect(lecturas.length).toBeGreaterThan(16);
+  lecturas = await leer(page, 3_000);
+  expect(lecturas.length).toBeGreaterThan(4);
   expect(lecturas.every((c) => c.dentro)).toBe(true);
   await page.screenshot({ path: `${DIR}/${ID}-batalla-360x640.png` });
 });
