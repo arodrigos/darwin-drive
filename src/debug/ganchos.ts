@@ -208,6 +208,8 @@ export interface Gancho {
   adelantarSimulacion(segundos: number): Promise<void>;
   /** El último texto o nombre de fichero que pasó por compartir.ts, o null. */
   ultimoCompartido(): string | null;
+  /** Genera el clip del récord de esa pista (el n.º 1 del ranking guardado) y devuelve sus medidas y el fotograma central. */
+  generarClip(trackId: TrackId): Promise<Omit<import("@/clip/generar").ResultadoClip, "blob"> & { blob?: undefined }>;
   /** Acota la velocidad simulada a N veces el tiempo real para imitar un dispositivo lento (null lo quita). No cambia ningún CarResult. */
   limitarRitmo(max: number | null): void;
   /** Hace que la escena de carrera pinte como mucho n fotogramas por segundo (1 a 60), como un equipo lento; null lo quita. No toca el Worker ni el ritmo. */
@@ -251,6 +253,20 @@ export function instalarGanchos(): void {
       await manejadores.cargarEscenario(e);
     },
     ultimoCompartido: () => runtime.ultimoCompartido,
+    async generarClip(trackId) {
+      const [{ leerClave }, { validateRankings, KEY_RANKINGS }, { generarClip }, { entradaDeMarca }] = await Promise.all([
+        import("@/storage/store"),
+        import("@/storage/schema"),
+        import("@/clip/generar"),
+        import("@/clip/entrada"),
+      ]);
+      const rankings = validateRankings(await leerClave(KEY_RANKINGS));
+      const record = rankings?.[trackId]?.[0];
+      if (!record) throw new Error(`no hay récord en ${trackId}`);
+      const resultado = await generarClip(entradaDeMarca(record));
+      // El Blob no sirve a quien consulta desde la consola: se queda fuera.
+      return { ...resultado, blob: undefined };
+    },
     async adelantarSimulacion(segundos) {
       await runtime.avanzar?.(segundos);
     },
