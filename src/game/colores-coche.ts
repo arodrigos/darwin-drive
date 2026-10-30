@@ -30,3 +30,20 @@ export function esColorCoche(v: unknown): v is ColorCoche {
 export function colorNumerico(c: ColorCoche): number {
   return parseInt(PALETA_COCHES[c].hex.slice(1), 16);
 }
+
+/** El color de la paleta más cercano a un #rrggbb (el código compartido lleva el hex; el garaje guarda el nombre de la paleta). */
+export function colorMasCercano(hex: string): ColorCoche {
+  const canales = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const [r, g, b] = canales(hex);
+  let mejor: ColorCoche = COLOR_PREDETERMINADO;
+  let mejorD = Infinity;
+  for (const c of COLORES_COCHE) {
+    const [pr, pg, pb] = canales(PALETA_COCHES[c].hex);
+    const d = (r - pr) ** 2 + (g - pg) ** 2 + (b - pb) ** 2;
+    if (d < mejorD) {
+      mejor = c;
+      mejorD = d;
+    }
+  }
+  return mejor;
+}

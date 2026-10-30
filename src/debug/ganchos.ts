@@ -24,6 +24,8 @@ export const runtime = {
   cochesVivos: 0,
   genomaEnPista: null as Genome | null,
   ultimoResultado: null as CarResult | null,
+  /** Último texto (código DD1) o nombre de fichero que pasó por compartir.ts. */
+  ultimoCompartido: null as string | null,
   tiempoSim: null as number | null,
   /** Cargas suavizadas por rueda del coche en pista, en [0, 1]; la rellena Pista con cada reparto de poses. */
   cargas: null as number[] | null,
@@ -204,6 +206,8 @@ export interface Gancho {
   sonidos: typeof sonidos;
   cargarEscenario(e: Escenario): Promise<void>;
   adelantarSimulacion(segundos: number): Promise<void>;
+  /** El último texto o nombre de fichero que pasó por compartir.ts, o null. */
+  ultimoCompartido(): string | null;
   /** Acota la velocidad simulada a N veces el tiempo real para imitar un dispositivo lento (null lo quita). No cambia ningún CarResult. */
   limitarRitmo(max: number | null): void;
   /** Hace que la escena de carrera pinte como mucho n fotogramas por segundo (1 a 60), como un equipo lento; null lo quita. No toca el Worker ni el ritmo. */
@@ -246,6 +250,7 @@ export function instalarGanchos(): void {
       if (!manejadores) throw new Error("la app aún no ha arrancado");
       await manejadores.cargarEscenario(e);
     },
+    ultimoCompartido: () => runtime.ultimoCompartido,
     async adelantarSimulacion(segundos) {
       await runtime.avanzar?.(segundos);
     },
