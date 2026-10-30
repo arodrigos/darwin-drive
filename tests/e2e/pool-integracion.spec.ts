@@ -44,8 +44,10 @@ test("poolint-1/3 Turbo con pool da la misma generación que con un Worker y los
   expect(cuatro.m.workersPool).toBeGreaterThanOrEqual(2);
   expect(cuatro.m.workersPoolVivos).toBeGreaterThanOrEqual(2);
   expect(cuatro.m.workersCreados).toBe(1);
-  // El panel de Turbo tapa «volver» mientras corre: hay que pausar antes de salir (causa del timeout en CI, no la lentitud).
-  await page.getByTestId("pausar").click();
+  // El panel de Turbo tapa «volver» mientras dura, y pausar no lo quita (causa del timeout en CI, no la lentitud):
+  // se sale de Turbo cambiando de ritmo.
+  await page.getByTestId("evo-ritmo-x1").click();
+  await expect(page.getByTestId("turbo-panel")).toBeHidden();
   await page.getByTestId("volver").click();
   await expect.poll(async () => (await motor(page)).workersPoolVivos).toBe(0);
   expect((await motor(page)).workersCreados).toBe(1);
