@@ -81,3 +81,17 @@ test("invariante: siguiente.falta > 0 sin autor, y null con autor", () => {
     }),
   );
 });
+
+test("medui-2 mejorMedalla y totalMedallas: cada medalla cuenta también las inferiores (oro 3, bronce 1, autor 4 = 8 de 40)", async () => {
+  const { mejorMedalla, totalMedallas } = await import("../../src/app/medallas");
+  const v = (id: TrackId) => TRACKS.find((t) => t.id === id)!.version;
+  const mejores = Object.fromEntries(TRACKS.map((t) => [t.id, null])) as Record<TrackId, Medalla | null>;
+  mejores.cordillera = mejorMedalla("cordillera", [{ distance: 1, trackVersion: v("cordillera") }, { distance: UMBRALES.cordillera[v("cordillera")].oro, trackVersion: v("cordillera") }]);
+  mejores.dunas = mejorMedalla("dunas", [{ distance: UMBRALES.dunas[v("dunas")].bronce, trackVersion: v("dunas") }]);
+  mejores.recta = mejorMedalla("recta", [{ distance: 5000, bestStep: Math.floor(UMBRALES.recta[1].autor / DT) - 1, trackVersion: 1 }]);
+  assert.deepEqual([mejores.cordillera, mejores.dunas, mejores.recta], ["oro", "bronce", "autor"]);
+  assert.deepEqual(totalMedallas(mejores), { ganadas: 8, total: 40 });
+  // Una marca pendiente (sin bestStep) o de otra versión de pista no da medalla en tiempo.
+  assert.equal(mejorMedalla("recta", [{ distance: 5000, trackVersion: 1 }]), null);
+  assert.equal(mejorMedalla("cordillera", [{ distance: 5000, trackVersion: 99 }]), null);
+});

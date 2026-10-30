@@ -2,7 +2,9 @@
 
 import { createNoise2D } from "simplex-noise";
 import { TRACKS, type TrackId } from "@/sim/tracks";
+import { mejorMedalla, totalMedallas, type Medalla } from "../medallas";
 import { BotonSonido } from "./BotonSonido";
+import { Insignia } from "./Insignia";
 import { TrackMiniature, topMark, type RankingsView } from "./TrackPicker";
 
 const noise = createNoise2D(() => 0.62);
@@ -34,7 +36,9 @@ const MAS = [
   { testid: "acceso-guia", texto: "Cómo se juega", accion: "onGuia" },
 ] as const;
 
-export function Portada(props: { rankings: RankingsView; onExplore: () => void; onStock: () => void; onRanking: (id: TrackId) => void; onTaller: () => void; onGarage: () => void; onGuia: () => void; onLinaje: () => void; onEvolucion: () => void; onEspecies: () => void; continuar: { generation: number; trackName: string } | null; onContinuar: () => void; onBatalla: () => void; continuarBatalla: string | null; onContinuarBatalla: () => void }) {
+export function Portada(props: { rankings: RankingsView & Record<TrackId, { distance: number; bestStep?: number; trackVersion: number }[]>; onExplore: () => void; onStock: () => void; onRanking: (id: TrackId) => void; onTaller: () => void; onGarage: () => void; onGuia: () => void; onLinaje: () => void; onEvolucion: () => void; onEspecies: () => void; continuar: { generation: number; trackName: string } | null; onContinuar: () => void; onBatalla: () => void; continuarBatalla: string | null; onContinuarBatalla: () => void }) {
+  const mejores = Object.fromEntries(TRACKS.map((t) => [t.id, mejorMedalla(t.id, props.rankings[t.id])])) as Record<TrackId, Medalla | null>;
+  const { ganadas, total } = totalMedallas(mejores);
   return (
     <div className="portada" data-testid="portada">
       <Paisaje />
@@ -67,12 +71,18 @@ export function Portada(props: { rankings: RankingsView; onExplore: () => void; 
       </section>
       <section className="zona" aria-labelledby="zona-records" data-testid="zona-records">
         <h2 id="zona-records">Récords por pista</h2>
+        <p className="recuento-medallas" data-testid="recuento-medallas">
+          {ganadas === 0 ? "Aún no tienes medallas: termina una carrera para ganar la primera" : `Medallas: ${ganadas} de ${total}`}
+        </p>
         <div className="pistas">
           {TRACKS.map((t) => (
             <button key={t.id} type="button" className="tarjeta-pista" data-testid={`tarjeta-${t.id}`} onClick={() => props.onRanking(t.id)}>
               <span className="nombre">{t.name}</span>
               <TrackMiniature track={t} />
               <span className="marca">{topMark(props.rankings, t.id, true)}</span>
+              <span className="medalla-pista" data-testid={`medalla-${t.id}`}>
+                {mejores[t.id] ? <Insignia medalla={mejores[t.id] as Medalla} /> : "—"}
+              </span>
             </button>
           ))}
         </div>

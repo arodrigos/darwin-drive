@@ -182,6 +182,7 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
     controles: [
       { nombre: "Explorar pista", texto: "Recorre una pista sin coche para ver cómo es." },
       { nombre: "Ver el coche de serie", texto: "Corre el coche de ejemplo en la pista elegida." },
+      { nombre: "Medallas", texto: "Cada pista da bronce, plata y oro por la distancia (o el tiempo, en La Recta y el Acantilado). La de autor es la marca del coche de referencia de la pista." },
       { nombre: "Taller", texto: "Diseña tu propio coche." },
       { nombre: "Garaje", texto: "Tus coches guardados y la copia de seguridad." },
       { nombre: "Evolución", texto: "Deja que un algoritmo genético evolucione coches." },
@@ -212,6 +213,7 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
       { nombre: "Repetir", texto: "Vuelve a correr desde el principio con el mismo ritmo." },
       { nombre: "¿Por qué?", texto: "En la tarjeta de fin, explica por qué se paró el coche." },
       { nombre: "Destello", texto: "Una estrella marca dónde se rompió una pieza; la tarjeta cuenta cuántas perdió. Más en «Fragilidad»." },
+      { nombre: "Medalla", texto: "La tarjeta de fin dice qué medalla ganó la carrera y cuánto falta para la siguiente: bronce, plata, oro y autor, que es la marca del coche de referencia de la pista." },
       { nombre: "Bandera", texto: "Marca el récord de la pista: el coche que llegue más lejos." },
       { nombre: "Apagar la pantalla", texto: PAUSA_SEGUNDO_PLANO + "." },
     ],

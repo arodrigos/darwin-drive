@@ -1,4 +1,4 @@
-import type { CarResult } from "../sim/constants";
+import { META_DISTANCE, type CarResult } from "../sim/constants";
 import { DT } from "../sim/race";
 import type { TrackId } from "../sim/tracks";
 
@@ -78,3 +78,29 @@ export function recuento(mejores: Record<TrackId, Medalla | null>): { ganadas: n
   return { ganadas: valores.filter((m) => m !== null).length, total: valores.length };
 }
 
+
+export const NOMBRE_MEDALLA: Record<Medalla, string> = { bronce: "Bronce", plata: "Plata", oro: "Oro", autor: "Autor" };
+
+const rango = (m: Medalla | null) => (m === null ? 0 : ORDEN.indexOf(m) + 1);
+
+/** Mejor medalla entre las marcas de una pista. Una marca sin bestStep (pendiente de medir) no cuenta en pistas de tiempo. */
+export function mejorMedalla(
+  trackId: TrackId,
+  marcas: readonly { distance: number; bestStep?: number; trackVersion: number }[],
+): Medalla | null {
+  let mejor: Medalla | null = null;
+  for (const e of marcas) {
+    // El ranking no guarda el motivo de parada: llegar a la meta es lo que da el tiempo en La Recta y el Acantilado.
+    const m = medallaDe(trackId, e.trackVersion, { distance: e.distance, bestStep: e.bestStep ?? 0, reason: e.distance >= META_DISTANCE && e.bestStep !== undefined ? "meta" : "stall" });
+    if (rango(m) > rango(mejor)) mejor = m;
+  }
+  return mejor;
+}
+
+/** Cuenta cada medalla con las inferiores (oro = 3), de ahí «X de 40». */
+export function totalMedallas(mejores: Record<TrackId, Medalla | null>): { ganadas: number; total: number } {
+  const valores = Object.values(mejores);
+  return { ganadas: valores.reduce((s, m) => s + rango(m), 0), total: valores.length * ORDEN.length };
+}
+
+export const esMayor = (a: Medalla | null, b: Medalla | null) => rango(a) > rango(b);

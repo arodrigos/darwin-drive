@@ -2,7 +2,9 @@
 
 import type { ColorCoche } from "@/game/colores-coche";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { formatMeters } from "@/app/format";
+import { formatDecimal, formatMeters } from "@/app/format";
+import { esMayor, medallaDe, mejorMedalla, NOMBRE_MEDALLA, siguiente } from "@/app/medallas";
+import { Insignia } from "./Insignia";
 import { formatTiempo } from "@/sim/clasificacion";
 import { avisoRanking, textoRanking } from "@/app/ranking-text";
 import { runtime } from "@/debug/ganchos";
@@ -57,6 +59,13 @@ function parametrosPrueba(): { worker: boolean; fallo: boolean; rendimiento: boo
   };
 }
 
+function medallasDeFin(id: TrackId, version: number, r: CarResult, ranking: Parameters<typeof mejorMedalla>[1]) {
+  const actual = medallaDe(id, version, r);
+  const sig = siguiente(id, version, r);
+  const mejor = mejorMedalla(id, ranking);
+  return { actual, sig, mejor: esMayor(mejor, actual) ? mejor : null };
+}
+
 type Fase = { tipo: "corriendo" } | { tipo: "fin"; result: CarResult; fiel?: boolean } | { tipo: "error" };
 
 export interface PistaProps {
@@ -105,6 +114,8 @@ export function Pista(props: PistaProps) {
   });
   const onTarjeta = props.onTarjeta;
   const hayTarjeta = fase.tipo === "fin";
+  // Se deriva de la marca en cada pintado: no se guarda nada y una subida de versión de pista la recalcula sola.
+  const medallaFin = fase.tipo === "fin" && !props.repeticion ? medallasDeFin(track.id, track.version, fase.result, props.rankings[track.id]) : null;
   useEffect(() => {
     if (!hayTarjeta) return;
     onTarjeta?.(true);
@@ -497,6 +508,17 @@ export function Pista(props: PistaProps) {
                 ? `Repetición fiel: ${formatMeters(fase.result.distance)} en ${formatTiempo(fase.result.bestStep)}, igual que la marca guardada`
                 : "Esta repetición no coincide con la marca guardada"}
             </p>
+          )}
+          {medallaFin && (
+            <div data-testid="fin-medalla">
+              {medallaFin.actual ? <Insignia medalla={medallaFin.actual} testid="fin-medalla-nombre" /> : <span data-testid="fin-medalla-nombre">Sin medalla</span>}
+              <p data-testid="fin-medalla-falta">
+                {medallaFin.sig
+                  ? `Te faltan ${formatDecimal(medallaFin.sig.unidad === "m" ? Math.ceil(medallaFin.sig.falta) : Math.ceil(medallaFin.sig.falta * 10) / 10, medallaFin.sig.unidad === "m" ? 0 : 1)} ${medallaFin.sig.unidad} para ${NOMBRE_MEDALLA[medallaFin.sig.medalla]}`
+                  : medallaFin.actual === "autor" ? "¡Medalla de autor!" : ""}
+              </p>
+              {medallaFin.mejor && <p data-testid="fin-medalla-mejor">Tu mejor: {NOMBRE_MEDALLA[medallaFin.mejor]}</p>}
+            </div>
           )}
           <p data-testid="fin-motivo">{fase.result.reason === "meta" ? MOTIVO.meta : `Motivo: ${MOTIVO[fase.result.reason]}`}</p>
           {(fase.result.reason === "stall" || fase.result.reason === "destrozado") && (
