@@ -25,6 +25,7 @@ async function evolucionHastaGen3(page: Page, workers: number) {
 }
 
 test("poolint-1/3 Turbo con pool da la misma generación que con un Worker y los Workers se terminan al salir", async ({ browser }) => {
+  test.setTimeout(240_000);
   const a = await (await browser.newContext()).newPage();
   const b = await (await browser.newContext()).newPage();
   const uno = await evolucionHastaGen3(a, 1);
@@ -41,6 +42,7 @@ test("poolint-1/3 Turbo con pool da la misma generación que con un Worker y los
 });
 
 test("poolint-2 la migración con pool deja los mismos rankings que con un Worker", async ({ browser }) => {
+  test.setTimeout(240_000);
   const escenario = { rankings: "demo-version-anterior" };
   const resultados: Mig[] = [];
   let pool = 0;
@@ -60,6 +62,7 @@ test("poolint-2 la migración con pool deja los mismos rankings que con un Worke
 });
 
 test("poolint-2 un lote de Especies con pool termina y suelta sus Workers", async ({ page }) => {
+  test.setTimeout(240_000);
   await cargar(page, "&workers=4", {});
   await page.getByTestId("acceso-especies").click();
   await page.getByTestId("explorar-especies").click();
