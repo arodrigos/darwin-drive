@@ -19,26 +19,34 @@ async function evolucionHastaGen3(page: Page, workers: number) {
   await expect(page.getByTestId("evolucion")).toBeVisible();
   await page.getByTestId("evo-ritmo-turbo").click();
   const base = (await page.evaluate(() => window.__debug!.estado() as unknown as Evo)).generacion!;
-  await expect.poll(async () => (await page.evaluate(() => window.__debug!.estado() as unknown as Evo)).generacion, { timeout: 300_000 }).toBe(base + 1);
+  await expect.poll(async () => (await page.evaluate(() => window.__debug!.estado() as unknown as Evo)).generacion, { timeout: 400_000 }).toBe(base + 1);
   const e = await page.evaluate(() => window.__debug!.estado() as unknown as Evo);
   return { poblacion: e.poblacion, distancias: e.distanciasGeneracion, m: await motor(page) };
 }
 
-test("poolint-1/3 Turbo con pool da la misma generación que con un Worker y los Workers se terminan al salir", async ({ browser }) => {
-  test.setTimeout(660_000);
-  const a = await (await browser.newContext()).newPage();
-  const b = await (await browser.newContext()).newPage();
-  const uno = await evolucionHastaGen3(a, 1);
-  const cuatro = await evolucionHastaGen3(b, 4);
-  expect(cuatro.poblacion).toEqual(uno.poblacion);
-  expect(cuatro.distancias).toEqual(uno.distancias);
-  expect(uno.m.workersPool).toBe(0);
+// Dos tests en serie en vez de uno con dos generaciones: en el runner de CI cada generación real tarda varios minutos y juntas
+// agotaban el timeout del test entero (431b3cb). El resultado con un Worker se guarda para compararlo en el segundo.
+test.describe.configure({ mode: "serial" });
+let referencia: Awaited<ReturnType<typeof evolucionHastaGen3>> | null = null;
+
+test("poolint-1 Turbo con un Worker: generación de referencia sin pool", async ({ page }) => {
+  test.setTimeout(420_000);
+  referencia = await evolucionHastaGen3(page, 1);
+  expect(referencia.m.workersPool).toBe(0);
+});
+
+test("poolint-1/3 Turbo con pool da la misma generación que con un Worker y los Workers se terminan al salir", async ({ page }) => {
+  test.setTimeout(420_000);
+  expect(referencia, "depende del test de referencia anterior").not.toBeNull();
+  const cuatro = await evolucionHastaGen3(page, 4);
+  expect(cuatro.poblacion).toEqual(referencia!.poblacion);
+  expect(cuatro.distancias).toEqual(referencia!.distancias);
   expect(cuatro.m.workersPool).toBeGreaterThanOrEqual(2);
   expect(cuatro.m.workersPoolVivos).toBeGreaterThanOrEqual(2);
   expect(cuatro.m.workersCreados).toBe(1);
-  await b.getByTestId("volver").click();
-  await expect.poll(async () => (await motor(b)).workersPoolVivos).toBe(0);
-  expect((await motor(b)).workersCreados).toBe(1);
+  await page.getByTestId("volver").click();
+  await expect.poll(async () => (await motor(page)).workersPoolVivos).toBe(0);
+  expect((await motor(page)).workersCreados).toBe(1);
 });
 
 test("poolint-2 la migración con pool deja los mismos rankings que con un Worker", async ({ browser }) => {
