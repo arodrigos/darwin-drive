@@ -1,6 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
-import { CAMPEONES_5K } from "../fixtures/campeones-5k";
 import { PHYSICS_VERSION } from "../../src/sim/constants";
 import { medallaDe, NOMBRE_MEDALLA, UMBRALES } from "../../src/app/medallas";
 import { TRACKS } from "../../src/sim/tracks";
@@ -15,6 +14,8 @@ const TAMANOS = [
 test.setTimeout(180_000);
 
 const demo = JSON.parse(readFileSync("src/debug/escenarios/rankings-demo.json", "utf8")) as Record<string, Record<string, unknown>[]>;
+// El campeón de referencia de la calibración (el de campeones-5k es de una versión anterior de la pista).
+const CAMPEON_CORDILLERA = (JSON.parse(readFileSync("tests/fixtures/medallas-calibracion.json", "utf8")) as { trackId: string; campeon: unknown }[]).find((f) => f.trackId === "cordillera")!.campeon;
 const version = (id: string) => TRACKS.find((t) => t.id === id)!.version;
 
 /** Una marca con el genoma de la demostración y la distancia o el tiempo que se pide. */
@@ -54,7 +55,7 @@ test("medui-2: sin marcas, el estado vacío invita a ganar la primera", async ({
 });
 
 test("medui-1: la tarjeta de fin da la medalla de la carrera", async ({ page }) => {
-  await abrir(page, { vacio: true, genoma: CAMPEONES_5K.cordillera![0], pista: "cordillera" });
+  await abrir(page, { vacio: true, genoma: CAMPEON_CORDILLERA, pista: "cordillera" });
   await page.getByTestId("acceso-taller").click();
   await page.getByTestId("probar").click();
   await expect(page.getByTestId("pista")).toBeVisible();
@@ -73,7 +74,7 @@ test("medui-1: la tarjeta de fin da la medalla de la carrera", async ({ page }) 
 });
 
 test("medui-1 límite: una parada a 10 m dice cuánto falta para Bronce", async ({ page }) => {
-  await abrir(page, { vacio: true, genoma: CAMPEONES_5K.cordillera![0], pista: "cordillera" });
+  await abrir(page, { vacio: true, genoma: CAMPEON_CORDILLERA, pista: "cordillera" });
   await page.getByTestId("acceso-taller").click();
   await page.getByTestId("probar").click();
   await page.evaluate(() => window.__debug!.adelantarSimulacion(900));
