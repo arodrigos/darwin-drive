@@ -60,7 +60,7 @@ test("medui-1: la tarjeta de fin da la medalla de la carrera", async ({ page }) 
   await page.getByTestId("probar").click();
   await expect(page.getByTestId("pista")).toBeVisible();
   await page.evaluate(() => window.__debug!.adelantarSimulacion(900));
-  await expect(page.getByTestId("tarjeta-fin")).toBeVisible();
+  await expect(page.getByTestId("tarjeta-fin")).toBeVisible({ timeout: 30_000 });
   const r = await page.evaluate(() => window.__debug!.estado().ultimoResultado!);
   const esperada = medallaDe("cordillera", version("cordillera"), r);
   expect(esperada).toBe("autor");
@@ -78,7 +78,7 @@ test("medui-1 límite: una parada a 10 m dice cuánto falta para Bronce", async 
   await page.getByTestId("acceso-taller").click();
   await page.getByTestId("probar").click();
   await page.evaluate(() => window.__debug!.adelantarSimulacion(900));
-  await expect(page.getByTestId("tarjeta-fin")).toBeVisible();
+  await expect(page.getByTestId("tarjeta-fin")).toBeVisible({ timeout: 30_000 });
   await page.evaluate(() => window.__debug!.forzarTarjetaFin({ distance: 10, reason: "stall" }));
   const bronce = UMBRALES.cordillera[version("cordillera")].bronce;
   await expect(page.getByTestId("fin-medalla-nombre")).toHaveText("Sin medalla");

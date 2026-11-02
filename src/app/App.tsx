@@ -688,18 +688,32 @@ export function App() {
     [garage, rankings, recargar],
   );
 
-  // El garaje identifica un coche por el hash de su genoma (marcas, rankings y batalla cuelgan de él): el mismo diseño
-  // importado dos veces es el mismo coche, así que no se duplica y se avisa en vez de pisar su nombre y sus marcas.
+  // El primer coche con un genoma usa su hash como id (marcas, rankings y batalla cuelgan de él). Importar un diseño que ya
+  // está añade siempre un coche nuevo, con id propio y sin marcas, y deja intacto el que había.
   const importarCoche = useCallback(
     async (coche: CocheCompartible & { hash: string }): Promise<ResultadoImportar> => {
-      const ya = garageRef.current.find((c) => c.id === coche.hash);
-      if (ya) return { ok: false, texto: `Ya tienes este coche en el garaje: «${ya.name}»` };
-      if (garageRef.current.length >= GARAGE_SIZE) return { ok: false, texto: "El garaje está lleno: borra un coche para importar otro" };
-      const r = await guardarGenoma(coche.genome, "diseño", coche.nombre, undefined, colorMasCercano(coche.color));
-      if (r === GARAGE_FULL_MESSAGE) return { ok: false, texto: "El garaje está lleno: borra un coche para importar otro" };
+      const llenoTexto = "El garaje está lleno: borra un coche para importar otro";
+      if (garageRef.current.length >= GARAGE_SIZE) return { ok: false, texto: llenoTexto };
+      if (!garageRef.current.some((c) => c.id === coche.hash)) {
+        const r = await guardarGenoma(coche.genome, "diseño", coche.nombre, undefined, colorMasCercano(coche.color));
+        if (r === GARAGE_FULL_MESSAGE) return { ok: false, texto: llenoTexto };
+        return { ok: true, texto: `Coche importado: ${coche.nombre}` };
+      }
+      const car: SavedCar = {
+        id: `${coche.hash}:${crypto.randomUUID()}`,
+        name: coche.nombre,
+        genome: coche.genome,
+        marks: {},
+        origin: "diseño",
+        savedAt: new Date().toISOString(),
+        color: colorMasCercano(coche.color),
+      };
+      const r = await saveToGarage(car);
+      if (!r.ok) return { ok: false, texto: llenoTexto };
+      await recargar();
       return { ok: true, texto: `Coche importado: ${coche.nombre}` };
     },
-    [guardarGenoma],
+    [guardarGenoma, recargar],
   );
 
   // Cada coche de la batalla entra en el ranking de la pista como si lo hubieras probado a mano.

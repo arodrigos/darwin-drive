@@ -34,6 +34,7 @@ test("comp-1: «Compartir» copia el código DD1 y avisa; la latencia 'compartir
   await abrirGaraje(page, { garaje: 3 });
   const codigo = await compartirSegundo(page);
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(codigo);
+  await expect(page.getByTestId("aviso-garaje")).toBeInViewport();
   await page.screenshot({ path: `${DIR}/${ID}-aviso-compartir-360x640.png` });
   const l = await page.evaluate(() => window.__debug!.latencias().filter((x) => x.evento === "compartir"));
   expect(l.length).toBeGreaterThan(0);
@@ -56,7 +57,7 @@ test("comp-1 límite: sin portapapeles se abre la hoja con el código selecciona
   await ctx.close();
 });
 
-test("comp-2: importar en otro contexto añade un coche y no toca nada más; el mismo código no se duplica", async ({ browser }) => {
+test("comp-2: importar en otro contexto añade un coche y no toca nada más; el mismo código dos veces añade dos coches", async ({ browser }) => {
   const a = await contexto(browser);
   const pa = await a.newPage();
   await abrirGaraje(pa, { garaje: 3 });
@@ -99,13 +100,14 @@ test("comp-2: importar en otro contexto añade un coche y no toca nada más; el 
   const l = await pb.evaluate(() => window.__debug!.latencias().filter((x) => x.evento === "importar"));
   expect(l[l.length - 1].trabajoMs).toBeLessThanOrEqual(200);
 
-  // El garaje identifica cada diseño por su hash: el mismo código otra vez no duplica nada y lo dice.
+  // El mismo código otra vez añade otro coche, con id propio, sin tocar el anterior.
   await pb.getByTestId("garaje-importar").click();
   await pb.getByTestId("importar-codigo").fill(codigo);
   await pb.getByTestId("importar-aceptar").click();
-  await expect(pb.getByTestId("importar-error")).toContainText("Ya tienes este coche en el garaje");
-  expect(await hashes(pb)).toBe(2);
-  await pb.keyboard.press("Escape");
+  await expect(pb.getByTestId("hoja-importar")).toBeHidden();
+  await expect(pb.getByTestId("tarjeta-coche")).toHaveCount(3);
+  await expect(pb.getByTestId("aviso-garaje")).toHaveText(/^Coche importado: .+/);
+  expect(await hashes(pb)).toBe(3);
 
   // Desde el coche importado se puede probar.
   await pb.getByTestId("garaje-probar").nth(1).click();
