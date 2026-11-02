@@ -11,6 +11,7 @@ import { getTrack, TRACKS, type TrackId } from "@/sim/tracks";
 import { repeticionDisponible } from "@/app/repeticion";
 import { entradaPendiente, RANKING_SIZE, type RankingEntry, type Rankings as RankingsData } from "@/storage/schema";
 import { Silueta } from "./Garaje";
+import { BotonClip } from "./BotonClip";
 
 export function textoVacio(pista: string): string {
   return `Nadie ha corrido aún en ${pista}. Prueba un coche del Taller o evoluciona uno en esta pista.`;
@@ -257,6 +258,7 @@ export function Rankings(props: RankingsProps) {
             >
               Ver repetición
             </button>
+            <BotonClip key={`${trackId}-${fila.genomeHash}`} entry={fila} disponible={repeticionDisponible(fila, track, props.migracion?.enCurso ?? false)} />
             {!repeticionDisponible(fila, track, props.migracion?.enCurso ?? false) && (
               <p className="nota-migracion" id="ayuda-repeticion" data-testid="ayuda-repeticion">
                 Esta marca se está volviendo a medir; la repetición estará cuando termine

@@ -260,6 +260,7 @@ export const AYUDA: Record<PantallaAyuda, TextoAyuda> = {
       { nombre: "Fila", texto: "Toca una para ver sus opciones." },
       { nombre: "Ver correr", texto: "Repite la carrera de esa marca." },
       { nombre: "Abrir en el Taller y Guardar", texto: "Edita el coche o llévalo al Garaje." },
+      { nombre: "Guardar clip", texto: "Genera un vídeo MP4 corto de la repetición del récord, para compartirlo o descargarlo. Si no aparece: Tu navegador no puede generar vídeo; «Ver repetición» sigue disponible." },
     ],
   },
   "evolucion-inicio": {

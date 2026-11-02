@@ -185,6 +185,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hoja-fila h3 { margin: 0 0 4px; font-size: 1.05rem; }
 .hoja-fila p { margin: 0 0 8px; font-size: .9rem; }
 .hoja-fila .acciones { display: flex; flex-wrap: wrap; gap: 6px; }
+.progreso-clip { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: .85rem; font-weight: 700; color: #ffd23f; }
+.progreso-clip progress { flex: 1 1 120px; min-width: 0; }
 .progreso-medicion, .resumen-medicion { font-size: .85rem; font-weight: 700; color: #ffd23f; }
 /* Los avisos de la evolución se apilan en columna: uno largo no tapa al siguiente. */
 /* Contenedor común de avisos: justo debajo de la cabecera y del marcador (108px), nunca encima de «← Volver» ni del nombre de la pista. */

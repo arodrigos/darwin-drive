@@ -22,15 +22,18 @@ function caer(genome: Genome, caida: number, pasos = 240, trozo = 60): CarResult
 
 const punto = fc.record({ x: fc.double({ min: -3, max: 3, noNaN: true }), y: fc.double({ min: -3, max: 3, noNaN: true }) });
 
+// Redondeo de coma flotante: escalar un triángulo puede mover el ángulo un ulp (semillas 1590740034 y 42115751).
+const EPS = 1e-9;
+
 test("fra-2 (invariante): umbral_i > 0 y no decrece con la densidad, el ángulo agudo ni el área", () => {
   fc.assert(
     fc.property(punto, punto, fc.double({ min: 20, max: 200, noNaN: true }), fc.double({ min: 0, max: 100, noNaN: true }), (a, b, d, extra) => {
       const u = umbralRotura(d, a, b);
       assert.ok(u > 0 && Number.isFinite(u));
-      assert.ok(umbralRotura(d + extra, a, b) >= u);
+      assert.ok(umbralRotura(d + extra, a, b) >= u * (1 - EPS));
       // Escalar el triángulo crece su área sin tocar sus ángulos.
       const k = 1 + extra / 50;
-      assert.ok(umbralRotura(d, { x: a.x * k, y: a.y * k }, { x: b.x * k, y: b.y * k }) >= u);
+      assert.ok(umbralRotura(d, { x: a.x * k, y: a.y * k }, { x: b.x * k, y: b.y * k }) >= u * (1 - EPS));
       assert.ok(anguloMinimo(a, b) >= 0 && areaTriangulo(a, b) >= 0);
     }),
     { numRuns: 300 },
