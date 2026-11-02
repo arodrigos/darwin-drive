@@ -13,7 +13,7 @@ import type { TrackSceneHandle } from "@/game/track-scene";
 import type { CarResult } from "@/sim/constants";
 import { getTrack } from "@/sim/tracks";
 import type { RankingOutcome } from "@/storage/store";
-import { simCompartido } from "@/game/motor";
+import { simCompartido, simPool } from "@/game/motor";
 import type { FromWorker, Pace, SimRunner } from "@/worker/protocol";
 import { actualizarAviso, SIN_AVISO } from "../ritmo";
 import { ControlRitmo } from "./ControlRitmo";
@@ -197,7 +197,10 @@ export function Evolucion(props: EvolucionProps) {
   useEffect(() => {
     if (failed) return;
     const prueba = parametrosPrueba();
-    const runner: SimRunner = simCompartido({ worker: prueba.worker });
+    const compartido: SimRunner = simCompartido({ worker: prueba.worker });
+    // En Turbo cada generación se reparte en un pool propio; ×1-×8 siguen en el Worker único porque corren con reloj.
+    let runner: SimRunner = compartido;
+    let pool: SimRunner | null = null;
     let scene: TrackSceneHandle | null = null;
     let cancelled = false;
     let raceId = "";
@@ -214,6 +217,7 @@ export function Evolucion(props: EvolucionProps) {
       if (contador.current) contador.current.textContent = `Gen ${stateRef.current.generation} · ${vivos} vivos · ${track.name}`;
     };
 
+    let cambiarRunner: (r: SimRunner) => void = () => {};
     let marca: RankingEntry | undefined;
     const lanzar = () => {
       if (!scene) return;
@@ -234,6 +238,11 @@ export function Evolucion(props: EvolucionProps) {
       runtime.distanciaLider = 0;
       runtime.tiempoSim = 0;
       pintarContador(total);
+      cambiarRunner(pace.current === "turbo" ? (pool ??= simPool({ worker: prueba.worker }, total)) ?? compartido : compartido);
+      if (pace.current !== "turbo" && pool) {
+        pool.terminate();
+        pool = null;
+      }
       // El n.º 1 de ahora, no el de cuando se abrió la pantalla: tras un récord nuevo corre contra él.
       marca = marcaFantasma(latest.current.rankings[st.trackId], track, Boolean(latest.current.migrando));
       scene.begin({
@@ -340,7 +349,15 @@ export function Evolucion(props: EvolucionProps) {
       }
     };
 
-    const unsubscribe = runner.subscribe(alMensaje);
+    let unsubscribe = runner.subscribe(alMensaje);
+    cambiarRunner = (nuevo) => {
+      if (nuevo === runner) return;
+      unsubscribe();
+      runner = nuevo;
+      unsubscribe = runner.subscribe(alMensaje);
+      runtime.ejecutor = runner.kind;
+      if (runtime.limiteRitmo !== null) runner.post({ type: "limitRate", max: runtime.limiteRitmo });
+    };
     runtime.ejecutor = runner.kind;
     runtime.ritmo = pace.current;
     runtime.aplicarLimite = (max) => runner.post({ type: "limitRate", max });
@@ -407,6 +424,8 @@ export function Evolucion(props: EvolucionProps) {
       runner.post({ type: "stop", raceId });
       unsubscribe();
       runner.terminate();
+      pool?.terminate();
+      if (runner !== compartido) compartido.terminate();
       scene?.destroy();
       liberar();
       relanzar.current = () => {};
