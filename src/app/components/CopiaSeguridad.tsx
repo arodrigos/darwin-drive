@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { COPIA_INVALIDA, COPIA_MAX_BYTES, crearCopia, nombreFicheroCopia, validarCopia } from "@/storage/copia";
-import { leerGuardado, persistente, reemplazarTodo } from "@/storage/store";
+import { ErrorSinAlmacen, leerGuardado, persistente, reemplazarTodo } from "@/storage/store";
 import { runtime } from "@/debug/ganchos";
 
 export const TEXTO_PERSISTENTE = "Guardado persistente en este dispositivo";
@@ -10,6 +10,9 @@ export const TEXTO_NO_PERSISTENTE =
   "Safari puede borrar el guardado si pasas 7 días sin jugar. Añade el juego a la pantalla de inicio o exporta una copia.";
 export const TEXTO_PERSISTENCIA_DESCONOCIDA =
   "Este navegador no dice si el guardado es duradero. Exporta una copia de vez en cuando para no perder tu garaje.";
+export const EXPORTAR_SIN_ALMACEN =
+  "No se puede exportar: este navegador no deja leer el guardado del dispositivo y la copia saldría incompleta.";
+export const IMPORTADA_SOLO_MEMORIA = "pero este navegador no deja guardar en el dispositivo: se perderá al cerrar la pestaña.";
 export const PASOS_PANTALLA_INICIO =
   "En Safari: toca Compartir y luego «Añadir a pantalla de inicio». En Chrome: menú ⋮ y «Instalar aplicación».";
 
@@ -51,7 +54,15 @@ export function CopiaSeguridad(props: { almacenDisponible: boolean; onImportada:
   }, []);
 
   async function exportar() {
-    const data = await leerGuardado();
+    let data: Record<string, unknown>;
+    try {
+      data = await leerGuardado();
+    } catch (e) {
+      if (!(e instanceof ErrorSinAlmacen)) throw e;
+      setPendiente(null);
+      setMensaje({ tipo: "error", texto: EXPORTAR_SIN_ALMACEN });
+      return;
+    }
     const ahora = new Date();
     const nombre = nombreFicheroCopia(ahora);
     descargar(nombre, JSON.stringify(crearCopia(data, ahora)));
@@ -80,9 +91,10 @@ export function CopiaSeguridad(props: { almacenDisponible: boolean; onImportada:
     if (!pendiente) return;
     const { data, resumen } = pendiente;
     setPendiente(null);
-    await reemplazarTodo(data);
+    const guardada = await reemplazarTodo(data);
     await props.onImportada();
-    setMensaje({ tipo: "ok", texto: `Copia importada: ${resumen}.` });
+    // Sin almacén la copia solo está en memoria: decir «importada» sin más haría creer que ya está a salvo.
+    setMensaje(guardada ? { tipo: "ok", texto: `Copia importada: ${resumen}.` } : { tipo: "error", texto: `Copia cargada (${resumen}), ${IMPORTADA_SOLO_MEMORIA}` });
   }
 
   return (

@@ -1,5 +1,5 @@
 import { esColorCoche, type ColorCoche } from "@/game/colores-coche";
-import { del, get, set, update, type UseStore } from "idb-keyval";
+import { del, get, promisifyRequest, set, update, type UseStore } from "idb-keyval";
 import { abrirBase } from "./base";
 import { genomeHash, normalizeGenome, type Genome } from "@/sim/genome";
 import { PHYSICS_VERSION, type CarResult } from "@/sim/constants";
@@ -63,11 +63,18 @@ registerKey(KEY_LINEAGE, validateLineage, [], "linaje");
 registerKey(KEY_SPECIES, validateSpecies, {}, "especies");
 registerKey(META_KEY, (raw) => validateMeta(raw), DEFAULT_META, "ajustes");
 
-// --- Acceso: IndexedDB o, si no se puede abrir, memoria hasta cerrar la pestaña.
+// --- Acceso: IndexedDB o, si no se puede usar, memoria hasta cerrar la pestaña.
 
 let almacen: UseStore | null = null;
 let disponible = true;
+/**
+ * Copia de lo último leído o escrito en IndexedDB. Si IndexedDB deja de responder a media partida se sigue desde
+ * aquí y no desde vacío: antes un fallo pasajero dejaba el garaje y los rankings vacíos en esa pestaña.
+ */
 const memoria = new Map<string, unknown>();
+
+/** Intentos por operación; entre uno y otro se reabre la conexión (Safari la pierde al volver de suspender). */
+const INTENTOS = 3;
 
 function abrir(): UseStore | null {
   if (!disponible) return null;
@@ -75,38 +82,67 @@ function abrir(): UseStore | null {
     try {
       almacen = abrirBase();
     } catch {
+      // Ni siquiera se puede abrir: no hay IndexedDB en este navegador (o modo privado que lo prohíbe).
       disponible = false;
     }
   }
   return almacen;
 }
 
-async function leer(key: string): Promise<unknown> {
-  const s = abrir();
-  if (s) {
+/**
+ * Hace la operación en IndexedDB reabriendo la conexión si falla. Solo tras agotar los intentos se pasa a memoria
+ * (con lo último conocido) para el resto de la pestaña: así nunca se escribe en IndexedDB una mezcla de lo de antes
+ * y lo hecho mientras fallaba, y lo que ya había allí queda intacto. Devuelve si se hizo en IndexedDB.
+ */
+async function conAlmacen(op: (s: UseStore) => Promise<void>): Promise<boolean> {
+  for (let i = 0; i < INTENTOS; i++) {
+    const s = abrir();
+    if (!s) return false;
     try {
-      return await get(key, s);
+      await op(s);
+      return true;
     } catch {
-      disponible = false;
+      almacen = null;
     }
   }
-  return memoria.get(key);
+  disponible = false;
+  return false;
+}
+
+async function leer(key: string): Promise<unknown> {
+  let valor: unknown;
+  const ok = await conAlmacen(async (s) => {
+    valor = await get(key, s);
+  });
+  if (!ok) return memoria.get(key);
+  if (valor === undefined) memoria.delete(key);
+  else memoria.set(key, valor);
+  return valor;
 }
 
 /** El actualizador es síncrono: lee y escribe en una sola transacción, así dos escrituras no se pisan. */
 async function actualizar(key: string, fn: (actual: unknown) => unknown): Promise<void> {
-  const s = abrir();
-  if (s) {
-    try {
-      await update(key, (v) => fn(v), s);
-      void pedirPersistencia();
-      return;
-    } catch {
-      disponible = false;
-    }
+  let nuevo: unknown;
+  const ok = await conAlmacen(async (s) => {
+    await update(
+      key,
+      (v) => {
+        nuevo = fn(v);
+        return nuevo;
+      },
+      s,
+    );
+  });
+  if (ok) {
+    memoria.set(key, nuevo);
+    void pedirPersistencia();
+    return;
   }
   memoria.set(key, fn(memoria.get(key)));
 }
+
+/** Si lo guardado está de verdad en el dispositivo (IndexedDB) o solo en la memoria de esta pestaña. */
+export const almacenDisponible = (): boolean => disponible;
 
 /**
  * Pide al navegador que no desaloje el guardado. Se llama tras escribir y solo
@@ -183,10 +219,31 @@ export function validarEstricto(key: string, raw: unknown): { ok: true; value: u
 let epocaDatos = 0;
 export const epocaActual = (): number => epocaDatos;
 
-/** Sustituye todas las claves registradas por las de la copia (ya validada); las que no vengan se borran. */
-export async function reemplazarTodo(data: Record<string, unknown>): Promise<void> {
+/**
+ * Sustituye todas las claves registradas por las de la copia (ya validada); las que no vengan se borran.
+ * Devuelve si quedó guardada en el dispositivo: sin IndexedDB solo vive en memoria hasta cerrar la pestaña.
+ */
+export async function reemplazarTodo(data: Record<string, unknown>): Promise<boolean> {
   epocaDatos += 1;
-  for (const key of registro.keys()) await save(key, data[key] ?? null);
+  const claves = [...registro.keys()];
+  // En una sola transacción: si falla a medias no queda en el dispositivo una mezcla de la copia y lo de antes.
+  const ok = await conAlmacen((s) =>
+    s("readwrite", (store) => {
+      for (const key of claves) {
+        const v = data[key];
+        if (v === null || v === undefined) store.delete(key);
+        else store.put(v, key);
+      }
+      return promisifyRequest(store.transaction);
+    }),
+  );
+  for (const key of claves) {
+    const v = data[key];
+    if (v === null || v === undefined) memoria.delete(key);
+    else memoria.set(key, v);
+  }
+  if (ok) void pedirPersistencia();
+  return ok;
 }
 
 /** Para la migración y los escenarios: marca que lo guardado cambió por debajo de cualquier medida en vuelo. */
@@ -210,7 +267,15 @@ export async function leerGuardado(): Promise<Record<string, unknown>> {
     const valor = leerValidado(key, raw, []);
     out[key] = valor;
   }
+  // Una copia hecha desde memoria puede faltarle lo guardado en el dispositivo: mejor no dar una que engañe.
+  if (!disponible) throw new ErrorSinAlmacen();
   return out;
+}
+
+export class ErrorSinAlmacen extends Error {
+  constructor() {
+    super("No se puede leer el guardado del dispositivo");
+  }
 }
 
 export interface LoadResult {
@@ -253,28 +318,11 @@ export async function loadAll(): Promise<LoadResult> {
 export async function save<T>(key: string, value: T): Promise<void> {
   if (value === null || value === undefined) {
     memoria.delete(key);
-    const s = abrir();
-    if (s) {
-      try {
-        await del(key, s);
-        return;
-      } catch {
-        disponible = false;
-      }
-    }
+    await conAlmacen((s) => del(key, s));
     return;
   }
-  const s = abrir();
-  if (s) {
-    try {
-      await set(key, value, s);
-      void pedirPersistencia();
-      return;
-    } catch {
-      disponible = false;
-    }
-  }
   memoria.set(key, value);
+  if (await conAlmacen((s) => set(key, value, s))) void pedirPersistencia();
 }
 
 // --- Rankings

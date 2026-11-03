@@ -1,4 +1,4 @@
-import { ALTO, ANCHO, FPS, MOTIVO_NO_COINCIDE, fotogramas, verificar } from "./nucleo";
+import { ALTO, ANCHO, FPS, MOTIVO_NO_COINCIDE, fotogramas, progresoClip, verificar } from "./nucleo";
 import { crearPintor } from "./pintor";
 import type { DesdeClip, HaciaClip } from "./protocolo";
 
@@ -9,7 +9,14 @@ const MAX_BYTES = 8 * 1024 * 1024;
 const enviar = (m: DesdeClip, transfer: Transferable[] = []) => postMessage(m, { transfer });
 
 async function generar({ entrada }: Extract<HaciaClip, { tipo: "generar" }>): Promise<void> {
-  const { resultado, plan } = verificar(entrada);
+  // La primera pasada también cuenta: sin esto el porcentaje se queda en 0 % lo que tarda en simular la carrera.
+  let enviado = -1;
+  const { resultado, plan } = verificar(entrada, (f) => {
+    const total = progresoClip("verificar", f);
+    if (total - enviado < 0.01) return;
+    enviado = total;
+    enviar({ tipo: "progreso", fraccion: total });
+  });
   // mediabunny solo se carga aquí: nunca entra en el bundle inicial.
   const mb = await import("mediabunny");
   const codec = await mb.getFirstEncodableVideoCodec(["avc", "vp9"], { width: ANCHO, height: ALTO });
@@ -32,7 +39,7 @@ async function generar({ entrada }: Extract<HaciaClip, { tipo: "generar" }>): Pr
     pintar(f);
     await fuente.add(f.ts, 1 / FPS);
     if (f.indice === central) muestra = await (await canvas.convertToBlob({ type: "image/png" })).arrayBuffer();
-    if (f.indice % 10 === 0) enviar({ tipo: "progreso", fraccion: (f.indice + 1) / plan.fotogramas });
+    if (f.indice % 10 === 0) enviar({ tipo: "progreso", fraccion: progresoClip("fotogramas", (f.indice + 1) / plan.fotogramas) });
   }
   fuente.close();
   await salida.finalize();
