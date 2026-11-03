@@ -50,11 +50,35 @@ export function planClip(pasos: number): PlanClip {
 
 export const tsFotograma = (i: number): number => i / FPS;
 
-/** Carrera de un solo coche hasta el final: la distancia que tiene que dar es la de la marca guardada. */
-export function resimular(entrada: EntradaClip): CarResult {
+/**
+ * Parte del progreso total que se lleva la primera pasada (la que verifica la marca). Sin ella el porcentaje se
+ * quedaba en 0 % lo que tarda esa pasada y en una carrera larga parecía colgado.
+ */
+export const PESO_VERIFICACION = 0.3;
+
+/** Progreso total (0-1) a partir del avance de cada pasada. */
+export const progresoClip = (fase: "verificar" | "fotogramas", fraccion: number): number => {
+  const f = Math.min(1, Math.max(0, fraccion));
+  return fase === "verificar" ? f * PESO_VERIFICACION : PESO_VERIFICACION + f * (1 - PESO_VERIFICACION);
+};
+
+/**
+ * Carrera de un solo coche hasta el final: la distancia que tiene que dar es la de la marca guardada.
+ * `onAvance` recibe lo recorrido respecto a esa marca (0-1); no se sabe cuántos pasos durará hasta acabar.
+ */
+export function resimular(entrada: EntradaClip, onAvance?: (fraccion: number) => void): CarResult {
   const race = createRace([{ carId: genomeHash(entrada.genome), genome: entrada.genome }], entrada.trackId);
   try {
-    while (!race.done()) race.step(600);
+    const x0 = onAvance ? race.poses()[0].x : 0;
+    let maxima = 0;
+    while (!race.done()) {
+      race.step(600);
+      if (!onAvance) continue;
+      const x = race.poses()[0].x;
+      maxima = Math.max(maxima, x - x0);
+      onAvance(entrada.distancia > 0 ? Math.min(1, maxima / entrada.distancia) : 0);
+    }
+    onAvance?.(1);
     return race.results()[0];
   } finally {
     race.dispose();
@@ -62,8 +86,8 @@ export function resimular(entrada: EntradaClip): CarResult {
 }
 
 /** Rechaza con el motivo del criterio clip-2 si la repetición no reproduce la marca. */
-export function verificar(entrada: EntradaClip): { resultado: CarResult; plan: PlanClip } {
-  const resultado = resimular(entrada);
+export function verificar(entrada: EntradaClip, onAvance?: (fraccion: number) => void): { resultado: CarResult; plan: PlanClip } {
+  const resultado = resimular(entrada, onAvance);
   if (Math.abs(resultado.distance - entrada.distancia) > 1e-9) throw new Error(MOTIVO_NO_COINCIDE);
   return { resultado, plan: planClip(resultado.steps) };
 }

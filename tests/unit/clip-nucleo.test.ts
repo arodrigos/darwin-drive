@@ -6,7 +6,7 @@ import type { Genome } from "../../src/sim/genome";
 import { getTrack } from "../../src/sim/tracks";
 import { simulateCar } from "../../src/sim/race";
 import { MAX_STEPS } from "../../src/sim/constants";
-import { FPS, MAX_DURACION_S, MOTIVO_NO_COINCIDE, fotogramas, planClip, verificar, type EntradaClip } from "../../src/clip/nucleo";
+import { FPS, MAX_DURACION_S, MOTIVO_NO_COINCIDE, PESO_VERIFICACION, fotogramas, planClip, progresoClip, verificar, type EntradaClip } from "../../src/clip/nucleo";
 
 const FIXTURE: { trackId: "dunas"; campeon: Genome }[] = JSON.parse(readFileSync("tests/fixtures/medallas-calibracion.json", "utf8"));
 const dunas = FIXTURE.find((f) => f.trackId === "dunas")!;
@@ -60,4 +60,21 @@ test("clip-1/clip-2 fotogramas con marcas crecientes y paso 1/30, y la distancia
 test("clip-2 una marca manipulada (+1 m) se rechaza y no entrega nada", () => {
   const entrada = entradaReal();
   assert.throws(() => verificar({ ...entrada, distancia: entrada.distancia + 1 }), { message: MOTIVO_NO_COINCIDE });
+});
+
+test("#157 la primera pasada (verificar) cuenta en el progreso: avanza desde el principio, sube sin bajar y no cambia el resultado", () => {
+  const entrada = entradaReal();
+  const avances: number[] = [];
+  const con = verificar(entrada, (f) => avances.push(f));
+  const sin = verificar(entrada);
+  assert.deepEqual(con, sin);
+  assert.ok(avances.length > 2, `solo ${avances.length} avisos de avance`);
+  assert.ok(avances.some((f) => f > 0 && f < 1), "sin avance intermedio");
+  for (let i = 1; i < avances.length; i++) assert.ok(avances[i] >= avances[i - 1]);
+  assert.equal(avances.at(-1), 1);
+  // En el total, la verificación ocupa el primer tramo y los fotogramas siguen donde acaba, hasta 100 %.
+  assert.ok(progresoClip("verificar", avances[0]) < progresoClip("verificar", 1));
+  assert.equal(progresoClip("verificar", 1), PESO_VERIFICACION);
+  assert.equal(progresoClip("fotogramas", 0), PESO_VERIFICACION);
+  assert.equal(progresoClip("fotogramas", 1), 1);
 });

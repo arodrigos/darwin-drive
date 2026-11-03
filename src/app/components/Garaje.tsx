@@ -2,7 +2,7 @@
 
 import { textoCausa } from "../ayuda/causas";
 import { formatMeters } from "@/app/format";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { markInput, measureOnNextFrame } from "@/debug/latencias";
 import { codificarCoche, type CocheCompartible } from "@/app/codigo-coche";
 import { compartirTexto } from "@/app/compartir";
@@ -105,6 +105,18 @@ export function Garaje(props: {
     const t = window.setTimeout(() => setAviso(null), 6000);
     return () => window.clearTimeout(t);
   }, [aviso]);
+  // El aviso es fijo abajo: se deja al final un hueco de su alto (más su margen) para poder subir lo que taparía.
+  const cajaAviso = useRef<HTMLDivElement>(null);
+  const [hueco, setHueco] = useState(0);
+  useLayoutEffect(() => {
+    const caja = cajaAviso.current;
+    if (!caja) return setHueco(0);
+    const medir = () => setHueco(window.innerHeight - caja.getBoundingClientRect().top);
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(caja);
+    return () => ro.disconnect();
+  }, [aviso]);
 
   const compartir = async (car: SavedCar) => {
     markInput("compartir");
@@ -140,9 +152,14 @@ export function Garaje(props: {
         {props.cars.length > 0 && botonImportar}
       </div>
       {aviso && (
-        <p className="aviso-garaje" role="status" data-testid="aviso-garaje" onClick={() => setAviso(null)}>
-          {aviso.texto}
-        </p>
+        <div className="aviso-garaje" ref={cajaAviso} onClick={() => setAviso(null)} data-testid="aviso-garaje-caja">
+          <p role="status" data-testid="aviso-garaje">
+            {aviso.texto}
+          </p>
+          <span className="aviso-cerrar" data-testid="aviso-garaje-cerrar">
+            Toca para cerrar
+          </span>
+        </div>
       )}
       {props.cars.length === 0 ? (
         <div className="garaje-vacio" data-testid="garaje-vacio">
@@ -216,6 +233,7 @@ export function Garaje(props: {
       {hoja?.tipo === "importar" && <HojaImportar onImportar={importar} onCerrar={() => setHoja(null)} />}
       {hoja?.tipo === "manual" && <HojaCopiaManual codigo={hoja.codigo} onCerrar={() => setHoja(null)} />}
       <CopiaSeguridad almacenDisponible={props.almacenDisponible} onImportada={props.onImportada} />
+      {aviso && hueco > 0 && <div className="hueco-aviso-garaje" style={{ height: hueco }} aria-hidden="true" data-testid="hueco-aviso-garaje" />}
     </div>
   );
 }
